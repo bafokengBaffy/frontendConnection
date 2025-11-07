@@ -1,7 +1,6 @@
 {
   "name": "career-connect-lesotho-frontend",
   "version": "1.0.0",
-  "type": "module",
   "scripts": {
     "dev": "react-scripts start",
     "start": "react-scripts start",
