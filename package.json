@@ -23,7 +23,7 @@
     "vite": "^4.4.5"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.0.3",
+    "@vitejs/plugin-react": "^4.0.3"
   },
   "engines": {
     "node": ">=18.20.0",
