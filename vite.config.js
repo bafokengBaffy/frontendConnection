@@ -12,7 +12,5 @@ export default defineConfig({
     sourcemap: false,
     chunkSizeWarningLimit: 1600,
   },
-  define: {
-    'process.env': process.env
-  }
+
 })

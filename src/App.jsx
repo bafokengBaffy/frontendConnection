@@ -38,14 +38,14 @@ import ManageFaculties from "./pages/institute/ManageFaculties";
 import PublishAdmissions from "./pages/institute/PublishAdmissions";
 import ReviewApplications from "./pages/institute/ReviewApplications";
 import StudentManagement from "./pages/institute/StudentManagement";
-import AdmissionSelection from "./pages/student/AdmissionSelection"; // Add this import
+import AdmissionSelection from "./pages/student/AdmissionSelection";
 import StudentApplications from "./pages/student/Applications";
 import ApplyCourse from "./pages/student/ApplyCourse";
 import ApplyJob from "./pages/student/ApplyJob";
 import Courses from "./pages/student/Courses";
 import Documents from "./pages/student/Documents";
 import Institutions from "./pages/student/Institutions";
-import JobMatches from "./pages/student/JobMatches"; // Add this import
+import JobMatches from "./pages/student/JobMatches";
 import Jobs from "./pages/student/Jobs";
 import Notifications from "./pages/student/Notifications";
 import StudentDashboard from "./pages/student/StudentDashboard";
