@@ -1,0 +1,276 @@
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
+// Context Providers
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { NotificationProvider } from './context/NotificationContext';
+
+// Layout Components
+import Layout from './components/layout/Layout';
+import ProtectedRoute from './components/layout/ProtectedRoute';
+import DashboardRedirect from './components/layout/DashboardRedirect';
+
+// Public Pages
+import Home from './pages/Home';
+import Login from './pages/auth/Login';
+import Register from './pages/auth/Register.js';
+
+// ADMIN PAGES
+import AdminDashboard from './pages/admin/AdminDashboard';
+import UserManagement from './pages/admin/UserManagement';
+import SystemReports from './pages/admin/SystemReports';
+
+// AI PAGES
+import AIDashboard from './pages/AI/AIDashboard.js';
+import BusinessInsights from './pages/AI/BusinessInsights.js';
+import PredictiveAnalytics from './pages/AI/PredictiveAnalytics.js';
+
+// COMPANY PAGES
+import CompanyDashboard from './pages/company/CompanyDashboard';
+import CompanyJobs from './pages/company/CompanyJobs.js';
+import CompanyApplications from './pages/company/CompanyApplications.js';
+import CompanyProfile from './pages/company/CompanyProfile.js';
+
+// ENTREPRENEUR HUB PAGES
+import EntrepreneurDashboard from './pages/entrepreneur/EntrepreneurDashboard';
+import FundingPrograms from './pages/EntrepreneurHub/FundingPrograms.js';
+import MentorNetwork from './pages/EntrepreneurHub/MentorNetwork.js';
+
+// INSTITUTE PAGES
+import InstitutionDashboard from './pages/institute/InstitutionDashboard';
+import ManageCourses from './pages/institute/ManageCourses.js';
+import StudentManagement from './pages/institute/StudentManagement.js';
+
+// STUDENT PAGES
+import StudentDashboard from './pages/student/StudentDashboard';
+import StudentCourses from './pages/student/StudentCourses.js';
+import StudentJobs from './pages/student/StudentJobs.js';
+import StudentApplications from './pages/student/StudentApplications.js';
+import StudentDocuments from './pages/student/StudentDocuments.js';
+import StudentProfile from './pages/student/StudentProfile.js';
+
+// YOUTH PAGES
+import YouthDashboard from './pages/youth/YouthDashboard';
+
+// EMPLOYER PAGES
+import EmployerDashboard from './pages/employer/EmployerDashboard';
+
+// Profile Redirect Component
+const ProfileRedirect = () => {
+  const { userProfile } = useAuth();
+  
+  if (!userProfile) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  return <Navigate to={`/${userProfile.userType || 'student'}/profile`} replace />;
+};
+
+// Main App Component
+function AppContent() {
+  return (
+    <Router>
+      <Routes>
+        {/* Public Routes WITHOUT Layout */}
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        
+        {/* ALL PROTECTED ROUTES WITH Layout */}
+        <Route element={<Layout><Outlet /></Layout>}>
+          {/* Dashboard Redirect */}
+          <Route path="/dashboard" element={<DashboardRedirect />} />
+          
+          {/* Admin Routes */}
+          <Route path="/admin/dashboard" element={
+            <ProtectedRoute allowedUserTypes={['admin']}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/users" element={
+            <ProtectedRoute allowedUserTypes={['admin']}>
+              <UserManagement />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/analytics" element={
+            <ProtectedRoute allowedUserTypes={['admin']}>
+              <SystemReports />
+            </ProtectedRoute>
+          } />
+          
+          {/* AI Routes */}
+          <Route path="/ai/dashboard" element={
+            <ProtectedRoute allowedUserTypes={['youth', 'entrepreneur', 'admin', 'company']}>
+              <AIDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/ai/business-insights" element={
+            <ProtectedRoute allowedUserTypes={['youth', 'entrepreneur']}>
+              <BusinessInsights />
+            </ProtectedRoute>
+          } />
+          <Route path="/ai/analytics" element={
+            <ProtectedRoute allowedUserTypes={['youth', 'entrepreneur', 'admin', 'company']}>
+              <PredictiveAnalytics />
+            </ProtectedRoute>
+          } />
+          
+          {/* Company Routes */}
+          <Route path="/company/dashboard" element={
+            <ProtectedRoute allowedUserTypes={['company']}>
+              <CompanyDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/company/jobs" element={
+            <ProtectedRoute allowedUserTypes={['company']}>
+              <CompanyJobs />
+            </ProtectedRoute>
+          } />
+          <Route path="/company/applications" element={
+            <ProtectedRoute allowedUserTypes={['company']}>
+              <CompanyApplications />
+            </ProtectedRoute>
+          } />
+          <Route path="/company/profile" element={
+            <ProtectedRoute allowedUserTypes={['company']}>
+              <CompanyProfile />
+            </ProtectedRoute>
+          } />
+          
+          {/* Entrepreneur Hub Routes */}
+          <Route path="/entrepreneur/dashboard" element={
+            <ProtectedRoute allowedUserTypes={['entrepreneur']}>
+              <EntrepreneurDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/entrepreneur/funding" element={
+            <ProtectedRoute allowedUserTypes={['entrepreneur']}>
+              <FundingPrograms />
+            </ProtectedRoute>
+          } />
+          <Route path="/entrepreneur/network" element={
+            <ProtectedRoute allowedUserTypes={['entrepreneur']}>
+              <MentorNetwork />
+            </ProtectedRoute>
+          } />
+          
+          {/* Institute Routes */}
+          <Route path="/institute/dashboard" element={
+            <ProtectedRoute allowedUserTypes={['institute']}>
+              <InstitutionDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/institute/courses" element={
+            <ProtectedRoute allowedUserTypes={['institute']}>
+              <ManageCourses />
+            </ProtectedRoute>
+          } />
+          <Route path="/institute/students" element={
+            <ProtectedRoute allowedUserTypes={['institute']}>
+              <StudentManagement />
+            </ProtectedRoute>
+          } />
+          
+          {/* Student Routes */}
+          <Route path="/student/dashboard" element={
+            <ProtectedRoute allowedUserTypes={['student']}>
+              <StudentDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/student/courses" element={
+            <ProtectedRoute allowedUserTypes={['student']}>
+              <StudentCourses />
+            </ProtectedRoute>
+          } />
+          <Route path="/student/jobs" element={
+            <ProtectedRoute allowedUserTypes={['student']}>
+              <StudentJobs />
+            </ProtectedRoute>
+          } />
+          <Route path="/student/applications" element={
+            <ProtectedRoute allowedUserTypes={['student']}>
+              <StudentApplications />
+            </ProtectedRoute>
+          } />
+          <Route path="/student/documents" element={
+            <ProtectedRoute allowedUserTypes={['student']}>
+              <StudentDocuments />
+            </ProtectedRoute>
+          } />
+          <Route path="/student/profile" element={
+            <ProtectedRoute allowedUserTypes={['student']}>
+              <StudentProfile />
+            </ProtectedRoute>
+          } />
+          
+          {/* Youth Routes */}
+          <Route path="/youth/dashboard" element={
+            <ProtectedRoute allowedUserTypes={['youth']}>
+              <YouthDashboard />
+            </ProtectedRoute>
+          } />
+          
+          {/* Employer Routes */}
+          <Route path="/employer/dashboard" element={
+            <ProtectedRoute allowedUserTypes={['employer']}>
+              <EmployerDashboard />
+            </ProtectedRoute>
+          } />
+
+          {/* Profile Route (auto-redirects to user-specific profile) */}
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <ProfileRedirect />
+            </ProtectedRoute>
+          } />
+
+          {/* Common Routes */}
+          <Route path="/settings" element={
+            <ProtectedRoute>
+              <div className="container py-4">
+                <h2>Settings</h2>
+                <p>Settings page</p>
+              </div>
+            </ProtectedRoute>
+          } />
+
+          <Route path="/search" element={
+            <ProtectedRoute>
+              <div className="container py-4">
+                <h2>Search Results</h2>
+                <p>Search functionality</p>
+              </div>
+            </ProtectedRoute>
+          } />
+
+          <Route path="/notifications" element={
+            <ProtectedRoute>
+              <div className="container py-4">
+                <h2>Notifications</h2>
+                <p>All your notifications</p>
+              </div>
+            </ProtectedRoute>
+          } />
+        </Route>
+        
+        {/* 404 Route */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Router>
+  );
+}
+
+// Main App Wrapper
+function App() {
+  return (
+    <AuthProvider>
+      <NotificationProvider>
+        <AppContent />
+      </NotificationProvider>
+    </AuthProvider>
+  );
+}
+
+export default App;

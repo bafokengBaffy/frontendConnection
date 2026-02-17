@@ -1,0 +1,79 @@
+// Import base utilities and all service modules
+import baseService from './companyExtended/utils/baseService';
+
+// Import social services
+import {
+  followersService,
+  chatService,
+  companyBrandingService
+} from './companyExtended/social/socialServices';
+
+// Import recruitment services
+import {
+  videoInterviewService,
+  aiMatchingService,
+  talentPoolService
+} from './companyExtended/recruitment/recruitmentServices';
+
+// Import management services
+import {
+  teamService,
+  documentsService,
+  settingsService
+} from './companyExtended/management/managementServices';
+
+// Import analytics services
+import {
+  analyticsService,
+  notificationsService
+} from './companyExtended/analytics/analyticsServices';
+
+// Re-export all services
+export {
+  // Base utilities
+  baseService,
+  
+  // Social Services
+  followersService,
+  chatService,
+  companyBrandingService,
+  
+  // Recruitment Services
+  videoInterviewService,
+  aiMatchingService,
+  talentPoolService,
+  
+  // Management Services
+  teamService,
+  documentsService,
+  settingsService,
+  
+  // Analytics Services
+  analyticsService,
+  notificationsService
+};
+
+// Default export with all services grouped
+export default {
+  // Social Services
+  followersService,
+  chatService,
+  companyBrandingService,
+  
+  // Recruitment Services
+  videoInterviewService,
+  aiMatchingService,
+  talentPoolService,
+  
+  // Management Services
+  teamService,
+  documentsService,
+  settingsService,
+  
+  // Analytics Services
+  analyticsService,
+  notificationsService,
+  
+  // Base utilities
+  ...baseService
+};
