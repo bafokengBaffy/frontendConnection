@@ -13,7 +13,7 @@ function StudentDocuments() {
       setData([
         { id: 1, name: 'Sample Item 1', status: 'Active', date: '2024-01-15' },
         { id: 2, name: 'Sample Item 2', status: 'Pending', date: '2024-01-16' },
-        { id: 3, name: 'Sample Item 3', status: 'Completed', date: '2024-01-17' }
+        { id: 3, name: 'Sample Item 3', status: 'Completed', date: '2024-01-17' },
       ]);
       setLoading(false);
     }, 1000);
@@ -34,7 +34,7 @@ function StudentDocuments() {
         <h1 className="h2">My Documents</h1>
         <Button variant="primary">Add New</Button>
       </div>
-      
+
       <Card>
         <Card.Body>
           <Table responsive hover>
@@ -53,14 +53,26 @@ function StudentDocuments() {
                   <td>{item.id}</td>
                   <td>{item.name}</td>
                   <td>
-                    <Badge bg={item.status === 'Active' ? 'success' : item.status === 'Pending' ? 'warning' : 'secondary'}>
+                    <Badge
+                      bg={
+                        item.status === 'Active'
+                          ? 'success'
+                          : item.status === 'Pending'
+                            ? 'warning'
+                            : 'secondary'
+                      }
+                    >
                       {item.status}
                     </Badge>
                   </td>
                   <td>{item.date}</td>
                   <td>
-                    <Button size="sm" variant="outline-primary" className="me-2">View</Button>
-                    <Button size="sm" variant="outline-secondary">Edit</Button>
+                    <Button size="sm" variant="outline-primary" className="me-2">
+                      View
+                    </Button>
+                    <Button size="sm" variant="outline-secondary">
+                      Edit
+                    </Button>
                   </td>
                 </tr>
               ))}
@@ -68,7 +80,7 @@ function StudentDocuments() {
           </Table>
         </Card.Body>
       </Card>
-      
+
       <div className="mt-4">
         <Card>
           <Card.Body>
@@ -82,19 +94,19 @@ function StudentDocuments() {
               </Col>
               <Col md={3}>
                 <div className="text-center p-3 bg-light rounded">
-                  <h3>{data.filter(d => d.status === 'Active').length}</h3>
+                  <h3>{data.filter((d) => d.status === 'Active').length}</h3>
                   <p className="mb-0">Active</p>
                 </div>
               </Col>
               <Col md={3}>
                 <div className="text-center p-3 bg-light rounded">
-                  <h3>{data.filter(d => d.status === 'Pending').length}</h3>
+                  <h3>{data.filter((d) => d.status === 'Pending').length}</h3>
                   <p className="mb-0">Pending</p>
                 </div>
               </Col>
               <Col md={3}>
                 <div className="text-center p-3 bg-light rounded">
-                  <h3>{data.filter(d => d.status === 'Completed').length}</h3>
+                  <h3>{data.filter((d) => d.status === 'Completed').length}</h3>
                   <p className="mb-0">Completed</p>
                 </div>
               </Col>

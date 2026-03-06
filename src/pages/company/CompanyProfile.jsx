@@ -18,7 +18,7 @@ function CompanyProfile() {
     foundedYear: '',
     description: '',
     contactPerson: '',
-    contactPosition: ''
+    contactPosition: '',
   });
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState('');
@@ -32,11 +32,11 @@ function CompanyProfile() {
       setLoading(true);
       const auth = getAuth();
       const user = auth.currentUser;
-      
+
       if (user) {
         const docRef = doc(db, 'companies', user.uid);
         const docSnap = await getDoc(docRef);
-        
+
         if (docSnap.exists()) {
           setProfile({
             companyName: docSnap.data().companyName || '',
@@ -49,14 +49,14 @@ function CompanyProfile() {
             foundedYear: docSnap.data().foundedYear || '',
             description: docSnap.data().description || '',
             contactPerson: docSnap.data().contactPerson || '',
-            contactPosition: docSnap.data().contactPosition || ''
+            contactPosition: docSnap.data().contactPosition || '',
           });
         } else {
           // Create initial profile with user data
           setProfile({
             ...profile,
             email: user.email || '',
-            companyName: user.displayName || ''
+            companyName: user.displayName || '',
           });
         }
       }
@@ -69,7 +69,7 @@ function CompanyProfile() {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!profile.companyName.trim()) {
       newErrors.companyName = 'Company name is required';
     }
@@ -81,7 +81,7 @@ function CompanyProfile() {
     if (!profile.industry.trim()) {
       newErrors.industry = 'Industry is required';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -102,12 +102,12 @@ function CompanyProfile() {
         await updateDoc(docRef, {
           ...profile,
           updatedAt: new Date(),
-          uid: user.uid
+          uid: user.uid,
         });
 
         // Update Firebase Auth profile
         await updateProfile(user, {
-          displayName: profile.companyName
+          displayName: profile.companyName,
         });
 
         setSuccess('Profile updated successfully!');
@@ -123,10 +123,10 @@ function CompanyProfile() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setProfile(prev => ({ ...prev, [name]: value }));
+    setProfile((prev) => ({ ...prev, [name]: value }));
     // Clear error for this field when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: '' }));
     }
   };
 
@@ -142,7 +142,7 @@ function CompanyProfile() {
   return (
     <Container className="mt-4">
       <h1 className="h2 mb-4">Company Profile</h1>
-      
+
       {success && (
         <Alert variant="success" className="mb-4">
           {success}
@@ -154,7 +154,7 @@ function CompanyProfile() {
           <Card className="mb-4">
             <Card.Body>
               <Card.Title>Company Information</Card.Title>
-              
+
               <Form>
                 <Row>
                   <Col md={6}>
@@ -182,9 +182,7 @@ function CompanyProfile() {
                         onChange={handleChange}
                         isInvalid={!!errors.email}
                       />
-                      <Form.Control.Feedback type="invalid">
-                        {errors.email}
-                      </Form.Control.Feedback>
+                      <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
                     </Form.Group>
                   </Col>
                 </Row>
@@ -256,11 +254,7 @@ function CompanyProfile() {
                   <Col md={6}>
                     <Form.Group className="mb-3">
                       <Form.Label>Company Size</Form.Label>
-                      <Form.Select
-                        name="size"
-                        value={profile.size}
-                        onChange={handleChange}
-                      >
+                      <Form.Select name="size" value={profile.size} onChange={handleChange}>
                         <option value="">Select Size</option>
                         <option value="1-10">1-10 employees</option>
                         <option value="11-50">11-50 employees</option>
@@ -330,11 +324,7 @@ function CompanyProfile() {
                 )}
 
                 <div className="d-flex justify-content-end">
-                  <Button
-                    variant="primary"
-                    onClick={handleSave}
-                    disabled={saving}
-                  >
+                  <Button variant="primary" onClick={handleSave} disabled={saving}>
                     {saving ? (
                       <>
                         <Spinner animation="border" size="sm" className="me-2" />
@@ -354,8 +344,10 @@ function CompanyProfile() {
           <Card className="mb-4">
             <Card.Body className="text-center">
               <div className="mb-3">
-                <div className="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center" 
-                     style={{ width: '120px', height: '120px' }}>
+                <div
+                  className="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center"
+                  style={{ width: '120px', height: '120px' }}
+                >
                   <span className="text-white display-4">
                     {profile.companyName?.charAt(0) || 'C'}
                   </span>
@@ -400,20 +392,9 @@ function CompanyProfile() {
               <Form>
                 <Form.Group className="mb-3">
                   <Form.Label>Notification Preferences</Form.Label>
-                  <Form.Check 
-                    type="checkbox" 
-                    label="Email notifications" 
-                    defaultChecked 
-                  />
-                  <Form.Check 
-                    type="checkbox" 
-                    label="SMS notifications" 
-                  />
-                  <Form.Check 
-                    type="checkbox" 
-                    label="Job application alerts" 
-                    defaultChecked 
-                  />
+                  <Form.Check type="checkbox" label="Email notifications" defaultChecked />
+                  <Form.Check type="checkbox" label="SMS notifications" />
+                  <Form.Check type="checkbox" label="Job application alerts" defaultChecked />
                 </Form.Group>
                 <Button variant="outline-primary" className="w-100">
                   Manage Settings

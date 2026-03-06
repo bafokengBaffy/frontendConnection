@@ -105,5 +105,5 @@ export const AnalyticsTypes = {
   Report: 'ReportData',
   QuickStats: 'QuickStats',
   Activity: 'ActivityItem',
-  Performance: 'PerformanceMetrics'
+  Performance: 'PerformanceMetrics',
 };

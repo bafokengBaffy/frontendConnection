@@ -1,0 +1,52 @@
+# Dependencies
+node_modules
+dist
+build
+coverage
+.firebase
+
+# Build outputs
+*.min.css
+*.bundle.css
+*.chunk.css
+*.map
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Documentation
+*.md
+*.txt
+
+# Static assets
+*.svg
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+*.woff
+*.woff2
+*.ttf
+*.eot
+
+# Third-party styles
+public
+assets
+*.vendor.css
+
+# Configuration files
+.stylelintrc
+.eslintrc.js
+.prettierrc
+vite.config.mjs
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+.DS_Store

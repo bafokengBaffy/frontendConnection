@@ -3,9 +3,15 @@ import React, { useState, useEffect } from 'react';
 import { Card, Row, Col, Button, Table, Badge, Spinner, Alert, Form } from 'react-bootstrap';
 import { useAuth } from '../../context/AuthContext';
 import adminService from '../../services/adminService';
-import { 
-  FaChartLine, FaUsers, FaBuilding, FaBriefcase, 
-  FaFileAlt, FaCalendar, FaDownload, FaFilter 
+import {
+  FaChartLine,
+  FaUsers,
+  FaBuilding,
+  FaBriefcase,
+  FaFileAlt,
+  FaCalendar,
+  FaDownload,
+  FaFilter,
 } from 'react-icons/fa';
 
 const SystemReports = () => {
@@ -19,9 +25,9 @@ const SystemReports = () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await adminService.getDashboardStats(currentUser, userProfile);
-      
+
       if (response.success) {
         setStats(response.data);
       } else {
@@ -67,32 +73,32 @@ const SystemReports = () => {
           {/* Date Range Selector */}
           <div className="d-flex justify-content-between mb-4">
             <div className="btn-group">
-              <Button 
+              <Button
                 variant={dateRange === 'day' ? 'primary' : 'outline-primary'}
                 onClick={() => handleDateRangeChange('day')}
               >
                 Today
               </Button>
-              <Button 
+              <Button
                 variant={dateRange === 'week' ? 'primary' : 'outline-primary'}
                 onClick={() => handleDateRangeChange('week')}
               >
                 This Week
               </Button>
-              <Button 
+              <Button
                 variant={dateRange === 'month' ? 'primary' : 'outline-primary'}
                 onClick={() => handleDateRangeChange('month')}
               >
                 This Month
               </Button>
-              <Button 
+              <Button
                 variant={dateRange === 'year' ? 'primary' : 'outline-primary'}
                 onClick={() => handleDateRangeChange('year')}
               >
                 This Year
               </Button>
             </div>
-            
+
             <div className="btn-group">
               <Button variant="outline-success" onClick={() => handleExport('pdf')}>
                 <FaDownload className="me-2" />
@@ -133,7 +139,7 @@ const SystemReports = () => {
                     </Card.Body>
                   </Card>
                 </Col>
-                
+
                 <Col md={3} sm={6} className="mb-3">
                   <Card className="text-center h-100">
                     <Card.Body>
@@ -146,7 +152,7 @@ const SystemReports = () => {
                     </Card.Body>
                   </Card>
                 </Col>
-                
+
                 <Col md={3} sm={6} className="mb-3">
                   <Card className="text-center h-100">
                     <Card.Body>
@@ -159,7 +165,7 @@ const SystemReports = () => {
                     </Card.Body>
                   </Card>
                 </Col>
-                
+
                 <Col md={3} sm={6} className="mb-3">
                   <Card className="text-center h-100">
                     <Card.Body>
@@ -193,26 +199,28 @@ const SystemReports = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {stats.userStats?.byType && Object.entries(stats.userStats.byType).map(([type, count]) => {
-                        const percentage = stats.userStats.total > 0 
-                          ? ((count / stats.userStats.total) * 100).toFixed(1) 
-                          : '0.0';
-                        
-                        return (
-                          <tr key={type}>
-                            <td>
-                              <Badge bg="info" className="text-capitalize">
-                                {type}
-                              </Badge>
-                            </td>
-                            <td className="fw-bold">{count}</td>
-                            <td>{percentage}%</td>
-                            <td>
-                              <Badge bg="success">Active</Badge>
-                            </td>
-                          </tr>
-                        );
-                      })}
+                      {stats.userStats?.byType &&
+                        Object.entries(stats.userStats.byType).map(([type, count]) => {
+                          const percentage =
+                            stats.userStats.total > 0
+                              ? ((count / stats.userStats.total) * 100).toFixed(1)
+                              : '0.0';
+
+                          return (
+                            <tr key={type}>
+                              <td>
+                                <Badge bg="info" className="text-capitalize">
+                                  {type}
+                                </Badge>
+                              </td>
+                              <td className="fw-bold">{count}</td>
+                              <td>{percentage}%</td>
+                              <td>
+                                <Badge bg="success">Active</Badge>
+                              </td>
+                            </tr>
+                          );
+                        })}
                     </tbody>
                   </Table>
                 </Card.Body>
@@ -236,11 +244,15 @@ const SystemReports = () => {
                         </div>
                         <div className="stat-item d-flex justify-content-between mb-3">
                           <span>Pending Approvals</span>
-                          <span className="fw-bold text-warning">{formatNumber(stats.userStats?.pending)}</span>
+                          <span className="fw-bold text-warning">
+                            {formatNumber(stats.userStats?.pending)}
+                          </span>
                         </div>
                         <div className="stat-item d-flex justify-content-between mb-3">
                           <span>Active Companies</span>
-                          <span className="fw-bold">{formatNumber(stats.summary?.activeCompanies)}</span>
+                          <span className="fw-bold">
+                            {formatNumber(stats.summary?.activeCompanies)}
+                          </span>
                         </div>
                         <div className="stat-item d-flex justify-content-between mb-3">
                           <span>Active Jobs</span>
@@ -248,13 +260,15 @@ const SystemReports = () => {
                         </div>
                         <div className="stat-item d-flex justify-content-between mb-3">
                           <span>New Registrations (7 days)</span>
-                          <span className="fw-bold text-success">{formatNumber(stats.recentRegistrations)}</span>
+                          <span className="fw-bold text-success">
+                            {formatNumber(stats.recentRegistrations)}
+                          </span>
                         </div>
                       </div>
                     </Card.Body>
                   </Card>
                 </Col>
-                
+
                 <Col md={6}>
                   <Card className="h-100">
                     <Card.Header>

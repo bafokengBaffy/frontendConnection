@@ -11,7 +11,7 @@ const QuickActions = () => {
       icon: 'bi-briefcase',
       color: 'primary',
       link: '/student/browse-jobs',
-      count: 15
+      count: 15,
     },
     {
       id: 2,
@@ -20,7 +20,7 @@ const QuickActions = () => {
       icon: 'bi-book',
       color: 'success',
       link: '/student/browse-courses',
-      count: 8
+      count: 8,
     },
     {
       id: 3,
@@ -29,7 +29,7 @@ const QuickActions = () => {
       icon: 'bi-upload',
       color: 'info',
       link: '/student/documents/upload',
-      count: 3
+      count: 3,
     },
     {
       id: 4,
@@ -38,7 +38,7 @@ const QuickActions = () => {
       icon: 'bi-clipboard-check',
       color: 'warning',
       link: '/student/applications',
-      count: 5
+      count: 5,
     },
     {
       id: 5,
@@ -47,7 +47,7 @@ const QuickActions = () => {
       icon: 'bi-person',
       color: 'secondary',
       link: '/student/profile',
-      urgent: true
+      urgent: true,
     },
     {
       id: 6,
@@ -56,21 +56,21 @@ const QuickActions = () => {
       icon: 'bi-calendar',
       color: 'danger',
       link: '/student/calendar',
-      count: 2
-    }
+      count: 2,
+    },
   ];
 
   const pendingTasks = [
     { id: 1, task: 'Complete JavaScript course assignment', due: 'Tomorrow' },
     { id: 2, task: 'Submit application for Tech Internship', due: 'In 2 days' },
     { id: 3, task: 'Update resume with new project', due: 'This week' },
-    { id: 4, task: 'Schedule career counseling session', due: 'Next week' }
+    { id: 4, task: 'Schedule career counseling session', due: 'Next week' },
   ];
 
   return (
     <Container className="py-4">
       <h2 className="mb-4">Quick Actions Dashboard</h2>
-      
+
       <Row className="mb-4">
         <Col md={8}>
           <h4 className="mb-3">🚀 Quick Access</h4>
@@ -79,13 +79,16 @@ const QuickActions = () => {
               <Col md={4} key={action.id} className="mb-3">
                 <Card className="shadow-sm h-100 border-0">
                   <Card.Body className="text-center">
-                    <div className={`bg-${action.color}-subtle p-3 rounded-circle d-inline-flex mb-3`}>
-                      <i className={`bi ${action.icon} text-${action.color}`} style={{fontSize: '2rem'}}></i>
+                    <div
+                      className={`bg-${action.color}-subtle p-3 rounded-circle d-inline-flex mb-3`}
+                    >
+                      <i
+                        className={`bi ${action.icon} text-${action.color}`}
+                        style={{ fontSize: '2rem' }}
+                      ></i>
                     </div>
                     <Card.Title>{action.title}</Card.Title>
-                    <Card.Text className="text-muted small">
-                      {action.description}
-                    </Card.Text>
+                    <Card.Text className="text-muted small">{action.description}</Card.Text>
                     <div className="mt-3">
                       <Link to={action.link}>
                         <Button variant={action.color} className="w-100">
@@ -109,28 +112,37 @@ const QuickActions = () => {
             ))}
           </Row>
         </Col>
-        
+
         <Col md={4}>
           <Card className="shadow-sm h-100">
             <Card.Body>
               <Card.Title>📝 Pending Tasks</Card.Title>
               <div className="list-group list-group-flush">
                 {pendingTasks.map((task) => (
-                  <div key={task.id} className="list-group-item d-flex justify-content-between align-items-center">
+                  <div
+                    key={task.id}
+                    className="list-group-item d-flex justify-content-between align-items-center"
+                  >
                     <div>
                       <div className="form-check">
-                        <input className="form-check-input" type="checkbox" id={`task-${task.id}`} />
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id={`task-${task.id}`}
+                        />
                         <label className="form-check-label" htmlFor={`task-${task.id}`}>
                           {task.task}
                         </label>
                       </div>
                       <small className="text-muted">Due: {task.due}</small>
                     </div>
-                    <Badge bg="warning" text="dark">Pending</Badge>
+                    <Badge bg="warning" text="dark">
+                      Pending
+                    </Badge>
                   </div>
                 ))}
               </div>
-              
+
               <div className="mt-4">
                 <h6>Recent Activity</h6>
                 <div className="timeline">
@@ -152,7 +164,7 @@ const QuickActions = () => {
           </Card>
         </Col>
       </Row>
-      
+
       <Row>
         <Col md={6}>
           <Card className="shadow-sm">
@@ -181,7 +193,7 @@ const QuickActions = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col md={6}>
           <Card className="shadow-sm">
             <Card.Body>
@@ -202,7 +214,7 @@ const QuickActions = () => {
           </Card>
         </Col>
       </Row>
-      
+
       <div className="text-center mt-4">
         <Button variant="primary" size="lg" className="me-3">
           <i className="bi bi-lightning-charge me-2"></i>

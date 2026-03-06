@@ -19,36 +19,33 @@ const NotFound = () => {
                   The page you're looking for doesn't exist or has been moved.
                 </p>
               </div>
-              
+
               <div className="d-flex flex-column flex-md-row justify-content-center gap-3">
-                <Button 
-                  as={Link} 
-                  to="/" 
-                  variant="primary" 
+                <Button
+                  as={Link}
+                  to="/"
+                  variant="primary"
                   className="d-flex align-items-center justify-content-center gap-2"
                 >
                   <FiHome />
                   Go Home
                 </Button>
-                
-                <Button 
-                  as={Link} 
-                  to="/search" 
-                  variant="outline-primary" 
+
+                <Button
+                  as={Link}
+                  to="/search"
+                  variant="outline-primary"
                   className="d-flex align-items-center justify-content-center gap-2"
                 >
                   <FiSearch />
                   Search
                 </Button>
-                
-                <Button 
-                  variant="outline-secondary"
-                  onClick={() => window.history.back()}
-                >
+
+                <Button variant="outline-secondary" onClick={() => window.history.back()}>
                   Go Back
                 </Button>
               </div>
-              
+
               <div className="mt-5 pt-4 border-top">
                 <p className="text-muted small mb-2">
                   If you believe this is an error, please contact support.

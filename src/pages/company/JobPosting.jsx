@@ -21,7 +21,7 @@ const JobPosting = () => {
     experience: '',
     education: '',
     deadline: '',
-    remote: false
+    remote: false,
   });
 
   useEffect(() => {
@@ -66,9 +66,9 @@ const JobPosting = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
@@ -101,12 +101,7 @@ const JobPosting = () => {
 
             <div className="form-group">
               <label>Job Type *</label>
-              <select
-                name="type"
-                value={formData.type}
-                onChange={handleChange}
-                required
-              >
+              <select name="type" value={formData.type} onChange={handleChange} required>
                 <option value="full-time">Full Time</option>
                 <option value="part-time">Part Time</option>
                 <option value="contract">Contract</option>
@@ -235,12 +230,8 @@ const JobPosting = () => {
           >
             Cancel
           </button>
-          <button
-            type="submit"
-            className="btn-primary"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Saving...' : (isEditing ? 'Update Job' : 'Post Job')}
+          <button type="submit" className="btn-primary" disabled={isLoading}>
+            {isLoading ? 'Saving...' : isEditing ? 'Update Job' : 'Post Job'}
           </button>
         </div>
       </form>

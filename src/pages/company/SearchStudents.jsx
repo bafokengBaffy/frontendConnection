@@ -14,19 +14,9 @@ import {
   Pagination,
   Spinner,
   Alert,
-  Modal
+  Modal,
 } from 'react-bootstrap';
-import {
-  Search,
-  Filter,
-  Person,
-  Building,
-
- 
-  Star,
-  Eye,
-  Download
-} from 'react-bootstrap-icons';
+import { Search, Filter, Person, Building, Star, Eye, Download } from 'react-bootstrap-icons';
 import { db } from '../../config/firebase';
 import { collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
 import './SearchStudents.css';
@@ -42,7 +32,7 @@ const SearchStudents = () => {
     institution: '',
     location: '',
     skills: '',
-    graduationYear: ''
+    graduationYear: '',
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -54,7 +44,7 @@ const SearchStudents = () => {
   const formattedDate = currentDate.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
   });
 
   // Fetch students from Firestore
@@ -64,11 +54,11 @@ const SearchStudents = () => {
       const studentsRef = collection(db, 'users');
       const q = query(studentsRef, where('userType', '==', 'student'));
       const querySnapshot = await getDocs(q);
-      
+
       const studentsList = [];
       for (const docSnapshot of querySnapshot.docs) {
         const studentData = docSnapshot.data();
-        
+
         // Fetch additional student details if available
         try {
           const studentDetailsRef = doc(db, 'students', docSnapshot.id);
@@ -79,13 +69,13 @@ const SearchStudents = () => {
         } catch (err) {
           console.log('No additional student details found:', err.message);
         }
-        
+
         studentsList.push({
           id: docSnapshot.id,
-          ...studentData
+          ...studentData,
         });
       }
-      
+
       setStudents(studentsList);
       setFilteredStudents(studentsList);
       setError('');
@@ -104,81 +94,81 @@ const SearchStudents = () => {
   // Apply filters and search
   useEffect(() => {
     let result = [...students];
-    
+
     // Apply search term
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      result = result.filter(student => 
-        (student.name && student.name.toLowerCase().includes(term)) ||
-        (student.email && student.email.toLowerCase().includes(term)) ||
-        (student.course && student.course.toLowerCase().includes(term)) ||
-        (student.institution && student.institution.toLowerCase().includes(term)) ||
-        (student.skills && Array.isArray(student.skills) 
-          ? student.skills.some(skill => skill.toLowerCase().includes(term))
-          : student.skills && student.skills.toLowerCase().includes(term))
+      result = result.filter(
+        (student) =>
+          (student.name && student.name.toLowerCase().includes(term)) ||
+          (student.email && student.email.toLowerCase().includes(term)) ||
+          (student.course && student.course.toLowerCase().includes(term)) ||
+          (student.institution && student.institution.toLowerCase().includes(term)) ||
+          (student.skills && Array.isArray(student.skills)
+            ? student.skills.some((skill) => skill.toLowerCase().includes(term))
+            : student.skills && student.skills.toLowerCase().includes(term))
       );
     }
-    
+
     // Apply filters
     if (filters.course) {
-      result = result.filter(student => 
-        student.course && student.course === filters.course
-      );
+      result = result.filter((student) => student.course && student.course === filters.course);
     }
-    
+
     if (filters.institution) {
-      result = result.filter(student => 
-        student.institution && student.institution === filters.institution
+      result = result.filter(
+        (student) => student.institution && student.institution === filters.institution
       );
     }
-    
+
     if (filters.location) {
-      result = result.filter(student => 
-        student.location && student.location === filters.location
+      result = result.filter(
+        (student) => student.location && student.location === filters.location
       );
     }
-    
+
     if (filters.skills) {
-      result = result.filter(student => 
-        student.skills && 
-        (Array.isArray(student.skills) 
-          ? student.skills.includes(filters.skills)
-          : student.skills === filters.skills)
+      result = result.filter(
+        (student) =>
+          student.skills &&
+          (Array.isArray(student.skills)
+            ? student.skills.includes(filters.skills)
+            : student.skills === filters.skills)
       );
     }
-    
+
     if (filters.graduationYear) {
-      result = result.filter(student => 
-        student.graduationYear && student.graduationYear === filters.graduationYear
+      result = result.filter(
+        (student) => student.graduationYear && student.graduationYear === filters.graduationYear
       );
     }
-    
+
     setFilteredStudents(result);
     setCurrentPage(1);
   }, [searchTerm, filters, students]);
 
   // Get unique values for filter dropdowns
   const courses = useMemo(() => {
-    const uniqueCourses = [...new Set(students.map(s => s.course).filter(Boolean))];
+    const uniqueCourses = [...new Set(students.map((s) => s.course).filter(Boolean))];
     return uniqueCourses.sort();
   }, [students]);
 
   const institutions = useMemo(() => {
-    const uniqueInstitutions = [...new Set(students.map(s => s.institution).filter(Boolean))];
+    const uniqueInstitutions = [...new Set(students.map((s) => s.institution).filter(Boolean))];
     return uniqueInstitutions.sort();
   }, [students]);
 
   const locations = useMemo(() => {
-    const uniqueLocations = [...new Set(students.map(s => s.location).filter(Boolean))];
+    const uniqueLocations = [...new Set(students.map((s) => s.location).filter(Boolean))];
     return uniqueLocations.sort();
   }, [students]);
 
   const allSkills = useMemo(() => {
     const skillsSet = new Set();
-    students.forEach(student => {
+    students.forEach((student) => {
       if (student.skills) {
         if (Array.isArray(student.skills)) {
-          student.skills.forEach(skill => skillsSet.add(skill));
+          student.skills.forEach((skill) => skillsSet.add(skill));
         } else {
           skillsSet.add(student.skills);
         }
@@ -188,7 +178,7 @@ const SearchStudents = () => {
   }, [students]);
 
   const graduationYears = useMemo(() => {
-    const uniqueYears = [...new Set(students.map(s => s.graduationYear).filter(Boolean))];
+    const uniqueYears = [...new Set(students.map((s) => s.graduationYear).filter(Boolean))];
     return uniqueYears.sort((a, b) => b - a);
   }, [students]);
 
@@ -204,9 +194,9 @@ const SearchStudents = () => {
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -217,7 +207,7 @@ const SearchStudents = () => {
       institution: '',
       location: '',
       skills: '',
-      graduationYear: ''
+      graduationYear: '',
     });
   };
 
@@ -236,7 +226,6 @@ const SearchStudents = () => {
     // Implement save candidate functionality
   };
 
-
   return (
     <Container className="SearchStudents-page mt-4">
       <Row className="mb-4">
@@ -244,9 +233,7 @@ const SearchStudents = () => {
           <div className="d-flex justify-content-between align-items-center">
             <div>
               <h1 className="mb-1">Find Candidates</h1>
-              <p className="text-muted">
-                {formattedDate} | Company View
-              </p>
+              <p className="text-muted">{formattedDate} | Company View</p>
             </div>
             <div>
               <Button variant="outline-secondary" onClick={clearFilters} className="me-2">
@@ -274,9 +261,7 @@ const SearchStudents = () => {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
-                <Button variant="primary">
-                  Search
-                </Button>
+                <Button variant="primary">Search</Button>
               </InputGroup>
             </Card.Body>
           </Card>
@@ -295,14 +280,12 @@ const SearchStudents = () => {
                 <Col md={3}>
                   <Form.Group>
                     <Form.Label>Course</Form.Label>
-                    <Form.Select
-                      name="course"
-                      value={filters.course}
-                      onChange={handleFilterChange}
-                    >
+                    <Form.Select name="course" value={filters.course} onChange={handleFilterChange}>
                       <option value="">All Courses</option>
-                      {courses.map(course => (
-                        <option key={course} value={course}>{course}</option>
+                      {courses.map((course) => (
+                        <option key={course} value={course}>
+                          {course}
+                        </option>
                       ))}
                     </Form.Select>
                   </Form.Group>
@@ -316,8 +299,10 @@ const SearchStudents = () => {
                       onChange={handleFilterChange}
                     >
                       <option value="">All Institutions</option>
-                      {institutions.map(institution => (
-                        <option key={institution} value={institution}>{institution}</option>
+                      {institutions.map((institution) => (
+                        <option key={institution} value={institution}>
+                          {institution}
+                        </option>
                       ))}
                     </Form.Select>
                   </Form.Group>
@@ -331,8 +316,10 @@ const SearchStudents = () => {
                       onChange={handleFilterChange}
                     >
                       <option value="">All Locations</option>
-                      {locations.map(location => (
-                        <option key={location} value={location}>{location}</option>
+                      {locations.map((location) => (
+                        <option key={location} value={location}>
+                          {location}
+                        </option>
                       ))}
                     </Form.Select>
                   </Form.Group>
@@ -340,14 +327,12 @@ const SearchStudents = () => {
                 <Col md={2}>
                   <Form.Group>
                     <Form.Label>Skills</Form.Label>
-                    <Form.Select
-                      name="skills"
-                      value={filters.skills}
-                      onChange={handleFilterChange}
-                    >
+                    <Form.Select name="skills" value={filters.skills} onChange={handleFilterChange}>
                       <option value="">All Skills</option>
-                      {allSkills.map(skill => (
-                        <option key={skill} value={skill}>{skill}</option>
+                      {allSkills.map((skill) => (
+                        <option key={skill} value={skill}>
+                          {skill}
+                        </option>
                       ))}
                     </Form.Select>
                   </Form.Group>
@@ -361,8 +346,10 @@ const SearchStudents = () => {
                       onChange={handleFilterChange}
                     >
                       <option value="">All Years</option>
-                      {graduationYears.map(year => (
-                        <option key={year} value={year}>{year}</option>
+                      {graduationYears.map((year) => (
+                        <option key={year} value={year}>
+                          {year}
+                        </option>
                       ))}
                     </Form.Select>
                   </Form.Group>
@@ -409,22 +396,24 @@ const SearchStudents = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {currentStudents.map(student => (
+                      {currentStudents.map((student) => (
                         <tr key={student.id}>
                           <td>
                             <div className="d-flex align-items-center">
                               <div className="student-avatar me-3">
                                 {student.photoURL ? (
-                                  <img 
-                                    src={student.photoURL} 
+                                  <img
+                                    src={student.photoURL}
                                     alt={student.name}
                                     className="rounded-circle"
                                     width="40"
                                     height="40"
                                   />
                                 ) : (
-                                  <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
-                                    style={{ width: '40px', height: '40px' }}>
+                                  <div
+                                    className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                                    style={{ width: '40px', height: '40px' }}
+                                  >
                                     <Person size={20} />
                                   </div>
                                 )}
@@ -437,13 +426,14 @@ const SearchStudents = () => {
                           </td>
                           <td>
                             <div>
-                              <div className="small text-muted"><Building className="me-2" size={14} />{student.institution || 'Not specified'}</div>
+                              <div className="small text-muted">
+                                <Building className="me-2" size={14} />
+                                {student.institution || 'Not specified'}
+                              </div>
                             </div>
                           </td>
                           <td>
-                            <div>
-                              {student.location || 'Not specified'}
-                            </div>
+                            <div>{student.location || 'Not specified'}</div>
                           </td>
                           <td>
                             {student.skills ? (
@@ -459,7 +449,9 @@ const SearchStudents = () => {
                                   )}
                                 </div>
                               ) : (
-                                <Badge bg="light" text="dark">{student.skills}</Badge>
+                                <Badge bg="light" text="dark">
+                                  {student.skills}
+                                </Badge>
                               )
                             ) : (
                               <span className="text-muted">No skills listed</span>
@@ -472,22 +464,20 @@ const SearchStudents = () => {
                           </td>
                           <td>
                             <div className="d-flex gap-2">
-                              <Button 
-                                variant="outline-primary" 
+                              <Button
+                                variant="outline-primary"
                                 size="sm"
                                 onClick={() => viewStudentDetails(student)}
                               >
                                 <Eye className="me-1" /> View
                               </Button>
-                              <Button 
-                                variant="outline-success" 
+                              <Button
+                                variant="outline-success"
                                 size="sm"
                                 onClick={() => sendMessage(student.id)}
-                              >
-                             
-                              </Button>
-                              <Button 
-                                variant="outline-warning" 
+                              ></Button>
+                              <Button
+                                variant="outline-warning"
                                 size="sm"
                                 onClick={() => saveCandidate(student.id)}
                               >
@@ -504,15 +494,15 @@ const SearchStudents = () => {
                   {totalPages > 1 && (
                     <div className="d-flex justify-content-center mt-4">
                       <Pagination>
-                        <Pagination.First 
-                          onClick={() => handlePageChange(1)} 
+                        <Pagination.First
+                          onClick={() => handlePageChange(1)}
                           disabled={currentPage === 1}
                         />
-                        <Pagination.Prev 
-                          onClick={() => handlePageChange(currentPage - 1)} 
+                        <Pagination.Prev
+                          onClick={() => handlePageChange(currentPage - 1)}
                           disabled={currentPage === 1}
                         />
-                        
+
                         {[...Array(totalPages)].map((_, index) => {
                           const pageNumber = index + 1;
                           if (
@@ -537,13 +527,13 @@ const SearchStudents = () => {
                           }
                           return null;
                         })}
-                        
-                        <Pagination.Next 
-                          onClick={() => handlePageChange(currentPage + 1)} 
+
+                        <Pagination.Next
+                          onClick={() => handlePageChange(currentPage + 1)}
                           disabled={currentPage === totalPages}
                         />
-                        <Pagination.Last 
-                          onClick={() => handlePageChange(totalPages)} 
+                        <Pagination.Last
+                          onClick={() => handlePageChange(totalPages)}
                           disabled={currentPage === totalPages}
                         />
                       </Pagination>
@@ -566,16 +556,18 @@ const SearchStudents = () => {
             <Row>
               <Col md={4} className="text-center">
                 {selectedStudent.photoURL ? (
-                  <img 
-                    src={selectedStudent.photoURL} 
+                  <img
+                    src={selectedStudent.photoURL}
                     alt={selectedStudent.name}
                     className="rounded-circle mb-3"
                     width="120"
                     height="120"
                   />
                 ) : (
-                  <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
-                    style={{ width: '120px', height: '120px' }}>
+                  <div
+                    className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
+                    style={{ width: '120px', height: '120px' }}
+                  >
                     <Person size={48} />
                   </div>
                 )}
@@ -583,12 +575,12 @@ const SearchStudents = () => {
                 <p className="text-muted">{selectedStudent.email}</p>
                 <div className="mb-3">
                   <Badge bg={selectedStudent.status === 'available' ? 'success' : 'warning'}>
-                    {selectedStudent.status === 'available' ? 'Available for Opportunities' : 'Actively Seeking'}
+                    {selectedStudent.status === 'available'
+                      ? 'Available for Opportunities'
+                      : 'Actively Seeking'}
                   </Badge>
                 </div>
-                <Button variant="primary" className="me-2">
-            
-                </Button>
+                <Button variant="primary" className="me-2"></Button>
                 <Button variant="outline-primary">
                   <Download className="me-1" /> Download CV
                 </Button>
@@ -608,10 +600,11 @@ const SearchStudents = () => {
                     <strong>Location:</strong> {selectedStudent.location || 'Not specified'}
                   </Col>
                   <Col>
-                    <strong>Graduation Year:</strong> {selectedStudent.graduationYear || 'Not specified'}
+                    <strong>Graduation Year:</strong>{' '}
+                    {selectedStudent.graduationYear || 'Not specified'}
                   </Col>
                 </Row>
-                
+
                 <h5 className="mt-4">Skills</h5>
                 <div className="mb-4">
                   {selectedStudent.skills ? (
@@ -624,16 +617,20 @@ const SearchStudents = () => {
                         ))}
                       </div>
                     ) : (
-                      <Badge bg="primary" className="p-2">{selectedStudent.skills}</Badge>
+                      <Badge bg="primary" className="p-2">
+                        {selectedStudent.skills}
+                      </Badge>
                     )
                   ) : (
                     <p className="text-muted">No skills listed</p>
                   )}
                 </div>
-                
+
                 <h5>About</h5>
                 <p className="text-muted">
-                  {selectedStudent.bio || selectedStudent.description || 'No additional information provided.'}
+                  {selectedStudent.bio ||
+                    selectedStudent.description ||
+                    'No additional information provided.'}
                 </p>
               </Col>
             </Row>
@@ -643,9 +640,7 @@ const SearchStudents = () => {
           <Button variant="secondary" onClick={() => setShowDetails(false)}>
             Close
           </Button>
-          <Button variant="primary">
-            Save to Talent Pool
-          </Button>
+          <Button variant="primary">Save to Talent Pool</Button>
         </Modal.Footer>
       </Modal>
     </Container>

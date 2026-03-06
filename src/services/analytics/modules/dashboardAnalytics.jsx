@@ -2,16 +2,16 @@
 /**
  * Dashboard Analytics Module
  */
-import { 
-  collection, 
-  doc, 
-  getDoc, 
-  getDocs, 
-  query, 
-  where, 
-  orderBy, 
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+  orderBy,
   limit,
-  Timestamp
+  Timestamp,
 } from 'firebase/firestore';
 
 class DashboardAnalyticsService {
@@ -70,7 +70,7 @@ class DashboardAnalyticsService {
         userRole,
         userId,
         generatedAt: Timestamp.now(),
-        ...stats
+        ...stats,
       };
     } catch (error) {
       console.error('Error getting quick stats:', error);
@@ -78,7 +78,7 @@ class DashboardAnalyticsService {
         userRole,
         userId,
         error: 'Could not load quick stats',
-        generatedAt: Timestamp.now()
+        generatedAt: Timestamp.now(),
       };
     }
   }
@@ -103,7 +103,7 @@ class DashboardAnalyticsService {
         userRole,
         userId,
         feed: activityFeed,
-        hasMore: activityFeed.length === limit
+        hasMore: activityFeed.length === limit,
       };
     } catch (error) {
       console.error('Error getting activity feed:', error);
@@ -112,7 +112,7 @@ class DashboardAnalyticsService {
         userId,
         feed: [],
         hasMore: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -138,7 +138,7 @@ class DashboardAnalyticsService {
         userId,
         period,
         ...metrics,
-        trends: await this._calculatePerformanceTrends(metrics, period)
+        trends: await this._calculatePerformanceTrends(metrics, period),
       };
     } catch (error) {
       console.error('Error getting performance metrics:', error);
@@ -167,7 +167,7 @@ class DashboardAnalyticsService {
         userRole,
         userId,
         upcomingItems,
-        count: upcomingItems.length
+        count: upcomingItems.length,
       };
     } catch (error) {
       console.error('Error getting upcoming items:', error);
@@ -176,7 +176,7 @@ class DashboardAnalyticsService {
         userId,
         upcomingItems: [],
         count: 0,
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -184,16 +184,11 @@ class DashboardAnalyticsService {
   // Private methods for different user roles
   async _getAdminDashboard(userId) {
     try {
-      const [
-        systemOverview,
-        userAnalytics,
-        recentActivity,
-        systemHealth
-      ] = await Promise.all([
+      const [systemOverview, userAnalytics, recentActivity, systemHealth] = await Promise.all([
         this._getSystemOverview(),
         this._getUserAnalyticsSummary(),
         this._getAdminActivityFeed(5),
-        this._getSystemHealthStatus()
+        this._getSystemHealthStatus(),
       ]);
 
       return {
@@ -203,10 +198,10 @@ class DashboardAnalyticsService {
           overview: systemOverview,
           users: userAnalytics,
           activity: recentActivity,
-          health: systemHealth
+          health: systemHealth,
         },
         widgets: this._generateAdminWidgets(systemOverview, userAnalytics),
-        alerts: await this._getAdminAlerts()
+        alerts: await this._getAdminAlerts(),
       };
     } catch (error) {
       console.error('Error getting admin dashboard:', error);
@@ -221,13 +216,13 @@ class DashboardAnalyticsService {
         recruitmentStats,
         engagementMetrics,
         recentApplications,
-        upcomingInterviews
+        upcomingInterviews,
       ] = await Promise.all([
         this._getCompanyInfo(companyId),
         this._getCompanyRecruitmentStats(companyId),
         this._getCompanyEngagementMetrics(companyId),
         this._getRecentApplications(companyId, 5),
-        this._getUpcomingInterviews(companyId)
+        this._getUpcomingInterviews(companyId),
       ]);
 
       return {
@@ -238,10 +233,10 @@ class DashboardAnalyticsService {
           recruitment: recruitmentStats,
           engagement: engagementMetrics,
           applications: recentApplications,
-          schedule: upcomingInterviews
+          schedule: upcomingInterviews,
         },
         metrics: this._calculateCompanyMetrics(recruitmentStats, engagementMetrics),
-        recommendations: this._generateCompanyRecommendations(recruitmentStats, engagementMetrics)
+        recommendations: this._generateCompanyRecommendations(recruitmentStats, engagementMetrics),
       };
     } catch (error) {
       console.error('Error getting company dashboard:', error);
@@ -251,19 +246,14 @@ class DashboardAnalyticsService {
 
   async _getStudentDashboard(studentId) {
     try {
-      const [
-        studentInfo,
-        applicationStats,
-        skillMetrics,
-        recentActivity,
-        jobRecommendations
-      ] = await Promise.all([
-        this._getStudentInfo(studentId),
-        this._getStudentApplicationStats(studentId),
-        this._getStudentSkillMetrics(studentId),
-        this._getStudentRecentActivity(studentId, 5),
-        this._getJobRecommendations(studentId, 3)
-      ]);
+      const [studentInfo, applicationStats, skillMetrics, recentActivity, jobRecommendations] =
+        await Promise.all([
+          this._getStudentInfo(studentId),
+          this._getStudentApplicationStats(studentId),
+          this._getStudentSkillMetrics(studentId),
+          this._getStudentRecentActivity(studentId, 5),
+          this._getJobRecommendations(studentId, 3),
+        ]);
 
       return {
         userRole: 'student',
@@ -273,10 +263,10 @@ class DashboardAnalyticsService {
           applications: applicationStats,
           skills: skillMetrics,
           activity: recentActivity,
-          recommendations: jobRecommendations
+          recommendations: jobRecommendations,
         },
         progress: this._calculateStudentProgress(applicationStats, skillMetrics),
-        actionItems: this._generateStudentActionItems(applicationStats, skillMetrics)
+        actionItems: this._generateStudentActionItems(applicationStats, skillMetrics),
       };
     } catch (error) {
       console.error('Error getting student dashboard:', error);
@@ -289,7 +279,7 @@ class DashboardAnalyticsService {
     return {
       userRole: 'institution',
       userId: institutionId,
-      message: 'Institution dashboard analytics coming soon'
+      message: 'Institution dashboard analytics coming soon',
     };
   }
 
@@ -298,16 +288,11 @@ class DashboardAnalyticsService {
     const now = new Date();
     const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
-    const [
-      newUsers,
-      newCompanies,
-      newApplications,
-      systemHealth
-    ] = await Promise.all([
+    const [newUsers, newCompanies, newApplications, systemHealth] = await Promise.all([
       this._countNewUsersSince(yesterday),
       this._countNewCompaniesSince(yesterday),
       this._countNewApplicationsSince(yesterday),
-      this._getSystemHealthStatus()
+      this._getSystemHealthStatus(),
     ]);
 
     return {
@@ -315,51 +300,43 @@ class DashboardAnalyticsService {
       newCompanies,
       newApplications,
       systemHealth: systemHealth.status,
-      activeSessions: await this._getActiveSessionsCount()
+      activeSessions: await this._getActiveSessionsCount(),
     };
   }
 
   async _getCompanyQuickStats(companyId, since) {
-    const [
-      newApplications,
-      pendingApplications,
-      upcomingInterviews,
-      profileViews
-    ] = await Promise.all([
-      this._countCompanyApplicationsSince(companyId, since),
-      this._countPendingApplications(companyId),
-      this._countUpcomingInterviews(companyId),
-      this._getCompanyProfileViews(companyId, since)
-    ]);
+    const [newApplications, pendingApplications, upcomingInterviews, profileViews] =
+      await Promise.all([
+        this._countCompanyApplicationsSince(companyId, since),
+        this._countPendingApplications(companyId),
+        this._countUpcomingInterviews(companyId),
+        this._getCompanyProfileViews(companyId, since),
+      ]);
 
     return {
       newApplications,
       pendingApplications,
       upcomingInterviews,
       profileViews,
-      openPositions: await this._countOpenPositions(companyId)
+      openPositions: await this._countOpenPositions(companyId),
     };
   }
 
   async _getStudentQuickStats(studentId, since) {
-    const [
-      applicationsSubmitted,
-      applicationsInProgress,
-      upcomingDeadlines,
-      skillProgress
-    ] = await Promise.all([
-      this._countStudentApplicationsSince(studentId, since),
-      this._countInProgressApplications(studentId),
-      this._countUpcomingDeadlines(studentId),
-      this._getSkillProgress(studentId, since)
-    ]);
+    const [applicationsSubmitted, applicationsInProgress, upcomingDeadlines, skillProgress] =
+      await Promise.all([
+        this._countStudentApplicationsSince(studentId, since),
+        this._countInProgressApplications(studentId),
+        this._countUpcomingDeadlines(studentId),
+        this._getSkillProgress(studentId, since),
+      ]);
 
     return {
       applicationsSubmitted,
       applicationsInProgress,
       upcomingDeadlines,
       skillProgress,
-      profileCompleteness: await this._getProfileCompleteness(studentId)
+      profileCompleteness: await this._getProfileCompleteness(studentId),
     };
   }
 
@@ -372,9 +349,9 @@ class DashboardAnalyticsService {
     );
 
     const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({
+    return snapshot.docs.map((doc) => ({
       id: doc.id,
-      ...doc.data()
+      ...doc.data(),
     }));
   }
 
@@ -386,9 +363,9 @@ class DashboardAnalyticsService {
     );
 
     const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({
+    return snapshot.docs.map((doc) => ({
       id: doc.id,
-      ...doc.data()
+      ...doc.data(),
     }));
   }
 
@@ -400,9 +377,9 @@ class DashboardAnalyticsService {
     );
 
     const snapshot = await getDocs(q);
-    return snapshot.docs.map(doc => ({
+    return snapshot.docs.map((doc) => ({
       id: doc.id,
-      ...doc.data()
+      ...doc.data(),
     }));
   }
 
@@ -410,63 +387,50 @@ class DashboardAnalyticsService {
   async _getAdminPerformanceMetrics(period) {
     const startDate = this._getStartDateForPeriod(period);
 
-    const [
-      userGrowth,
-      engagement,
-      revenue,
-      systemPerformance
-    ] = await Promise.all([
+    const [userGrowth, engagement, revenue, systemPerformance] = await Promise.all([
       this._calculateUserGrowth(startDate),
       this._calculateSystemEngagement(startDate),
       this._calculateRevenueMetrics(startDate),
-      this._getSystemPerformanceMetrics(startDate)
+      this._getSystemPerformanceMetrics(startDate),
     ]);
 
     return {
       userGrowth,
       engagement,
       revenue,
-      systemPerformance
+      systemPerformance,
     };
   }
 
   async _getCompanyPerformanceMetrics(companyId, period) {
     const startDate = this._getStartDateForPeriod(period);
 
-    const [
-      recruitmentMetrics,
-      engagementMetrics,
-      candidateMetrics
-    ] = await Promise.all([
+    const [recruitmentMetrics, engagementMetrics, candidateMetrics] = await Promise.all([
       this._getRecruitmentMetrics(companyId, startDate),
       this._getEngagementMetrics(companyId, startDate),
-      this._getCandidateMetrics(companyId, startDate)
+      this._getCandidateMetrics(companyId, startDate),
     ]);
 
     return {
       recruitment: recruitmentMetrics,
       engagement: engagementMetrics,
-      candidates: candidateMetrics
+      candidates: candidateMetrics,
     };
   }
 
   async _getStudentPerformanceMetrics(studentId, period) {
     const startDate = this._getStartDateForPeriod(period);
 
-    const [
-      applicationMetrics,
-      skillMetrics,
-      engagementMetrics
-    ] = await Promise.all([
+    const [applicationMetrics, skillMetrics, engagementMetrics] = await Promise.all([
       this._getStudentApplicationMetrics(studentId, startDate),
       this._getStudentSkillDevelopment(studentId, startDate),
-      this._getStudentEngagementMetrics(studentId, startDate)
+      this._getStudentEngagementMetrics(studentId, startDate),
     ]);
 
     return {
       applications: applicationMetrics,
       skills: skillMetrics,
-      engagement: engagementMetrics
+      engagement: engagementMetrics,
     };
   }
 
@@ -476,21 +440,25 @@ class DashboardAnalyticsService {
 
     // Get upcoming interviews
     const interviews = await this._getUpcomingInterviews(companyId, startTime, endTime);
-    items.push(...interviews.map(interview => ({
-      type: 'interview',
-      title: `Interview with ${interview.candidateName}`,
-      time: interview.scheduledTime,
-      priority: 'high'
-    })));
+    items.push(
+      ...interviews.map((interview) => ({
+        type: 'interview',
+        title: `Interview with ${interview.candidateName}`,
+        time: interview.scheduledTime,
+        priority: 'high',
+      }))
+    );
 
     // Get application deadlines
     const deadlines = await this._getApplicationDeadlines(companyId, endTime);
-    items.push(...deadlines.map(deadline => ({
-      type: 'deadline',
-      title: `Application deadline: ${deadline.jobTitle}`,
-      time: deadline.deadline,
-      priority: deadline.isUrgent ? 'high' : 'medium'
-    })));
+    items.push(
+      ...deadlines.map((deadline) => ({
+        type: 'deadline',
+        title: `Application deadline: ${deadline.jobTitle}`,
+        time: deadline.deadline,
+        priority: deadline.isUrgent ? 'high' : 'medium',
+      }))
+    );
 
     return items.sort((a, b) => a.time - b.time).slice(0, 10);
   }
@@ -500,30 +468,36 @@ class DashboardAnalyticsService {
 
     // Get upcoming interviews
     const interviews = await this._getStudentUpcomingInterviews(studentId, startTime, endTime);
-    items.push(...interviews.map(interview => ({
-      type: 'interview',
-      title: `Interview at ${interview.companyName}`,
-      time: interview.scheduledTime,
-      priority: 'high'
-    })));
+    items.push(
+      ...interviews.map((interview) => ({
+        type: 'interview',
+        title: `Interview at ${interview.companyName}`,
+        time: interview.scheduledTime,
+        priority: 'high',
+      }))
+    );
 
     // Get application deadlines
     const deadlines = await this._getStudentApplicationDeadlines(studentId, endTime);
-    items.push(...deadlines.map(deadline => ({
-      type: 'deadline',
-      title: `Apply for ${deadline.jobTitle}`,
-      time: deadline.deadline,
-      priority: deadline.isUrgent ? 'high' : 'medium'
-    })));
+    items.push(
+      ...deadlines.map((deadline) => ({
+        type: 'deadline',
+        title: `Apply for ${deadline.jobTitle}`,
+        time: deadline.deadline,
+        priority: deadline.isUrgent ? 'high' : 'medium',
+      }))
+    );
 
     // Get course deadlines
     const courseDeadlines = await this._getCourseDeadlines(studentId, endTime);
-    items.push(...courseDeadlines.map(deadline => ({
-      type: 'course',
-      title: `${deadline.courseName} assignment due`,
-      time: deadline.deadline,
-      priority: 'medium'
-    })));
+    items.push(
+      ...courseDeadlines.map((deadline) => ({
+        type: 'course',
+        title: `${deadline.courseName} assignment due`,
+        time: deadline.deadline,
+        priority: 'medium',
+      }))
+    );
 
     return items.sort((a, b) => a.time - b.time).slice(0, 10);
   }

@@ -1,0 +1,51 @@
+/* frontend/src/pages/institute/Settings.css */
+.settings-tab-content {
+  min-height: 400px;
+}
+
+.settings-logo-preview {
+  border: 2px dashed #dee2e6;
+  border-radius: 10px;
+  transition: border-color 0.2s ease;
+}
+
+.settings-logo-preview:hover {
+  border-color: #0d6efd;
+}
+
+.settings-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.settings-section-title {
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .settings-sidebar {
+    margin-bottom: 1.5rem;
+  }
+  
+  .settings-sidebar .nav-link {
+    padding: 0.75rem 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .settings-logo-upload {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+  
+  .settings-logo-upload img,
+  .settings-logo-upload div {
+    margin-bottom: 1rem;
+  }
+  
+  .settings-logo-upload div {
+    width: 100%;
+  }
+}

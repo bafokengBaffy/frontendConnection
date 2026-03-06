@@ -15,5 +15,5 @@ export const getPublicRoutes = () => [
   <Route key="home" path="/" element={<Home />} />, // ADD THIS LINE
   <Route key="login" path="/login" element={<Login />} />,
   <Route key="register" path="/register" element={<Register />} />,
-  <Route key="resources" path="/resources" element={<Resources />} />
+  <Route key="resources" path="/resources" element={<Resources />} />,
 ];

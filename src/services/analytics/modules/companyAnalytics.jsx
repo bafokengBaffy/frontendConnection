@@ -3,18 +3,18 @@
 /**
  * Company Analytics Module
  */
-import { 
-  collection, 
-  doc, 
-  getDoc, 
-  getDocs, 
-  query, 
-  where, 
-  orderBy, 
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+  orderBy,
   Timestamp,
   increment,
   updateDoc,
-  aggregate
+  aggregate,
 } from 'firebase/firestore';
 
 class CompanyAnalyticsService {
@@ -32,14 +32,14 @@ class CompanyAnalyticsService {
     const {
       startDate = null,
       endDate = new Date(),
-      metrics = ['overview', 'recruitment', 'engagement']
+      metrics = ['overview', 'recruitment', 'engagement'],
     } = options;
 
     try {
       // Get company data
       const companyRef = doc(this.db, 'companies', companyId);
       const companySnap = await getDoc(companyRef);
-      
+
       if (!companySnap.exists()) {
         throw new Error('Company not found');
       }
@@ -74,7 +74,7 @@ class CompanyAnalyticsService {
         companyId,
         companyName: companyData.name,
         analytics,
-        lastUpdated: Timestamp.now()
+        lastUpdated: Timestamp.now(),
       };
     } catch (error) {
       console.error('Error getting company analytics:', error);
@@ -85,21 +85,19 @@ class CompanyAnalyticsService {
   async getRecruitmentMetrics(companyId, period = '30d') {
     try {
       const startDate = this._getStartDateForPeriod(period);
-      
+
       const [applications, jobs, candidates] = await Promise.all([
         this._getApplicationStats(companyId, startDate),
         this._getJobStats(companyId, startDate),
-        this._getCandidateStats(companyId, startDate)
+        this._getCandidateStats(companyId, startDate),
       ]);
 
       // Calculate conversion rates
-      const conversionRate = applications.total > 0 
-        ? (applications.hired / applications.total) * 100 
-        : 0;
+      const conversionRate =
+        applications.total > 0 ? (applications.hired / applications.total) * 100 : 0;
 
-      const interviewRate = applications.total > 0
-        ? (applications.interviewed / applications.total) * 100
-        : 0;
+      const interviewRate =
+        applications.total > 0 ? (applications.interviewed / applications.total) * 100 : 0;
 
       return {
         period,
@@ -111,8 +109,8 @@ class CompanyAnalyticsService {
           interviewRate,
           averageTimeToHire: this._calculateAverageTimeToHire(applications.hiredDetails),
           applicationSources: this._groupApplicationsBySource(applications.details),
-          topPerformingJobs: this._getTopPerformingJobs(jobs.details)
-        }
+          topPerformingJobs: this._getTopPerformingJobs(jobs.details),
+        },
       };
     } catch (error) {
       console.error('Error getting recruitment metrics:', error);
@@ -132,24 +130,27 @@ class CompanyAnalyticsService {
       );
 
       const snapshot = await getDocs(q);
-      const events = snapshot.docs.map(doc => ({
+      const events = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       }));
 
       // Calculate engagement metrics
       const metrics = {
-        totalVisits: events.filter(e => e.eventName === 'page_view' && e.pageName?.includes('company')).length,
-        profileViews: events.filter(e => e.eventName === 'company_profile_view').length,
-        jobViews: events.filter(e => e.eventName === 'job_view').length,
-        shares: events.filter(e => e.eventName === 'share').length,
-        follows: events.filter(e => e.eventName === 'follow').length,
-        engagementRate: 0
+        totalVisits: events.filter(
+          (e) => e.eventName === 'page_view' && e.pageName?.includes('company')
+        ).length,
+        profileViews: events.filter((e) => e.eventName === 'company_profile_view').length,
+        jobViews: events.filter((e) => e.eventName === 'job_view').length,
+        shares: events.filter((e) => e.eventName === 'share').length,
+        follows: events.filter((e) => e.eventName === 'follow').length,
+        engagementRate: 0,
       };
 
       // Calculate engagement rate (interactions per visit)
       if (metrics.totalVisits > 0) {
-        const interactions = metrics.profileViews + metrics.jobViews + metrics.shares + metrics.follows;
+        const interactions =
+          metrics.profileViews + metrics.jobViews + metrics.shares + metrics.follows;
         metrics.engagementRate = (interactions / metrics.totalVisits) * 100;
       }
 
@@ -159,8 +160,8 @@ class CompanyAnalyticsService {
         trends: {
           dailyEngagement: this._calculateDailyEngagement(events),
           popularContent: this._getPopularContent(events),
-          audienceDemographics: this._getAudienceDemographics(events)
-        }
+          audienceDemographics: this._getAudienceDemographics(events),
+        },
       };
     } catch (error) {
       console.error('Error getting engagement metrics:', error);
@@ -176,7 +177,7 @@ class CompanyAnalyticsService {
         companyId,
         period: { startDate, endDate },
         generatedAt: Timestamp.now(),
-        sections: {}
+        sections: {},
       };
 
       if (metrics === 'all' || metrics.includes('recruitment')) {
@@ -188,7 +189,11 @@ class CompanyAnalyticsService {
       }
 
       if (metrics === 'all' || metrics.includes('financial')) {
-        reportData.sections.financial = await this._getFinancialMetrics(companyId, startDate, endDate);
+        reportData.sections.financial = await this._getFinancialMetrics(
+          companyId,
+          startDate,
+          endDate
+        );
       }
 
       if (metrics === 'all' || metrics.includes('competitor')) {
@@ -212,7 +217,7 @@ class CompanyAnalyticsService {
         eventName,
         companyId,
         ...eventData,
-        timestamp: Timestamp.now()
+        timestamp: Timestamp.now(),
       };
 
       // Add to company analytics
@@ -238,8 +243,8 @@ class CompanyAnalyticsService {
         totalJobs: 0,
         activeJobs: 0,
         totalApplications: 0,
-        totalFollowers: 0
-      }
+        totalFollowers: 0,
+      },
     };
   }
 
@@ -249,8 +254,8 @@ class CompanyAnalyticsService {
       recruitment: {
         applicationsByStatus: {},
         timeToHire: 0,
-        sourceEffectiveness: {}
-      }
+        sourceEffectiveness: {},
+      },
     };
   }
 
@@ -260,8 +265,8 @@ class CompanyAnalyticsService {
       engagement: {
         profileViews: 0,
         jobViews: 0,
-        applicationClicks: 0
-      }
+        applicationClicks: 0,
+      },
     };
   }
 
@@ -271,8 +276,8 @@ class CompanyAnalyticsService {
       applications: {
         total: 0,
         byStage: {},
-        conversionRate: 0
-      }
+        conversionRate: 0,
+      },
     };
   }
 
@@ -285,7 +290,7 @@ class CompanyAnalyticsService {
       interviewed: 30,
       rejected: 60,
       pending: 0,
-      details: [] // Array of application objects
+      details: [], // Array of application objects
     };
   }
 
@@ -294,7 +299,7 @@ class CompanyAnalyticsService {
       total: 20,
       active: 15,
       closed: 5,
-      details: [] // Array of job objects
+      details: [], // Array of job objects
     };
   }
 
@@ -303,7 +308,7 @@ class CompanyAnalyticsService {
       total: 500,
       newThisPeriod: 50,
       engaged: 200,
-      details: [] // Array of candidate objects
+      details: [], // Array of candidate objects
     };
   }
 
@@ -312,7 +317,7 @@ class CompanyAnalyticsService {
     return {
       totalSpent: 0,
       roi: 0,
-      costPerHire: 0
+      costPerHire: 0,
     };
   }
 
@@ -322,19 +327,19 @@ class CompanyAnalyticsService {
       competitors: [],
       marketPosition: 'medium',
       strengths: [],
-      weaknesses: []
+      weaknesses: [],
     };
   }
 
   _calculateAverageTimeToHire(hiredDetails) {
     if (!hiredDetails || hiredDetails.length === 0) return 0;
-    
+
     const totalDays = hiredDetails.reduce((sum, detail) => {
       const appliedDate = detail.appliedAt?.toDate();
       const hiredDate = detail.hiredAt?.toDate();
-      
+
       if (appliedDate && hiredDate) {
-        return sum + ((hiredDate - appliedDate) / (1000 * 60 * 60 * 24));
+        return sum + (hiredDate - appliedDate) / (1000 * 60 * 60 * 24);
       }
       return sum;
     }, 0);
@@ -344,8 +349,8 @@ class CompanyAnalyticsService {
 
   _groupApplicationsBySource(applications) {
     const sources = {};
-    
-    applications.forEach(app => {
+
+    applications.forEach((app) => {
       const source = app.source || 'direct';
       sources[source] = (sources[source] || 0) + 1;
     });
@@ -357,24 +362,24 @@ class CompanyAnalyticsService {
     return jobs
       .sort((a, b) => b.applicationCount - a.applicationCount)
       .slice(0, limit)
-      .map(job => ({
+      .map((job) => ({
         id: job.id,
         title: job.title,
         applications: job.applicationCount,
-        hireRate: job.hireRate
+        hireRate: job.hireRate,
       }));
   }
 
   _calculateDailyEngagement(events) {
     const dailyEngagement = {};
 
-    events.forEach(event => {
+    events.forEach((event) => {
       const date = event.timestamp?.toDate().toDateString();
       if (!dailyEngagement[date]) {
         dailyEngagement[date] = {
           visits: 0,
           interactions: 0,
-          applications: 0
+          applications: 0,
         };
       }
 
@@ -393,7 +398,7 @@ class CompanyAnalyticsService {
   _getPopularContent(events) {
     const contentStats = {};
 
-    events.forEach(event => {
+    events.forEach((event) => {
       if (event.eventName === 'job_view' && event.jobId) {
         contentStats[event.jobId] = (contentStats[event.jobId] || 0) + 1;
       } else if (event.eventName === 'page_view' && event.pageName) {
@@ -411,10 +416,10 @@ class CompanyAnalyticsService {
     const demographics = {
       userTypes: {},
       locations: {},
-      devices: {}
+      devices: {},
     };
 
-    events.forEach(event => {
+    events.forEach((event) => {
       // User types
       demographics.userTypes[event.userType] = (demographics.userTypes[event.userType] || 0) + 1;
 
@@ -437,21 +442,27 @@ class CompanyAnalyticsService {
 
     if (sections.recruitment) {
       const { conversionRate, averageTimeToHire } = sections.recruitment.metrics;
-      
+
       if (conversionRate < 10) {
-        insights.push('Low conversion rate detected. Consider improving job descriptions or screening process.');
+        insights.push(
+          'Low conversion rate detected. Consider improving job descriptions or screening process.'
+        );
       }
-      
+
       if (averageTimeToHire > 30) {
-        insights.push('Hiring process is taking longer than industry average. Consider streamlining interview stages.');
+        insights.push(
+          'Hiring process is taking longer than industry average. Consider streamlining interview stages.'
+        );
       }
     }
 
     if (sections.engagement) {
       const { engagementRate } = sections.engagement.metrics;
-      
+
       if (engagementRate < 5) {
-        insights.push('Low engagement rate. Consider updating company profile or sharing more content.');
+        insights.push(
+          'Low engagement rate. Consider updating company profile or sharing more content.'
+        );
       }
     }
 
@@ -482,10 +493,10 @@ class CompanyAnalyticsService {
 
   async _updateCompanyMetrics(companyId, eventName) {
     const metricsMap = {
-      'job_application': 'totalApplications',
-      'company_profile_view': 'profileViews',
-      'job_view': 'jobViews',
-      'follow': 'totalFollowers'
+      job_application: 'totalApplications',
+      company_profile_view: 'profileViews',
+      job_view: 'jobViews',
+      follow: 'totalFollowers',
     };
 
     const metricField = metricsMap[eventName];
@@ -493,7 +504,7 @@ class CompanyAnalyticsService {
       const companyRef = doc(this.db, 'companies', companyId);
       await updateDoc(companyRef, {
         [`analytics.${metricField}`]: increment(1),
-        'analytics.lastUpdated': Timestamp.now()
+        'analytics.lastUpdated': Timestamp.now(),
       });
     }
   }

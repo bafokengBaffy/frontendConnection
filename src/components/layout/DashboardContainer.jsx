@@ -11,9 +11,7 @@ const DashboardContainer = ({ children, title, subtitle }) => {
           {subtitle && <p className="dashboard-subtitle">{subtitle}</p>}
         </div>
       </div>
-      <div className="dashboard-content">
-        {children}
-      </div>
+      <div className="dashboard-content">{children}</div>
     </div>
   );
 };

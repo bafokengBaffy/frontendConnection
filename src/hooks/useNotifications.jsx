@@ -11,19 +11,19 @@ export const useNotifications = () => {
       title,
       message,
       show: true,
-      duration
+      duration,
     };
-    
-    setToasts(prev => [...prev, newToast]);
-    
+
+    setToasts((prev) => [...prev, newToast]);
+
     // Auto remove after duration
     setTimeout(() => {
-      setToasts(prev => prev.filter(toast => toast.id !== id));
+      setToasts((prev) => prev.filter((toast) => toast.id !== id));
     }, duration);
   }, []);
 
   const removeToast = useCallback((id) => {
-    setToasts(prev => prev.filter(toast => toast.id !== id));
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
   }, []);
 
   return { toasts, showNotification, removeToast };

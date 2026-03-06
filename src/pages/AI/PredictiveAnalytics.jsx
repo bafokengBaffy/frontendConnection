@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Table, Spinner, Alert } from 'react-bootstrap';
-import { LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import {
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts';
 
 function PredictiveAnalytics() {
   const [loading, setLoading] = useState(true);
@@ -13,10 +25,34 @@ function PredictiveAnalytics() {
     setTimeout(() => {
       // Sample insights data
       setInsights([
-        { id: 1, title: 'Market Growth', value: '+24%', description: 'Projected market growth in your sector', trend: 'up' },
-        { id: 2, title: 'Competition Level', value: 'Medium', description: 'Current competitive landscape', trend: 'stable' },
-        { id: 3, title: 'Customer Demand', value: 'High', description: 'Current customer demand for your offerings', trend: 'up' },
-        { id: 4, title: 'Risk Level', value: 'Low', description: 'Overall business risk assessment', trend: 'down' }
+        {
+          id: 1,
+          title: 'Market Growth',
+          value: '+24%',
+          description: 'Projected market growth in your sector',
+          trend: 'up',
+        },
+        {
+          id: 2,
+          title: 'Competition Level',
+          value: 'Medium',
+          description: 'Current competitive landscape',
+          trend: 'stable',
+        },
+        {
+          id: 3,
+          title: 'Customer Demand',
+          value: 'High',
+          description: 'Current customer demand for your offerings',
+          trend: 'up',
+        },
+        {
+          id: 4,
+          title: 'Risk Level',
+          value: 'Low',
+          description: 'Overall business risk assessment',
+          trend: 'down',
+        },
       ]);
 
       // Sample chart data
@@ -27,7 +63,7 @@ function PredictiveAnalytics() {
         { month: 'Apr', revenue: 2780, customers: 3908 },
         { month: 'May', revenue: 1890, customers: 4800 },
         { month: 'Jun', revenue: 2390, customers: 3800 },
-        { month: 'Jul', revenue: 3490, customers: 4300 }
+        { month: 'Jul', revenue: 3490, customers: 4300 },
       ]);
 
       // Sample prediction data
@@ -35,7 +71,7 @@ function PredictiveAnalytics() {
         { category: 'Success Probability', value: 78 },
         { category: 'Market Fit', value: 85 },
         { category: 'Financial Viability', value: 72 },
-        { category: 'Growth Potential', value: 90 }
+        { category: 'Growth Potential', value: 90 },
       ]);
 
       setLoading(false);
@@ -74,7 +110,9 @@ function PredictiveAnalytics() {
                     <Card.Title className="h6 text-muted">{insight.title}</Card.Title>
                     <h3 className="fw-bold mt-2">{insight.value}</h3>
                   </div>
-                  <span className={`badge ${insight.trend === 'up' ? 'bg-success' : insight.trend === 'down' ? 'bg-danger' : 'bg-warning'}`}>
+                  <span
+                    className={`badge ${insight.trend === 'up' ? 'bg-success' : insight.trend === 'down' ? 'bg-danger' : 'bg-warning'}`}
+                  >
                     {insight.trend === 'up' ? '↑' : insight.trend === 'down' ? '↓' : '↔'}
                   </span>
                 </div>
@@ -142,16 +180,21 @@ function PredictiveAnalytics() {
         <Card.Body>
           <Card.Title>AI Recommendations</Card.Title>
           <Alert variant="info">
-            <strong>💡 Insight:</strong> Based on market analysis, expanding into digital services could increase revenue by 35%.
+            <strong>💡 Insight:</strong> Based on market analysis, expanding into digital services
+            could increase revenue by 35%.
           </Alert>
           <Alert variant="success">
-            <strong>🎯 Opportunity:</strong> Your target market shows high demand for eco-friendly products.
+            <strong>🎯 Opportunity:</strong> Your target market shows high demand for eco-friendly
+            products.
           </Alert>
           <Alert variant="warning">
-            <strong>⚠️ Warning:</strong> Monitor competitor pricing as 3 new competitors entered the market this quarter.
+            <strong>⚠️ Warning:</strong> Monitor competitor pricing as 3 new competitors entered the
+            market this quarter.
           </Alert>
           <div className="mt-3">
-            <Button variant="outline-primary" className="me-2">View Detailed Analysis</Button>
+            <Button variant="outline-primary" className="me-2">
+              View Detailed Analysis
+            </Button>
             <Button variant="outline-success">Export Insights</Button>
           </div>
         </Card.Body>

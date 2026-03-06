@@ -11,7 +11,7 @@ const Courses = () => {
       level: 'Beginner',
       price: '$299',
       rating: 4.8,
-      enrolled: 1250
+      enrolled: 1250,
     },
     {
       id: 2,
@@ -21,7 +21,7 @@ const Courses = () => {
       level: 'Intermediate',
       price: '$199',
       rating: 4.5,
-      enrolled: 890
+      enrolled: 890,
     },
     {
       id: 3,
@@ -31,7 +31,7 @@ const Courses = () => {
       level: 'Intermediate',
       price: '$249',
       rating: 4.7,
-      enrolled: 2100
+      enrolled: 2100,
     },
     {
       id: 4,
@@ -41,22 +41,22 @@ const Courses = () => {
       level: 'Beginner',
       price: 'Free',
       rating: 4.3,
-      enrolled: 5000
-    }
+      enrolled: 5000,
+    },
   ];
 
   return (
     <Container className="py-4">
       <h2 className="mb-4">Browse Courses</h2>
-      
+
       <Card className="shadow-sm mb-4">
         <Card.Body>
           <Row className="align-items-center">
             <Col md={8}>
               <Form>
                 <InputGroup>
-                  <Form.Control 
-                    type="text" 
+                  <Form.Control
+                    type="text"
                     placeholder="Search courses by title, institution, or skills..."
                   />
                   <Button variant="primary">
@@ -82,7 +82,7 @@ const Courses = () => {
           </Row>
         </Card.Body>
       </Card>
-      
+
       <Row>
         {allCourses.map((course) => (
           <Col key={course.id} md={6} lg={3} className="mb-4">
@@ -94,9 +94,7 @@ const Courses = () => {
                   </span>
                 </div>
                 <Card.Title className="mb-2">{course.title}</Card.Title>
-                <Card.Subtitle className="mb-3 text-muted">
-                  {course.institution}
-                </Card.Subtitle>
+                <Card.Subtitle className="mb-3 text-muted">{course.institution}</Card.Subtitle>
                 <div className="d-flex justify-content-between align-items-center mb-3">
                   <span className="text-primary fw-bold">{course.price}</span>
                   <span className="text-muted">
@@ -119,15 +117,21 @@ const Courses = () => {
           </Col>
         ))}
       </Row>
-      
+
       <div className="text-center mt-4">
         <Button variant="outline-primary" className="me-2">
           <i className="bi bi-arrow-left me-2"></i>
           Previous
         </Button>
-        <Button variant="outline-primary" className="me-2">1</Button>
-        <Button variant="outline-primary" className="me-2">2</Button>
-        <Button variant="outline-primary" className="me-2">3</Button>
+        <Button variant="outline-primary" className="me-2">
+          1
+        </Button>
+        <Button variant="outline-primary" className="me-2">
+          2
+        </Button>
+        <Button variant="outline-primary" className="me-2">
+          3
+        </Button>
         <Button variant="outline-primary">
           Next
           <i className="bi bi-arrow-right ms-2"></i>

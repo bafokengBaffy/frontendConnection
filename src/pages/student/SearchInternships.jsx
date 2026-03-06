@@ -8,7 +8,7 @@ const SearchInternships = () => {
   const currentDate = new Date().toLocaleDateString('en-US', {
     month: 'long',
     day: 'numeric',
-    year: 'numeric'
+    year: 'numeric',
   });
 
   return (
@@ -18,15 +18,13 @@ const SearchInternships = () => {
           <div className="d-flex justify-content-between align-items-center">
             <div>
               <h1 className="mb-1">Search Internships</h1>
-              <p className="text-muted">
-                {currentDate} | Student View
-              </p>
+              <p className="text-muted">{currentDate} | Student View</p>
             </div>
             <Button variant="primary">Refresh</Button>
           </div>
         </Col>
       </Row>
-      
+
       <Row>
         <Col lg={8}>
           <Card className="mb-4">
@@ -35,8 +33,8 @@ const SearchInternships = () => {
             </Card.Header>
             <Card.Body>
               <p>
-                Welcome to the Search Internships page. This is where Student users can 
-                access and manage their internships-related content.
+                Welcome to the Search Internships page. This is where Student users can access and
+                manage their internships-related content.
               </p>
               <ul>
                 <li>View detailed information</li>
@@ -47,7 +45,7 @@ const SearchInternships = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col lg={4}>
           <Card className="mb-4">
             <Card.Header>
@@ -63,7 +61,7 @@ const SearchInternships = () => {
               </div>
             </Card.Body>
           </Card>
-          
+
           <Card>
             <Card.Header>
               <Card.Title as="h5">Recent Activity</Card.Title>

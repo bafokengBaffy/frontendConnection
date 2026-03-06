@@ -7,33 +7,33 @@ const PerformanceMetrics = () => {
       gpa: 3.8,
       coursesCompleted: 12,
       coursesInProgress: 3,
-      averageScore: 88
+      averageScore: 88,
     },
     applications: {
       total: 25,
       pending: 8,
       accepted: 5,
       rejected: 12,
-      successRate: 20
+      successRate: 20,
     },
     skills: {
       technical: 85,
       communication: 75,
       problemSolving: 90,
-      teamwork: 80
+      teamwork: 80,
     },
     engagement: {
       activityScore: 92,
       platformUsage: 'High',
       resourcesAccessed: 18,
-      mentorSessions: 4
-    }
+      mentorSessions: 4,
+    },
   };
 
   return (
     <Container className="py-4">
       <h2 className="mb-4">Performance Metrics & Analytics</h2>
-      
+
       <Row className="mb-4">
         <Col md={3}>
           <Card className="shadow-sm text-center h-100">
@@ -47,47 +47,53 @@ const PerformanceMetrics = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col md={3}>
           <Card className="shadow-sm text-center h-100">
             <Card.Body>
               <div className="display-4 text-success mb-2">{metrics.applications.successRate}%</div>
               <Card.Title>Application Success Rate</Card.Title>
-              <ProgressBar now={metrics.applications.successRate} variant="success" className="mb-2" />
+              <ProgressBar
+                now={metrics.applications.successRate}
+                variant="success"
+                className="mb-2"
+              />
               <p className="text-muted small mb-0">
                 {metrics.applications.accepted} accepted out of {metrics.applications.total}
               </p>
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col md={3}>
           <Card className="shadow-sm text-center h-100">
             <Card.Body>
               <div className="display-4 text-warning mb-2">{metrics.engagement.activityScore}%</div>
               <Card.Title>Engagement Score</Card.Title>
-              <ProgressBar now={metrics.engagement.activityScore} variant="warning" className="mb-2" />
+              <ProgressBar
+                now={metrics.engagement.activityScore}
+                variant="warning"
+                className="mb-2"
+              />
               <p className="text-muted small mb-0">
                 {metrics.engagement.resourcesAccessed} resources accessed
               </p>
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col md={3}>
           <Card className="shadow-sm text-center h-100">
             <Card.Body>
               <div className="display-4 text-info mb-2">{metrics.skills.technical}%</div>
               <Card.Title>Technical Skills</Card.Title>
               <ProgressBar now={metrics.skills.technical} variant="info" className="mb-2" />
-              <p className="text-muted small mb-0">
-                Overall skill proficiency
-              </p>
+              <p className="text-muted small mb-0">Overall skill proficiency</p>
             </Card.Body>
           </Card>
         </Col>
       </Row>
-      
+
       <Row className="mb-4">
         <Col md={6}>
           <Card className="shadow-sm h-100">
@@ -111,7 +117,12 @@ const PerformanceMetrics = () => {
                       </span>
                     </td>
                     <td>{metrics.applications.accepted}</td>
-                    <td>{((metrics.applications.accepted / metrics.applications.total) * 100).toFixed(1)}%</td>
+                    <td>
+                      {((metrics.applications.accepted / metrics.applications.total) * 100).toFixed(
+                        1
+                      )}
+                      %
+                    </td>
                     <td>
                       <i className="bi bi-arrow-up text-success"></i>
                       <span className="text-success ms-1">+2%</span>
@@ -125,7 +136,12 @@ const PerformanceMetrics = () => {
                       </span>
                     </td>
                     <td>{metrics.applications.pending}</td>
-                    <td>{((metrics.applications.pending / metrics.applications.total) * 100).toFixed(1)}%</td>
+                    <td>
+                      {((metrics.applications.pending / metrics.applications.total) * 100).toFixed(
+                        1
+                      )}
+                      %
+                    </td>
                     <td>
                       <i className="bi bi-dash text-muted"></i>
                       <span className="text-muted ms-1">0%</span>
@@ -139,7 +155,12 @@ const PerformanceMetrics = () => {
                       </span>
                     </td>
                     <td>{metrics.applications.rejected}</td>
-                    <td>{((metrics.applications.rejected / metrics.applications.total) * 100).toFixed(1)}%</td>
+                    <td>
+                      {((metrics.applications.rejected / metrics.applications.total) * 100).toFixed(
+                        1
+                      )}
+                      %
+                    </td>
                     <td>
                       <i className="bi bi-arrow-down text-danger"></i>
                       <span className="text-danger ms-1">-5%</span>
@@ -150,7 +171,7 @@ const PerformanceMetrics = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col md={6}>
           <Card className="shadow-sm h-100">
             <Card.Body>
@@ -162,7 +183,7 @@ const PerformanceMetrics = () => {
                 </div>
                 <ProgressBar now={metrics.skills.technical} variant="info" />
               </div>
-              
+
               <div className="mb-3">
                 <div className="d-flex justify-content-between mb-1">
                   <span>Communication</span>
@@ -170,7 +191,7 @@ const PerformanceMetrics = () => {
                 </div>
                 <ProgressBar now={metrics.skills.communication} variant="success" />
               </div>
-              
+
               <div className="mb-3">
                 <div className="d-flex justify-content-between mb-1">
                   <span>Problem Solving</span>
@@ -178,7 +199,7 @@ const PerformanceMetrics = () => {
                 </div>
                 <ProgressBar now={metrics.skills.problemSolving} variant="warning" />
               </div>
-              
+
               <div className="mb-3">
                 <div className="d-flex justify-content-between mb-1">
                   <span>Teamwork</span>
@@ -190,7 +211,7 @@ const PerformanceMetrics = () => {
           </Card>
         </Col>
       </Row>
-      
+
       <Card className="shadow-sm">
         <Card.Body>
           <Card.Title>Performance Trends & Insights</Card.Title>
@@ -214,7 +235,7 @@ const PerformanceMetrics = () => {
               </div>
             </Col>
           </Row>
-          
+
           <div className="mt-4">
             <h6>Recommendations for Improvement:</h6>
             <ul className="list-group">

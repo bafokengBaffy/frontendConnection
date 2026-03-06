@@ -3,14 +3,11 @@ import React from 'react';
 import { Container, Card, Button, Row, Col, Badge } from 'react-bootstrap';
 
 const RecommendationEngine = () => {
-
   return (
     <Container fluid className="py-3">
       <Row className="mb-4">
         <Col>
-          <h2 className="fw-bold">
-            ?? Recommendation Engine
-          </h2>
+          <h2 className="fw-bold">?? Recommendation Engine</h2>
           <p className="text-muted">AI-powered insights and recommendations</p>
         </Col>
       </Row>
@@ -48,10 +45,18 @@ const RecommendationEngine = () => {
             <Card.Body>
               <h5>AI Features</h5>
               <div className="d-flex gap-2 flex-wrap">
-                <Badge bg="primary" className="p-2">Predictive Analytics</Badge>
-                <Badge bg="success" className="p-2">Trend Analysis</Badge>
-                <Badge bg="info" className="p-2">Risk Assessment</Badge>
-                <Badge bg="warning" className="p-2">Opportunity Detection</Badge>
+                <Badge bg="primary" className="p-2">
+                  Predictive Analytics
+                </Badge>
+                <Badge bg="success" className="p-2">
+                  Trend Analysis
+                </Badge>
+                <Badge bg="info" className="p-2">
+                  Risk Assessment
+                </Badge>
+                <Badge bg="warning" className="p-2">
+                  Opportunity Detection
+                </Badge>
               </div>
             </Card.Body>
           </Card>

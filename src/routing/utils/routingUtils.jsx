@@ -22,18 +22,18 @@ export const LoadingSpinner = () => (
 
 export const ScrollToTop = () => {
   const { pathname } = useLocation();
-  
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
-  
+
   return null;
 };
 
 export const FirebaseLoader = () => {
   const { currentUser, userProfile, loading, refreshUserProfile } = useAuth();
   const location = useLocation();
-  
+
   useEffect(() => {
     if (currentUser && !userProfile && !loading && refreshUserProfile) {
       refreshUserProfile();
@@ -49,21 +49,21 @@ export const FirebaseLoader = () => {
 
 export const EnhancedDashboardRedirect = () => {
   const { userProfile, currentUser, loading } = useAuth();
-  
+
   if (loading) {
     return <LoadingFallback />;
   }
-  
+
   if (!currentUser) {
     return <Navigate to="/login" replace />;
   }
-  
+
   if (!userProfile) {
     return <LoadingFallback />;
   }
-  
+
   const userType = userProfile?.userType || 'student';
   const route = ROLE_BASED_REDIRECTS[userType] || '/student';
-  
+
   return <Navigate to={route} replace />;
 };

@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
-import { 
-  collection, 
-  query, 
-  where, 
-  orderBy, 
+import {
+  collection,
+  query,
+  where,
+  orderBy,
   onSnapshot,
   doc,
   getDoc,
@@ -13,7 +13,7 @@ import {
   Timestamp,
   limit,
   getDocs,
-  writeBatch
+  writeBatch,
 } from 'firebase/firestore';
 import { db, auth } from '../config/firebase';
 
@@ -38,21 +38,25 @@ export const companyFirebaseService = {
         orderBy('appliedAt', 'desc')
       );
 
-      return onSnapshot(q, (snapshot) => {
-        const applications = [];
-        snapshot.forEach((doc) => {
-          applications.push({
-            id: doc.id,
-            ...doc.data(),
-            appliedAt: doc.data().appliedAt?.toDate?.() || new Date(),
-            updatedAt: doc.data().updatedAt?.toDate?.() || new Date()
+      return onSnapshot(
+        q,
+        (snapshot) => {
+          const applications = [];
+          snapshot.forEach((doc) => {
+            applications.push({
+              id: doc.id,
+              ...doc.data(),
+              appliedAt: doc.data().appliedAt?.toDate?.() || new Date(),
+              updatedAt: doc.data().updatedAt?.toDate?.() || new Date(),
+            });
           });
-        });
-        callback(applications);
-      }, (error) => {
-        console.error('Error in applications subscription:', error);
-        callback([]);
-      });
+          callback(applications);
+        },
+        (error) => {
+          console.error('Error in applications subscription:', error);
+          callback([]);
+        }
+      );
     } catch (error) {
       console.error('Error setting up applications subscription:', error);
       return () => {};
@@ -75,21 +79,25 @@ export const companyFirebaseService = {
         orderBy('scheduledTime', 'asc')
       );
 
-      return onSnapshot(q, (snapshot) => {
-        const interviews = [];
-        snapshot.forEach((doc) => {
-          interviews.push({
-            id: doc.id,
-            ...doc.data(),
-            scheduledTime: doc.data().scheduledTime?.toDate?.() || new Date(),
-            createdAt: doc.data().createdAt?.toDate?.() || new Date()
+      return onSnapshot(
+        q,
+        (snapshot) => {
+          const interviews = [];
+          snapshot.forEach((doc) => {
+            interviews.push({
+              id: doc.id,
+              ...doc.data(),
+              scheduledTime: doc.data().scheduledTime?.toDate?.() || new Date(),
+              createdAt: doc.data().createdAt?.toDate?.() || new Date(),
+            });
           });
-        });
-        callback(interviews);
-      }, (error) => {
-        console.error('Error in interviews subscription:', error);
-        callback([]);
-      });
+          callback(interviews);
+        },
+        (error) => {
+          console.error('Error in interviews subscription:', error);
+          callback([]);
+        }
+      );
     } catch (error) {
       console.error('Error setting up interviews subscription:', error);
       return () => {};
@@ -103,45 +111,52 @@ export const companyFirebaseService = {
       return () => {};
     }
 
-    const { status, limit: limitCount = 50, orderByField = 'appliedAt', orderDirection = 'desc' } = options;
-    
+    const {
+      status,
+      limit: limitCount = 50,
+      orderByField = 'appliedAt',
+      orderDirection = 'desc',
+    } = options;
+
     try {
       const applicationsRef = collection(db, 'applications');
-      const constraints = [
-        where('jobId', '==', jobId)
-      ];
+      const constraints = [where('jobId', '==', jobId)];
 
       if (status) {
         constraints.push(where('status', '==', status));
       }
 
       constraints.push(orderBy(orderByField, orderDirection));
-      
+
       if (limitCount) {
         constraints.push(limit(limitCount));
       }
 
       const q = query(applicationsRef, ...constraints);
 
-      return onSnapshot(q, (snapshot) => {
-        const applications = [];
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          applications.push({
-            id: doc.id,
-            ...data,
-            appliedAt: data.appliedAt?.toDate?.() || new Date(),
-            updatedAt: data.updatedAt?.toDate?.() || new Date(),
-            reviewedAt: data.reviewedAt?.toDate?.() || null,
-            interviewScheduledAt: data.interviewScheduledAt?.toDate?.() || null,
-            hiredAt: data.hiredAt?.toDate?.() || null
+      return onSnapshot(
+        q,
+        (snapshot) => {
+          const applications = [];
+          snapshot.forEach((doc) => {
+            const data = doc.data();
+            applications.push({
+              id: doc.id,
+              ...data,
+              appliedAt: data.appliedAt?.toDate?.() || new Date(),
+              updatedAt: data.updatedAt?.toDate?.() || new Date(),
+              reviewedAt: data.reviewedAt?.toDate?.() || null,
+              interviewScheduledAt: data.interviewScheduledAt?.toDate?.() || null,
+              hiredAt: data.hiredAt?.toDate?.() || null,
+            });
           });
-        });
-        callback(applications);
-      }, (error) => {
-        console.error('Error in job applications subscription:', error);
-        callback([]);
-      });
+          callback(applications);
+        },
+        (error) => {
+          console.error('Error in job applications subscription:', error);
+          callback([]);
+        }
+      );
     } catch (error) {
       console.error('Error setting up job applications subscription:', error);
       return () => {};
@@ -164,21 +179,25 @@ export const companyFirebaseService = {
         limit(1)
       );
 
-      return onSnapshot(q, (snapshot) => {
-        if (!snapshot.empty) {
-          const doc = snapshot.docs[0];
-          callback({
-            id: doc.id,
-            ...doc.data(),
-            timestamp: doc.data().timestamp?.toDate?.() || new Date()
-          });
-        } else {
+      return onSnapshot(
+        q,
+        (snapshot) => {
+          if (!snapshot.empty) {
+            const doc = snapshot.docs[0];
+            callback({
+              id: doc.id,
+              ...doc.data(),
+              timestamp: doc.data().timestamp?.toDate?.() || new Date(),
+            });
+          } else {
+            callback(null);
+          }
+        },
+        (error) => {
+          console.error('Error in company stats subscription:', error);
           callback(null);
         }
-      }, (error) => {
-        console.error('Error in company stats subscription:', error);
-        callback(null);
-      });
+      );
     } catch (error) {
       console.error('Error setting up company stats subscription:', error);
       return () => {};
@@ -202,20 +221,24 @@ export const companyFirebaseService = {
         limit(20)
       );
 
-      return onSnapshot(q, (snapshot) => {
-        const notifications = [];
-        snapshot.forEach((doc) => {
-          notifications.push({
-            id: doc.id,
-            ...doc.data(),
-            createdAt: doc.data().createdAt?.toDate?.() || new Date()
+      return onSnapshot(
+        q,
+        (snapshot) => {
+          const notifications = [];
+          snapshot.forEach((doc) => {
+            notifications.push({
+              id: doc.id,
+              ...doc.data(),
+              createdAt: doc.data().createdAt?.toDate?.() || new Date(),
+            });
           });
-        });
-        callback(notifications);
-      }, (error) => {
-        console.error('Error in notifications subscription:', error);
-        callback([]);
-      });
+          callback(notifications);
+        },
+        (error) => {
+          console.error('Error in notifications subscription:', error);
+          callback([]);
+        }
+      );
     } catch (error) {
       console.error('Error setting up notifications subscription:', error);
       return () => {};
@@ -231,21 +254,25 @@ export const companyFirebaseService = {
 
     try {
       const companyRef = doc(db, 'companies', companyId);
-      return onSnapshot(companyRef, (doc) => {
-        if (doc.exists()) {
-          callback({
-            id: doc.id,
-            ...doc.data(),
-            createdAt: doc.data().createdAt?.toDate?.() || new Date(),
-            updatedAt: doc.data().updatedAt?.toDate?.() || new Date()
-          });
-        } else {
+      return onSnapshot(
+        companyRef,
+        (doc) => {
+          if (doc.exists()) {
+            callback({
+              id: doc.id,
+              ...doc.data(),
+              createdAt: doc.data().createdAt?.toDate?.() || new Date(),
+              updatedAt: doc.data().updatedAt?.toDate?.() || new Date(),
+            });
+          } else {
+            callback(null);
+          }
+        },
+        (error) => {
+          console.error('Error in company profile subscription:', error);
           callback(null);
         }
-      }, (error) => {
-        console.error('Error in company profile subscription:', error);
-        callback(null);
-      });
+      );
     } catch (error) {
       console.error('Error setting up company profile subscription:', error);
       return () => {};
@@ -261,23 +288,21 @@ export const companyFirebaseService = {
 
       // Get company data
       const companyDoc = await getDoc(doc(db, 'companies', companyId));
-      const companyData = companyDoc.exists() ? {
-        id: companyDoc.id,
-        ...companyDoc.data()
-      } : null;
+      const companyData = companyDoc.exists()
+        ? {
+            id: companyDoc.id,
+            ...companyDoc.data(),
+          }
+        : null;
 
       // Get stats counts using Promise.all for efficiency
-      const [
-        jobsSnapshot,
-        applicationsSnapshot,
-        interviewsSnapshot,
-        followersSnapshot
-      ] = await Promise.all([
-        getDocs(query(collection(db, 'jobs'), where('companyId', '==', companyId))),
-        getDocs(query(collection(db, 'applications'), where('companyId', '==', companyId))),
-        getDocs(query(collection(db, 'interviews'), where('companyId', '==', companyId))),
-        getDocs(query(collection(db, 'followers'), where('companyId', '==', companyId)))
-      ]);
+      const [jobsSnapshot, applicationsSnapshot, interviewsSnapshot, followersSnapshot] =
+        await Promise.all([
+          getDocs(query(collection(db, 'jobs'), where('companyId', '==', companyId))),
+          getDocs(query(collection(db, 'applications'), where('companyId', '==', companyId))),
+          getDocs(query(collection(db, 'interviews'), where('companyId', '==', companyId))),
+          getDocs(query(collection(db, 'followers'), where('companyId', '==', companyId))),
+        ]);
 
       // Get recent applications
       const recentAppsQuery = query(
@@ -290,12 +315,12 @@ export const companyFirebaseService = {
 
       // Process recent applications
       const recentApplications = [];
-      recentAppsSnapshot.forEach(doc => {
+      recentAppsSnapshot.forEach((doc) => {
         const data = doc.data();
         recentApplications.push({
           id: doc.id,
           ...data,
-          appliedAt: data.appliedAt?.toDate?.() || new Date()
+          appliedAt: data.appliedAt?.toDate?.() || new Date(),
         });
       });
 
@@ -311,13 +336,13 @@ export const companyFirebaseService = {
 
       // Process active jobs
       const activeJobs = [];
-      activeJobsSnapshot.forEach(doc => {
+      activeJobsSnapshot.forEach((doc) => {
         const data = doc.data();
         activeJobs.push({
           id: doc.id,
           ...data,
           createdAt: data.createdAt?.toDate?.() || new Date(),
-          deadline: data.deadline?.toDate?.() || null
+          deadline: data.deadline?.toDate?.() || null,
         });
       });
 
@@ -327,10 +352,10 @@ export const companyFirebaseService = {
         reviewed: 0,
         interview: 0,
         hired: 0,
-        rejected: 0
+        rejected: 0,
       };
 
-      applicationsSnapshot.forEach(doc => {
+      applicationsSnapshot.forEach((doc) => {
         const status = doc.data().status;
         if (Object.prototype.hasOwnProperty.call(pipelineStats, status)) {
           pipelineStats[status]++;
@@ -344,12 +369,12 @@ export const companyFirebaseService = {
           activeJobs: activeJobsSnapshot.size,
           totalApplicants: applicationsSnapshot.size,
           interviewsScheduled: interviewsSnapshot.size,
-          totalFollowers: followersSnapshot.size
+          totalFollowers: followersSnapshot.size,
         },
         recentApplications,
         activeJobs,
         pipelineStats,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       };
     } catch (error) {
       console.error('Error getting real-time dashboard data:', error);
@@ -368,7 +393,7 @@ export const companyFirebaseService = {
       const updateData = {
         status,
         updatedAt: Timestamp.now(),
-        ...additionalData
+        ...additionalData,
       };
 
       // Add timestamp based on status
@@ -396,7 +421,7 @@ export const companyFirebaseService = {
           applicationId,
           read: false,
           createdAt: Timestamp.now(),
-          metadata: { status, previousStatus: applicationData.status }
+          metadata: { status, previousStatus: applicationData.status },
         });
       }
 
@@ -419,7 +444,7 @@ export const companyFirebaseService = {
         duration,
         interviewType,
         interviewerId,
-        notes
+        notes,
       } = interviewData;
 
       if (!applicationId || !companyId || !candidateId || !jobId || !scheduledTime) {
@@ -438,12 +463,12 @@ export const companyFirebaseService = {
         notes: notes || '',
         status: 'scheduled',
         createdAt: Timestamp.now(),
-        updatedAt: Timestamp.now()
+        updatedAt: Timestamp.now(),
       });
 
       // Update application status to interview
       await companyFirebaseService.updateApplicationStatus(applicationId, 'interview', {
-        interviewId: interviewRef.id
+        interviewId: interviewRef.id,
       });
 
       // Create notification for candidate
@@ -457,7 +482,7 @@ export const companyFirebaseService = {
         interviewId: interviewRef.id,
         read: false,
         createdAt: Timestamp.now(),
-        metadata: { scheduledTime, interviewType }
+        metadata: { scheduledTime, interviewType },
       });
 
       return { success: true, id: interviewRef.id };
@@ -475,12 +500,12 @@ export const companyFirebaseService = {
       }
 
       const batch = writeBatch(db);
-      
-      applicationIds.forEach(applicationId => {
+
+      applicationIds.forEach((applicationId) => {
         const applicationRef = doc(db, 'applications', applicationId);
         batch.update(applicationRef, {
           ...updates,
-          updatedAt: Timestamp.now()
+          updatedAt: Timestamp.now(),
         });
       });
 
@@ -517,34 +542,32 @@ export const companyFirebaseService = {
         orderBy('appliedAt', 'desc'),
         limit(limitCount * 2) // Get extra for filtering
       );
-      
+
       const applicationsSnapshot = await getDocs(applicationsQuery);
       const applications = [];
-      
-      applicationsSnapshot.forEach(doc => {
+
+      applicationsSnapshot.forEach((doc) => {
         const data = doc.data();
         applications.push({
           id: doc.id,
           ...data,
-          appliedAt: data.appliedAt?.toDate?.() || new Date()
+          appliedAt: data.appliedAt?.toDate?.() || new Date(),
         });
       });
 
       // Simulate AI matching scores
-      const matches = applications.map(app => {
+      const matches = applications.map((app) => {
         let score = 50; // Base score
-        
+
         // Add points for skills match
         const candidateSkills = app.candidate?.skills || [];
-        const matchedSkills = candidateSkills.filter(skill => 
-          requiredSkills.includes(skill)
-        );
+        const matchedSkills = candidateSkills.filter((skill) => requiredSkills.includes(skill));
         score += (matchedSkills.length / requiredSkills.length) * 30;
 
         // Add points for qualifications
         const candidateQuals = app.candidate?.qualifications || [];
-        const matchedQuals = candidateQuals.filter(qual => 
-          requiredQualifications.some(req => qual.toLowerCase().includes(req.toLowerCase()))
+        const matchedQuals = candidateQuals.filter((qual) =>
+          requiredQualifications.some((req) => qual.toLowerCase().includes(req.toLowerCase()))
         );
         score += (matchedQuals.length / Math.max(requiredQualifications.length, 1)) * 20;
 
@@ -555,19 +578,19 @@ export const companyFirebaseService = {
 
         return {
           ...app,
-          matchScore: Math.min(Math.round(score), 100)
+          matchScore: Math.min(Math.round(score), 100),
         };
       });
 
       // Sort by match score
       matches.sort((a, b) => b.matchScore - a.matchScore);
-      
+
       return matches.slice(0, limitCount);
     } catch (error) {
       console.error('Error getting candidate matches:', error);
       throw error;
     }
-  }
+  },
 };
 
 export default companyFirebaseService;

@@ -46,27 +46,27 @@ export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
   REGISTER: '/register',
-  
+
   // Student Routes
   STUDENT_DASHBOARD: '/student/dashboard',
   STUDENT_PROFILE: '/student/profile',
   STUDENT_APPLICATIONS: '/student/applications',
   STUDENT_JOBS: '/student/jobs',
   STUDENT_DOCUMENTS: '/student/documents',
-  
+
   // Company Routes
   COMPANY_DASHBOARD: '/company/dashboard',
   COMPANY_PROFILE: '/company/profile',
   COMPANY_JOBS: '/company/jobs',
-  
+
   // Admin Routes
   ADMIN_DASHBOARD: '/admin/dashboard',
   ADMIN_USERS: '/admin/users',
-  
+
   // Common Routes
   SETTINGS: '/settings',
   NOTIFICATIONS: '/notifications',
-  
+
   // AI Routes
   AI_DASHBOARD: '/ai/dashboard',
 };
@@ -83,37 +83,33 @@ export const checkRouteAccess = (userType, path) => {
     '/student/documents',
     '/student/search',
   ];
-  
+
   const companyPaths = [
     '/company/dashboard',
     '/company/profile',
     '/company/jobs',
     '/company/applications',
   ];
-  
-  const adminPaths = [
-    '/admin/dashboard',
-    '/admin/users',
-    '/admin/companies',
-  ];
-  
+
+  const adminPaths = ['/admin/dashboard', '/admin/users', '/admin/companies'];
+
   if (path.startsWith('/admin')) {
     return userType === 'admin';
   }
-  
+
   if (path.startsWith('/student')) {
     return userType === 'student';
   }
-  
+
   if (path.startsWith('/company')) {
     return userType === 'company';
   }
-  
+
   // Common routes accessible to all authenticated users
   const commonPaths = ['/settings', '/notifications', '/ai'];
-  if (commonPaths.some(commonPath => path.startsWith(commonPath))) {
+  if (commonPaths.some((commonPath) => path.startsWith(commonPath))) {
     return true;
   }
-  
+
   return false;
 };

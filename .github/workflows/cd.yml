@@ -1,0 +1,166 @@
+name: Continuous Deployment
+
+on:
+  push:
+    branches: [main, staging]
+  release:
+    types: [published]
+
+env:
+  NODE_VERSION: 18.x
+
+jobs:
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.event_name == 'release'
+    environment: production
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci --legacy-peer-deps
+
+      - name: Create production .env file
+        run: |
+          cd frontend
+          echo "VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY }}" >> .env
+          echo "VITE_FIREBASE_AUTH_DOMAIN=${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}" >> .env
+          echo "VITE_FIREBASE_PROJECT_ID=${{ secrets.VITE_FIREBASE_PROJECT_ID }}" >> .env
+          echo "VITE_FIREBASE_STORAGE_BUCKET=${{ secrets.VITE_FIREBASE_STORAGE_BUCKET }}" >> .env
+          echo "VITE_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID }}" >> .env
+          echo "VITE_FIREBASE_APP_ID=${{ secrets.VITE_FIREBASE_APP_ID }}" >> .env
+          echo "VITE_FIREBASE_MEASUREMENT_ID=${{ secrets.VITE_FIREBASE_MEASUREMENT_ID }}" >> .env
+          echo "VITE_FIREBASE_DATABASE_URL=${{ secrets.VITE_FIREBASE_DATABASE_URL }}" >> .env
+          echo "VITE_CLOUDINARY_CLOUD_NAME=${{ secrets.VITE_CLOUDINARY_CLOUD_NAME }}" >> .env
+          echo "VITE_CLOUDINARY_UPLOAD_PRESET=${{ secrets.VITE_CLOUDINARY_UPLOAD_PRESET }}" >> .env
+          echo "VITE_APP_ENVIRONMENT=production" >> .env
+          echo "VITE_APP_BASE_URL=https://career-connect-lesotho.web.app" >> .env
+
+      - name: Build application
+        run: |
+          cd frontend
+          npm run build
+
+      - name: Deploy to Firebase Hosting (Production)
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          channelId: live
+          projectId: career-connect-lesotho
+          entryPoint: ./frontend
+
+      - name: Create GitHub Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ github.run_number }}
+          name: Release v${{ github.run_number }}
+          body: |
+            ## Production Release v${{ github.run_number }}
+            
+            ### Changes
+            ${{ github.event.head_commit.message }}
+            
+            ### Deployment
+            - Environment: Production
+            - Deployed by: @${{ github.actor }}
+            - Commit: ${{ github.sha }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/staging'
+    environment: staging
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci --legacy-peer-deps
+
+      - name: Create staging .env file
+        run: |
+          cd frontend
+          echo "VITE_FIREBASE_API_KEY=${{ secrets.VITE_FIREBASE_API_KEY_STAGING }}" >> .env
+          echo "VITE_FIREBASE_AUTH_DOMAIN=${{ secrets.VITE_FIREBASE_AUTH_DOMAIN_STAGING }}" >> .env
+          echo "VITE_FIREBASE_PROJECT_ID=${{ secrets.VITE_FIREBASE_PROJECT_ID_STAGING }}" >> .env
+          echo "VITE_FIREBASE_STORAGE_BUCKET=${{ secrets.VITE_FIREBASE_STORAGE_BUCKET_STAGING }}" >> .env
+          echo "VITE_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID_STAGING }}" >> .env
+          echo "VITE_FIREBASE_APP_ID=${{ secrets.VITE_FIREBASE_APP_ID_STAGING }}" >> .env
+          echo "VITE_FIREBASE_MEASUREMENT_ID=${{ secrets.VITE_FIREBASE_MEASUREMENT_ID_STAGING }}" >> .env
+          echo "VITE_FIREBASE_DATABASE_URL=${{ secrets.VITE_FIREBASE_DATABASE_URL_STAGING }}" >> .env
+          echo "VITE_CLOUDINARY_CLOUD_NAME=${{ secrets.VITE_CLOUDINARY_CLOUD_NAME_STAGING }}" >> .env
+          echo "VITE_CLOUDINARY_UPLOAD_PRESET=${{ secrets.VITE_CLOUDINARY_UPLOAD_PRESET_STAGING }}" >> .env
+          echo "VITE_APP_ENVIRONMENT=staging" >> .env
+          echo "VITE_APP_BASE_URL=https://staging.career-connect-lesotho.web.app" >> .env
+
+      - name: Build application
+        run: |
+          cd frontend
+          npm run build
+
+      - name: Deploy to Firebase Hosting (Staging)
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_STAGING }}'
+          channelId: live
+          projectId: career-connect-lesotho-staging
+          entryPoint: ./frontend
+
+  notify:
+    name: Send Deployment Notification
+    runs-on: ubuntu-latest
+    needs: [deploy-production, deploy-staging]
+    if: always()
+    
+    steps:
+      - name: Send Slack notification
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: always()
+
+      - name: Send email notification
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: Deployment ${{ job.status }} - Career Connect Lesotho
+          to: devops@careerconnect.co.ls
+          from: CI/CD Bot
+          body: |
+            Deployment Status: ${{ job.status }}
+            
+            Environment: ${{ github.ref == 'refs/heads/main' && 'Production' || 'Staging' }}
+            Commit: ${{ github.sha }}
+            Author: ${{ github.actor }}
+            Workflow: ${{ github.workflow }}

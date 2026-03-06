@@ -2,13 +2,33 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Container, Row, Col, Card, Table, Button, Badge,
-  Dropdown, Form, InputGroup, Spinner, Pagination, Modal
+  Container,
+  Row,
+  Col,
+  Card,
+  Table,
+  Button,
+  Badge,
+  Dropdown,
+  Form,
+  InputGroup,
+  Spinner,
+  Pagination,
+  Modal,
 } from 'react-bootstrap';
 import {
-  FaEye, FaFilter, FaSortAmountDown, FaSearch,
-  FaUserTie, FaCalendarAlt, FaFileAlt, FaEnvelope,
-  FaPhone, FaDownload, FaCommentDots, FaArrowLeft
+  FaEye,
+  FaFilter,
+  FaSortAmountDown,
+  FaSearch,
+  FaUserTie,
+  FaCalendarAlt,
+  FaFileAlt,
+  FaEnvelope,
+  FaPhone,
+  FaDownload,
+  FaCommentDots,
+  FaArrowLeft,
 } from 'react-icons/fa';
 import { applicationService } from '../../services/companyServices';
 import './CompanyApplications.css';
@@ -49,11 +69,11 @@ const CompanyApplications = () => {
       interview: { bg: 'primary', text: 'white', label: 'Interview' },
       hired: { bg: 'success', text: 'white', label: 'Hired' },
       rejected: { bg: 'danger', text: 'white', label: 'Rejected' },
-      withdrawn: { bg: 'secondary', text: 'white', label: 'Withdrawn' }
+      withdrawn: { bg: 'secondary', text: 'white', label: 'Withdrawn' },
     };
-    
+
     const variant = variants[status] || { bg: 'secondary', text: 'white', label: status };
-    
+
     return (
       <Badge bg={variant.bg} text={variant.text} className="status-badge">
         {variant.label}
@@ -63,22 +83,23 @@ const CompanyApplications = () => {
 
   const getFilteredApplications = () => {
     let filtered = [...applications];
-    
+
     // Apply status filter
     if (filter !== 'all') {
-      filtered = filtered.filter(app => app.status === filter);
+      filtered = filtered.filter((app) => app.status === filter);
     }
-    
+
     // Apply search filter
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(app => 
-        (app.candidate?.fullName?.toLowerCase().includes(term)) ||
-        (app.job?.title?.toLowerCase().includes(term)) ||
-        (app.candidate?.email?.toLowerCase().includes(term))
+      filtered = filtered.filter(
+        (app) =>
+          app.candidate?.fullName?.toLowerCase().includes(term) ||
+          app.job?.title?.toLowerCase().includes(term) ||
+          app.candidate?.email?.toLowerCase().includes(term)
       );
     }
-    
+
     // Apply sorting
     filtered.sort((a, b) => {
       switch (sortBy) {
@@ -94,7 +115,7 @@ const CompanyApplications = () => {
           return 0;
       }
     });
-    
+
     return filtered;
   };
 
@@ -107,11 +128,11 @@ const CompanyApplications = () => {
     try {
       await applicationService.updateApplicationStatus(applicationId, newStatus);
       await fetchApplications();
-      
+
       if (selectedApplication?.id === applicationId) {
-        setSelectedApplication(prev => ({
+        setSelectedApplication((prev) => ({
           ...prev,
-          status: newStatus
+          status: newStatus,
         }));
       }
     } catch (error) {
@@ -129,14 +150,14 @@ const CompanyApplications = () => {
 
   const getTimeAgo = (date) => {
     if (!date) return 'N/A';
-    
+
     const now = new Date();
     const past = new Date(date);
     const diffMs = now - past;
     const diffMins = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
-    
+
     if (diffMins < 1) return 'Just now';
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffHours < 24) return `${diffHours}h ago`;
@@ -198,7 +219,11 @@ const CompanyApplications = () => {
                 <Col>
                   <div className="text-center">
                     <h3 className="mb-1 text-info">
-                      {applications.filter(app => app.status === 'applied' || app.status === 'reviewed').length}
+                      {
+                        applications.filter(
+                          (app) => app.status === 'applied' || app.status === 'reviewed'
+                        ).length
+                      }
                     </h3>
                     <p className="text-muted mb-0">Pending Review</p>
                   </div>
@@ -206,7 +231,7 @@ const CompanyApplications = () => {
                 <Col>
                   <div className="text-center">
                     <h3 className="mb-1 text-success">
-                      {applications.filter(app => app.status === 'hired').length}
+                      {applications.filter((app) => app.status === 'hired').length}
                     </h3>
                     <p className="text-muted mb-0">Hired</p>
                   </div>
@@ -214,7 +239,7 @@ const CompanyApplications = () => {
                 <Col>
                   <div className="text-center">
                     <h3 className="mb-1 text-warning">
-                      {applications.filter(app => app.status === 'interview').length}
+                      {applications.filter((app) => app.status === 'interview').length}
                     </h3>
                     <p className="text-muted mb-0">In Interview</p>
                   </div>
@@ -248,13 +273,20 @@ const CompanyApplications = () => {
                   <Dropdown>
                     <Dropdown.Toggle variant="outline-secondary" className="w-100">
                       <FaFilter className="me-2" />
-                      Status: {filter === 'all' ? 'All' : filter.charAt(0).toUpperCase() + filter.slice(1)}
+                      Status:{' '}
+                      {filter === 'all' ? 'All' : filter.charAt(0).toUpperCase() + filter.slice(1)}
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
-                      <Dropdown.Item onClick={() => setFilter('all')}>All Applications</Dropdown.Item>
-                      <Dropdown.Item onClick={() => setFilter('applied')}>New Applications</Dropdown.Item>
+                      <Dropdown.Item onClick={() => setFilter('all')}>
+                        All Applications
+                      </Dropdown.Item>
+                      <Dropdown.Item onClick={() => setFilter('applied')}>
+                        New Applications
+                      </Dropdown.Item>
                       <Dropdown.Item onClick={() => setFilter('reviewed')}>Reviewed</Dropdown.Item>
-                      <Dropdown.Item onClick={() => setFilter('interview')}>Interview Stage</Dropdown.Item>
+                      <Dropdown.Item onClick={() => setFilter('interview')}>
+                        Interview Stage
+                      </Dropdown.Item>
                       <Dropdown.Item onClick={() => setFilter('hired')}>Hired</Dropdown.Item>
                       <Dropdown.Item onClick={() => setFilter('rejected')}>Rejected</Dropdown.Item>
                     </Dropdown.Menu>
@@ -267,10 +299,16 @@ const CompanyApplications = () => {
                       Sort By
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
-                      <Dropdown.Item onClick={() => setSortBy('newest')}>Newest First</Dropdown.Item>
-                      <Dropdown.Item onClick={() => setSortBy('oldest')}>Oldest First</Dropdown.Item>
+                      <Dropdown.Item onClick={() => setSortBy('newest')}>
+                        Newest First
+                      </Dropdown.Item>
+                      <Dropdown.Item onClick={() => setSortBy('oldest')}>
+                        Oldest First
+                      </Dropdown.Item>
                       <Dropdown.Item onClick={() => setSortBy('match')}>Best Match</Dropdown.Item>
-                      <Dropdown.Item onClick={() => setSortBy('name')}>Candidate Name</Dropdown.Item>
+                      <Dropdown.Item onClick={() => setSortBy('name')}>
+                        Candidate Name
+                      </Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
                 </Col>
@@ -298,7 +336,7 @@ const CompanyApplications = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {paginatedApplications.map(application => (
+                    {paginatedApplications.map((application) => (
                       <tr key={application.id} className="align-middle">
                         <td>
                           <div className="d-flex align-items-center">
@@ -310,13 +348,17 @@ const CompanyApplications = () => {
                                 style={{ width: '40px', height: '40px', objectFit: 'cover' }}
                               />
                             ) : (
-                              <div className="avatar-placeholder rounded-circle me-3 d-flex align-items-center justify-content-center bg-primary text-white"
-                                   style={{ width: '40px', height: '40px' }}>
+                              <div
+                                className="avatar-placeholder rounded-circle me-3 d-flex align-items-center justify-content-center bg-primary text-white"
+                                style={{ width: '40px', height: '40px' }}
+                              >
                                 {application.candidate?.fullName?.charAt(0) || 'C'}
                               </div>
                             )}
                             <div>
-                              <strong>{application.candidate?.fullName || 'Unknown Candidate'}</strong>
+                              <strong>
+                                {application.candidate?.fullName || 'Unknown Candidate'}
+                              </strong>
                               <div className="small text-muted">
                                 <FaEnvelope className="me-1" size={12} />
                                 {application.candidate?.email || 'N/A'}
@@ -327,12 +369,12 @@ const CompanyApplications = () => {
                         <td>
                           <div>
                             <strong>{application.job?.title || 'Unknown Position'}</strong>
-                            <div className="small text-muted">{application.job?.location || 'N/A'}</div>
+                            <div className="small text-muted">
+                              {application.job?.location || 'N/A'}
+                            </div>
                           </div>
                         </td>
-                        <td className="text-muted">
-                          {getTimeAgo(application.appliedAt)}
-                        </td>
+                        <td className="text-muted">{getTimeAgo(application.appliedAt)}</td>
                         <td>
                           <div className="d-flex align-items-center">
                             <div className="progress flex-grow-1 me-2" style={{ height: '6px' }}>
@@ -344,9 +386,7 @@ const CompanyApplications = () => {
                             <span>{application.matchScore || 0}%</span>
                           </div>
                         </td>
-                        <td>
-                          {getStatusBadge(application.status)}
-                        </td>
+                        <td>{getStatusBadge(application.status)}</td>
                         <td>
                           <div className="d-flex gap-1">
                             <Button
@@ -366,20 +406,32 @@ const CompanyApplications = () => {
                               <FaDownload />
                             </Button>
                             <Dropdown>
-                              <Dropdown.Toggle variant="outline-secondary" size="sm" id="dropdown-status">
+                              <Dropdown.Toggle
+                                variant="outline-secondary"
+                                size="sm"
+                                id="dropdown-status"
+                              >
                                 Update
                               </Dropdown.Toggle>
                               <Dropdown.Menu>
-                                <Dropdown.Item onClick={() => handleUpdateStatus(application.id, 'reviewed')}>
+                                <Dropdown.Item
+                                  onClick={() => handleUpdateStatus(application.id, 'reviewed')}
+                                >
                                   Mark as Reviewed
                                 </Dropdown.Item>
-                                <Dropdown.Item onClick={() => handleUpdateStatus(application.id, 'interview')}>
+                                <Dropdown.Item
+                                  onClick={() => handleUpdateStatus(application.id, 'interview')}
+                                >
                                   Schedule Interview
                                 </Dropdown.Item>
-                                <Dropdown.Item onClick={() => handleUpdateStatus(application.id, 'hired')}>
+                                <Dropdown.Item
+                                  onClick={() => handleUpdateStatus(application.id, 'hired')}
+                                >
                                   Mark as Hired
                                 </Dropdown.Item>
-                                <Dropdown.Item onClick={() => handleUpdateStatus(application.id, 'rejected')}>
+                                <Dropdown.Item
+                                  onClick={() => handleUpdateStatus(application.id, 'rejected')}
+                                >
                                   Reject Application
                                 </Dropdown.Item>
                               </Dropdown.Menu>
@@ -392,10 +444,15 @@ const CompanyApplications = () => {
                 </Table>
               ) : (
                 <div className="text-center py-5">
-                  <FaFileAlt className="text-muted mb-3" style={{ fontSize: '3rem', opacity: 0.5 }} />
+                  <FaFileAlt
+                    className="text-muted mb-3"
+                    style={{ fontSize: '3rem', opacity: 0.5 }}
+                  />
                   <h5>No applications found</h5>
                   <p className="text-muted mb-3">
-                    {filter !== 'all' ? `No applications with status "${filter}"` : 'No applications yet'}
+                    {filter !== 'all'
+                      ? `No applications with status "${filter}"`
+                      : 'No applications yet'}
                   </p>
                   <Button variant="primary" onClick={() => navigate('/company/jobs')}>
                     View Job Postings
@@ -403,14 +460,14 @@ const CompanyApplications = () => {
                 </div>
               )}
             </Card.Body>
-            
+
             {/* Pagination */}
             {totalPages > 1 && (
               <Card.Footer className="bg-white border-0">
                 <div className="d-flex justify-content-center">
                   <Pagination>
-                    <Pagination.Prev 
-                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    <Pagination.Prev
+                      onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                       disabled={currentPage === 1}
                     />
                     {[...Array(totalPages)].map((_, idx) => (
@@ -423,7 +480,7 @@ const CompanyApplications = () => {
                       </Pagination.Item>
                     ))}
                     <Pagination.Next
-                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                      onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                       disabled={currentPage === totalPages}
                     />
                   </Pagination>
@@ -453,8 +510,10 @@ const CompanyApplications = () => {
                       style={{ width: '120px', height: '120px', objectFit: 'cover' }}
                     />
                   ) : (
-                    <div className="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center bg-primary text-white mx-auto"
-                         style={{ width: '120px', height: '120px' }}>
+                    <div
+                      className="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center bg-primary text-white mx-auto"
+                      style={{ width: '120px', height: '120px' }}
+                    >
                       <span className="display-4">
                         {selectedApplication.candidate?.fullName?.charAt(0) || 'C'}
                       </span>
@@ -479,9 +538,7 @@ const CompanyApplications = () => {
                       {selectedApplication.candidate.location}
                     </p>
                   )}
-                  <div className="mt-3">
-                    {getStatusBadge(selectedApplication.status)}
-                  </div>
+                  <div className="mt-3">{getStatusBadge(selectedApplication.status)}</div>
                 </Col>
               </Row>
 
@@ -493,7 +550,9 @@ const CompanyApplications = () => {
                 <Card.Body>
                   <h5>{selectedApplication.job?.title || 'Unknown Position'}</h5>
                   <p className="text-muted mb-2">{selectedApplication.job?.location || 'N/A'}</p>
-                  <p className="mb-0">{selectedApplication.job?.description?.substring(0, 200)}...</p>
+                  <p className="mb-0">
+                    {selectedApplication.job?.description?.substring(0, 200)}...
+                  </p>
                 </Card.Body>
               </Card>
 
@@ -503,9 +562,15 @@ const CompanyApplications = () => {
                   <Card className="h-100">
                     <Card.Body>
                       <h6 className="mb-3">Application Details</h6>
-                      <p><strong>Applied:</strong> {getTimeAgo(selectedApplication.appliedAt)}</p>
-                      <p><strong>Match Score:</strong> {selectedApplication.matchScore || 0}%</p>
-                      <p><strong>Last Updated:</strong> {getTimeAgo(selectedApplication.updatedAt)}</p>
+                      <p>
+                        <strong>Applied:</strong> {getTimeAgo(selectedApplication.appliedAt)}
+                      </p>
+                      <p>
+                        <strong>Match Score:</strong> {selectedApplication.matchScore || 0}%
+                      </p>
+                      <p>
+                        <strong>Last Updated:</strong> {getTimeAgo(selectedApplication.updatedAt)}
+                      </p>
                     </Card.Body>
                   </Card>
                 </Col>
@@ -513,7 +578,8 @@ const CompanyApplications = () => {
                   <Card className="h-100">
                     <Card.Body>
                       <h6 className="mb-3">Candidate Skills</h6>
-                      {selectedApplication.candidate?.skills && selectedApplication.candidate.skills.length > 0 ? (
+                      {selectedApplication.candidate?.skills &&
+                      selectedApplication.candidate.skills.length > 0 ? (
                         <div className="d-flex flex-wrap gap-1">
                           {selectedApplication.candidate.skills.map((skill, index) => (
                             <Badge key={index} bg="light" text="dark" className="p-2">
@@ -555,7 +621,9 @@ const CompanyApplications = () => {
                     </Button>
                     <Button
                       variant="primary"
-                      onClick={() => navigate(`/company/applications/${selectedApplication.id}/review`)}
+                      onClick={() =>
+                        navigate(`/company/applications/${selectedApplication.id}/review`)
+                      }
                     >
                       <FaCommentDots className="me-2" />
                       Review Application

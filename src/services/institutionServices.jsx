@@ -1,48 +1,40 @@
 // src/services/institutionServices.js
-import { 
-  db, 
-  storage, 
-  auth 
-} from '../config/firebase';
-import { 
-  collection, 
-  query, 
-  where, 
-  getDocs, 
-  getDoc, 
-  doc, 
+import { db, storage, auth } from '../config/firebase';
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  getDoc,
+  doc,
   updateDoc,
   addDoc,
   onSnapshot,
   orderBy,
   limit,
   Timestamp,
-  writeBatch
+  writeBatch,
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export const institutionService = {
-  
   // === DASHBOARD METHODS ===
-  
+
   /**
    * Get institution profile - REAL DATA ONLY
    */
   async getInstitutionProfile(userId) {
     try {
       console.log('Fetching institution profile for user:', userId);
-      
+
       if (!userId || userId === 'undefined') {
         throw new Error('Invalid user ID');
       }
-      
-      const institutionQuery = query(
-        collection(db, 'institutions'),
-        where('userId', '==', userId)
-      );
-      
+
+      const institutionQuery = query(collection(db, 'institutions'), where('userId', '==', userId));
+
       const snapshot = await getDocs(institutionQuery);
-      
+
       if (snapshot.empty) {
         console.log('No institution found for user, creating default...');
         // Create a default institution profile if none exists
@@ -57,23 +49,23 @@ export const institutionService = {
           logo: '',
           description: '',
           createdAt: Timestamp.now(),
-          updatedAt: Timestamp.now()
+          updatedAt: Timestamp.now(),
         };
-        
+
         const newInstitutionRef = await addDoc(collection(db, 'institutions'), defaultInstitution);
-        
+
         return {
           id: newInstitutionRef.id,
-          ...defaultInstitution
+          ...defaultInstitution,
         };
       }
-      
+
       const institutionDoc = snapshot.docs[0];
       const data = institutionDoc.data();
-      
+
       return {
         id: institutionDoc.id,
-        ...data
+        ...data,
       };
     } catch (error) {
       console.error('Error fetching institution profile:', error);
@@ -87,7 +79,7 @@ export const institutionService = {
   async getDashboardStats(institutionId) {
     try {
       console.log('Fetching REAL dashboard stats for institution:', institutionId);
-      
+
       if (!institutionId || institutionId === 'undefined') {
         throw new Error('Invalid institution ID');
       }
@@ -96,7 +88,7 @@ export const institutionService = {
       const now = new Date();
       const startOfCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
       const endOfCurrentMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-      
+
       // Get last month for comparison
       const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
       const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
@@ -108,76 +100,90 @@ export const institutionService = {
         coursesSnapshot,
         lastMonthCoursesSnapshot,
         applicationsSnapshot,
-        paymentsSnapshot
+        paymentsSnapshot,
       ] = await Promise.all([
         // Current month active students
-        getDocs(query(
-          collection(db, 'students'), 
-          where('institutionId', '==', institutionId),
-          where('status', '==', 'active'),
-          where('enrolledDate', '>=', Timestamp.fromDate(startOfCurrentMonth)),
-          where('enrolledDate', '<=', Timestamp.fromDate(endOfCurrentMonth))
-        )).catch(() => ({ size: 0 })),
+        getDocs(
+          query(
+            collection(db, 'students'),
+            where('institutionId', '==', institutionId),
+            where('status', '==', 'active'),
+            where('enrolledDate', '>=', Timestamp.fromDate(startOfCurrentMonth)),
+            where('enrolledDate', '<=', Timestamp.fromDate(endOfCurrentMonth))
+          )
+        ).catch(() => ({ size: 0 })),
         // Last month active students for comparison
-        getDocs(query(
-          collection(db, 'students'), 
-          where('institutionId', '==', institutionId),
-          where('status', '==', 'active'),
-          where('enrolledDate', '>=', Timestamp.fromDate(startOfLastMonth)),
-          where('enrolledDate', '<=', Timestamp.fromDate(endOfLastMonth))
-        )).catch(() => ({ size: 0 })),
+        getDocs(
+          query(
+            collection(db, 'students'),
+            where('institutionId', '==', institutionId),
+            where('status', '==', 'active'),
+            where('enrolledDate', '>=', Timestamp.fromDate(startOfLastMonth)),
+            where('enrolledDate', '<=', Timestamp.fromDate(endOfLastMonth))
+          )
+        ).catch(() => ({ size: 0 })),
         // Current active courses
-        getDocs(query(
-          collection(db, 'courses'), 
-          where('institutionId', '==', institutionId),
-          where('status', '==', 'active')
-        )).catch(() => ({ size: 0 })),
+        getDocs(
+          query(
+            collection(db, 'courses'),
+            where('institutionId', '==', institutionId),
+            where('status', '==', 'active')
+          )
+        ).catch(() => ({ size: 0 })),
         // Last month active courses for comparison
-        getDocs(query(
-          collection(db, 'courses'), 
-          where('institutionId', '==', institutionId),
-          where('status', '==', 'active'),
-          where('createdAt', '>=', Timestamp.fromDate(startOfLastMonth)),
-          where('createdAt', '<=', Timestamp.fromDate(endOfLastMonth))
-        )).catch(() => ({ size: 0 })),
+        getDocs(
+          query(
+            collection(db, 'courses'),
+            where('institutionId', '==', institutionId),
+            where('status', '==', 'active'),
+            where('createdAt', '>=', Timestamp.fromDate(startOfLastMonth)),
+            where('createdAt', '<=', Timestamp.fromDate(endOfLastMonth))
+          )
+        ).catch(() => ({ size: 0 })),
         // Pending applications
-        getDocs(query(
-          collection(db, 'applications'), 
-          where('institutionId', '==', institutionId),
-          where('status', '==', 'pending')
-        )).catch(() => ({ size: 0 })),
+        getDocs(
+          query(
+            collection(db, 'applications'),
+            where('institutionId', '==', institutionId),
+            where('status', '==', 'pending')
+          )
+        ).catch(() => ({ size: 0 })),
         // Monthly revenue
-        getDocs(query(
-          collection(db, 'payments'), 
-          where('institutionId', '==', institutionId),
-          where('status', '==', 'completed'),
-          where('paymentDate', '>=', Timestamp.fromDate(startOfCurrentMonth)),
-          where('paymentDate', '<=', Timestamp.fromDate(endOfCurrentMonth))
-        )).catch(() => ({ forEach: () => {} }))
+        getDocs(
+          query(
+            collection(db, 'payments'),
+            where('institutionId', '==', institutionId),
+            where('status', '==', 'completed'),
+            where('paymentDate', '>=', Timestamp.fromDate(startOfCurrentMonth)),
+            where('paymentDate', '<=', Timestamp.fromDate(endOfCurrentMonth))
+          )
+        ).catch(() => ({ forEach: () => {} })),
       ]);
 
       // Calculate revenue from payments
       let monthlyRevenue = 0;
       let lastMonthRevenue = 0;
-      
+
       if (paymentsSnapshot.forEach) {
-        paymentsSnapshot.forEach(doc => {
+        paymentsSnapshot.forEach((doc) => {
           const payment = doc.data();
           monthlyRevenue += payment.amount || 0;
         });
       }
 
       // Get last month's revenue for comparison
-      const lastMonthPayments = await getDocs(query(
-        collection(db, 'payments'), 
-        where('institutionId', '==', institutionId),
-        where('status', '==', 'completed'),
-        where('paymentDate', '>=', Timestamp.fromDate(startOfLastMonth)),
-        where('paymentDate', '<=', Timestamp.fromDate(endOfLastMonth))
-      )).catch(() => ({ forEach: () => {} }));
-      
+      const lastMonthPayments = await getDocs(
+        query(
+          collection(db, 'payments'),
+          where('institutionId', '==', institutionId),
+          where('status', '==', 'completed'),
+          where('paymentDate', '>=', Timestamp.fromDate(startOfLastMonth)),
+          where('paymentDate', '<=', Timestamp.fromDate(endOfLastMonth))
+        )
+      ).catch(() => ({ forEach: () => {} }));
+
       if (lastMonthPayments.forEach) {
-        lastMonthPayments.forEach(doc => {
+        lastMonthPayments.forEach((doc) => {
           const payment = doc.data();
           lastMonthRevenue += payment.amount || 0;
         });
@@ -186,45 +192,57 @@ export const institutionService = {
       // Calculate percentage changes
       const currentStudents = studentsSnapshot.size || 0;
       const lastMonthStudents = lastMonthStudentsSnapshot.size || 0;
-      const studentChangePercent = lastMonthStudents > 0 
-        ? ((currentStudents - lastMonthStudents) / lastMonthStudents) * 100 
-        : currentStudents > 0 ? 100 : 0;
+      const studentChangePercent =
+        lastMonthStudents > 0
+          ? ((currentStudents - lastMonthStudents) / lastMonthStudents) * 100
+          : currentStudents > 0
+            ? 100
+            : 0;
 
       const currentCourses = coursesSnapshot.size || 0;
       const lastMonthCourses = lastMonthCoursesSnapshot.size || 0;
-      const courseChangePercent = lastMonthCourses > 0 
-        ? ((currentCourses - lastMonthCourses) / lastMonthCourses) * 100 
-        : currentCourses > 0 ? 100 : 0;
+      const courseChangePercent =
+        lastMonthCourses > 0
+          ? ((currentCourses - lastMonthCourses) / lastMonthCourses) * 100
+          : currentCourses > 0
+            ? 100
+            : 0;
 
-      const revenueChangePercent = lastMonthRevenue > 0 
-        ? ((monthlyRevenue - lastMonthRevenue) / lastMonthRevenue) * 100 
-        : monthlyRevenue > 0 ? 100 : 0;
+      const revenueChangePercent =
+        lastMonthRevenue > 0
+          ? ((monthlyRevenue - lastMonthRevenue) / lastMonthRevenue) * 100
+          : monthlyRevenue > 0
+            ? 100
+            : 0;
 
       // Get faculties count
-      const facultiesSnapshot = await getDocs(query(
-        collection(db, 'faculties'),
-        where('institutionId', '==', institutionId),
-        where('status', '==', 'active')
-      )).catch(() => ({ size: 0 }));
+      const facultiesSnapshot = await getDocs(
+        query(
+          collection(db, 'faculties'),
+          where('institutionId', '==', institutionId),
+          where('status', '==', 'active')
+        )
+      ).catch(() => ({ size: 0 }));
 
       // Get upcoming events count
-      const eventsSnapshot = await getDocs(query(
-        collection(db, 'events'),
-        where('institutionId', '==', institutionId),
-        where('date', '>=', Timestamp.fromDate(new Date())),
-        where('date', '<=', Timestamp.fromDate(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000))) // Next 30 days
-      )).catch(() => ({ size: 0 }));
+      const eventsSnapshot = await getDocs(
+        query(
+          collection(db, 'events'),
+          where('institutionId', '==', institutionId),
+          where('date', '>=', Timestamp.fromDate(new Date())),
+          where('date', '<=', Timestamp.fromDate(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000))) // Next 30 days
+        )
+      ).catch(() => ({ size: 0 }));
 
       // Get average completion rate (from enrolled courses)
-      const enrolledCoursesSnapshot = await getDocs(query(
-        collection(db, 'student_courses'),
-        where('institutionId', '==', institutionId)
-      )).catch(() => ({ forEach: () => {} }));
-      
+      const enrolledCoursesSnapshot = await getDocs(
+        query(collection(db, 'student_courses'), where('institutionId', '==', institutionId))
+      ).catch(() => ({ forEach: () => {} }));
+
       let totalCompletion = 0;
       let countCompletion = 0;
       if (enrolledCoursesSnapshot.forEach) {
-        enrolledCoursesSnapshot.forEach(doc => {
+        enrolledCoursesSnapshot.forEach((doc) => {
           const data = doc.data();
           if (data.completionRate) {
             totalCompletion += data.completionRate;
@@ -232,18 +250,18 @@ export const institutionService = {
           }
         });
       }
-      const avgCompletionRate = countCompletion > 0 ? Math.round(totalCompletion / countCompletion) : 0;
+      const avgCompletionRate =
+        countCompletion > 0 ? Math.round(totalCompletion / countCompletion) : 0;
 
       // Get satisfaction score (from course reviews)
-      const reviewsSnapshot = await getDocs(query(
-        collection(db, 'course_reviews'),
-        where('institutionId', '==', institutionId)
-      )).catch(() => ({ forEach: () => {} }));
-      
+      const reviewsSnapshot = await getDocs(
+        query(collection(db, 'course_reviews'), where('institutionId', '==', institutionId))
+      ).catch(() => ({ forEach: () => {} }));
+
       let totalRating = 0;
       let countRating = 0;
       if (reviewsSnapshot.forEach) {
-        reviewsSnapshot.forEach(doc => {
+        reviewsSnapshot.forEach((doc) => {
           const data = doc.data();
           if (data.rating) {
             totalRating += data.rating;
@@ -251,27 +269,28 @@ export const institutionService = {
           }
         });
       }
-      const avgSatisfactionScore = countRating > 0 ? Math.round((totalRating / countRating) * 10) / 10 : 0;
+      const avgSatisfactionScore =
+        countRating > 0 ? Math.round((totalRating / countRating) * 10) / 10 : 0;
 
       return {
         totalStudents: currentStudents,
         studentChangePercent: Math.round(studentChangePercent * 10) / 10,
         studentIsIncreasing: studentChangePercent > 0,
-        
+
         activeCourses: currentCourses,
         courseChangePercent: Math.round(courseChangePercent * 10) / 10,
         courseIsIncreasing: courseChangePercent > 0,
-        
+
         pendingApplications: applicationsSnapshot.size || 0,
-        
+
         revenue: monthlyRevenue,
         revenueChangePercent: Math.round(revenueChangePercent * 10) / 10,
         revenueIsIncreasing: revenueChangePercent > 0,
-        
+
         totalFaculties: facultiesSnapshot.size || 0,
         upcomingEvents: eventsSnapshot.size || 0,
         completionRate: avgCompletionRate,
-        satisfactionScore: avgSatisfactionScore
+        satisfactionScore: avgSatisfactionScore,
       };
     } catch (error) {
       console.error('Error fetching dashboard stats:', error);
@@ -285,7 +304,7 @@ export const institutionService = {
   async getRecentApplications(institutionId, limitCount = 10) {
     try {
       console.log('Fetching REAL recent applications for institution:', institutionId);
-      
+
       if (!institutionId || institutionId === 'undefined') {
         throw new Error('Invalid institution ID');
       }
@@ -302,18 +321,20 @@ export const institutionService = {
 
       for (const docSnap of snapshot.docs) {
         const appData = docSnap.data();
-        
+
         // Get student info
         let studentName = 'Unknown Student';
         let studentEmail = '';
         let studentPhoto = '';
-        
+
         if (appData.studentId) {
           try {
             const studentDoc = await getDoc(doc(db, 'users', appData.studentId));
             if (studentDoc.exists()) {
               const studentData = studentDoc.data();
-              studentName = `${studentData.firstName || ''} ${studentData.lastName || ''}`.trim() || 'Unknown Student';
+              studentName =
+                `${studentData.firstName || ''} ${studentData.lastName || ''}`.trim() ||
+                'Unknown Student';
               studentEmail = studentData.email || '';
               studentPhoto = studentData.photoURL || '';
             }
@@ -321,7 +342,7 @@ export const institutionService = {
             console.warn('Error fetching student info:', err);
           }
         }
-        
+
         // Get course/program info if available
         let programName = 'Unknown Program';
         if (appData.courseId) {
@@ -335,14 +356,14 @@ export const institutionService = {
             console.warn('Error fetching course info:', err);
           }
         }
-        
+
         applications.push({
           id: docSnap.id,
           ...appData,
           studentName,
           studentEmail,
           studentPhoto,
-          program: appData.program || programName
+          program: appData.program || programName,
         });
       }
 
@@ -359,14 +380,14 @@ export const institutionService = {
   async getUpcomingEvents(institutionId, limitCount = 5) {
     try {
       console.log('Fetching REAL upcoming events for institution:', institutionId);
-      
+
       if (!institutionId || institutionId === 'undefined') {
         throw new Error('Invalid institution ID');
       }
 
       const now = new Date();
       const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
-      
+
       const eventsQuery = query(
         collection(db, 'events'),
         where('institutionId', '==', institutionId),
@@ -377,10 +398,10 @@ export const institutionService = {
       );
 
       const snapshot = await getDocs(eventsQuery);
-      
-      const events = snapshot.docs.map(doc => ({
+
+      const events = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       }));
 
       return events;
@@ -396,7 +417,7 @@ export const institutionService = {
   async getNotifications(institutionId, limitCount = 10) {
     try {
       console.log('Fetching REAL notifications for institution:', institutionId);
-      
+
       if (!institutionId || institutionId === 'undefined') {
         throw new Error('Invalid institution ID');
       }
@@ -410,10 +431,10 @@ export const institutionService = {
       );
 
       const snapshot = await getDocs(notificationsQuery);
-      
-      const notifications = snapshot.docs.map(doc => ({
+
+      const notifications = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       }));
 
       return notifications;
@@ -424,13 +445,13 @@ export const institutionService = {
   },
 
   // === REAL-TIME LISTENERS ===
-  
+
   /**
    * Real-time listener for applications - REAL DATA ONLY
    */
   onApplicationsUpdate(institutionId, callback) {
     console.log('Setting up REAL-TIME listener for applications:', institutionId);
-    
+
     if (!institutionId || institutionId === 'undefined') {
       console.error('Invalid institution ID for real-time listener');
       return () => {};
@@ -444,40 +465,46 @@ export const institutionService = {
         limit(10)
       );
 
-      const unsubscribe = onSnapshot(applicationsQuery, async (snapshot) => {
-        const applications = await Promise.all(
-          snapshot.docs.map(async (docSnap) => {
-            const appData = docSnap.data();
-            let studentName = 'Unknown Student';
-            let studentEmail = '';
-            
-            if (appData.studentId) {
-              try {
-                const studentDoc = await getDoc(doc(db, 'users', appData.studentId));
-                if (studentDoc.exists()) {
-                  const studentData = studentDoc.data();
-                  studentName = `${studentData.firstName || ''} ${studentData.lastName || ''}`.trim() || 'Unknown Student';
-                  studentEmail = studentData.email || '';
+      const unsubscribe = onSnapshot(
+        applicationsQuery,
+        async (snapshot) => {
+          const applications = await Promise.all(
+            snapshot.docs.map(async (docSnap) => {
+              const appData = docSnap.data();
+              let studentName = 'Unknown Student';
+              let studentEmail = '';
+
+              if (appData.studentId) {
+                try {
+                  const studentDoc = await getDoc(doc(db, 'users', appData.studentId));
+                  if (studentDoc.exists()) {
+                    const studentData = studentDoc.data();
+                    studentName =
+                      `${studentData.firstName || ''} ${studentData.lastName || ''}`.trim() ||
+                      'Unknown Student';
+                    studentEmail = studentData.email || '';
+                  }
+                } catch (err) {
+                  console.warn('Error fetching student info:', err);
                 }
-              } catch (err) {
-                console.warn('Error fetching student info:', err);
               }
-            }
-            
-            return {
-              id: docSnap.id,
-              ...appData,
-              studentName,
-              studentEmail
-            };
-          })
-        );
-        
-        callback(applications);
-      }, (error) => {
-        console.error('Error in applications real-time listener:', error);
-        callback([]);
-      });
+
+              return {
+                id: docSnap.id,
+                ...appData,
+                studentName,
+                studentEmail,
+              };
+            })
+          );
+
+          callback(applications);
+        },
+        (error) => {
+          console.error('Error in applications real-time listener:', error);
+          callback([]);
+        }
+      );
 
       return unsubscribe;
     } catch (error) {
@@ -491,7 +518,7 @@ export const institutionService = {
    */
   onNotificationsUpdate(institutionId, callback) {
     console.log('Setting up REAL-TIME listener for notifications:', institutionId);
-    
+
     if (!institutionId || institutionId === 'undefined') {
       console.error('Invalid institution ID for real-time listener');
       return () => {};
@@ -506,16 +533,20 @@ export const institutionService = {
         limit(10)
       );
 
-      const unsubscribe = onSnapshot(notificationsQuery, (snapshot) => {
-        const notifications = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-        callback(notifications);
-      }, (error) => {
-        console.error('Error in notifications real-time listener:', error);
-        callback([]);
-      });
+      const unsubscribe = onSnapshot(
+        notificationsQuery,
+        (snapshot) => {
+          const notifications = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          callback(notifications);
+        },
+        (error) => {
+          console.error('Error in notifications real-time listener:', error);
+          callback([]);
+        }
+      );
 
       return unsubscribe;
     } catch (error) {
@@ -529,7 +560,7 @@ export const institutionService = {
    */
   onStatsUpdate(institutionId, callback) {
     console.log('Setting up REAL-TIME listener for stats:', institutionId);
-    
+
     if (!institutionId || institutionId === 'undefined') {
       console.error('Invalid institution ID for stats listener');
       return () => {};
@@ -537,7 +568,7 @@ export const institutionService = {
 
     // We'll update stats every 30 seconds and on document changes
     let refreshInterval;
-    
+
     const refreshStats = async () => {
       try {
         const stats = await this.getDashboardStats(institutionId);
@@ -559,27 +590,34 @@ export const institutionService = {
           totalFaculties: 0,
           upcomingEvents: 0,
           completionRate: 0,
-          satisfactionScore: 0
+          satisfactionScore: 0,
         });
       }
     };
 
     // Initial refresh
     refreshStats();
-    
+
     // Refresh every 30 seconds
     refreshInterval = setInterval(refreshStats, 30000);
 
     // Also listen for changes in relevant collections
-    const collectionsToWatch = ['students', 'courses', 'applications', 'payments', 'events', 'faculties'];
-    
-    const unsubscribers = collectionsToWatch.map(collectionName => {
+    const collectionsToWatch = [
+      'students',
+      'courses',
+      'applications',
+      'payments',
+      'events',
+      'faculties',
+    ];
+
+    const unsubscribers = collectionsToWatch.map((collectionName) => {
       try {
         const q = query(
           collection(db, collectionName),
           where('institutionId', '==', institutionId)
         );
-        
+
         return onSnapshot(q, () => {
           refreshStats();
         });
@@ -591,7 +629,7 @@ export const institutionService = {
 
     return () => {
       clearInterval(refreshInterval);
-      unsubscribers.forEach(unsub => {
+      unsubscribers.forEach((unsub) => {
         if (typeof unsub === 'function') unsub();
       });
     };
@@ -602,7 +640,7 @@ export const institutionService = {
    */
   onEventsUpdate(institutionId, callback) {
     console.log('Setting up REAL-TIME listener for events:', institutionId);
-    
+
     if (!institutionId || institutionId === 'undefined') {
       console.error('Invalid institution ID for events listener');
       return () => {};
@@ -611,7 +649,7 @@ export const institutionService = {
     try {
       const now = new Date();
       const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
-      
+
       const eventsQuery = query(
         collection(db, 'events'),
         where('institutionId', '==', institutionId),
@@ -621,16 +659,20 @@ export const institutionService = {
         limit(5)
       );
 
-      const unsubscribe = onSnapshot(eventsQuery, (snapshot) => {
-        const events = snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-        callback(events);
-      }, (error) => {
-        console.error('Error in events real-time listener:', error);
-        callback([]);
-      });
+      const unsubscribe = onSnapshot(
+        eventsQuery,
+        (snapshot) => {
+          const events = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          callback(events);
+        },
+        (error) => {
+          console.error('Error in events real-time listener:', error);
+          callback([]);
+        }
+      );
 
       return unsubscribe;
     } catch (error) {
@@ -640,7 +682,7 @@ export const institutionService = {
   },
 
   // === ANALYTICS METHODS ===
-  
+
   /**
    * Get enrollment analytics - REAL DATA ONLY
    */
@@ -653,25 +695,27 @@ export const institutionService = {
       const now = new Date();
       const months = [];
       const values = [];
-      
+
       // Get data for last 6 months
       for (let i = 5; i >= 0; i--) {
         const month = new Date(now.getFullYear(), now.getMonth() - i, 1);
         const nextMonth = new Date(now.getFullYear(), now.getMonth() - i + 1, 1);
-        
+
         const monthName = month.toLocaleDateString('en-US', { month: 'short' });
         months.push(monthName);
-        
+
         try {
           // Query students enrolled in this month
-          const studentsSnapshot = await getDocs(query(
-            collection(db, 'students'),
-            where('institutionId', '==', institutionId),
-            where('status', '==', 'active'),
-            where('enrolledDate', '>=', Timestamp.fromDate(month)),
-            where('enrolledDate', '<', Timestamp.fromDate(nextMonth))
-          ));
-          
+          const studentsSnapshot = await getDocs(
+            query(
+              collection(db, 'students'),
+              where('institutionId', '==', institutionId),
+              where('status', '==', 'active'),
+              where('enrolledDate', '>=', Timestamp.fromDate(month)),
+              where('enrolledDate', '<', Timestamp.fromDate(nextMonth))
+            )
+          );
+
           values.push(studentsSnapshot.size || 0);
         } catch (error) {
           console.warn(`Error fetching enrollment for ${monthName}:`, error);
@@ -688,7 +732,7 @@ export const institutionService = {
         labels: months,
         values,
         totalChange: Math.round(totalChange * 10) / 10,
-        isIncreasing: totalChange > 0
+        isIncreasing: totalChange > 0,
       };
     } catch (error) {
       console.error('Error fetching enrollment analytics:', error);
@@ -699,84 +743,86 @@ export const institutionService = {
         labels: months,
         values,
         totalChange: 0,
-        isIncreasing: false
+        isIncreasing: false,
       };
     }
   },
 
- 
- /* Get revenue analytics - REAL DATA ONLY
- */
-async getRevenueAnalytics(institutionId, period = 'month') {
-  try {
-    if (!institutionId || institutionId === 'undefined') {
-      console.error('Invalid institution ID for revenue analytics');
+  /* Get revenue analytics - REAL DATA ONLY
+   */
+  async getRevenueAnalytics(institutionId, period = 'month') {
+    try {
+      if (!institutionId || institutionId === 'undefined') {
+        console.error('Invalid institution ID for revenue analytics');
+        return this.getDefaultRevenueAnalytics();
+      }
+
+      console.log('Fetching REAL revenue analytics for institution:', institutionId);
+
+      const now = new Date();
+      const months = [];
+      const values = [];
+
+      // Get data for last 6 months
+      for (let i = 5; i >= 0; i--) {
+        const month = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const nextMonth = new Date(now.getFullYear(), now.getMonth() - i + 1, 1);
+
+        const monthName = month.toLocaleDateString('en-US', { month: 'short' });
+        months.push(monthName);
+
+        try {
+          // Query payments in this month
+          const paymentsSnapshot = await getDocs(
+            query(
+              collection(db, 'payments'),
+              where('institutionId', '==', institutionId),
+              where('status', '==', 'completed'),
+              where('paymentDate', '>=', Timestamp.fromDate(month)),
+              where('paymentDate', '<', Timestamp.fromDate(nextMonth))
+            )
+          );
+
+          let monthRevenue = 0;
+          paymentsSnapshot.forEach((doc) => {
+            const payment = doc.data();
+            monthRevenue += payment.amount || 0;
+          });
+
+          values.push(monthRevenue);
+        } catch (error) {
+          console.warn(`Error fetching revenue for ${monthName}:`, error);
+          values.push(0);
+        }
+      }
+
+      return {
+        labels: months,
+        values,
+        totalRevenue: values.reduce((sum, val) => sum + val, 0),
+        averageRevenue:
+          values.length > 0 ? values.reduce((sum, val) => sum + val, 0) / values.length : 0,
+      };
+    } catch (error) {
+      console.error('Error fetching revenue analytics:', error);
       return this.getDefaultRevenueAnalytics();
     }
+  },
 
-    console.log('Fetching REAL revenue analytics for institution:', institutionId);
-
-    const now = new Date();
-    const months = [];
-    const values = [];
-    
-    // Get data for last 6 months
-    for (let i = 5; i >= 0; i--) {
-      const month = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const nextMonth = new Date(now.getFullYear(), now.getMonth() - i + 1, 1);
-      
-      const monthName = month.toLocaleDateString('en-US', { month: 'short' });
-      months.push(monthName);
-      
-      try {
-        // Query payments in this month
-        const paymentsSnapshot = await getDocs(query(
-          collection(db, 'payments'),
-          where('institutionId', '==', institutionId),
-          where('status', '==', 'completed'),
-          where('paymentDate', '>=', Timestamp.fromDate(month)),
-          where('paymentDate', '<', Timestamp.fromDate(nextMonth))
-        ));
-        
-        let monthRevenue = 0;
-        paymentsSnapshot.forEach(doc => {
-          const payment = doc.data();
-          monthRevenue += payment.amount || 0;
-        });
-        
-        values.push(monthRevenue);
-      } catch (error) {
-        console.warn(`Error fetching revenue for ${monthName}:`, error);
-        values.push(0);
-      }
-    }
-
+  // Add helper method
+  getDefaultRevenueAnalytics() {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+    const values = [15000, 18000, 22000, 19000, 25000, 28000]; // Sample data
     return {
       labels: months,
       values,
       totalRevenue: values.reduce((sum, val) => sum + val, 0),
-      averageRevenue: values.length > 0 ? values.reduce((sum, val) => sum + val, 0) / values.length : 0
+      averageRevenue: values.reduce((sum, val) => sum + val, 0) / values.length,
     };
-  } catch (error) {
-    console.error('Error fetching revenue analytics:', error);
-    return this.getDefaultRevenueAnalytics();
-  }
-},
-
-// Add helper method
-getDefaultRevenueAnalytics() {
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-  const values = [15000, 18000, 22000, 19000, 25000, 28000]; // Sample data
-  return {
-    labels: months,
-    values,
-    totalRevenue: values.reduce((sum, val) => sum + val, 0),
-    averageRevenue: values.reduce((sum, val) => sum + val, 0) / values.length
-  };
-},
+  },
 
   // === UTILITY METHODS ===
-  
+
   /**
    * Create new course - REAL DATA ONLY
    */
@@ -795,7 +841,7 @@ getDefaultRevenueAnalytics() {
         createdBy: auth.currentUser?.uid,
         enrollmentCount: 0,
         averageRating: 0,
-        totalReviews: 0
+        totalReviews: 0,
       });
 
       // Create notification for course creation
@@ -805,13 +851,13 @@ getDefaultRevenueAnalytics() {
         title: 'New Course Created',
         message: `Course "${courseData.title}" has been created successfully.`,
         link: `/institute/courses/${courseRef.id}`,
-        priority: 'medium'
+        priority: 'medium',
       });
 
       return {
         success: true,
         courseId: courseRef.id,
-        message: 'Course created successfully'
+        message: 'Course created successfully',
       };
     } catch (error) {
       console.error('Error creating course:', error);
@@ -825,21 +871,21 @@ getDefaultRevenueAnalytics() {
   async updateApplicationStatus(applicationId, status, notes = '') {
     try {
       const appRef = doc(db, 'applications', applicationId);
-      
+
       // Get current application data
       const appDoc = await getDoc(appRef);
       if (!appDoc.exists()) {
         throw new Error('Application not found');
       }
-      
+
       const appData = appDoc.data();
-      
+
       await updateDoc(appRef, {
         status,
         reviewedAt: Timestamp.now(),
         reviewedBy: auth.currentUser?.uid,
         reviewNotes: notes,
-        updatedAt: Timestamp.now()
+        updatedAt: Timestamp.now(),
       });
 
       // Create notification for student
@@ -850,19 +896,19 @@ getDefaultRevenueAnalytics() {
           title: 'Application Status Updated',
           message: `Your application has been ${status}. ${notes ? `Notes: ${notes}` : ''}`,
           link: `/student/applications/${applicationId}`,
-          priority: 'high'
+          priority: 'high',
         });
       }
 
-      return { 
-        success: true, 
+      return {
+        success: true,
         message: `Application status updated to ${status}`,
         data: {
           ...appData,
           status,
           reviewedAt: Timestamp.now(),
-          reviewNotes: notes
-        }
+          reviewNotes: notes,
+        },
       };
     } catch (error) {
       console.error('Error updating application status:', error);
@@ -878,7 +924,7 @@ getDefaultRevenueAnalytics() {
       const notification = {
         ...notificationData,
         read: false,
-        createdAt: Timestamp.now()
+        createdAt: Timestamp.now(),
       };
 
       // Ensure required fields
@@ -887,11 +933,11 @@ getDefaultRevenueAnalytics() {
       }
 
       const notificationRef = await addDoc(collection(db, 'notifications'), notification);
-      
-      return { 
-        success: true, 
+
+      return {
+        success: true,
         message: 'Notification created',
-        notificationId: notificationRef.id 
+        notificationId: notificationRef.id,
       };
     } catch (error) {
       console.error('Error creating notification:', error);
@@ -907,12 +953,12 @@ getDefaultRevenueAnalytics() {
       const notifRef = doc(db, 'notifications', notificationId);
       await updateDoc(notifRef, {
         read: true,
-        readAt: Timestamp.now()
+        readAt: Timestamp.now(),
       });
-      
-      return { 
-        success: true, 
-        message: 'Notification marked as read' 
+
+      return {
+        success: true,
+        message: 'Notification marked as read',
       };
     } catch (error) {
       console.error('Error marking notification as read:', error);
@@ -938,18 +984,18 @@ getDefaultRevenueAnalytics() {
       const snapshot = await getDocs(notificationsQuery);
       const batch = writeBatch(db);
 
-      snapshot.docs.forEach(docSnap => {
+      snapshot.docs.forEach((docSnap) => {
         batch.update(docSnap.ref, {
           read: true,
-          readAt: Timestamp.now()
+          readAt: Timestamp.now(),
         });
       });
 
       await batch.commit();
-      
-      return { 
-        success: true, 
-        message: `Marked ${snapshot.size} notifications as read` 
+
+      return {
+        success: true,
+        message: `Marked ${snapshot.size} notifications as read`,
       };
     } catch (error) {
       console.error('Error marking all notifications as read:', error);
@@ -967,13 +1013,20 @@ getDefaultRevenueAnalytics() {
       }
 
       // Validate file type and size (max 10MB)
-      const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+      const validTypes = [
+        'image/jpeg',
+        'image/png',
+        'image/gif',
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      ];
       const maxSize = 10 * 1024 * 1024; // 10MB
-      
+
       if (!validTypes.includes(file.type)) {
         throw new Error('Invalid file type. Allowed types: JPEG, PNG, GIF, PDF, DOC, DOCX');
       }
-      
+
       if (file.size > maxSize) {
         throw new Error('File size exceeds 10MB limit');
       }
@@ -983,7 +1036,7 @@ getDefaultRevenueAnalytics() {
       const randomString = Math.random().toString(36).substring(2, 15);
       const safeFileName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
       const fileName = `${timestamp}_${randomString}_${safeFileName}`;
-      
+
       const storageRef = ref(storage, `${path}/${fileName}`);
       await uploadBytes(storageRef, file);
       const downloadURL = await getDownloadURL(storageRef);
@@ -994,7 +1047,7 @@ getDefaultRevenueAnalytics() {
         fileName: file.name,
         fileSize: file.size,
         fileType: file.type,
-        message: 'File uploaded successfully'
+        message: 'File uploaded successfully',
       };
     } catch (error) {
       console.error('Error uploading file:', error);
@@ -1019,28 +1072,29 @@ getDefaultRevenueAnalytics() {
       );
 
       const snapshot = await getDocs(activitiesQuery);
-      
+
       const activities = await Promise.all(
         snapshot.docs.map(async (docSnap) => {
           const activity = docSnap.data();
           let userName = 'System';
-          
+
           if (activity.userId) {
             try {
               const userDoc = await getDoc(doc(db, 'users', activity.userId));
               if (userDoc.exists()) {
                 const userData = userDoc.data();
-                userName = `${userData.firstName || ''} ${userData.lastName || ''}`.trim() || 'User';
+                userName =
+                  `${userData.firstName || ''} ${userData.lastName || ''}`.trim() || 'User';
               }
             } catch (err) {
               console.warn('Error fetching user info:', err);
             }
           }
-          
+
           return {
             id: docSnap.id,
             ...activity,
-            userName
+            userName,
           };
         })
       );
@@ -1066,41 +1120,49 @@ getDefaultRevenueAnalytics() {
         topCoursesSnapshot,
         recentEnrollmentsSnapshot,
         popularProgramsSnapshot,
-        facultyPerformanceSnapshot
+        facultyPerformanceSnapshot,
       ] = await Promise.all([
         // Top courses by enrollment
-        getDocs(query(
-          collection(db, 'courses'),
-          where('institutionId', '==', institutionId),
-          where('status', '==', 'active'),
-          orderBy('enrollmentCount', 'desc'),
-          limit(5)
-        )).catch(() => ({ docs: [] })),
+        getDocs(
+          query(
+            collection(db, 'courses'),
+            where('institutionId', '==', institutionId),
+            where('status', '==', 'active'),
+            orderBy('enrollmentCount', 'desc'),
+            limit(5)
+          )
+        ).catch(() => ({ docs: [] })),
         // Recent enrollments
-        getDocs(query(
-          collection(db, 'students'),
-          where('institutionId', '==', institutionId),
-          orderBy('enrolledDate', 'desc'),
-          limit(10)
-        )).catch(() => ({ docs: [] })),
+        getDocs(
+          query(
+            collection(db, 'students'),
+            where('institutionId', '==', institutionId),
+            orderBy('enrolledDate', 'desc'),
+            limit(10)
+          )
+        ).catch(() => ({ docs: [] })),
         // Popular programs
-        getDocs(query(
-          collection(db, 'applications'),
-          where('institutionId', '==', institutionId),
-          where('status', '==', 'approved')
-        )).catch(() => ({ forEach: () => {} })),
+        getDocs(
+          query(
+            collection(db, 'applications'),
+            where('institutionId', '==', institutionId),
+            where('status', '==', 'approved')
+          )
+        ).catch(() => ({ forEach: () => {} })),
         // Faculty with active courses
-        getDocs(query(
-          collection(db, 'faculties'),
-          where('institutionId', '==', institutionId),
-          where('status', '==', 'active')
-        )).catch(() => ({ size: 0 }))
+        getDocs(
+          query(
+            collection(db, 'faculties'),
+            where('institutionId', '==', institutionId),
+            where('status', '==', 'active')
+          )
+        ).catch(() => ({ size: 0 })),
       ]);
 
       // Process top courses
-      const topCourses = topCoursesSnapshot.docs.map(doc => ({
+      const topCourses = topCoursesSnapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       }));
 
       // Process recent enrollments with student info
@@ -1108,23 +1170,25 @@ getDefaultRevenueAnalytics() {
         recentEnrollmentsSnapshot.docs.map(async (docSnap) => {
           const student = docSnap.data();
           let studentName = 'Unknown Student';
-          
+
           if (student.userId) {
             try {
               const userDoc = await getDoc(doc(db, 'users', student.userId));
               if (userDoc.exists()) {
                 const userData = userDoc.data();
-                studentName = `${userData.firstName || ''} ${userData.lastName || ''}`.trim() || 'Unknown Student';
+                studentName =
+                  `${userData.firstName || ''} ${userData.lastName || ''}`.trim() ||
+                  'Unknown Student';
               }
             } catch (err) {
               console.warn('Error fetching user info:', err);
             }
           }
-          
+
           return {
             id: docSnap.id,
             ...student,
-            studentName
+            studentName,
           };
         })
       );
@@ -1132,7 +1196,7 @@ getDefaultRevenueAnalytics() {
       // Calculate program popularity
       const programCounts = {};
       if (popularProgramsSnapshot.forEach) {
-        popularProgramsSnapshot.forEach(doc => {
+        popularProgramsSnapshot.forEach((doc) => {
           const app = doc.data();
           const program = app.program || 'General';
           programCounts[program] = (programCounts[program] || 0) + 1;
@@ -1149,13 +1213,13 @@ getDefaultRevenueAnalytics() {
         recentEnrollments,
         popularPrograms,
         facultyCount: facultyPerformanceSnapshot.size || 0,
-        totalActiveFaculty: facultyPerformanceSnapshot.size || 0
+        totalActiveFaculty: facultyPerformanceSnapshot.size || 0,
       };
     } catch (error) {
       console.error('Error fetching institution insights:', error);
       throw new Error('Failed to load institution insights');
     }
-  }
+  },
 };
 
 export default institutionService;

@@ -15,7 +15,7 @@ import {
   InputGroup,
   ListGroup,
   FloatingLabel,
-  ToastContainer
+  ToastContainer,
 } from 'react-bootstrap';
 import {
   FiUser,
@@ -42,19 +42,15 @@ import {
   FiPercent,
   FiBriefcase as FiBriefcaseIcon,
   FiAlertCircle,
-  FiCheckCircle
+  FiCheckCircle,
 } from 'react-icons/fi';
 import {
   MdOutlineEdit,
   MdOutlineDelete,
   MdOutlineVisibility,
-  MdOutlineCloudUpload
+  MdOutlineCloudUpload,
 } from 'react-icons/md';
-import {
-  FaGraduationCap,
-  FaFilePdf,
-  FaRegIdCard
-} from 'react-icons/fa';
+import { FaGraduationCap, FaFilePdf, FaRegIdCard } from 'react-icons/fa';
 import { useAuth, useStudent } from '../../context';
 import { profileService } from '../../services/profileService';
 import ProfilePhotoUpload from '../../components/profile/ProfilePhotoUpload';
@@ -67,7 +63,7 @@ const StudentProfile = () => {
   const { currentUser } = useAuth();
   const { refreshData } = useStudent();
   const { showNotification } = useNotifications();
-  
+
   // State
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -91,7 +87,7 @@ const StudentProfile = () => {
     lastSaved,
     hasUnsavedChanges,
     manualSave,
-    resetData
+    resetData,
   } = useAutoSave(null, {
     debounceTime: 2000,
     saveThreshold: 2,
@@ -99,19 +95,19 @@ const StudentProfile = () => {
       if (currentUser?.uid && data) {
         const result = await profileService.updateProfile(currentUser.uid, data, {
           silent: true,
-          validate: false
+          validate: false,
         });
         if (result.success) {
           showNotification({
             type: 'success',
             title: 'Auto-saved',
             message: 'Profile auto-saved successfully',
-            duration: 2000
+            duration: 2000,
           });
           refreshData();
         }
       }
-    }
+    },
   });
 
   // Fetch profile data
@@ -125,13 +121,13 @@ const StudentProfile = () => {
 
       const result = await profileService.fetchProfile(currentUser.uid, {
         cacheFirst: true,
-        refresh: false
+        refresh: false,
       });
 
       if (result.success) {
         const data = result.data;
         setProfileData(data);
-        
+
         // Calculate profile completion
         const completion = profileService.calculateProfileCompletion(data);
         setProfileCompletion(completion);
@@ -144,7 +140,7 @@ const StudentProfile = () => {
         type: 'error',
         title: 'Profile Error',
         message: error.message,
-        duration: 5000
+        duration: 5000,
       });
     } finally {
       setLoading(false);
@@ -158,21 +154,21 @@ const StudentProfile = () => {
 
   // Handle field updates
   const handleFieldChange = (field, value, isNested = false) => {
-    setErrors(prev => ({ ...prev, [field]: '' }));
-    
+    setErrors((prev) => ({ ...prev, [field]: '' }));
+
     if (isNested) {
       const [parent, child] = field.split('.');
-      setProfileData(prev => ({
+      setProfileData((prev) => ({
         ...prev,
         [parent]: {
           ...prev[parent],
-          [child]: value
-        }
+          [child]: value,
+        },
       }));
     } else {
-      setProfileData(prev => ({
+      setProfileData((prev) => ({
         ...prev,
-        [field]: value
+        [field]: value,
       }));
     }
   };
@@ -185,14 +181,14 @@ const StudentProfile = () => {
         type: 'success',
         title: 'Success',
         message: 'Profile photo updated',
-        duration: 3000
+        duration: 3000,
       });
     } catch (error) {
       showNotification({
         type: 'error',
         title: 'Upload Error',
         message: 'Failed to update profile photo',
-        duration: 3000
+        duration: 3000,
       });
     }
   };
@@ -207,7 +203,7 @@ const StudentProfile = () => {
 
       // Simulate progress
       const progressInterval = setInterval(() => {
-        setUploadProgress(prev => {
+        setUploadProgress((prev) => {
           if (prev >= 90) {
             clearInterval(progressInterval);
             return prev;
@@ -227,9 +223,9 @@ const StudentProfile = () => {
           type: 'success',
           title: 'Success',
           message: 'Resume uploaded successfully',
-          duration: 3000
+          duration: 3000,
         });
-        
+
         setTimeout(() => {
           setIsUploading(false);
           setUploadProgress(0);
@@ -244,7 +240,7 @@ const StudentProfile = () => {
         type: 'error',
         title: 'Upload Failed',
         message: error.message,
-        duration: 3000
+        duration: 3000,
       });
     }
   };
@@ -255,13 +251,13 @@ const StudentProfile = () => {
 
     const currentSkills = profileData?.skills || [];
     const skill = newSkill.trim().toLowerCase();
-    
+
     if (currentSkills.includes(skill)) {
       showNotification({
         type: 'warning',
         title: 'Duplicate',
         message: 'Skill already exists',
-        duration: 2000
+        duration: 2000,
       });
       return;
     }
@@ -273,13 +269,13 @@ const StudentProfile = () => {
       type: 'success',
       title: 'Added',
       message: 'Skill added successfully',
-      duration: 2000
+      duration: 2000,
     });
   };
 
   const handleRemoveSkill = (skillToRemove) => {
     const currentSkills = profileData?.skills || [];
-    const updatedSkills = currentSkills.filter(skill => skill !== skillToRemove);
+    const updatedSkills = currentSkills.filter((skill) => skill !== skillToRemove);
     handleFieldChange('skills', updatedSkills);
   };
 
@@ -296,14 +292,14 @@ const StudentProfile = () => {
           type: 'error',
           title: 'Validation Error',
           message: 'Please fix the errors in the form',
-          duration: 4000
+          duration: 4000,
         });
         return;
       }
 
       const result = await profileService.updateProfile(currentUser.uid, profileData, {
         validate: false,
-        updateAuth: true
+        updateAuth: true,
       });
 
       if (result.success) {
@@ -312,7 +308,7 @@ const StudentProfile = () => {
           type: 'success',
           title: 'Success',
           message: 'Profile saved successfully',
-          duration: 3000
+          duration: 3000,
         });
         fetchProfileData();
       } else {
@@ -324,7 +320,7 @@ const StudentProfile = () => {
         type: 'error',
         title: 'Save Failed',
         message: error.message,
-        duration: 4000
+        duration: 4000,
       });
     } finally {
       setSaving(false);
@@ -334,14 +330,20 @@ const StudentProfile = () => {
   // Calculate profile completion breakdown
   const getCompletionBreakdown = () => {
     if (!profileData) return [];
-    
+
     return [
-      { label: 'Personal Info', completed: !!(profileData.fullName && profileData.email && profileData.studentId) },
-      { label: 'Academic Details', completed: !!(profileData.institution && profileData.course && profileData.yearOfStudy) },
+      {
+        label: 'Personal Info',
+        completed: !!(profileData.fullName && profileData.email && profileData.studentId),
+      },
+      {
+        label: 'Academic Details',
+        completed: !!(profileData.institution && profileData.course && profileData.yearOfStudy),
+      },
       { label: 'Contact Info', completed: !!(profileData.phone || profileData.address) },
       { label: 'Skills', completed: !!(profileData.skills && profileData.skills.length > 0) },
       { label: 'Resume', completed: !!profileData.resumeUrl },
-      { label: 'Career Goals', completed: !!profileData.careerGoals }
+      { label: 'Career Goals', completed: !!profileData.careerGoals },
     ];
   };
 
@@ -371,12 +373,7 @@ const StudentProfile = () => {
               <FiAlertCircle size={64} className="text-danger mb-4" />
               <h3 className="mb-3">Unable to Load Profile</h3>
               <p className="text-muted mb-4">Please try again later</p>
-              <Button 
-                variant="primary" 
-                size="lg" 
-                onClick={fetchProfileData}
-                className="px-4"
-              >
+              <Button variant="primary" size="lg" onClick={fetchProfileData} className="px-4">
                 <FiRefreshCw className="me-2" />
                 Try Again
               </Button>
@@ -416,9 +413,10 @@ const StudentProfile = () => {
                   <h1 className="mb-1">{profileData?.fullName || 'Student'}</h1>
                   <p className="text-muted mb-2">
                     <FaRegIdCard className="me-2" />
-                    {profileData?.studentId || 'No ID'} • 
+                    {profileData?.studentId || 'No ID'} •
                     <FaGraduationCap className="ms-3 me-2" />
-                    {profileData?.course || 'No course'} at {profileData?.institution || 'No institution'}
+                    {profileData?.course || 'No course'} at{' '}
+                    {profileData?.institution || 'No institution'}
                   </p>
                 </div>
                 <div className="d-flex align-items-center gap-2">
@@ -437,15 +435,21 @@ const StudentProfile = () => {
                   </Button>
                 </div>
               </div>
-              
+
               <div className="profile-completion mb-3">
                 <div className="d-flex justify-content-between align-items-center mb-1">
                   <span>Profile Completion</span>
                   <strong>{profileCompletion}%</strong>
                 </div>
-                <ProgressBar 
-                  now={profileCompletion} 
-                  variant={profileCompletion >= 80 ? 'success' : profileCompletion >= 50 ? 'warning' : 'danger'}
+                <ProgressBar
+                  now={profileCompletion}
+                  variant={
+                    profileCompletion >= 80
+                      ? 'success'
+                      : profileCompletion >= 50
+                        ? 'warning'
+                        : 'danger'
+                  }
                 />
               </div>
 
@@ -467,10 +471,7 @@ const StudentProfile = () => {
                     </>
                   )}
                 </Button>
-                <Button
-                  variant="outline-secondary"
-                  onClick={() => setShowExportModal(true)}
-                >
+                <Button variant="outline-secondary" onClick={() => setShowExportModal(true)}>
                   <FiDownload className="me-2" />
                   Export
                 </Button>
@@ -777,7 +778,10 @@ const StudentProfile = () => {
                         <div>
                           <h6 className="mb-1">Current Resume</h6>
                           <small className="text-muted">
-                            Uploaded: {new Date(profileData.resumeUploadedAt || Date.now()).toLocaleDateString()}
+                            Uploaded:{' '}
+                            {new Date(
+                              profileData.resumeUploadedAt || Date.now()
+                            ).toLocaleDateString()}
                           </small>
                         </div>
                       </div>
@@ -868,7 +872,10 @@ const StudentProfile = () => {
                 <h6>Profile Checklist</h6>
                 <ListGroup variant="flush">
                   {completionBreakdown.map((item, index) => (
-                    <ListGroup.Item key={index} className="d-flex justify-content-between align-items-center">
+                    <ListGroup.Item
+                      key={index}
+                      className="d-flex justify-content-between align-items-center"
+                    >
                       <span>{item.label}</span>
                       {item.completed ? (
                         <FiCheckCircle className="text-success" />
@@ -1061,11 +1068,7 @@ const StudentProfile = () => {
                           <FiEye className="me-1" />
                           View
                         </Button>
-                        <Button
-                          variant="outline-success"
-                          href={profileData.resumeUrl}
-                          download
-                        >
+                        <Button variant="outline-success" href={profileData.resumeUrl} download>
                           <FiDownload className="me-1" />
                           Download
                         </Button>
@@ -1111,23 +1114,34 @@ const StudentProfile = () => {
         </Modal.Header>
         <Modal.Body>
           <div className="d-grid gap-2">
-            <Button variant="outline-dark" onClick={() => {
-              navigator.clipboard.writeText(`${window.location.origin}/profile/${currentUser?.uid}`);
-              showNotification({
-                type: 'success',
-                title: 'Copied',
-                message: 'Profile link copied to clipboard',
-                duration: 2000
-              });
-              setShowShareModal(false);
-            }}>
+            <Button
+              variant="outline-dark"
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  `${window.location.origin}/profile/${currentUser?.uid}`
+                );
+                showNotification({
+                  type: 'success',
+                  title: 'Copied',
+                  message: 'Profile link copied to clipboard',
+                  duration: 2000,
+                });
+                setShowShareModal(false);
+              }}
+            >
               <FiShare2 className="me-2" />
               Copy Profile Link
             </Button>
-            <Button variant="outline-primary" onClick={() => {
-              window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.origin + '/profile/' + currentUser?.uid)}`, '_blank');
-              setShowShareModal(false);
-            }}>
+            <Button
+              variant="outline-primary"
+              onClick={() => {
+                window.open(
+                  `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.origin + '/profile/' + currentUser?.uid)}`,
+                  '_blank'
+                );
+                setShowShareModal(false);
+              }}
+            >
               <FiLinkedin className="me-2" />
               Share on LinkedIn
             </Button>
@@ -1155,25 +1169,29 @@ const StudentProfile = () => {
             <Button variant="secondary" onClick={() => setShowExportModal(false)}>
               Cancel
             </Button>
-            <Button variant="primary" onClick={() => {
-              // Simple export implementation
-              const dataStr = JSON.stringify(profileData, null, 2);
-              const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-              const exportFileDefaultName = `profile-${new Date().getTime()}.json`;
-              
-              const linkElement = document.createElement('a');
-              linkElement.setAttribute('href', dataUri);
-              linkElement.setAttribute('download', exportFileDefaultName);
-              linkElement.click();
-              
-              showNotification({
-                type: 'success',
-                title: 'Exported',
-                message: 'Profile exported successfully',
-                duration: 2000
-              });
-              setShowExportModal(false);
-            }}>
+            <Button
+              variant="primary"
+              onClick={() => {
+                // Simple export implementation
+                const dataStr = JSON.stringify(profileData, null, 2);
+                const dataUri =
+                  'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+                const exportFileDefaultName = `profile-${new Date().getTime()}.json`;
+
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+
+                showNotification({
+                  type: 'success',
+                  title: 'Exported',
+                  message: 'Profile exported successfully',
+                  duration: 2000,
+                });
+                setShowExportModal(false);
+              }}
+            >
               Export
             </Button>
           </div>

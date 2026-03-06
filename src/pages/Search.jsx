@@ -1,21 +1,61 @@
 ﻿/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
-import { 
-  Container, Row, Col, Form, InputGroup, Button, Card, 
-  Badge, Tabs, Tab, Spinner, Alert, Pagination, Modal,
-  Dropdown, DropdownButton, ProgressBar, ListGroup
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  InputGroup,
+  Button,
+  Card,
+  Badge,
+  Tabs,
+  Tab,
+  Spinner,
+  Alert,
+  Pagination,
+  Modal,
+  Dropdown,
+  DropdownButton,
+  ProgressBar,
+  ListGroup,
 } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
-import { 
-  FaSearch, FaBriefcase, FaGraduationCap, FaMoneyBillWave, 
-  FaLightbulb, FaUsers, FaRocket, FaBook, FaFilter,
-  FaCalendar, FaMapMarkerAlt, FaClock, FaStar, FaEye,
-  FaHeart, FaShareAlt, FaBuilding, FaUserTie, FaBookOpen,
-  FaChartLine, FaHandshake, FaShieldAlt, FaRegSave,
-  FaExternalLinkAlt, FaSort, FaTimes, FaArrowRight,
-  FaDownload, FaEnvelope, FaPhone, FaGlobe, FaCog,
-  FaBell
+import {
+  FaSearch,
+  FaBriefcase,
+  FaGraduationCap,
+  FaMoneyBillWave,
+  FaLightbulb,
+  FaUsers,
+  FaRocket,
+  FaBook,
+  FaFilter,
+  FaCalendar,
+  FaMapMarkerAlt,
+  FaClock,
+  FaStar,
+  FaEye,
+  FaHeart,
+  FaShareAlt,
+  FaBuilding,
+  FaUserTie,
+  FaBookOpen,
+  FaChartLine,
+  FaHandshake,
+  FaShieldAlt,
+  FaRegSave,
+  FaExternalLinkAlt,
+  FaSort,
+  FaTimes,
+  FaArrowRight,
+  FaDownload,
+  FaEnvelope,
+  FaPhone,
+  FaGlobe,
+  FaCog,
+  FaBell,
 } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
 
@@ -36,7 +76,7 @@ const Search = () => {
     location: '',
     experienceLevel: 'all',
     sortBy: 'createdAt',
-    sortOrder: 'desc'
+    sortOrder: 'desc',
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedOpportunity, setSelectedOpportunity] = useState(null);
@@ -49,7 +89,7 @@ const Search = () => {
     courses: 0,
     funding: 0,
     business: 0,
-    mentorship: 0
+    mentorship: 0,
   });
   const [totalPages, setTotalPages] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
@@ -62,14 +102,34 @@ const Search = () => {
   const categories = [
     { id: 'all', name: 'All Categories', icon: FaBriefcase, color: '#6c757d', count: 0 },
     { id: OPPORTUNITY_TYPES.JOB, name: 'Jobs & Internships', icon: FaBriefcase, color: '#0d6efd' },
-    { id: OPPORTUNITY_TYPES.COURSE, name: 'Courses & Training', icon: FaGraduationCap, color: '#198754' },
-    { id: OPPORTUNITY_TYPES.FUNDING, name: 'Funding & Grants', icon: FaMoneyBillWave, color: '#ffc107' },
-    { id: OPPORTUNITY_TYPES.BUSINESS_IDEA, name: 'Business Ideas', icon: FaRocket, color: '#dc3545' },
+    {
+      id: OPPORTUNITY_TYPES.COURSE,
+      name: 'Courses & Training',
+      icon: FaGraduationCap,
+      color: '#198754',
+    },
+    {
+      id: OPPORTUNITY_TYPES.FUNDING,
+      name: 'Funding & Grants',
+      icon: FaMoneyBillWave,
+      color: '#ffc107',
+    },
+    {
+      id: OPPORTUNITY_TYPES.BUSINESS_IDEA,
+      name: 'Business Ideas',
+      icon: FaRocket,
+      color: '#dc3545',
+    },
     { id: OPPORTUNITY_TYPES.MENTORSHIP, name: 'Mentorship', icon: FaUsers, color: '#6f42c1' },
     { id: OPPORTUNITY_TYPES.NETWORKING, name: 'Networking', icon: FaHandshake, color: '#20c997' },
     { id: OPPORTUNITY_TYPES.INCUBATION, name: 'Incubation', icon: FaBuilding, color: '#fd7e14' },
-    { id: OPPORTUNITY_TYPES.COMPETITION, name: 'Competitions', icon: FaChartLine, color: '#e83e8c' },
-    { id: OPPORTUNITY_TYPES.RESOURCE, name: 'Resources', icon: FaBook, color: '#17a2b8' }
+    {
+      id: OPPORTUNITY_TYPES.COMPETITION,
+      name: 'Competitions',
+      icon: FaChartLine,
+      color: '#e83e8c',
+    },
+    { id: OPPORTUNITY_TYPES.RESOURCE, name: 'Resources', icon: FaBook, color: '#17a2b8' },
   ];
 
   // Load opportunities on component mount
@@ -96,9 +156,9 @@ const Search = () => {
         sortBy: filters.sortBy,
         sortOrder: filters.sortOrder,
         page: currentPage,
-        pageSize: 10
+        pageSize: 10,
       });
-      
+
       setSearchResults(result.opportunities || []);
       setTotalResults(result.total || 0);
       setTotalPages(result.totalPages || 1);
@@ -147,7 +207,7 @@ const Search = () => {
   const fetchSavedOpportunities = async () => {
     try {
       const saved = await getSavedOpportunities(currentUser.uid);
-      setSavedOpportunities(saved ? saved.map(opp => opp.id) : []);
+      setSavedOpportunities(saved ? saved.map((opp) => opp.id) : []);
     } catch (error) {
       console.error('Error fetching saved opportunities:', error);
     }
@@ -162,7 +222,7 @@ const Search = () => {
 
   // Handle filter changes
   const handleFilterChange = (key, value) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
+    setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
   // Clear all filters
@@ -173,7 +233,7 @@ const Search = () => {
       location: '',
       experienceLevel: 'all',
       sortBy: 'createdAt',
-      sortOrder: 'desc'
+      sortOrder: 'desc',
     });
     setSearchQuery('');
     setActiveTab('all');
@@ -191,12 +251,12 @@ const Search = () => {
 
     try {
       const result = await toggleSaveOpportunity(currentUser.uid, opportunityId);
-      
+
       if (result.saved) {
-        setSavedOpportunities(prev => [...prev, opportunityId]);
+        setSavedOpportunities((prev) => [...prev, opportunityId]);
         showToast('Opportunity saved to your favorites!', 'success');
       } else {
-        setSavedOpportunities(prev => prev.filter(id => id !== opportunityId));
+        setSavedOpportunities((prev) => prev.filter((id) => id !== opportunityId));
         showToast('Opportunity removed from favorites.', 'success');
       }
     } catch (error) {
@@ -209,7 +269,7 @@ const Search = () => {
   const viewOpportunityDetails = async (opportunity) => {
     setSelectedOpportunity(opportunity);
     setShowDetails(true);
-    
+
     // Increment view count
     try {
       await incrementViewCount(opportunity.id);
@@ -220,7 +280,7 @@ const Search = () => {
 
   // Get category icon
   const getCategoryIcon = (categoryId) => {
-    const category = categories.find(cat => cat.id === categoryId);
+    const category = categories.find((cat) => cat.id === categoryId);
     if (category) {
       const Icon = category.icon;
       return <Icon style={{ color: category.color }} />;
@@ -235,9 +295,13 @@ const Search = () => {
       [OPPORTUNITY_TYPES.COURSE]: { label: 'Course', variant: 'success', icon: FaGraduationCap },
       [OPPORTUNITY_TYPES.FUNDING]: { label: 'Funding', variant: 'warning', icon: FaMoneyBillWave },
       [OPPORTUNITY_TYPES.BUSINESS_IDEA]: { label: 'Business', variant: 'danger', icon: FaRocket },
-      [OPPORTUNITY_TYPES.MENTORSHIP]: { label: 'Mentorship', variant: 'info', icon: FaUsers }
+      [OPPORTUNITY_TYPES.MENTORSHIP]: { label: 'Mentorship', variant: 'info', icon: FaUsers },
     };
-    const config = typeConfig[type] || { label: 'Opportunity', variant: 'secondary', icon: FaBriefcase };
+    const config = typeConfig[type] || {
+      label: 'Opportunity',
+      variant: 'secondary',
+      icon: FaBriefcase,
+    };
     const Icon = config.icon;
     return (
       <Badge bg={config.variant} className="d-flex align-items-center">
@@ -253,7 +317,7 @@ const Search = () => {
       [STATUS.OPEN]: { label: 'Open', variant: 'success' },
       [STATUS.CLOSED]: { label: 'Closed', variant: 'secondary' },
       [STATUS.UPCOMING]: { label: 'Upcoming', variant: 'warning' },
-      [STATUS.DRAFT]: { label: 'Draft', variant: 'dark' }
+      [STATUS.DRAFT]: { label: 'Draft', variant: 'dark' },
     };
     const config = statusConfig[status] || { label: 'Unknown', variant: 'secondary' };
     return <Badge bg={config.variant}>{config.label}</Badge>;
@@ -266,7 +330,7 @@ const Search = () => {
       return new Date(date).toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'short',
-        day: 'numeric'
+        day: 'numeric',
       });
     } catch (error) {
       return 'Invalid Date';
@@ -281,16 +345,16 @@ const Search = () => {
 
   // Show toast notification
   const showToast = (message, type = 'info') => {
-  if (type === 'error') {
-    toast.error(message);
-  } else if (type === 'success') {
-    toast.success(message);
-  } else if (type === 'warning') {
-    toast.warning(message);
-  } else {
-    toast.info(message);
-  }
-};
+    if (type === 'error') {
+      toast.error(message);
+    } else if (type === 'success') {
+      toast.success(message);
+    } else if (type === 'warning') {
+      toast.warning(message);
+    } else {
+      toast.info(message);
+    }
+  };
 
   if (loading && searchResults.length === 0) {
     return (
@@ -319,7 +383,9 @@ const Search = () => {
       {/* Header */}
       <div className="search-header">
         <h1>Search Opportunities</h1>
-        <p className="lead">Find jobs, courses, funding, business ideas, and mentorship opportunities</p>
+        <p className="lead">
+          Find jobs, courses, funding, business ideas, and mentorship opportunities
+        </p>
       </div>
 
       {/* Search Bar */}
@@ -338,8 +404,8 @@ const Search = () => {
               <Button variant="primary" type="submit" disabled={loading}>
                 {loading ? 'Searching...' : 'Search'}
               </Button>
-              <Button 
-                variant={showFilters ? "primary" : "outline-secondary"} 
+              <Button
+                variant={showFilters ? 'primary' : 'outline-secondary'}
                 onClick={() => setShowFilters(!showFilters)}
                 disabled={loading}
               >
@@ -351,16 +417,29 @@ const Search = () => {
             {/* Categories */}
             <div className="categories-scroll mb-3">
               <div className="d-flex flex-wrap gap-2">
-                {categories.map(category => {
+                {categories.map((category) => {
                   const Icon = category.icon;
                   const isActive = activeTab === category.id;
-                  const count = stats[category.id === 'all' ? 'total' : category.id === 'jobs' ? 'jobs' : 
-                                 category.id === 'courses' ? 'courses' : category.id === 'funding' ? 'funding' :
-                                 category.id === 'business' ? 'business' : category.id === 'mentorship' ? 'mentorship' : 0];
+                  const count =
+                    stats[
+                      category.id === 'all'
+                        ? 'total'
+                        : category.id === 'jobs'
+                          ? 'jobs'
+                          : category.id === 'courses'
+                            ? 'courses'
+                            : category.id === 'funding'
+                              ? 'funding'
+                              : category.id === 'business'
+                                ? 'business'
+                                : category.id === 'mentorship'
+                                  ? 'mentorship'
+                                  : 0
+                    ];
                   return (
                     <Button
                       key={category.id}
-                      variant={isActive ? "primary" : "outline-primary"}
+                      variant={isActive ? 'primary' : 'outline-primary'}
                       size="sm"
                       onClick={() => {
                         setActiveTab(category.id);
@@ -368,16 +447,20 @@ const Search = () => {
                         fetchOpportunities();
                       }}
                       className="d-flex align-items-center"
-                      style={isActive ? { 
-                        backgroundColor: category.color, 
-                        borderColor: category.color 
-                      } : {}}
+                      style={
+                        isActive
+                          ? {
+                              backgroundColor: category.color,
+                              borderColor: category.color,
+                            }
+                          : {}
+                      }
                       disabled={loading}
                     >
                       <Icon className="me-2" />
                       <span>{category.name}</span>
                       {count > 0 && (
-                        <Badge bg={isActive ? "light" : "secondary"} text="dark" className="ms-2">
+                        <Badge bg={isActive ? 'light' : 'secondary'} text="dark" className="ms-2">
                           {count}
                         </Badge>
                       )}
@@ -396,9 +479,9 @@ const Search = () => {
                       <FaFilter className="me-2" />
                       Filters
                     </h6>
-                    <Button 
-                      variant="link" 
-                      size="sm" 
+                    <Button
+                      variant="link"
+                      size="sm"
                       onClick={clearFilters}
                       className="text-decoration-none"
                       disabled={loading}
@@ -407,12 +490,12 @@ const Search = () => {
                       Clear All
                     </Button>
                   </div>
-                  
+
                   <Row>
                     <Col md={4}>
                       <Form.Group className="mb-3">
                         <Form.Label>Location</Form.Label>
-                        <Form.Select 
+                        <Form.Select
                           value={filters.location}
                           onChange={(e) => handleFilterChange('location', e.target.value)}
                           disabled={loading}
@@ -429,7 +512,7 @@ const Search = () => {
                     <Col md={4}>
                       <Form.Group className="mb-3">
                         <Form.Label>Category</Form.Label>
-                        <Form.Select 
+                        <Form.Select
                           value={filters.category}
                           onChange={(e) => handleFilterChange('category', e.target.value)}
                           disabled={loading}
@@ -446,7 +529,7 @@ const Search = () => {
                     <Col md={4}>
                       <Form.Group className="mb-3">
                         <Form.Label>Sort By</Form.Label>
-                        <Form.Select 
+                        <Form.Select
                           value={filters.sortBy}
                           onChange={(e) => handleFilterChange('sortBy', e.target.value)}
                           disabled={loading}
@@ -459,12 +542,12 @@ const Search = () => {
                       </Form.Group>
                     </Col>
                   </Row>
-                  
+
                   <Row>
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label>Experience Level</Form.Label>
-                        <Form.Select 
+                        <Form.Select
                           value={filters.experienceLevel}
                           onChange={(e) => handleFilterChange('experienceLevel', e.target.value)}
                           disabled={loading}
@@ -479,7 +562,7 @@ const Search = () => {
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label>Sort Order</Form.Label>
-                        <Form.Select 
+                        <Form.Select
                           value={filters.sortOrder}
                           onChange={(e) => handleFilterChange('sortOrder', e.target.value)}
                           disabled={loading}
@@ -490,10 +573,10 @@ const Search = () => {
                       </Form.Group>
                     </Col>
                   </Row>
-                  
+
                   <div className="d-flex justify-content-end">
-                    <Button 
-                      variant="primary" 
+                    <Button
+                      variant="primary"
                       size="sm"
                       onClick={fetchOpportunities}
                       disabled={loading}
@@ -569,48 +652,63 @@ const Search = () => {
                 <FaSearch className="me-2" />
                 Showing {searchResults.length} of {totalResults} opportunities
                 {activeTab !== 'all' && (
-                  <span className="text-muted"> in {categories.find(c => c.id === activeTab)?.name}</span>
+                  <span className="text-muted">
+                    {' '}
+                    in {categories.find((c) => c.id === activeTab)?.name}
+                  </span>
                 )}
               </h5>
-              <small className="text-muted">
-                {searchQuery && `Results for "${searchQuery}"`}
-              </small>
+              <small className="text-muted">{searchQuery && `Results for "${searchQuery}"`}</small>
             </div>
             <div className="d-flex align-items-center">
               <span className="me-2">Sort:</span>
               <DropdownButton
                 variant="outline-secondary"
-                title={filters.sortBy === 'createdAt' ? 'Newest' : 
-                       filters.sortBy === 'deadline' ? 'Deadline' : 
-                       filters.sortBy === 'viewCount' ? 'Most Viewed' : 'Most Applied'}
+                title={
+                  filters.sortBy === 'createdAt'
+                    ? 'Newest'
+                    : filters.sortBy === 'deadline'
+                      ? 'Deadline'
+                      : filters.sortBy === 'viewCount'
+                        ? 'Most Viewed'
+                        : 'Most Applied'
+                }
                 size="sm"
                 disabled={loading}
               >
-                <Dropdown.Item onClick={() => {
-                  handleFilterChange('sortBy', 'createdAt');
-                  fetchOpportunities();
-                }}>
+                <Dropdown.Item
+                  onClick={() => {
+                    handleFilterChange('sortBy', 'createdAt');
+                    fetchOpportunities();
+                  }}
+                >
                   <FaSort className="me-2" />
                   Newest
                 </Dropdown.Item>
-                <Dropdown.Item onClick={() => {
-                  handleFilterChange('sortBy', 'deadline');
-                  fetchOpportunities();
-                }}>
+                <Dropdown.Item
+                  onClick={() => {
+                    handleFilterChange('sortBy', 'deadline');
+                    fetchOpportunities();
+                  }}
+                >
                   <FaCalendar className="me-2" />
                   Deadline
                 </Dropdown.Item>
-                <Dropdown.Item onClick={() => {
-                  handleFilterChange('sortBy', 'viewCount');
-                  fetchOpportunities();
-                }}>
+                <Dropdown.Item
+                  onClick={() => {
+                    handleFilterChange('sortBy', 'viewCount');
+                    fetchOpportunities();
+                  }}
+                >
                   <FaEye className="me-2" />
                   Most Viewed
                 </Dropdown.Item>
-                <Dropdown.Item onClick={() => {
-                  handleFilterChange('sortBy', 'applicationCount');
-                  fetchOpportunities();
-                }}>
+                <Dropdown.Item
+                  onClick={() => {
+                    handleFilterChange('sortBy', 'applicationCount');
+                    fetchOpportunities();
+                  }}
+                >
                   <FaUsers className="me-2" />
                   Most Applied
                 </Dropdown.Item>
@@ -629,10 +727,7 @@ const Search = () => {
                 <FaSearch className="display-4 text-muted mb-3" />
                 <h4>No opportunities found</h4>
                 <p className="mb-3">Try adjusting your search or filters</p>
-                <Button 
-                  variant="outline-primary" 
-                  onClick={clearFilters}
-                >
+                <Button variant="outline-primary" onClick={clearFilters}>
                   Clear All Filters
                 </Button>
               </div>
@@ -640,7 +735,7 @@ const Search = () => {
           ) : (
             <>
               <div className="opportunities-list">
-                {searchResults.map(opportunity => (
+                {searchResults.map((opportunity) => (
                   <Card key={opportunity.id} className="opportunity-card mb-3">
                     <Card.Body>
                       <div className="d-flex justify-content-between align-items-start">
@@ -651,22 +746,23 @@ const Search = () => {
                               {getCategoryIcon(opportunity.category)} {opportunity.category}
                             </Badge>
                             {getStatusBadge(opportunity.status)}
-                            {opportunity.deadline && new Date(opportunity.deadline) < new Date() && (
-                              <Badge bg="danger" className="ms-2">
-                                Expired
-                              </Badge>
-                            )}
+                            {opportunity.deadline &&
+                              new Date(opportunity.deadline) < new Date() && (
+                                <Badge bg="danger" className="ms-2">
+                                  Expired
+                                </Badge>
+                              )}
                           </div>
-                          
+
                           <h5 className="mb-2">{opportunity.title}</h5>
-                          
+
                           <p className="text-muted mb-2">
                             {opportunity.type === OPPORTUNITY_TYPES.JOB && (
                               <>
                                 <FaBuilding className="me-1" />
-                                {opportunity.company || 'Company not specified'} • 
+                                {opportunity.company || 'Company not specified'} •
                                 <FaMapMarkerAlt className="ms-2 me-1" />
-                                {opportunity.location || 'Location not specified'} • 
+                                {opportunity.location || 'Location not specified'} •
                                 {opportunity.salary && (
                                   <>
                                     <FaMoneyBillWave className="ms-2 me-1" />
@@ -678,9 +774,9 @@ const Search = () => {
                             {opportunity.type === OPPORTUNITY_TYPES.COURSE && (
                               <>
                                 <FaGraduationCap className="me-1" />
-                                {opportunity.institution || 'Institution not specified'} • 
+                                {opportunity.institution || 'Institution not specified'} •
                                 <FaMapMarkerAlt className="ms-2 me-1" />
-                                {opportunity.location || 'Online'} • 
+                                {opportunity.location || 'Online'} •
                                 {opportunity.duration && (
                                   <>
                                     <FaClock className="ms-2 me-1" />
@@ -692,11 +788,11 @@ const Search = () => {
                             {opportunity.type === OPPORTUNITY_TYPES.FUNDING && (
                               <>
                                 <FaShieldAlt className="me-1" />
-                                {opportunity.organization || 'Organization not specified'} • 
+                                {opportunity.organization || 'Organization not specified'} •
                                 {opportunity.amount && (
                                   <>
                                     <FaMoneyBillWave className="ms-2 me-1" />
-                                    {opportunity.amount} • 
+                                    {opportunity.amount} •
                                   </>
                                 )}
                                 <FaClock className="me-1" />
@@ -706,7 +802,7 @@ const Search = () => {
                             {opportunity.type === OPPORTUNITY_TYPES.BUSINESS_IDEA && (
                               <>
                                 <FaRocket className="me-1" />
-                                Business Idea • 
+                                Business Idea •
                                 <FaChartLine className="ms-2 me-1" />
                                 {opportunity.industry || 'Industry not specified'}
                               </>
@@ -714,23 +810,23 @@ const Search = () => {
                             {opportunity.type === OPPORTUNITY_TYPES.MENTORSHIP && (
                               <>
                                 <FaUserTie className="me-1" />
-                                {opportunity.mentorName || 'Mentor not specified'} • 
+                                {opportunity.mentorName || 'Mentor not specified'} •
                                 <FaClock className="ms-2 me-1" />
                                 {opportunity.duration || 'Duration not specified'}
                               </>
                             )}
                           </p>
-                          
+
                           <p className="mb-2">{opportunity.description?.substring(0, 200)}...</p>
-                          
+
                           <div className="tags mb-2">
-                            {opportunity.tags?.slice(0, 5).map(tag => (
+                            {opportunity.tags?.slice(0, 5).map((tag) => (
                               <Badge key={tag} bg="light" text="dark" className="me-1 mb-1">
                                 {tag}
                               </Badge>
                             ))}
                           </div>
-                          
+
                           <div className="meta-info text-muted small">
                             <span className="me-3">
                               <FaCalendar className="me-1" />
@@ -752,29 +848,39 @@ const Search = () => {
                             </span>
                           </div>
                         </div>
-                        
+
                         <div className="d-flex flex-column ms-3">
-                          <Button 
-                            variant="primary" 
-                            size="sm" 
+                          <Button
+                            variant="primary"
+                            size="sm"
                             className="mb-2 d-flex align-items-center"
                             onClick={() => viewOpportunityDetails(opportunity)}
                           >
                             <FaExternalLinkAlt className="me-2" />
                             View Details
                           </Button>
-                          <Button 
-                            variant={savedOpportunities.includes(opportunity.id) ? "warning" : "outline-secondary"}
+                          <Button
+                            variant={
+                              savedOpportunities.includes(opportunity.id)
+                                ? 'warning'
+                                : 'outline-secondary'
+                            }
                             size="sm"
                             onClick={() => handleSaveOpportunity(opportunity.id)}
                             className="mb-2 d-flex align-items-center"
                             disabled={!currentUser}
                           >
-                            <FaHeart className={savedOpportunities.includes(opportunity.id) ? "text-danger me-2" : "me-2"} />
+                            <FaHeart
+                              className={
+                                savedOpportunities.includes(opportunity.id)
+                                  ? 'text-danger me-2'
+                                  : 'me-2'
+                              }
+                            />
                             {savedOpportunities.includes(opportunity.id) ? 'Saved' : 'Save'}
                           </Button>
-                          <Button 
-                            variant="outline-primary" 
+                          <Button
+                            variant="outline-primary"
                             size="sm"
                             className="d-flex align-items-center"
                             onClick={() => {
@@ -803,12 +909,12 @@ const Search = () => {
               {totalPages > 1 && (
                 <div className="pagination-container mt-4">
                   <Pagination className="justify-content-center">
-                    <Pagination.Prev 
-                      disabled={currentPage === 1} 
+                    <Pagination.Prev
+                      disabled={currentPage === 1}
                       onClick={() => handlePageChange(currentPage - 1)}
                     />
                     {[...Array(totalPages)].map((_, index) => (
-                      <Pagination.Item 
+                      <Pagination.Item
                         key={index + 1}
                         active={currentPage === index + 1}
                         onClick={() => handlePageChange(index + 1)}
@@ -816,7 +922,7 @@ const Search = () => {
                         {index + 1}
                       </Pagination.Item>
                     ))}
-                    <Pagination.Next 
+                    <Pagination.Next
                       disabled={currentPage === totalPages}
                       onClick={() => handlePageChange(currentPage + 1)}
                     />
@@ -837,8 +943,8 @@ const Search = () => {
               </h5>
             </Card.Header>
             <Card.Body>
-              <Button 
-                variant="primary" 
+              <Button
+                variant="primary"
                 className="w-100 mb-2 d-flex align-items-center justify-content-center"
                 onClick={() => navigate('/dashboard')}
               >
@@ -846,8 +952,8 @@ const Search = () => {
                 Go to Dashboard
               </Button>
               {!currentUser ? (
-                <Button 
-                  variant="outline-primary" 
+                <Button
+                  variant="outline-primary"
                   className="w-100 mb-2 d-flex align-items-center justify-content-center"
                   onClick={() => navigate('/login')}
                 >
@@ -855,8 +961,8 @@ const Search = () => {
                   Login to Save Opportunities
                 </Button>
               ) : (
-                <Button 
-                  variant="outline-primary" 
+                <Button
+                  variant="outline-primary"
                   className="w-100 mb-2 d-flex align-items-center justify-content-center"
                   onClick={() => navigate('/profile')}
                 >
@@ -864,16 +970,16 @@ const Search = () => {
                   Update Profile
                 </Button>
               )}
-              <Button 
-                variant="outline-success" 
+              <Button
+                variant="outline-success"
                 className="w-100 mb-2 d-flex align-items-center justify-content-center"
                 onClick={() => navigate('/resources/guides')}
               >
                 <FaBookOpen className="me-2" />
                 View Resources
               </Button>
-              <Button 
-                variant="outline-info" 
+              <Button
+                variant="outline-info"
                 className="w-100 d-flex align-items-center justify-content-center"
                 onClick={() => navigate('/ai/dashboard')}
               >
@@ -895,10 +1001,7 @@ const Search = () => {
                 <div className="text-center py-3">
                   <FaHeart className="display-4 text-muted mb-3" />
                   <p className="text-muted">Login to save opportunities</p>
-                  <Button 
-                    variant="outline-primary" 
-                    onClick={() => navigate('/login')}
-                  >
+                  <Button variant="outline-primary" onClick={() => navigate('/login')}>
                     Sign In
                   </Button>
                 </div>
@@ -911,11 +1014,15 @@ const Search = () => {
               ) : (
                 <div>
                   <div className="d-flex justify-content-between align-items-center mb-3">
-                    <h6 className="mb-0">You have {savedOpportunities.length} saved opportunities</h6>
-                    <Badge bg="primary" pill>{savedOpportunities.length}</Badge>
+                    <h6 className="mb-0">
+                      You have {savedOpportunities.length} saved opportunities
+                    </h6>
+                    <Badge bg="primary" pill>
+                      {savedOpportunities.length}
+                    </Badge>
                   </div>
-                  <Button 
-                    variant="outline-primary" 
+                  <Button
+                    variant="outline-primary"
                     size="sm"
                     onClick={() => navigate('/saved-opportunities')}
                     className="w-100 d-flex align-items-center justify-content-center"
@@ -938,16 +1045,14 @@ const Search = () => {
               </Card.Header>
               <Card.Body>
                 <ListGroup variant="flush">
-                  {popularOpportunities.map(opp => (
-                    <ListGroup.Item 
+                  {popularOpportunities.map((opp) => (
+                    <ListGroup.Item
                       key={opp.id}
-                      action 
+                      action
                       onClick={() => viewOpportunityDetails(opp)}
                       className="d-flex align-items-center"
                     >
-                      <div className="popular-icon me-2">
-                        {getTypeBadge(opp.type)}
-                      </div>
+                      <div className="popular-icon me-2">{getTypeBadge(opp.type)}</div>
                       <div className="flex-grow-1">
                         <h6 className="mb-0 small">{opp.title}</h6>
                         <small className="text-muted">{opp.viewCount || 0} views</small>
@@ -956,9 +1061,9 @@ const Search = () => {
                     </ListGroup.Item>
                   ))}
                 </ListGroup>
-                <Button 
-                  variant="link" 
-                  size="sm" 
+                <Button
+                  variant="link"
+                  size="sm"
                   className="w-100 mt-2"
                   onClick={() => {
                     handleFilterChange('sortBy', 'viewCount');
@@ -981,16 +1086,14 @@ const Search = () => {
               </Card.Header>
               <Card.Body>
                 <ListGroup variant="flush">
-                  {recentOpportunities.map(opp => (
-                    <ListGroup.Item 
+                  {recentOpportunities.map((opp) => (
+                    <ListGroup.Item
                       key={opp.id}
-                      action 
+                      action
                       onClick={() => viewOpportunityDetails(opp)}
                       className="d-flex align-items-center"
                     >
-                      <div className="popular-icon me-2">
-                        {getTypeBadge(opp.type)}
-                      </div>
+                      <div className="popular-icon me-2">{getTypeBadge(opp.type)}</div>
                       <div className="flex-grow-1">
                         <h6 className="mb-0 small">{opp.title}</h6>
                         <small className="text-muted">{formatDate(opp.createdAt)}</small>
@@ -999,9 +1102,9 @@ const Search = () => {
                     </ListGroup.Item>
                   ))}
                 </ListGroup>
-                <Button 
-                  variant="link" 
-                  size="sm" 
+                <Button
+                  variant="link"
+                  size="sm"
                   className="w-100 mt-2"
                   onClick={() => {
                     handleFilterChange('sortBy', 'createdAt');
@@ -1068,97 +1171,154 @@ const Search = () => {
                   {getCategoryIcon(selectedOpportunity.category)} {selectedOpportunity.category}
                 </Badge>
                 {getStatusBadge(selectedOpportunity.status)}
-                {selectedOpportunity.deadline && new Date(selectedOpportunity.deadline) < new Date() && (
-                  <Badge bg="danger" className="ms-2">
-                    Expired
-                  </Badge>
-                )}
+                {selectedOpportunity.deadline &&
+                  new Date(selectedOpportunity.deadline) < new Date() && (
+                    <Badge bg="danger" className="ms-2">
+                      Expired
+                    </Badge>
+                  )}
               </div>
-              
+
               <h5>Opportunity Details</h5>
               <p className="mb-3">{selectedOpportunity.description}</p>
-              
+
               <div className="details-section">
-                <h6><FaBuilding className="me-2" />Basic Information</h6>
+                <h6>
+                  <FaBuilding className="me-2" />
+                  Basic Information
+                </h6>
                 <Row>
                   <Col md={6}>
-                    <p><strong>Type:</strong> {selectedOpportunity.type}</p>
-                    <p><strong>Category:</strong> {selectedOpportunity.category}</p>
-                    <p><strong>Status:</strong> {selectedOpportunity.status}</p>
+                    <p>
+                      <strong>Type:</strong> {selectedOpportunity.type}
+                    </p>
+                    <p>
+                      <strong>Category:</strong> {selectedOpportunity.category}
+                    </p>
+                    <p>
+                      <strong>Status:</strong> {selectedOpportunity.status}
+                    </p>
                   </Col>
                   <Col md={6}>
-                    <p><strong>Posted:</strong> {formatDate(selectedOpportunity.createdAt)}</p>
+                    <p>
+                      <strong>Posted:</strong> {formatDate(selectedOpportunity.createdAt)}
+                    </p>
                     {selectedOpportunity.deadline && (
-                      <p><strong>Deadline:</strong> {formatDate(selectedOpportunity.deadline)}</p>
+                      <p>
+                        <strong>Deadline:</strong> {formatDate(selectedOpportunity.deadline)}
+                      </p>
                     )}
-                    <p><strong>Location:</strong> {selectedOpportunity.location || 'Not specified'}</p>
+                    <p>
+                      <strong>Location:</strong> {selectedOpportunity.location || 'Not specified'}
+                    </p>
                   </Col>
                 </Row>
               </div>
-              
+
               {selectedOpportunity.type === OPPORTUNITY_TYPES.JOB && (
                 <div className="details-section">
-                  <h6><FaBuilding className="me-2" />Company Information</h6>
-                  <p><strong>Company:</strong> {selectedOpportunity.company || 'Not specified'}</p>
-                  <p><strong>Location:</strong> {selectedOpportunity.location || 'Not specified'}</p>
+                  <h6>
+                    <FaBuilding className="me-2" />
+                    Company Information
+                  </h6>
+                  <p>
+                    <strong>Company:</strong> {selectedOpportunity.company || 'Not specified'}
+                  </p>
+                  <p>
+                    <strong>Location:</strong> {selectedOpportunity.location || 'Not specified'}
+                  </p>
                   {selectedOpportunity.salary && (
-                    <p><strong>Salary Range:</strong> {selectedOpportunity.salary}</p>
+                    <p>
+                      <strong>Salary Range:</strong> {selectedOpportunity.salary}
+                    </p>
                   )}
                   {selectedOpportunity.experienceLevel && (
-                    <p><strong>Experience Level:</strong> {selectedOpportunity.experienceLevel}</p>
+                    <p>
+                      <strong>Experience Level:</strong> {selectedOpportunity.experienceLevel}
+                    </p>
                   )}
                   {selectedOpportunity.requirements && (
-                    <p><strong>Requirements:</strong> {selectedOpportunity.requirements}</p>
+                    <p>
+                      <strong>Requirements:</strong> {selectedOpportunity.requirements}
+                    </p>
                   )}
                 </div>
               )}
-              
+
               {selectedOpportunity.type === OPPORTUNITY_TYPES.COURSE && (
                 <div className="details-section">
-                  <h6><FaGraduationCap className="me-2" />Course Details</h6>
-                  <p><strong>Institution:</strong> {selectedOpportunity.institution || 'Not specified'}</p>
-                  <p><strong>Mode:</strong> {selectedOpportunity.location || 'Not specified'}</p>
+                  <h6>
+                    <FaGraduationCap className="me-2" />
+                    Course Details
+                  </h6>
+                  <p>
+                    <strong>Institution:</strong>{' '}
+                    {selectedOpportunity.institution || 'Not specified'}
+                  </p>
+                  <p>
+                    <strong>Mode:</strong> {selectedOpportunity.location || 'Not specified'}
+                  </p>
                   {selectedOpportunity.duration && (
-                    <p><strong>Duration:</strong> {selectedOpportunity.duration}</p>
+                    <p>
+                      <strong>Duration:</strong> {selectedOpportunity.duration}
+                    </p>
                   )}
                   {selectedOpportunity.certification && (
-                    <p><strong>Certification:</strong> {selectedOpportunity.certification}</p>
+                    <p>
+                      <strong>Certification:</strong> {selectedOpportunity.certification}
+                    </p>
                   )}
                   {selectedOpportunity.prerequisites && (
-                    <p><strong>Prerequisites:</strong> {selectedOpportunity.prerequisites}</p>
+                    <p>
+                      <strong>Prerequisites:</strong> {selectedOpportunity.prerequisites}
+                    </p>
                   )}
                 </div>
               )}
-              
+
               {selectedOpportunity.type === OPPORTUNITY_TYPES.FUNDING && (
                 <div className="details-section">
-                  <h6><FaMoneyBillWave className="me-2" />Funding Details</h6>
-                  <p><strong>Organization:</strong> {selectedOpportunity.organization || 'Not specified'}</p>
+                  <h6>
+                    <FaMoneyBillWave className="me-2" />
+                    Funding Details
+                  </h6>
+                  <p>
+                    <strong>Organization:</strong>{' '}
+                    {selectedOpportunity.organization || 'Not specified'}
+                  </p>
                   {selectedOpportunity.amount && (
-                    <p><strong>Amount:</strong> {selectedOpportunity.amount}</p>
+                    <p>
+                      <strong>Amount:</strong> {selectedOpportunity.amount}
+                    </p>
                   )}
                   {selectedOpportunity.eligibility && (
-                    <p><strong>Eligibility:</strong> {selectedOpportunity.eligibility}</p>
+                    <p>
+                      <strong>Eligibility:</strong> {selectedOpportunity.eligibility}
+                    </p>
                   )}
                   {selectedOpportunity.fundingType && (
-                    <p><strong>Type:</strong> {selectedOpportunity.fundingType}</p>
+                    <p>
+                      <strong>Type:</strong> {selectedOpportunity.fundingType}
+                    </p>
                   )}
                 </div>
               )}
-              
+
               <div className="details-section">
-              
                 <div className="tags">
-                  {selectedOpportunity.tags?.map(tag => (
+                  {selectedOpportunity.tags?.map((tag) => (
                     <Badge key={tag} bg="light" text="dark" className="me-1">
                       {tag}
                     </Badge>
                   ))}
                 </div>
               </div>
-              
+
               <div className="details-section">
-                <h6><FaChartLine className="me-2" />Statistics</h6>
+                <h6>
+                  <FaChartLine className="me-2" />
+                  Statistics
+                </h6>
                 <Row>
                   <Col md={3}>
                     <div className="text-center">
@@ -1186,10 +1346,11 @@ const Search = () => {
                   </Col>
                 </Row>
               </div>
-              
+
               <Alert variant="info" className="mt-3">
                 <FaLightbulb className="me-2" />
-                <strong>Tip:</strong> Make sure your profile is complete to improve your match score and application success rate.
+                <strong>Tip:</strong> Make sure your profile is complete to improve your match score
+                and application success rate.
               </Alert>
             </div>
           )}
@@ -1199,17 +1360,19 @@ const Search = () => {
             Close
           </Button>
           {currentUser && (
-            <Button 
-              variant="outline-primary" 
+            <Button
+              variant="outline-primary"
               onClick={() => {
                 handleSaveOpportunity(selectedOpportunity?.id);
                 setShowDetails(false);
               }}
             >
-              {savedOpportunities.includes(selectedOpportunity?.id) ? 'Remove from Saved' : 'Save Opportunity'}
+              {savedOpportunities.includes(selectedOpportunity?.id)
+                ? 'Remove from Saved'
+                : 'Save Opportunity'}
             </Button>
           )}
-          <Button 
+          <Button
             variant="primary"
             onClick={() => {
               setShowDetails(false);

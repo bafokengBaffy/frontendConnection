@@ -9,9 +9,9 @@
  */
 export const formatDate = (date, format = 'relative') => {
   if (!date) return 'N/A';
-  
+
   const dateObj = date.toDate ? date.toDate() : new Date(date);
-  
+
   switch (format) {
     case 'short':
       return dateObj.toLocaleDateString();
@@ -40,7 +40,7 @@ export const getRelativeTime = (date) => {
   if (diffMin < 60) return `${diffMin} minute${diffMin !== 1 ? 's' : ''} ago`;
   if (diffHour < 24) return `${diffHour} hour${diffHour !== 1 ? 's' : ''} ago`;
   if (diffDay < 7) return `${diffDay} day${diffDay !== 1 ? 's' : ''} ago`;
-  
+
   return date.toLocaleDateString();
 };
 
@@ -51,10 +51,10 @@ export const getRelativeTime = (date) => {
  */
 export const formatNumber = (num, decimals = 0) => {
   if (typeof num !== 'number') return '0';
-  
+
   return num.toLocaleString(undefined, {
     minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals
+    maximumFractionDigits: decimals,
   });
 };
 
@@ -82,20 +82,20 @@ export const generateAnalyticsId = () => {
  */
 export const sanitizeAnalyticsData = (data) => {
   const sanitized = { ...data };
-  
+
   // Remove sensitive information
   delete sanitized.password;
   delete sanitized.token;
   delete sanitized.creditCard;
   delete sanitized.ssn;
-  
+
   // Truncate long strings
-  Object.keys(sanitized).forEach(key => {
+  Object.keys(sanitized).forEach((key) => {
     if (typeof sanitized[key] === 'string' && sanitized[key].length > 1000) {
       sanitized[key] = sanitized[key].substring(0, 1000) + '...';
     }
   });
-  
+
   return sanitized;
 };
 
@@ -105,7 +105,7 @@ export const sanitizeAnalyticsData = (data) => {
  */
 export const calculateAverage = (numbers) => {
   if (!Array.isArray(numbers) || numbers.length === 0) return 0;
-  
+
   const sum = numbers.reduce((acc, num) => acc + (Number(num) || 0), 0);
   return sum / numbers.length;
 };
@@ -116,14 +116,14 @@ export const calculateAverage = (numbers) => {
  */
 export const calculateMedian = (numbers) => {
   if (!Array.isArray(numbers) || numbers.length === 0) return 0;
-  
+
   const sorted = [...numbers].sort((a, b) => a - b);
   const middle = Math.floor(sorted.length / 2);
-  
+
   if (sorted.length % 2 === 0) {
     return (sorted[middle - 1] + sorted[middle]) / 2;
   }
-  
+
   return sorted[middle];
 };
 
@@ -133,11 +133,11 @@ export const calculateMedian = (numbers) => {
  */
 export const calculateStandardDeviation = (numbers) => {
   if (!Array.isArray(numbers) || numbers.length < 2) return 0;
-  
+
   const avg = calculateAverage(numbers);
-  const squareDiffs = numbers.map(num => Math.pow(num - avg, 2));
+  const squareDiffs = numbers.map((num) => Math.pow(num - avg, 2));
   const avgSquareDiff = calculateAverage(squareDiffs);
-  
+
   return Math.sqrt(avgSquareDiff);
 };
 
@@ -164,7 +164,7 @@ export const groupBy = (array, key) => {
  */
 export const sortObjectByValue = (obj, order = 'desc') => {
   return Object.entries(obj)
-    .sort(([, a], [, b]) => order === 'desc' ? b - a : a - b)
+    .sort(([, a], [, b]) => (order === 'desc' ? b - a : a - b))
     .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
 };
 
@@ -175,9 +175,9 @@ export const sortObjectByValue = (obj, order = 'desc') => {
  */
 export const calculateTrend = (current, previous) => {
   if (previous === 0) return current > 0 ? 'up' : 'neutral';
-  
+
   const change = ((current - previous) / Math.abs(previous)) * 100;
-  
+
   if (Math.abs(change) < 5) return 'neutral';
   return change > 0 ? 'up' : 'down';
 };
@@ -189,7 +189,7 @@ export const calculateTrend = (current, previous) => {
  */
 export const getColorForValue = (value, max = 100) => {
   const percentage = (value / max) * 100;
-  
+
   if (percentage >= 80) return '#10b981'; // Green
   if (percentage >= 60) return '#3b82f6'; // Blue
   if (percentage >= 40) return '#f59e0b'; // Yellow

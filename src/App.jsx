@@ -24,7 +24,7 @@ import {
   getCommonRoutes,
   LoadingFallback,
   ScrollToTop,
-  FirebaseLoader
+  FirebaseLoader,
 } from './routing';
 
 // Import 404 Component
@@ -53,26 +53,26 @@ function AppContent() {
         <Routes>
           {/* ==================== PUBLIC ROUTES ==================== */}
           {getPublicRoutes()}
-          
+
           {/* ==================== PROTECTED ROUTES ==================== */}
           <Route element={<FirebaseLoader />}>
             {/* Wrap ALL protected routes with Layout */}
             <Route element={<LayoutWrapper />}>
               {/* Common Routes (accessible to all authenticated users) */}
               {getCommonRoutes()}
-              
+
               {/* AI Routes (accessible to all authenticated users) */}
               {getAIRoutes()}
-              
+
               {/* Admin Routes (admin only) */}
               {getAdminRoutes()}
-              
+
               {/* Student Routes (student only) */}
               {getStudentRoutes()}
-              
+
               {/* Company Routes (company only) */}
               {getCompanyRoutes()}
-              
+
               {/* ============ 404 ROUTE ============ */}
               <Route path="*" element={<NotFound />} />
             </Route>

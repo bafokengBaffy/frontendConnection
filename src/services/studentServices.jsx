@@ -13,31 +13,32 @@ import {
   Timestamp,
   updateDoc,
   where,
-} from "firebase/firestore";
-import { deleteObject, ref } from "firebase/storage";
-import { db, storage } from "../config/firebase";
+} from 'firebase/firestore';
+import { deleteObject, ref } from 'firebase/storage';
+import { db, storage } from '../config/firebase';
 import { storageService } from './storageService';
 
 const COLLECTIONS = {
-  STUDENTS: "students",
-  APPLICATIONS: "applications",
-  JOBS: "jobs",
-  DOCUMENTS: "documents",
-  NOTIFICATIONS: "notifications",
-  COMPANIES: "companies",
+  STUDENTS: 'students',
+  APPLICATIONS: 'applications',
+  JOBS: 'jobs',
+  DOCUMENTS: 'documents',
+  NOTIFICATIONS: 'notifications',
+  COMPANIES: 'companies',
+  USERS: 'users',
 };
 
 // ==================== HELPER FUNCTIONS ====================
 
 const safeDateConvert = (firebaseDate) => {
   if (!firebaseDate) return null;
-  if (firebaseDate.toDate && typeof firebaseDate.toDate === "function") {
+  if (firebaseDate.toDate && typeof firebaseDate.toDate === 'function') {
     return firebaseDate.toDate();
   }
   if (firebaseDate instanceof Date) {
     return firebaseDate;
   }
-  if (typeof firebaseDate === "string") {
+  if (typeof firebaseDate === 'string') {
     return new Date(firebaseDate);
   }
   return null;
@@ -46,9 +47,9 @@ const safeDateConvert = (firebaseDate) => {
 const calculateProfileCompletion = (profile) => {
   if (!profile) return 0;
   let completion = 0;
-  
+
   // Basic info (30%)
-  const basicFields = ["fullName", "email", "phone", "address", "dateOfBirth"];
+  const basicFields = ['fullName', 'email', 'phone', 'address', 'dateOfBirth'];
   basicFields.forEach((field) => {
     if (profile[field]) completion += 6; // 6% per field
   });
@@ -56,8 +57,8 @@ const calculateProfileCompletion = (profile) => {
   // Qualifications (30%)
   if (profile.qualifications) {
     const quals = profile.qualifications;
-    if (quals.educationLevel && quals.educationLevel !== "Not specified") completion += 15;
-    if (quals.overallGrade && quals.overallGrade !== "Not specified") completion += 15;
+    if (quals.educationLevel && quals.educationLevel !== 'Not specified') completion += 15;
+    if (quals.overallGrade && quals.overallGrade !== 'Not specified') completion += 15;
   }
 
   // Job Preferences (20%)
@@ -76,32 +77,33 @@ const calculateProfileCompletion = (profile) => {
 
 const checkJobQualification = async (student, job) => {
   if (!student || !job) return false;
-  
+
   const studentQuals = student.qualifications || {};
   const studentSkills = student.skills || [];
 
   // Check education requirements
   if (job.requirements?.minEducation) {
     const educationLevels = {
-      'high_school': 1,
-      'diploma': 2,
-      'bachelors': 3,
-      'masters': 4,
-      'phd': 5
+      high_school: 1,
+      diploma: 2,
+      bachelors: 3,
+      masters: 4,
+      phd: 5,
     };
-    
+
     const studentLevel = educationLevels[studentQuals.educationLevel?.toLowerCase()] || 0;
     const requiredLevel = educationLevels[job.requirements.minEducation?.toLowerCase()] || 0;
-    
+
     if (studentLevel < requiredLevel) return false;
   }
 
   // Check skills
   if (job.requirements?.skills && job.requirements.skills.length > 0) {
     const hasRequiredSkills = job.requirements.skills.every((skill) =>
-      studentSkills.some(s => 
-        s.toLowerCase().includes(skill.toLowerCase()) || 
-        skill.toLowerCase().includes(s.toLowerCase())
+      studentSkills.some(
+        (s) =>
+          s.toLowerCase().includes(skill.toLowerCase()) ||
+          skill.toLowerCase().includes(s.toLowerCase())
       )
     );
     if (!hasRequiredSkills) return false;
@@ -120,24 +122,25 @@ const checkJobQualification = async (student, job) => {
 export const initializeStudentProfile = async (userId, userData = {}) => {
   try {
     if (!userId) {
-      return { success: false, error: "User ID is required" };
+      return { success: false, error: 'User ID is required' };
     }
 
     const studentRef = doc(db, COLLECTIONS.STUDENTS, userId);
     const studentSnap = await getDoc(studentRef);
 
     if (!studentSnap.exists()) {
-      await setDoc(studentRef, {
-        email: userData.email || "",
-        fullName: userData.fullName || "",
-        firstName: userData.firstName || "",
-        lastName: userData.lastName || "",
-        phone: userData.phone || "",
-        userType: "student",
+      const studentData = {
+        uid: userId,
+        email: userData.email || '',
+        fullName: userData.fullName || userData.displayName || '',
+        firstName: userData.firstName || '',
+        lastName: userData.lastName || '',
+        phone: userData.phone || '',
+        userType: 'student',
         profileCompletion: 0,
         qualifications: {
-          educationLevel: "",
-          overallGrade: "",
+          educationLevel: '',
+          overallGrade: '',
           subjects: [],
           certificates: [],
         },
@@ -151,12 +154,40 @@ export const initializeStudentProfile = async (userId, userData = {}) => {
         experience: 0,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
-      });
-      console.log("✅ Student profile initialized for:", userId);
+        status: 'active',
+        isActive: true,
+      };
+
+      await setDoc(studentRef, studentData);
+
+      // Also update the users collection to ensure userType is set
+      const userRef = doc(db, COLLECTIONS.USERS, userId);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) {
+        await setDoc(userRef, {
+          uid: userId,
+          email: userData.email || '',
+          displayName: userData.fullName || userData.displayName || '',
+          userType: 'student',
+          role: 'student',
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+      } else {
+        await updateDoc(userRef, {
+          userType: 'student',
+          role: 'student',
+          updatedAt: serverTimestamp(),
+        });
+      }
+
+      console.log('✅ Student profile initialized for:', userId);
+      return { success: true, data: studentData };
     }
-    return { success: true };
+    return { success: true, data: studentSnap.data() };
   } catch (error) {
-    console.error("❌ Error initializing student profile:", error);
+    console.error('❌ Error initializing student profile:', error);
     return { success: false, error: error.message };
   }
 };
@@ -164,7 +195,7 @@ export const initializeStudentProfile = async (userId, userData = {}) => {
 export const getStudentProfile = async (userId) => {
   try {
     if (!userId) {
-      return { success: false, error: "User ID is required" };
+      return { success: false, error: 'User ID is required' };
     }
 
     const studentRef = doc(db, COLLECTIONS.STUDENTS, userId);
@@ -172,7 +203,7 @@ export const getStudentProfile = async (userId) => {
 
     if (studentSnap.exists()) {
       const data = studentSnap.data();
-      
+
       // Ensure arrays exist
       if (!Array.isArray(data.skills)) data.skills = [];
       if (!Array.isArray(data.qualifications?.subjects)) {
@@ -185,18 +216,30 @@ export const getStudentProfile = async (userId) => {
 
       return { success: true, data };
     } else {
-      await initializeStudentProfile(userId, {
-        email: "",
-        fullName: "",
-        userType: "student",
+      // Try to get user data from users collection
+      const userRef = doc(db, COLLECTIONS.USERS, userId);
+      const userSnap = await getDoc(userRef);
+      const userData = userSnap.exists() ? userSnap.data() : {};
+
+      // Initialize profile with user data
+      const initResult = await initializeStudentProfile(userId, {
+        email: userData.email || '',
+        fullName: userData.displayName || '',
+        userType: 'student',
       });
 
+      if (initResult.success) {
+        return { success: true, data: initResult.data };
+      }
+
+      // Return basic profile if initialization fails
       return {
         success: true,
         data: {
+          uid: userId,
           qualifications: {
-            educationLevel: "Not specified",
-            overallGrade: "Not specified",
+            educationLevel: 'Not specified',
+            overallGrade: 'Not specified',
             subjects: [],
             certificates: [],
           },
@@ -212,7 +255,48 @@ export const getStudentProfile = async (userId) => {
       };
     }
   } catch (error) {
-    console.error("❌ Error getting student profile:", error);
+    console.error('❌ Error getting student profile:', error);
+
+    // Check if this is a permission error
+    if (error.code === 'permission-denied' || error.message.includes('permission')) {
+      console.log('🔑 Permission denied - trying alternative approach');
+
+      // Try to get user data instead
+      try {
+        const userRef = doc(db, COLLECTIONS.USERS, userId);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+          const userData = userSnap.data();
+          return {
+            success: true,
+            data: {
+              uid: userId,
+              email: userData.email,
+              fullName: userData.displayName,
+              userType: 'student',
+              profileCompletion: 30,
+              qualifications: {
+                educationLevel: 'Not specified',
+                overallGrade: 'Not specified',
+                subjects: [],
+                certificates: [],
+              },
+              jobPreferences: {
+                industries: [],
+                jobTypes: [],
+                locations: [],
+                minSalary: null,
+              },
+              skills: [],
+            },
+          };
+        }
+      } catch (userError) {
+        console.error('❌ Error getting user data:', userError);
+      }
+    }
+
     return { success: false, error: error.message };
   }
 };
@@ -220,25 +304,35 @@ export const getStudentProfile = async (userId) => {
 export const updateStudentProfile = async (userId, updates) => {
   try {
     if (!userId) {
-      return { success: false, error: "User ID is required" };
+      return { success: false, error: 'User ID is required' };
     }
 
     const studentRef = doc(db, COLLECTIONS.STUDENTS, userId);
-    await updateDoc(studentRef, {
-      ...updates,
-      updatedAt: serverTimestamp(),
-    });
+
+    // Check if document exists
+    const studentSnap = await getDoc(studentRef);
+
+    if (!studentSnap.exists()) {
+      // Initialize first
+      await initializeStudentProfile(userId, updates);
+    } else {
+      // Update existing
+      await updateDoc(studentRef, {
+        ...updates,
+        updatedAt: serverTimestamp(),
+      });
+    }
 
     // Recalculate profile completion
     const updatedProfile = await getStudentProfile(userId);
-    if (updatedProfile.success) {
+    if (updatedProfile.success && updatedProfile.data) {
       const completion = calculateProfileCompletion(updatedProfile.data);
       await updateDoc(studentRef, { profileCompletion: completion });
     }
 
     return { success: true };
   } catch (error) {
-    console.error("❌ Error updating student profile:", error);
+    console.error('❌ Error updating student profile:', error);
     return { success: false, error: error.message };
   }
 };
@@ -246,7 +340,7 @@ export const updateStudentProfile = async (userId, updates) => {
 export const updateStudentQualifications = async (userId, qualifications) => {
   try {
     if (!userId) {
-      return { success: false, error: "User ID is required" };
+      return { success: false, error: 'User ID is required' };
     }
 
     const studentRef = doc(db, COLLECTIONS.STUDENTS, userId);
@@ -257,7 +351,7 @@ export const updateStudentQualifications = async (userId, qualifications) => {
 
     return { success: true };
   } catch (error) {
-    console.error("❌ Error updating qualifications:", error);
+    console.error('❌ Error updating qualifications:', error);
     return { success: false, error: error.message };
   }
 };
@@ -265,7 +359,7 @@ export const updateStudentQualifications = async (userId, qualifications) => {
 export const updateJobPreferences = async (userId, preferences) => {
   try {
     if (!userId) {
-      return { success: false, error: "User ID is required" };
+      return { success: false, error: 'User ID is required' };
     }
 
     const studentRef = doc(db, COLLECTIONS.STUDENTS, userId);
@@ -276,7 +370,7 @@ export const updateJobPreferences = async (userId, preferences) => {
 
     return { success: true };
   } catch (error) {
-    console.error("❌ Error updating job preferences:", error);
+    console.error('❌ Error updating job preferences:', error);
     return { success: false, error: error.message };
   }
 };
@@ -292,7 +386,7 @@ export const uploadResume = async (file, userId) => {
     const validTypes = [
       'application/pdf',
       'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     ];
 
     if (!validTypes.includes(file.type)) {
@@ -313,8 +407,8 @@ export const uploadResume = async (file, userId) => {
       customMetadata: {
         studentId: userId,
         documentType: 'resume',
-        originalName: file.name
-      }
+        originalName: file.name,
+      },
     });
 
     if (!uploadResult.success) {
@@ -342,7 +436,7 @@ export const uploadResume = async (file, userId) => {
       uploadedAt: serverTimestamp(),
       fileSize: file.size,
       mimeType: file.type,
-      status: "active",
+      status: 'active',
     };
 
     await addDoc(collection(db, COLLECTIONS.DOCUMENTS), documentData);
@@ -350,7 +444,7 @@ export const uploadResume = async (file, userId) => {
     return {
       success: true,
       url: uploadResult.url,
-      storageType: uploadResult.storageType
+      storageType: uploadResult.storageType,
     };
   } catch (error) {
     console.error('❌ Error uploading resume:', error);
@@ -361,14 +455,14 @@ export const uploadResume = async (file, userId) => {
 export const getStudentDocuments = async (studentId) => {
   try {
     if (!studentId) {
-      return { success: false, error: "Student ID is required" };
+      return { success: false, error: 'Student ID is required' };
     }
 
     const documentsRef = collection(db, COLLECTIONS.DOCUMENTS);
     const q = query(
       documentsRef,
-      where("studentId", "==", studentId),
-      orderBy("uploadedAt", "desc")
+      where('studentId', '==', studentId),
+      orderBy('uploadedAt', 'desc')
     );
 
     const snapshot = await getDocs(q);
@@ -380,7 +474,7 @@ export const getStudentDocuments = async (studentId) => {
 
     return { success: true, data: documents };
   } catch (error) {
-    console.error("❌ Error getting student documents:", error);
+    console.error('❌ Error getting student documents:', error);
     return { success: false, error: error.message };
   }
 };
@@ -388,17 +482,17 @@ export const getStudentDocuments = async (studentId) => {
 export const uploadDocument = async (userId, file, documentType) => {
   try {
     if (!userId || !file) {
-      return { success: false, error: "User ID and file are required" };
+      return { success: false, error: 'User ID and file are required' };
     }
 
     const allowedTypes = ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png'];
     const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
     if (!allowedTypes.includes(fileExtension)) {
-      return { success: false, error: "Please upload PDF, Word, or image files only" };
+      return { success: false, error: 'Please upload PDF, Word, or image files only' };
     }
 
     if (file.size > 10 * 1024 * 1024) {
-      return { success: false, error: "File size must be less than 10MB" };
+      return { success: false, error: 'File size must be less than 10MB' };
     }
 
     const timestamp = Date.now();
@@ -411,8 +505,8 @@ export const uploadDocument = async (userId, file, documentType) => {
       customMetadata: {
         studentId: userId,
         documentType: documentType,
-        originalName: file.name
-      }
+        originalName: file.name,
+      },
     });
 
     if (!uploadResult.success) {
@@ -431,7 +525,7 @@ export const uploadDocument = async (userId, file, documentType) => {
       uploadedAt: serverTimestamp(),
       fileSize: file.size,
       mimeType: file.type,
-      status: "active",
+      status: 'active',
     };
 
     const documentsRef = collection(db, COLLECTIONS.DOCUMENTS);
@@ -442,10 +536,10 @@ export const uploadDocument = async (userId, file, documentType) => {
       id: docRef.id,
       url: uploadResult.url,
       storageType: uploadResult.storageType,
-      message: "Document uploaded successfully!"
+      message: 'Document uploaded successfully!',
     };
   } catch (error) {
-    console.error("❌ Error uploading document:", error);
+    console.error('❌ Error uploading document:', error);
     return { success: false, error: error.message };
   }
 };
@@ -453,7 +547,7 @@ export const uploadDocument = async (userId, file, documentType) => {
 export const deleteDocument = async (documentId, storagePath) => {
   try {
     if (!documentId) {
-      return { success: false, error: "Document ID is required" };
+      return { success: false, error: 'Document ID is required' };
     }
 
     if (storagePath) {
@@ -461,16 +555,16 @@ export const deleteDocument = async (documentId, storagePath) => {
         const fileRef = ref(storage, storagePath);
         await deleteObject(fileRef);
       } catch (storageError) {
-        console.warn("⚠️ Could not delete file from storage:", storageError);
+        console.warn('⚠️ Could not delete file from storage:', storageError);
       }
     }
 
     const documentRef = doc(db, COLLECTIONS.DOCUMENTS, documentId);
     await deleteDoc(documentRef);
 
-    return { success: true, message: "Document deleted successfully!" };
+    return { success: true, message: 'Document deleted successfully!' };
   } catch (error) {
-    console.error("❌ Error deleting document:", error);
+    console.error('❌ Error deleting document:', error);
     return { success: false, error: error.message };
   }
 };
@@ -482,8 +576,8 @@ export const getJobs = async (studentId = null) => {
     const jobsRef = collection(db, COLLECTIONS.JOBS);
     const jobsQuery = query(
       jobsRef,
-      where("status", "==", "active"),
-      where("deadline", ">=", new Date())
+      where('status', '==', 'active'),
+      where('deadline', '>=', new Date())
     );
     const jobsSnap = await getDocs(jobsQuery);
     const jobs = jobsSnap.docs.map((doc) => ({
@@ -505,26 +599,26 @@ export const getJobs = async (studentId = null) => {
 
     return { success: true, data: jobs };
   } catch (error) {
-    console.error("❌ Error getting jobs:", error);
+    console.error('❌ Error getting jobs:', error);
     return { success: false, error: error.message };
   }
 };
 
 export const getRecommendedJobs = async (studentId) => {
   try {
-    if (!studentId) return { success: false, error: "Student ID is required" };
-    
+    if (!studentId) return { success: false, error: 'Student ID is required' };
+
     const studentProfile = await getStudentProfile(studentId);
-    if (!studentProfile.success) return { success: false, error: "Student profile not found" };
+    if (!studentProfile.success) return { success: false, error: 'Student profile not found' };
 
     const jobsResult = await getJobs();
-    if (!jobsResult.success) return { success: false, error: "Failed to load jobs" };
+    if (!jobsResult.success) return { success: false, error: 'Failed to load jobs' };
 
     const student = studentProfile.data;
     const studentSkills = student.skills || [];
     const studentPreferences = student.jobPreferences || {};
 
-    const recommendedJobs = jobsResult.data.filter(job => {
+    const recommendedJobs = jobsResult.data.filter((job) => {
       // Check qualifications
       const isQualified = checkJobQualification(student, job);
       if (!isQualified) return false;
@@ -549,21 +643,21 @@ export const getRecommendedJobs = async (studentId) => {
     recommendedJobs.sort((a, b) => {
       const aSkills = a.requirements?.skills || [];
       const bSkills = b.requirements?.skills || [];
-      
-      const aMatches = aSkills.filter(skill => 
-        studentSkills.some(s => s.toLowerCase().includes(skill.toLowerCase()))
+
+      const aMatches = aSkills.filter((skill) =>
+        studentSkills.some((s) => s.toLowerCase().includes(skill.toLowerCase()))
       ).length;
-      
-      const bMatches = bSkills.filter(skill => 
-        studentSkills.some(s => s.toLowerCase().includes(skill.toLowerCase()))
+
+      const bMatches = bSkills.filter((skill) =>
+        studentSkills.some((s) => s.toLowerCase().includes(skill.toLowerCase()))
       ).length;
-      
+
       return bMatches - aMatches;
     });
 
     return { success: true, data: recommendedJobs };
   } catch (error) {
-    console.error("❌ Error getting recommended jobs:", error);
+    console.error('❌ Error getting recommended jobs:', error);
     return { success: false, error: error.message };
   }
 };
@@ -578,7 +672,7 @@ export const applyForJob = async (applicationData) => {
       ...applicationData,
       appliedAt: serverTimestamp(),
       status: 'pending',
-      updatedAt: serverTimestamp()
+      updatedAt: serverTimestamp(),
     };
 
     const docRef = await addDoc(collection(db, 'applications'), application);
@@ -594,27 +688,27 @@ export const applyForJob = async (applicationData) => {
 export const checkExistingApplication = async (studentId, jobId) => {
   try {
     if (!studentId || !jobId) {
-      return { success: false, error: "Student ID and Job ID are required" };
+      return { success: false, error: 'Student ID and Job ID are required' };
     }
 
     const applicationsRef = collection(db, COLLECTIONS.APPLICATIONS);
     const q = query(
       applicationsRef,
-      where("studentId", "==", studentId),
-      where("jobId", "==", jobId)
+      where('studentId', '==', studentId),
+      where('jobId', '==', jobId)
     );
 
     const querySnapshot = await getDocs(q);
-    
+
     if (querySnapshot.empty) {
       return { success: true, exists: false };
     } else {
       const existingApp = querySnapshot.docs[0];
-      return { 
-        success: true, 
+      return {
+        success: true,
         exists: true,
         applicationId: existingApp.id,
-        data: existingApp.data()
+        data: existingApp.data(),
       };
     }
   } catch (error) {
@@ -625,13 +719,13 @@ export const checkExistingApplication = async (studentId, jobId) => {
 
 export const getStudentApplications = async (studentId) => {
   try {
-    if (!studentId) return { success: false, error: "Student ID is required" };
+    if (!studentId) return { success: false, error: 'Student ID is required' };
 
     const applicationsRef = collection(db, COLLECTIONS.APPLICATIONS);
     const q = query(
       applicationsRef,
-      where("studentId", "==", studentId),
-      orderBy("appliedAt", "desc")
+      where('studentId', '==', studentId),
+      orderBy('appliedAt', 'desc')
     );
 
     const snapshot = await getDocs(q);
@@ -643,7 +737,7 @@ export const getStudentApplications = async (studentId) => {
 
     return { success: true, data: applications };
   } catch (error) {
-    console.error("❌ Error getting student applications:", error);
+    console.error('❌ Error getting student applications:', error);
     return { success: false, error: error.message };
   }
 };
@@ -651,7 +745,7 @@ export const getStudentApplications = async (studentId) => {
 export const getApplicationById = async (applicationId) => {
   try {
     if (!applicationId) {
-      return { success: false, error: "Application ID is required" };
+      return { success: false, error: 'Application ID is required' };
     }
 
     const applicationRef = doc(db, COLLECTIONS.APPLICATIONS, applicationId);
@@ -659,33 +753,33 @@ export const getApplicationById = async (applicationId) => {
 
     if (applicationSnap.exists()) {
       const data = applicationSnap.data();
-      return { 
-        success: true, 
+      return {
+        success: true,
         data: {
           id: applicationSnap.id,
           ...data,
           appliedAt: safeDateConvert(data.appliedAt),
-        }
+        },
       };
     } else {
-      return { success: false, error: "Application not found" };
+      return { success: false, error: 'Application not found' };
     }
   } catch (error) {
-    console.error("❌ Error getting application by ID:", error);
+    console.error('❌ Error getting application by ID:', error);
     return { success: false, error: error.message };
   }
 };
 
 export const getStudentJobApplications = async (studentId) => {
   try {
-    if (!studentId) return { success: false, error: "Student ID is required" };
+    if (!studentId) return { success: false, error: 'Student ID is required' };
 
     const applicationsRef = collection(db, COLLECTIONS.APPLICATIONS);
     const q = query(
       applicationsRef,
-      where("studentId", "==", studentId),
-      where("type", "==", "job"),
-      orderBy("appliedAt", "desc")
+      where('studentId', '==', studentId),
+      where('type', '==', 'job'),
+      orderBy('appliedAt', 'desc')
     );
 
     const snapshot = await getDocs(q);
@@ -697,7 +791,7 @@ export const getStudentJobApplications = async (studentId) => {
 
     return { success: true, data: applications };
   } catch (error) {
-    console.error("❌ Error getting student job applications:", error);
+    console.error('❌ Error getting student job applications:', error);
     return { success: false, error: error.message };
   }
 };
@@ -705,7 +799,7 @@ export const getStudentJobApplications = async (studentId) => {
 export const updateApplicationStatus = async (applicationId, status, notes = '') => {
   try {
     if (!applicationId) {
-      return { success: false, error: "Application ID is required" };
+      return { success: false, error: 'Application ID is required' };
     }
 
     const applicationRef = doc(db, COLLECTIONS.APPLICATIONS, applicationId);
@@ -718,7 +812,7 @@ export const updateApplicationStatus = async (applicationId, status, notes = '')
 
     return { success: true };
   } catch (error) {
-    console.error("❌ Error updating application status:", error);
+    console.error('❌ Error updating application status:', error);
     return { success: false, error: error.message };
   }
 };
@@ -727,13 +821,13 @@ export const updateApplicationStatus = async (applicationId, status, notes = '')
 
 export const getStudentNotifications = async (studentId, limitCount = 10) => {
   try {
-    if (!studentId) return { success: false, error: "Student ID is required" };
+    if (!studentId) return { success: false, error: 'Student ID is required' };
 
     const notificationsRef = collection(db, COLLECTIONS.NOTIFICATIONS);
     const q = query(
       notificationsRef,
-      where("userId", "==", studentId),
-      orderBy("createdAt", "desc"),
+      where('userId', '==', studentId),
+      orderBy('createdAt', 'desc'),
       limit(limitCount)
     );
 
@@ -747,7 +841,7 @@ export const getStudentNotifications = async (studentId, limitCount = 10) => {
 
     return { success: true, data: notifications };
   } catch (error) {
-    console.error("❌ Error getting notifications:", error);
+    console.error('❌ Error getting notifications:', error);
     return { success: true, data: [] };
   }
 };
@@ -761,7 +855,7 @@ export const markNotificationAsRead = async (notificationId) => {
     });
     return { success: true };
   } catch (error) {
-    console.error("❌ Error marking notification as read:", error);
+    console.error('❌ Error marking notification as read:', error);
     return { success: false, error: error.message };
   }
 };
@@ -775,7 +869,7 @@ export const getUnreadNotificationsCount = async (studentId) => {
     }
     return { success: true, count: 0 };
   } catch (error) {
-    console.error("❌ Error getting unread notifications count:", error);
+    console.error('❌ Error getting unread notifications count:', error);
     return { success: true, count: 0 };
   }
 };
@@ -791,7 +885,7 @@ export const createNotification = async (notificationData) => {
     await addDoc(collection(db, COLLECTIONS.NOTIFICATIONS), notification);
     return { success: true };
   } catch (error) {
-    console.error("❌ Error creating notification:", error);
+    console.error('❌ Error creating notification:', error);
     return { success: false, error: error.message };
   }
 };
@@ -800,14 +894,9 @@ export const createNotification = async (notificationData) => {
 
 export const getDashboardStats = async (studentId) => {
   try {
-    if (!studentId) return { success: false, error: "Student ID is required" };
+    if (!studentId) return { success: false, error: 'Student ID is required' };
 
-    const [
-      applicationsRes,
-      notificationsRes,
-      profileRes,
-      jobMatchesRes,
-    ] = await Promise.all([
+    const [applicationsRes, notificationsRes, profileRes, jobMatchesRes] = await Promise.all([
       getStudentApplications(studentId),
       getStudentNotifications(studentId),
       getStudentProfile(studentId),
@@ -815,14 +904,14 @@ export const getDashboardStats = async (studentId) => {
     ]);
 
     const pendingApplications = applicationsRes.success
-      ? applicationsRes.data.filter((app) => 
-          app.status === "pending" || app.status === "under_review"
+      ? applicationsRes.data.filter(
+          (app) => app.status === 'pending' || app.status === 'under_review'
         ).length
       : 0;
 
     const acceptedApplications = applicationsRes.success
-      ? applicationsRes.data.filter((app) => 
-          app.status === "accepted" || app.status === "approved" || app.status === "hired"
+      ? applicationsRes.data.filter(
+          (app) => app.status === 'accepted' || app.status === 'approved' || app.status === 'hired'
         ).length
       : 0;
 
@@ -844,7 +933,7 @@ export const getDashboardStats = async (studentId) => {
       },
     };
   } catch (error) {
-    console.error("❌ Error getting dashboard stats:", error);
+    console.error('❌ Error getting dashboard stats:', error);
     return { success: false, error: error.message };
   }
 };

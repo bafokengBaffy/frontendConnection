@@ -12,36 +12,36 @@ import Search from '../../pages/Search';
 export const getCommonRoutes = () => {
   return [
     // Settings - Accessible to all authenticated users
-    <Route 
-      key="settings" 
-      path="/settings" 
+    <Route
+      key="settings"
+      path="/settings"
       element={
         <ProtectedRoute>
           <SettingsPage />
         </ProtectedRoute>
-      } 
+      }
     />,
-    
+
     // Notifications - Accessible to all authenticated users
-    <Route 
-      key="notifications" 
-      path="/notifications" 
+    <Route
+      key="notifications"
+      path="/notifications"
       element={
         <ProtectedRoute>
           <Notifications />
         </ProtectedRoute>
-      } 
+      }
     />,
-    
+
     // Search - Accessible to all authenticated users
-    <Route 
-      key="search" 
-      path="/search" 
+    <Route
+      key="search"
+      path="/search"
       element={
         <ProtectedRoute>
           <Search />
         </ProtectedRoute>
-      } 
+      }
     />,
   ];
 };

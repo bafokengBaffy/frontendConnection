@@ -2,21 +2,59 @@
 /* eslint-disable react/jsx-no-undef */
 // src/pages/company/BrowseCandidates.js
 import React, { useState, useEffect } from 'react';
-import { 
-  Container, Row, Col, Card, Button, Form, 
-  Table, Modal, Alert, Spinner, Badge, 
-  Dropdown, OverlayTrigger, Tooltip, InputGroup,
-  Pagination, ProgressBar, ListGroup
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Form,
+  Table,
+  Modal,
+  Alert,
+  Spinner,
+  Badge,
+  Dropdown,
+  OverlayTrigger,
+  Tooltip,
+  InputGroup,
+  Pagination,
+  ProgressBar,
+  ListGroup,
 } from 'react-bootstrap';
-import { 
-  FaUsers, FaSearch, FaFilter, FaSort, FaEye,
-  FaEnvelope, FaPhone, FaMapMarkerAlt, FaGraduationCap,
-  FaBriefcase, FaStar, FaRegStar, FaDownload,
-  FaPaperclip, FaUserPlus, FaExternalLinkAlt, FaCalendarAlt,
-  FaLinkedin, FaTwitter, FaGlobe, FaCode,
-  FaChartLine, FaCheckCircle, FaTimesCircle, FaBookmark,
-  FaRegBookmark, FaShareAlt, FaFilePdf, FaFileWord,
-  FaArrowRight, FaArrowLeft, FaPaperPlane // ADD THIS IMPORT
+import {
+  FaUsers,
+  FaSearch,
+  FaFilter,
+  FaSort,
+  FaEye,
+  FaEnvelope,
+  FaPhone,
+  FaMapMarkerAlt,
+  FaGraduationCap,
+  FaBriefcase,
+  FaStar,
+  FaRegStar,
+  FaDownload,
+  FaPaperclip,
+  FaUserPlus,
+  FaExternalLinkAlt,
+  FaCalendarAlt,
+  FaLinkedin,
+  FaTwitter,
+  FaGlobe,
+  FaCode,
+  FaChartLine,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaBookmark,
+  FaRegBookmark,
+  FaShareAlt,
+  FaFilePdf,
+  FaFileWord,
+  FaArrowRight,
+  FaArrowLeft,
+  FaPaperPlane, // ADD THIS IMPORT
 } from 'react-icons/fa';
 import { companyFirebaseService } from '../../services/companyServices';
 
@@ -33,7 +71,7 @@ const BrowseCandidates = () => {
     location: '',
     education: '',
     experience: '',
-    availability: 'all'
+    availability: 'all',
   });
   const [sortBy, setSortBy] = useState('relevance');
   const [currentPage, setCurrentPage] = useState(1);
@@ -52,14 +90,15 @@ const BrowseCandidates = () => {
       education: 'BSc Computer Science, National University of Lesotho',
       experience: '3 years',
       skills: ['JavaScript', 'React', 'Node.js', 'Python', 'MongoDB'],
-      summary: 'Experienced software developer with strong background in full-stack development. Passionate about creating efficient and scalable applications.',
+      summary:
+        'Experienced software developer with strong background in full-stack development. Passionate about creating efficient and scalable applications.',
       profileImage: '',
       resumeUrl: '',
       matchScore: 92,
       availability: 'immediately',
       expectedSalary: 'M15,000 - M20,000',
       noticePeriod: '1 month',
-      lastActive: '2024-01-15T10:30:00'
+      lastActive: '2024-01-15T10:30:00',
     },
     {
       id: 'c2',
@@ -70,14 +109,15 @@ const BrowseCandidates = () => {
       education: 'MBA, Botho University',
       experience: '5 years',
       skills: ['Marketing', 'SEO', 'Social Media', 'Content Strategy', 'Analytics'],
-      summary: 'Digital marketing specialist with proven track record in growing online presence and driving customer engagement.',
+      summary:
+        'Digital marketing specialist with proven track record in growing online presence and driving customer engagement.',
       profileImage: '',
       resumeUrl: '',
       matchScore: 85,
       availability: '2 weeks',
       expectedSalary: 'M12,000 - M16,000',
       noticePeriod: '2 weeks',
-      lastActive: '2024-01-14T14:20:00'
+      lastActive: '2024-01-14T14:20:00',
     },
     {
       id: 'c3',
@@ -88,15 +128,16 @@ const BrowseCandidates = () => {
       education: 'Diploma in Accounting, Limkokwing University',
       experience: '2 years',
       skills: ['Accounting', 'QuickBooks', 'Excel', 'Financial Reporting', 'Taxation'],
-      summary: 'Detail-oriented accountant with experience in financial reporting and tax preparation for small businesses.',
+      summary:
+        'Detail-oriented accountant with experience in financial reporting and tax preparation for small businesses.',
       profileImage: '',
       resumeUrl: '',
       matchScore: 78,
       availability: '1 month',
       expectedSalary: 'M10,000 - M14,000',
       noticePeriod: '1 month',
-      lastActive: '2024-01-13T09:15:00'
-    }
+      lastActive: '2024-01-13T09:15:00',
+    },
   ];
 
   useEffect(() => {
@@ -127,20 +168,21 @@ const BrowseCandidates = () => {
     // Apply search
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      result = result.filter(candidate =>
-        candidate.fullName?.toLowerCase().includes(term) ||
-        candidate.email?.toLowerCase().includes(term) ||
-        candidate.location?.toLowerCase().includes(term) ||
-        candidate.skills?.some(skill => skill.toLowerCase().includes(term)) ||
-        candidate.education?.toLowerCase().includes(term)
+      result = result.filter(
+        (candidate) =>
+          candidate.fullName?.toLowerCase().includes(term) ||
+          candidate.email?.toLowerCase().includes(term) ||
+          candidate.location?.toLowerCase().includes(term) ||
+          candidate.skills?.some((skill) => skill.toLowerCase().includes(term)) ||
+          candidate.education?.toLowerCase().includes(term)
       );
     }
 
     // Apply filters
     if (filters.skills.length > 0) {
-      result = result.filter(candidate =>
-        filters.skills.every(filterSkill =>
-          candidate.skills?.some(candidateSkill =>
+      result = result.filter((candidate) =>
+        filters.skills.every((filterSkill) =>
+          candidate.skills?.some((candidateSkill) =>
             candidateSkill.toLowerCase().includes(filterSkill.toLowerCase())
           )
         )
@@ -148,26 +190,26 @@ const BrowseCandidates = () => {
     }
 
     if (filters.location) {
-      result = result.filter(candidate =>
+      result = result.filter((candidate) =>
         candidate.location?.toLowerCase().includes(filters.location.toLowerCase())
       );
     }
 
     if (filters.education) {
-      result = result.filter(candidate =>
+      result = result.filter((candidate) =>
         candidate.education?.toLowerCase().includes(filters.education.toLowerCase())
       );
     }
 
     if (filters.experience) {
-      result = result.filter(candidate =>
+      result = result.filter((candidate) =>
         candidate.experience?.toLowerCase().includes(filters.experience.toLowerCase())
       );
     }
 
     if (filters.availability !== 'all') {
-      result = result.filter(candidate =>
-        candidate.availability?.toLowerCase() === filters.availability.toLowerCase()
+      result = result.filter(
+        (candidate) => candidate.availability?.toLowerCase() === filters.availability.toLowerCase()
       );
     }
 
@@ -231,14 +273,14 @@ const BrowseCandidates = () => {
 
   const getAvailabilityBadge = (availability) => {
     const variants = {
-      'immediately': { bg: 'success', text: 'Available Immediately' },
+      immediately: { bg: 'success', text: 'Available Immediately' },
       '2 weeks': { bg: 'warning', text: 'Available in 2 Weeks' },
       '1 month': { bg: 'info', text: 'Available in 1 Month' },
-      '3 months': { bg: 'secondary', text: 'Available in 3 Months' }
+      '3 months': { bg: 'secondary', text: 'Available in 3 Months' },
     };
-    
+
     const variant = variants[availability] || { bg: 'light', text: 'Not Specified' };
-    
+
     return (
       <Badge bg={variant.bg} className="px-2 py-1">
         {variant.text}
@@ -301,7 +343,7 @@ const BrowseCandidates = () => {
       location: '',
       education: '',
       experience: '',
-      availability: 'all'
+      availability: 'all',
     });
     setSearchTerm('');
     setSortBy('relevance');
@@ -328,20 +370,18 @@ const BrowseCandidates = () => {
                 <FaUsers className="me-2 text-primary" />
                 Browse Candidates
               </h1>
-              <p className="text-muted mb-0">
-                Discover talented candidates for your job openings
-              </p>
+              <p className="text-muted mb-0">Discover talented candidates for your job openings</p>
             </div>
             <div className="d-flex gap-2">
-              <Button 
-                variant="outline-primary" 
+              <Button
+                variant="outline-primary"
                 className="d-flex align-items-center gap-2"
                 onClick={clearFilters}
               >
                 Clear Filters
               </Button>
-              <Button 
-                variant="primary" 
+              <Button
+                variant="primary"
                 className="d-flex align-items-center gap-2"
                 onClick={() => console.log('Save search')}
               >
@@ -394,17 +434,14 @@ const BrowseCandidates = () => {
                         type="text"
                         placeholder="e.g., Maseru"
                         value={filters.location}
-                        onChange={(e) => setFilters({...filters, location: e.target.value})}
+                        onChange={(e) => setFilters({ ...filters, location: e.target.value })}
                       />
                     </Form.Group>
                   </Col>
                   <Col md={3}>
                     <Form.Group className="mb-3">
                       <Form.Label>Sort By</Form.Label>
-                      <Form.Select
-                        value={sortBy}
-                        onChange={(e) => setSortBy(e.target.value)}
-                      >
+                      <Form.Select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
                         <option value="relevance">Best Match</option>
                         <option value="experience">Most Experienced</option>
                         <option value="name">Name A-Z</option>
@@ -422,10 +459,15 @@ const BrowseCandidates = () => {
                         type="text"
                         placeholder="e.g., React, Python, Marketing"
                         value={filters.skills.join(', ')}
-                        onChange={(e) => setFilters({
-                          ...filters, 
-                          skills: e.target.value.split(',').map(skill => skill.trim()).filter(skill => skill)
-                        })}
+                        onChange={(e) =>
+                          setFilters({
+                            ...filters,
+                            skills: e.target.value
+                              .split(',')
+                              .map((skill) => skill.trim())
+                              .filter((skill) => skill),
+                          })
+                        }
                       />
                     </Form.Group>
                   </Col>
@@ -434,7 +476,7 @@ const BrowseCandidates = () => {
                       <Form.Label>Education Level</Form.Label>
                       <Form.Select
                         value={filters.education}
-                        onChange={(e) => setFilters({...filters, education: e.target.value})}
+                        onChange={(e) => setFilters({ ...filters, education: e.target.value })}
                       >
                         <option value="">Any Education</option>
                         <option value="bachelor">Bachelor&apos;s Degree</option>
@@ -449,7 +491,7 @@ const BrowseCandidates = () => {
                       <Form.Label>Availability</Form.Label>
                       <Form.Select
                         value={filters.availability}
-                        onChange={(e) => setFilters({...filters, availability: e.target.value})}
+                        onChange={(e) => setFilters({ ...filters, availability: e.target.value })}
                       >
                         <option value="all">Any Availability</option>
                         <option value="immediately">Immediately</option>
@@ -483,14 +525,12 @@ const BrowseCandidates = () => {
                 </ListGroup.Item>
                 <ListGroup.Item className="d-flex justify-content-between border-0 py-2">
                   <span>High Matches (&gt;80%)</span>
-                  <Badge bg="success">
-                    {candidates.filter(c => c.matchScore >= 80).length}
-                  </Badge>
+                  <Badge bg="success">{candidates.filter((c) => c.matchScore >= 80).length}</Badge>
                 </ListGroup.Item>
                 <ListGroup.Item className="d-flex justify-content-between border-0 py-2">
                   <span>Available Immediately</span>
                   <Badge bg="warning">
-                    {candidates.filter(c => c.availability === 'immediately').length}
+                    {candidates.filter((c) => c.availability === 'immediately').length}
                   </Badge>
                 </ListGroup.Item>
               </ListGroup>
@@ -505,16 +545,14 @@ const BrowseCandidates = () => {
           <Card className="border-0 shadow-sm">
             <Card.Header className="bg-white border-0 py-3">
               <div className="d-flex justify-content-between align-items-center">
-                <h5 className="mb-0">
-                  Found {filteredCandidates.length} Candidates
-                </h5>
+                <h5 className="mb-0">Found {filteredCandidates.length} Candidates</h5>
                 <div className="d-flex align-items-center gap-2">
                   <span className="text-muted small">
                     Page {currentPage} of {totalPages}
                   </span>
                   <Pagination className="mb-0">
-                    <Pagination.Prev 
-                      onClick={() => paginate(currentPage - 1)} 
+                    <Pagination.Prev
+                      onClick={() => paginate(currentPage - 1)}
                       disabled={currentPage === 1}
                     />
                     {[...Array(totalPages)].map((_, i) => (
@@ -526,8 +564,8 @@ const BrowseCandidates = () => {
                         {i + 1}
                       </Pagination.Item>
                     ))}
-                    <Pagination.Next 
-                      onClick={() => paginate(currentPage + 1)} 
+                    <Pagination.Next
+                      onClick={() => paginate(currentPage + 1)}
                       disabled={currentPage === totalPages}
                     />
                   </Pagination>
@@ -537,14 +575,19 @@ const BrowseCandidates = () => {
             <Card.Body className="p-0">
               {currentCandidates.length > 0 ? (
                 <div className="candidates-list">
-                  {currentCandidates.map(candidate => (
-                    <div key={candidate.id} className="candidate-item border-bottom p-4 hover-highlight">
+                  {currentCandidates.map((candidate) => (
+                    <div
+                      key={candidate.id}
+                      className="candidate-item border-bottom p-4 hover-highlight"
+                    >
                       <Row className="align-items-center">
                         <Col md={8}>
                           <div className="d-flex align-items-start mb-3">
                             <div className="me-3">
-                              <div className="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center bg-primary text-white"
-                                   style={{ width: '60px', height: '60px' }}>
+                              <div
+                                className="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center bg-primary text-white"
+                                style={{ width: '60px', height: '60px' }}
+                              >
                                 {candidate.fullName?.charAt(0) || 'C'}
                               </div>
                             </div>
@@ -560,21 +603,24 @@ const BrowseCandidates = () => {
                                 </div>
                                 <div>
                                   <OverlayTrigger
-                                    overlay={<Tooltip>
-                                      {bookmarked.has(candidate.id) 
-                                        ? 'Remove from Bookmarks' 
-                                        : 'Add to Bookmarks'}
-                                    </Tooltip>}
+                                    overlay={
+                                      <Tooltip>
+                                        {bookmarked.has(candidate.id)
+                                          ? 'Remove from Bookmarks'
+                                          : 'Add to Bookmarks'}
+                                      </Tooltip>
+                                    }
                                   >
-                                    <Button 
-                                      variant="link" 
+                                    <Button
+                                      variant="link"
                                       className="p-0"
                                       onClick={() => handleBookmark(candidate.id)}
                                     >
-                                      {bookmarked.has(candidate.id) ? 
-                                        <FaBookmark className="text-warning" size={20} /> : 
+                                      {bookmarked.has(candidate.id) ? (
+                                        <FaBookmark className="text-warning" size={20} />
+                                      ) : (
                                         <FaRegBookmark className="text-muted" size={20} />
-                                      }
+                                      )}
                                     </Button>
                                   </OverlayTrigger>
                                 </div>
@@ -588,7 +634,8 @@ const BrowseCandidates = () => {
                                   </span>
                                   <span className="text-muted">
                                     <FaGraduationCap className="me-1" />
-                                    {candidate.education?.split(',')[0] || 'Education not specified'}
+                                    {candidate.education?.split(',')[0] ||
+                                      'Education not specified'}
                                   </span>
                                   <span className="text-muted">
                                     <FaBriefcase className="me-1" />
@@ -596,14 +643,17 @@ const BrowseCandidates = () => {
                                   </span>
                                 </div>
 
-                                {candidate.summary && (
-                                  <p className="mb-3">{candidate.summary}</p>
-                                )}
+                                {candidate.summary && <p className="mb-3">{candidate.summary}</p>}
 
                                 {candidate.skills && candidate.skills.length > 0 && (
                                   <div className="d-flex flex-wrap gap-1">
-                                    {candidate.skills.map(skill => (
-                                      <Badge key={skill} bg="light" text="dark" className="px-2 py-1">
+                                    {candidate.skills.map((skill) => (
+                                      <Badge
+                                        key={skill}
+                                        bg="light"
+                                        text="dark"
+                                        className="px-2 py-1"
+                                      >
                                         {skill}
                                       </Badge>
                                     ))}
@@ -616,29 +666,29 @@ const BrowseCandidates = () => {
 
                         <Col md={4}>
                           <div className="d-flex flex-column gap-2">
-                            <Button 
-                              variant="primary" 
+                            <Button
+                              variant="primary"
                               className="d-flex align-items-center justify-content-center gap-2"
                               onClick={() => handleViewProfile(candidate)}
                             >
                               <FaEye /> View Profile
                             </Button>
-                            <Button 
-                              variant="outline-primary" 
+                            <Button
+                              variant="outline-primary"
                               className="d-flex align-items-center justify-content-center gap-2"
                               onClick={() => handleContact(candidate)}
                             >
                               <FaEnvelope /> Contact
                             </Button>
-                            <Button 
-                              variant="outline-success" 
+                            <Button
+                              variant="outline-success"
                               className="d-flex align-items-center justify-content-center gap-2"
                               onClick={() => handleDownloadResume(candidate)}
                             >
                               <FaDownload /> Download Resume
                             </Button>
-                            <Button 
-                              variant="outline-warning" 
+                            <Button
+                              variant="outline-warning"
                               className="d-flex align-items-center justify-content-center gap-2"
                               onClick={() => handleInviteToApply(candidate)}
                             >
@@ -655,14 +705,11 @@ const BrowseCandidates = () => {
                   <FaUsers className="text-muted mb-3" style={{ fontSize: '3rem', opacity: 0.5 }} />
                   <h4>No candidates found</h4>
                   <p className="text-muted mb-3">
-                    {searchTerm || Object.values(filters).some(f => f && f !== 'all')
+                    {searchTerm || Object.values(filters).some((f) => f && f !== 'all')
                       ? 'Try adjusting your search criteria'
                       : 'No candidates available at the moment'}
                   </p>
-                  <Button 
-                    variant="primary" 
-                    onClick={clearFilters}
-                  >
+                  <Button variant="primary" onClick={clearFilters}>
                     Clear Filters
                   </Button>
                 </div>
@@ -684,8 +731,10 @@ const BrowseCandidates = () => {
                 <Col md={8}>
                   <div className="d-flex align-items-start">
                     <div className="me-4">
-                      <div className="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center bg-primary text-white"
-                           style={{ width: '80px', height: '80px' }}>
+                      <div
+                        className="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center bg-primary text-white"
+                        style={{ width: '80px', height: '80px' }}
+                      >
                         {selectedCandidate.fullName?.charAt(0) || 'C'}
                       </div>
                     </div>
@@ -715,22 +764,22 @@ const BrowseCandidates = () => {
                 </Col>
                 <Col md={4}>
                   <div className="d-flex flex-column gap-2">
-                    <Button 
-                      variant="primary" 
+                    <Button
+                      variant="primary"
                       className="d-flex align-items-center justify-content-center gap-2"
                       onClick={() => handleContact(selectedCandidate)}
                     >
                       <FaEnvelope /> Contact Candidate
                     </Button>
-                    <Button 
-                      variant="outline-primary" 
+                    <Button
+                      variant="outline-primary"
                       className="d-flex align-items-center justify-content-center gap-2"
                       onClick={() => handleDownloadResume(selectedCandidate)}
                     >
                       <FaDownload /> Download Resume
                     </Button>
-                    <Button 
-                      variant="outline-success" 
+                    <Button
+                      variant="outline-success"
                       className="d-flex align-items-center justify-content-center gap-2"
                       onClick={() => handleInviteToApply(selectedCandidate)}
                     >
@@ -753,7 +802,7 @@ const BrowseCandidates = () => {
                     <Card.Body>
                       <h5 className="mb-3">Skills & Expertise</h5>
                       <div className="d-flex flex-wrap gap-2">
-                        {selectedCandidate.skills?.map(skill => (
+                        {selectedCandidate.skills?.map((skill) => (
                           <Badge key={skill} bg="primary" className="px-3 py-2 fs-6">
                             {skill}
                           </Badge>
@@ -828,8 +877,8 @@ const BrowseCandidates = () => {
           <Button variant="light" onClick={() => setShowProfileModal(false)}>
             Close
           </Button>
-          <Button 
-            variant="primary" 
+          <Button
+            variant="primary"
             onClick={() => {
               handleContact(selectedCandidate);
               setShowProfileModal(false);
@@ -888,11 +937,7 @@ Your Company Team`}
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Check 
-                  type="checkbox"
-                  label="Send a copy to my email"
-                  defaultChecked
-                />
+                <Form.Check type="checkbox" label="Send a copy to my email" defaultChecked />
               </Form.Group>
             </Form>
           )}
@@ -901,8 +946,8 @@ Your Company Team`}
           <Button variant="light" onClick={() => setShowContactModal(false)}>
             Cancel
           </Button>
-          <Button 
-            variant="primary" 
+          <Button
+            variant="primary"
             onClick={() => {
               setSuccess(`Message sent to ${selectedCandidate?.fullName}`);
               setShowContactModal(false);

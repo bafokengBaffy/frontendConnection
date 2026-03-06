@@ -2,20 +2,20 @@
 /**
  * Admin Analytics Module
  */
-import { 
-  collection, 
-  doc, 
-  getDoc, 
-  getDocs, 
-  query, 
-  where, 
-  orderBy, 
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+  orderBy,
   limit,
   Timestamp,
   aggregate,
   count,
   sum,
-  avg
+  avg,
 } from 'firebase/firestore';
 
 class AdminAnalyticsService {
@@ -30,10 +30,7 @@ class AdminAnalyticsService {
   }
 
   async getAdminAnalytics(options = {}) {
-    const {
-      period = '30d',
-      metrics = ['overview', 'users', 'engagement', 'system']
-    } = options;
+    const { period = '30d', metrics = ['overview', 'users', 'engagement', 'system'] } = options;
 
     try {
       const startDate = this._getStartDateForPeriod(period);
@@ -71,7 +68,7 @@ class AdminAnalyticsService {
         analytics: analyticsData,
         trends,
         insights: this._generateAdminInsights(analyticsData, trends),
-        alerts: await this._generateSystemAlerts(analyticsData)
+        alerts: await this._generateSystemAlerts(analyticsData),
       };
     } catch (error) {
       console.error('Error getting admin analytics:', error);
@@ -83,19 +80,14 @@ class AdminAnalyticsService {
     try {
       const startDate = this._getStartDateForPeriod(period);
 
-      const [
-        userStats,
-        companyStats,
-        studentStats,
-        applicationStats,
-        revenueStats
-      ] = await Promise.all([
-        this._getUserStats(startDate),
-        this._getCompanyStats(startDate),
-        this._getStudentStats(startDate),
-        this._getApplicationStats(startDate),
-        this._getRevenueStats(startDate)
-      ]);
+      const [userStats, companyStats, studentStats, applicationStats, revenueStats] =
+        await Promise.all([
+          this._getUserStats(startDate),
+          this._getCompanyStats(startDate),
+          this._getStudentStats(startDate),
+          this._getApplicationStats(startDate),
+          this._getRevenueStats(startDate),
+        ]);
 
       return {
         period,
@@ -109,14 +101,14 @@ class AdminAnalyticsService {
           totalApplications: applicationStats.total,
           successfulApplications: applicationStats.successful,
           totalRevenue: revenueStats.total,
-          revenueGrowth: revenueStats.growth
+          revenueGrowth: revenueStats.growth,
         },
         dailyMetrics: {
           newUsers: userStats.newUsers,
           newCompanies: companyStats.newCompanies,
           newApplications: applicationStats.dailyAverage,
-          dailyRevenue: revenueStats.dailyAverage
-        }
+          dailyRevenue: revenueStats.dailyAverage,
+        },
       };
     } catch (error) {
       console.error('Error getting system overview:', error);
@@ -133,13 +125,13 @@ class AdminAnalyticsService {
         demographics: await this._getUserDemographics(startDate),
         engagement: await this._getUserEngagement(startDate),
         retention: await this._getUserRetention(startDate),
-        segmentation: await this._getUserSegmentation(startDate)
+        segmentation: await this._getUserSegmentation(startDate),
       };
 
       return {
         period,
         ...userAnalytics,
-        insights: this._generateUserInsights(userAnalytics)
+        insights: this._generateUserInsights(userAnalytics),
       };
     } catch (error) {
       console.error('Error getting user analytics:', error);
@@ -155,13 +147,13 @@ class AdminAnalyticsService {
         platformUsage: await this._getPlatformUsage(startDate),
         featureUsage: await this._getFeatureUsage(startDate),
         sessionAnalytics: await this._getSessionAnalytics(startDate),
-        conversionFunnels: await this._getConversionFunnels(startDate)
+        conversionFunnels: await this._getConversionFunnels(startDate),
       };
 
       return {
         period,
         ...engagementData,
-        metrics: this._calculateEngagementMetrics(engagementData)
+        metrics: this._calculateEngagementMetrics(engagementData),
       };
     } catch (error) {
       console.error('Error getting system engagement:', error);
@@ -177,14 +169,17 @@ class AdminAnalyticsService {
         period: { startDate, endDate },
         generatedAt: Timestamp.now(),
         reportType,
-        sections: {}
+        sections: {},
       };
 
       // Always include overview
       reportData.sections.overview = await this._getCustomPeriodOverview(startDate, endDate);
 
       if (reportType === 'comprehensive' || reportType.includes('user')) {
-        reportData.sections.userAnalytics = await this._getCustomPeriodUserAnalytics(startDate, endDate);
+        reportData.sections.userAnalytics = await this._getCustomPeriodUserAnalytics(
+          startDate,
+          endDate
+        );
       }
 
       if (reportType === 'comprehensive' || reportType.includes('engagement')) {
@@ -196,7 +191,10 @@ class AdminAnalyticsService {
       }
 
       if (reportType === 'comprehensive' || reportType.includes('performance')) {
-        reportData.sections.performance = await this._getSystemPerformanceMetrics(startDate, endDate);
+        reportData.sections.performance = await this._getSystemPerformanceMetrics(
+          startDate,
+          endDate
+        );
       }
 
       // Generate executive summary
@@ -223,12 +221,12 @@ class AdminAnalyticsService {
         activeUsers: await this._getActiveUsersCount(hourAgo),
         recentActivity: await this._getRecentActivity(10),
         systemHealth: await this._checkSystemHealth(),
-        recentErrors: await this._getRecentErrors()
+        recentErrors: await this._getRecentErrors(),
       };
 
       return {
         timestamp: Timestamp.now(),
-        ...realTimeData
+        ...realTimeData,
       };
     } catch (error) {
       console.error('Error getting real-time metrics:', error);
@@ -243,8 +241,8 @@ class AdminAnalyticsService {
       systemOverview: {
         uptime: 99.9,
         responseTime: 0.5,
-        errorRate: 0.1
-      }
+        errorRate: 0.1,
+      },
     };
   }
 
@@ -254,8 +252,8 @@ class AdminAnalyticsService {
       userAnalytics: {
         totalUsers: 0,
         newUsers: 0,
-        activeUsers: 0
-      }
+        activeUsers: 0,
+      },
     };
   }
 
@@ -265,8 +263,8 @@ class AdminAnalyticsService {
       systemEngagement: {
         dailyActiveUsers: 0,
         sessionDuration: 0,
-        pagesPerSession: 0
-      }
+        pagesPerSession: 0,
+      },
     };
   }
 
@@ -276,8 +274,8 @@ class AdminAnalyticsService {
       systemPerformance: {
         apiLatency: 0,
         databasePerformance: 0,
-        cacheHitRate: 0
-      }
+        cacheHitRate: 0,
+      },
     };
   }
 
@@ -287,8 +285,8 @@ class AdminAnalyticsService {
       revenueAnalytics: {
         totalRevenue: 0,
         revenueGrowth: 0,
-        arpu: 0
-      }
+        arpu: 0,
+      },
     };
   }
 
@@ -297,7 +295,7 @@ class AdminAnalyticsService {
     return {
       total: 1000,
       active: 500,
-      newUsers: 50
+      newUsers: 50,
     };
   }
 
@@ -305,7 +303,7 @@ class AdminAnalyticsService {
     return {
       total: 100,
       active: 80,
-      newCompanies: 10
+      newCompanies: 10,
     };
   }
 
@@ -313,7 +311,7 @@ class AdminAnalyticsService {
     return {
       total: 800,
       active: 400,
-      newStudents: 40
+      newStudents: 40,
     };
   }
 
@@ -321,7 +319,7 @@ class AdminAnalyticsService {
     return {
       total: 5000,
       successful: 500,
-      dailyAverage: 50
+      dailyAverage: 50,
     };
   }
 
@@ -329,7 +327,7 @@ class AdminAnalyticsService {
     return {
       total: 10000,
       growth: 0.1,
-      dailyAverage: 100
+      dailyAverage: 100,
     };
   }
 
@@ -338,7 +336,7 @@ class AdminAnalyticsService {
     return {
       totalGrowth: 0.1,
       dailyGrowthRate: 0.01,
-      userAcquisitionCost: 5.0
+      userAcquisitionCost: 5.0,
     };
   }
 
@@ -347,7 +345,7 @@ class AdminAnalyticsService {
     return {
       ageGroups: {},
       locations: {},
-      educationLevels: {}
+      educationLevels: {},
     };
   }
 
@@ -356,7 +354,7 @@ class AdminAnalyticsService {
     return {
       dailyActiveUsers: 0,
       monthlyActiveUsers: 0,
-      sessionDuration: 0
+      sessionDuration: 0,
     };
   }
 
@@ -365,7 +363,7 @@ class AdminAnalyticsService {
     return {
       retentionRate: 0.7,
       churnRate: 0.3,
-      lifetimeValue: 100
+      lifetimeValue: 100,
     };
   }
 
@@ -373,7 +371,7 @@ class AdminAnalyticsService {
     // Implementation for user segmentation
     return {
       segments: [],
-      segmentPerformance: {}
+      segmentPerformance: {},
     };
   }
 
@@ -382,7 +380,7 @@ class AdminAnalyticsService {
     return {
       browsers: {},
       devices: {},
-      operatingSystems: {}
+      operatingSystems: {},
     };
   }
 
@@ -391,7 +389,7 @@ class AdminAnalyticsService {
     return {
       mostUsedFeatures: [],
       featureAdoption: {},
-      featureRetention: {}
+      featureRetention: {},
     };
   }
 
@@ -400,7 +398,7 @@ class AdminAnalyticsService {
     return {
       averageSessionDuration: 0,
       sessionsPerUser: 0,
-      bounceRate: 0
+      bounceRate: 0,
     };
   }
 
@@ -409,7 +407,7 @@ class AdminAnalyticsService {
     return {
       registrationFunnel: {},
       applicationFunnel: {},
-      paymentFunnel: {}
+      paymentFunnel: {},
     };
   }
 
@@ -452,7 +450,7 @@ class AdminAnalyticsService {
     // Implementation for system health check
     return {
       status: 'healthy',
-      checks: []
+      checks: [],
     };
   }
 
@@ -467,11 +465,11 @@ class AdminAnalyticsService {
 
     // This would compare with previous period data
     // For now, return placeholder trends
-    Object.keys(analyticsData).forEach(key => {
+    Object.keys(analyticsData).forEach((key) => {
       trends[key] = {
         direction: 'up',
         percentage: 5,
-        significant: true
+        significant: true,
       };
     });
 
@@ -506,7 +504,7 @@ class AdminAnalyticsService {
         type: 'error',
         message: 'High error rate detected',
         priority: 'high',
-        action: 'Review error logs and system monitoring'
+        action: 'Review error logs and system monitoring',
       });
     }
 
@@ -515,7 +513,7 @@ class AdminAnalyticsService {
         type: 'warning',
         message: 'High user churn rate',
         priority: 'medium',
-        action: 'Investigate churn reasons and improve retention'
+        action: 'Investigate churn reasons and improve retention',
       });
     }
 
@@ -526,7 +524,7 @@ class AdminAnalyticsService {
         type: 'security',
         message: 'Suspicious activity detected',
         priority: 'high',
-        action: 'Review security logs immediately'
+        action: 'Review security logs immediately',
       });
     }
 
@@ -564,7 +562,7 @@ class AdminAnalyticsService {
     const metrics = {
       overallEngagementScore: 0,
       featureAdoptionRate: 0,
-      userSatisfactionScore: 0
+      userSatisfactionScore: 0,
     };
 
     // Calculate overall engagement score
@@ -577,7 +575,7 @@ class AdminAnalyticsService {
 
     // Calculate feature adoption rate
     const totalFeatures = Object.keys(featureUsage).length;
-    const adoptedFeatures = Object.values(featureUsage).filter(usage => usage > 0.1).length;
+    const adoptedFeatures = Object.values(featureUsage).filter((usage) => usage > 0.1).length;
     metrics.featureAdoptionRate = totalFeatures > 0 ? (adoptedFeatures / totalFeatures) * 100 : 0;
 
     return metrics;
@@ -588,7 +586,7 @@ class AdminAnalyticsService {
       overview: 'System is performing within expected parameters.',
       keyMetrics: [],
       criticalIssues: [],
-      opportunities: []
+      opportunities: [],
     };
 
     // Extract key metrics

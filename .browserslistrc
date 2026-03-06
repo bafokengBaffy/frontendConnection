@@ -1,0 +1,31 @@
+# Browsers that we support
+
+# Production
+[production]
+>0.2%
+not dead
+not op_mini all
+not ie > 0
+not ie_mob > 0
+not samsung 4
+not and_uc 12.12
+not and_qq 10.4
+
+# Modern browsers with ES6 module support
+supports es6-module
+supports es6-module-dynamic-import
+
+# Specific browser versions to support
+Chrome >= 60
+Firefox >= 60
+Safari >= 12
+Edge >= 79
+iOS >= 12
+Android >= 7
+
+# Development
+[development]
+last 1 chrome version
+last 1 firefox version
+last 1 safari version
+last 1 edge version

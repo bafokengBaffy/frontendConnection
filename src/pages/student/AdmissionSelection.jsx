@@ -23,7 +23,7 @@ const AdmissionSelection = () => {
 
       if (result.success) {
         setAdmissions(result.data);
-        const selected = result.data.find(admission => admission.selected);
+        const selected = result.data.find((admission) => admission.selected);
         if (selected) {
           setSelectedAdmission(selected.applicationId);
         }
@@ -55,20 +55,20 @@ const AdmissionSelection = () => {
       if (result.success) {
         setMessage({
           type: 'success',
-          text: result.message || 'Institution selected successfully!'
+          text: result.message || 'Institution selected successfully!',
         });
         await loadAdmissions(); // Reload to show updated status
       } else {
         setMessage({
           type: 'error',
-          text: result.error || 'Failed to select institution'
+          text: result.error || 'Failed to select institution',
         });
       }
     } catch (error) {
       console.error('Error selecting institution:', error);
       setMessage({
         type: 'error',
-        text: 'An error occurred while selecting institution'
+        text: 'An error occurred while selecting institution',
       });
     } finally {
       setIsSubmitting(false);
@@ -84,7 +84,7 @@ const AdmissionSelection = () => {
     );
   }
 
-  const hasSelection = admissions.some(admission => admission.selected);
+  const hasSelection = admissions.some((admission) => admission.selected);
 
   return (
     <div className="admission-selection">
@@ -95,25 +95,22 @@ const AdmissionSelection = () => {
             <p>
               {hasSelection
                 ? 'You have already made your selection'
-                : 'Choose one institution from your approved applications'
-              }
+                : 'Choose one institution from your approved applications'}
             </p>
           </div>
         </div>
       </div>
 
-      {message.text && (
-        <div className={`message ${message.type}`}>
-          {message.text}
-        </div>
-      )}
+      {message.text && <div className={`message ${message.type}`}>{message.text}</div>}
 
       {admissions.length === 0 ? (
         <div className="no-admissions">
           <div className="empty-state">
             <div className="empty-icon">🎓</div>
             <h3>No Admissions Yet</h3>
-            <p>You haven&apos;t been admitted to any institutions yet. Check back later for updates.</p>
+            <p>
+              You haven&apos;t been admitted to any institutions yet. Check back later for updates.
+            </p>
           </div>
         </div>
       ) : hasSelection ? (
@@ -124,15 +121,20 @@ const AdmissionSelection = () => {
               <h3>Selection Confirmed!</h3>
               <p>You have successfully selected your institution.</p>
 
-              {admissions.map(admission => (
-                admission.selected && (
-                  <div key={admission.applicationId} className="selected-institution">
-                    <h4>{admission.institutionName}</h4>
-                    <p><strong>Course:</strong> {admission.courseName}</p>
-                    <p><strong>Selected on:</strong> {new Date().toLocaleDateString()}</p>
-                  </div>
-                )
-              ))}
+              {admissions.map(
+                (admission) =>
+                  admission.selected && (
+                    <div key={admission.applicationId} className="selected-institution">
+                      <h4>{admission.institutionName}</h4>
+                      <p>
+                        <strong>Course:</strong> {admission.courseName}
+                      </p>
+                      <p>
+                        <strong>Selected on:</strong> {new Date().toLocaleDateString()}
+                      </p>
+                    </div>
+                  )
+              )}
             </div>
           </div>
         </div>
@@ -143,8 +145,8 @@ const AdmissionSelection = () => {
             <div className="banner-content">
               <h4>Important Information</h4>
               <p>
-                You have been admitted to multiple institutions. Please select one institution to confirm your enrollment.
-                This action cannot be undone.
+                You have been admitted to multiple institutions. Please select one institution to
+                confirm your enrollment. This action cannot be undone.
               </p>
             </div>
           </div>
@@ -174,8 +176,13 @@ const AdmissionSelection = () => {
                           <span className="admission-badge">Admitted</span>
                         </div>
                         <div className="admission-details">
-                          <p><strong>Course:</strong> {admission.courseName}</p>
-                          <p><strong>Applied:</strong> {admission.appliedAt?.toLocaleDateString() || 'N/A'}</p>
+                          <p>
+                            <strong>Course:</strong> {admission.courseName}
+                          </p>
+                          <p>
+                            <strong>Applied:</strong>{' '}
+                            {admission.appliedAt?.toLocaleDateString() || 'N/A'}
+                          </p>
                         </div>
                       </div>
                     </label>

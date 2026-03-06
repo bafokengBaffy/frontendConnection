@@ -12,7 +12,7 @@ import {
   Row,
   Col,
   ProgressBar,
-  Badge
+  Badge,
 } from 'react-bootstrap';
 import {
   FiUpload,
@@ -28,7 +28,7 @@ import {
   FiShare2,
   FiEdit2,
   FiMaximize2,
-  FiDownload
+  FiDownload,
 } from 'react-icons/fi';
 import { TbPhotoEdit } from 'react-icons/tb';
 import { RiImageEditLine } from 'react-icons/ri';
@@ -37,9 +37,9 @@ import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../hooks/useNotifications';
 import './ProfilePhotoUpload.css';
 
-const ProfilePhotoUpload = ({ 
-  userId, 
-  currentPhoto, 
+const ProfilePhotoUpload = ({
+  userId,
+  currentPhoto,
   onPhotoUpdate,
   disabled = false,
   size = 'lg',
@@ -48,15 +48,15 @@ const ProfilePhotoUpload = ({
   allowEdit = true,
   allowCamera = true,
   maxSize = 5, // MB
-  optimizeImages = true
+  optimizeImages = true,
 }) => {
   const { currentUser } = useAuth();
   const { showNotification } = useNotifications();
-  
+
   const fileInputRef = useRef(null);
   const cameraInputRef = useRef(null);
   const previewCanvasRef = useRef(null);
-  
+
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState(null);
@@ -75,7 +75,7 @@ const ProfilePhotoUpload = ({
     sm: { width: 80, height: 80, className: 'photo-sm' },
     md: { width: 120, height: 120, className: 'photo-md' },
     lg: { width: 160, height: 160, className: 'photo-lg' },
-    xl: { width: 200, height: 200, className: 'photo-xl' }
+    xl: { width: 200, height: 200, className: 'photo-xl' },
   };
 
   const config = sizeConfig[size] || sizeConfig.lg;
@@ -127,7 +127,7 @@ const ProfilePhotoUpload = ({
       const img = new Image();
       img.onload = () => {
         setImageDimensions({ width: img.width, height: img.height });
-        
+
         // Resize for preview if too large
         let previewUrl = e.target.result;
         if (img.width > 800 || img.height > 800) {
@@ -139,7 +139,7 @@ const ProfilePhotoUpload = ({
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
           previewUrl = canvas.toDataURL(file.type, 0.8);
         }
-        
+
         setPreviewImage(previewUrl);
         setSelectedFile(file);
       };
@@ -187,7 +187,7 @@ const ProfilePhotoUpload = ({
 
       // Simulate progress (real progress would come from service)
       const progressInterval = setInterval(() => {
-        setUploadProgress(prev => {
+        setUploadProgress((prev) => {
           if (prev >= 90) {
             clearInterval(progressInterval);
             return prev;
@@ -201,7 +201,7 @@ const ProfilePhotoUpload = ({
         optimize: optimizeImages,
         maxSize: maxSize * 1024 * 1024,
         useCloudinary: true,
-        fallbackToFirebase: true
+        fallbackToFirebase: true,
       });
 
       clearInterval(progressInterval);
@@ -213,7 +213,7 @@ const ProfilePhotoUpload = ({
           optimizedSize: result.metadata?.fileSize,
           storageType: result.storageType,
           uploadTime: new Date().toISOString(),
-          dimensions: imageDimensions
+          dimensions: imageDimensions,
         });
 
         // Update parent component
@@ -227,7 +227,7 @@ const ProfilePhotoUpload = ({
           type: 'success',
           title: 'Photo Updated',
           message: 'Your profile photo has been updated',
-          duration: 3000
+          duration: 3000,
         });
 
         // Reset state after delay
@@ -249,7 +249,7 @@ const ProfilePhotoUpload = ({
         type: 'error',
         title: 'Upload Failed',
         message: error.message || 'Failed to upload profile photo',
-        duration: 5000
+        duration: 5000,
       });
     } finally {
       setUploading(false);
@@ -264,7 +264,7 @@ const ProfilePhotoUpload = ({
       setError(null);
 
       // Get public ID from current photo URL or profile data
-      const publicId = currentPhoto?.includes('cloudinary') 
+      const publicId = currentPhoto?.includes('cloudinary')
         ? currentPhoto.split('/').slice(-2).join('/').split('.')[0]
         : null;
 
@@ -281,7 +281,7 @@ const ProfilePhotoUpload = ({
           type: 'success',
           title: 'Photo Deleted',
           message: 'Profile photo has been removed',
-          duration: 3000
+          duration: 3000,
         });
 
         setShowDeleteModal(false);
@@ -307,13 +307,14 @@ const ProfilePhotoUpload = ({
   // Copy photo URL to clipboard
   const copyPhotoUrl = () => {
     if (currentPhoto) {
-      navigator.clipboard.writeText(currentPhoto)
+      navigator.clipboard
+        .writeText(currentPhoto)
         .then(() => {
           showNotification({
             type: 'success',
             title: 'Copied',
             message: 'Photo URL copied to clipboard',
-            duration: 2000
+            duration: 2000,
           });
         })
         .catch(() => {
@@ -321,7 +322,7 @@ const ProfilePhotoUpload = ({
             type: 'error',
             title: 'Copy Failed',
             message: 'Could not copy URL',
-            duration: 2000
+            duration: 2000,
           });
         });
     }
@@ -407,11 +408,7 @@ const ProfilePhotoUpload = ({
         <Card.Header className="bg-primary text-white">
           <div className="d-flex justify-content-between align-items-center">
             <span>Preview New Photo</span>
-            <Button
-              variant="outline-light"
-              size="sm"
-              onClick={() => setShowPreviewModal(true)}
-            >
+            <Button variant="outline-light" size="sm" onClick={() => setShowPreviewModal(true)}>
               <FiMaximize2 />
             </Button>
           </div>
@@ -468,11 +465,7 @@ const ProfilePhotoUpload = ({
                     <span>Uploading...</span>
                     <span>{uploadProgress}%</span>
                   </div>
-                  <ProgressBar 
-                    now={uploadProgress} 
-                    animated 
-                    variant="primary"
-                  />
+                  <ProgressBar now={uploadProgress} animated variant="primary" />
                 </div>
               )}
             </Col>
@@ -503,13 +496,15 @@ const ProfilePhotoUpload = ({
               </div>
               {uploadStats.optimizedSize && (
                 <div className="small">
-                  <strong>Optimized Size:</strong> {(uploadStats.optimizedSize / 1024).toFixed(1)} KB
+                  <strong>Optimized Size:</strong> {(uploadStats.optimizedSize / 1024).toFixed(1)}{' '}
+                  KB
                 </div>
               )}
             </Col>
             <Col md={6}>
               <div className="small">
-                <strong>Dimensions:</strong> {uploadStats.dimensions.width} × {uploadStats.dimensions.height}
+                <strong>Dimensions:</strong> {uploadStats.dimensions.width} ×{' '}
+                {uploadStats.dimensions.height}
               </div>
               <div className="small">
                 <strong>Time:</strong> {new Date(uploadStats.uploadTime).toLocaleTimeString()}
@@ -543,12 +538,10 @@ const ProfilePhotoUpload = ({
       {/* Main Photo Display */}
       <div className="text-center mb-3">
         {renderPhoto()}
-        
+
         {!currentPhoto && canUpload && (
           <div className="mt-3">
-            <p className="text-muted small mb-2">
-              Add a profile photo to complete your profile
-            </p>
+            <p className="text-muted small mb-2">Add a profile photo to complete your profile</p>
           </div>
         )}
 
@@ -573,11 +566,7 @@ const ProfilePhotoUpload = ({
               </Button>
             )}
             {allowDelete && (
-              <Button
-                variant="outline-danger"
-                size="sm"
-                onClick={() => setShowDeleteModal(true)}
-              >
+              <Button variant="outline-danger" size="sm" onClick={() => setShowDeleteModal(true)}>
                 <FiTrash2 className="me-1" />
                 Remove
               </Button>
@@ -588,7 +577,7 @@ const ProfilePhotoUpload = ({
 
       {/* Upload Zone (when no photo or when adding) */}
       {(!currentPhoto || previewImage) && canUpload && (
-        <div 
+        <div
           className={`upload-zone ${isDragOver ? 'drag-over' : ''}`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -601,9 +590,7 @@ const ProfilePhotoUpload = ({
             <div className="upload-zone-content">
               <FiUpload size={48} className="text-muted mb-3" />
               <h6>Upload Profile Photo</h6>
-              <p className="text-muted small">
-                Drag & drop an image here, or click to browse
-              </p>
+              <p className="text-muted small">Drag & drop an image here, or click to browse</p>
               <p className="text-muted small mb-0">
                 Supported: JPG, PNG, WebP, GIF • Max: {maxSize}MB
               </p>
@@ -708,7 +695,6 @@ const ProfilePhotoUpload = ({
             />
           </div>
           <Alert variant="warning" className="small">
-      
             This action cannot be undone. Your profile will show the default placeholder.
           </Alert>
         </Modal.Body>
@@ -720,11 +706,7 @@ const ProfilePhotoUpload = ({
           >
             Cancel
           </Button>
-          <Button
-            variant="danger"
-            onClick={handleDelete}
-            disabled={uploading}
-          >
+          <Button variant="danger" onClick={handleDelete} disabled={uploading}>
             {uploading ? (
               <>
                 <Spinner animation="border" size="sm" className="me-2" />
@@ -741,12 +723,7 @@ const ProfilePhotoUpload = ({
       </Modal>
 
       {/* Preview Modal */}
-      <Modal 
-        show={showPreviewModal} 
-        onHide={() => setShowPreviewModal(false)}
-        size="lg"
-        centered
-      >
+      <Modal show={showPreviewModal} onHide={() => setShowPreviewModal(false)} size="lg" centered>
         <Modal.Header closeButton>
           <Modal.Title>Profile Photo Preview</Modal.Title>
         </Modal.Header>
@@ -764,32 +741,21 @@ const ProfilePhotoUpload = ({
                 Dimensions: {imageDimensions.width} × {imageDimensions.height}px
               </>
             ) : (
-              <>
-                {currentPhoto ? 'Current profile photo' : 'New photo preview'}
-              </>
+              <>{currentPhoto ? 'Current profile photo' : 'New photo preview'}</>
             )}
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button
-            variant="secondary"
-            onClick={() => setShowPreviewModal(false)}
-          >
+          <Button variant="secondary" onClick={() => setShowPreviewModal(false)}>
             Close
           </Button>
           {currentPhoto && (
             <>
-              <Button
-                variant="outline-primary"
-                onClick={copyPhotoUrl}
-              >
+              <Button variant="outline-primary" onClick={copyPhotoUrl}>
                 <FiCopy className="me-2" />
                 Copy URL
               </Button>
-              <Button
-                variant="outline-success"
-                onClick={downloadPhoto}
-              >
+              <Button variant="outline-success" onClick={downloadPhoto}>
                 <FiDownload className="me-2" />
                 Download
               </Button>

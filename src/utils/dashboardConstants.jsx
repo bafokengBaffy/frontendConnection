@@ -6,7 +6,7 @@ export const DASHBOARD_PATHS = {
   COMPANY: '/company/dashboard',
   ENTREPRENEUR: '/entrepreneur/dashboard',
   INSTITUTE: '/institute/dashboard',
-  EMPLOYER: '/employer/dashboard'
+  EMPLOYER: '/employer/dashboard',
 };
 
 export const USER_TYPES = {
@@ -16,7 +16,7 @@ export const USER_TYPES = {
   COMPANY: 'company',
   ENTREPRENEUR: 'entrepreneur',
   INSTITUTE: 'institute',
-  EMPLOYER: 'employer'
+  EMPLOYER: 'employer',
 };
 
 export const getUserDashboardPath = (userType) => {

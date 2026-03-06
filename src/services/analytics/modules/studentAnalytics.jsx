@@ -3,18 +3,18 @@
 /**
  * Student Analytics Module
  */
-import { 
-  collection, 
-  doc, 
-  getDoc, 
-  getDocs, 
-  query, 
-  where, 
-  orderBy, 
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+  orderBy,
   limit,
   Timestamp,
   increment,
-  updateDoc
+  updateDoc,
 } from 'firebase/firestore';
 
 class StudentAnalyticsService {
@@ -34,14 +34,14 @@ class StudentAnalyticsService {
       endDate = new Date(),
       includeApplications = true,
       includeEngagement = true,
-      includeSkills = true
+      includeSkills = true,
     } = options;
 
     try {
       // Get student profile
       const studentRef = doc(this.db, 'students', studentId);
       const studentSnap = await getDoc(studentRef);
-      
+
       if (!studentSnap.exists()) {
         throw new Error('Student not found');
       }
@@ -75,11 +75,11 @@ class StudentAnalyticsService {
           name: studentData.name,
           email: studentData.email,
           institution: studentData.institution,
-          fieldOfStudy: studentData.fieldOfStudy
+          fieldOfStudy: studentData.fieldOfStudy,
         },
         analytics,
         overallMetrics,
-        recommendations: this._generateStudentRecommendations(analytics, overallMetrics)
+        recommendations: this._generateStudentRecommendations(analytics, overallMetrics),
       };
     } catch (error) {
       console.error('Error getting student analytics:', error);
@@ -96,18 +96,16 @@ class StudentAnalyticsService {
       );
 
       const snapshot = await getDocs(q);
-      const applications = snapshot.docs.map(doc => ({
+      const applications = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       }));
 
       // Filter by period if needed
       let filteredApplications = applications;
       if (period !== 'all') {
         const startDate = this._getStartDateForPeriod(period);
-        filteredApplications = applications.filter(app => 
-          app.appliedAt?.toDate() >= startDate
-        );
+        filteredApplications = applications.filter((app) => app.appliedAt?.toDate() >= startDate);
       }
 
       // Calculate metrics
@@ -120,8 +118,8 @@ class StudentAnalyticsService {
         trends: {
           applicationRate: this._calculateApplicationRate(filteredApplications),
           successRateByMonth: this._calculateSuccessRateByMonth(filteredApplications),
-          preferredJobTypes: this._getPreferredJobTypes(filteredApplications)
-        }
+          preferredJobTypes: this._getPreferredJobTypes(filteredApplications),
+        },
       };
     } catch (error) {
       console.error('Error getting application analytics:', error);
@@ -141,9 +139,9 @@ class StudentAnalyticsService {
       );
 
       const snapshot = await getDocs(q);
-      const events = snapshot.docs.map(doc => ({
+      const events = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       }));
 
       // Calculate engagement metrics
@@ -152,7 +150,7 @@ class StudentAnalyticsService {
         totalEvents: events.length,
         eventsPerDay: events.length / Math.max(this._countDaysInPeriod(period), 1),
         platformUsage: this._analyzePlatformUsage(events),
-        featureUsage: this._analyzeFeatureUsage(events)
+        featureUsage: this._analyzeFeatureUsage(events),
       };
 
       // Calculate learning patterns
@@ -162,7 +160,7 @@ class StudentAnalyticsService {
         period,
         metrics,
         patterns: learningPatterns,
-        activityHeatmap: this._createActivityHeatmap(events)
+        activityHeatmap: this._createActivityHeatmap(events),
       };
     } catch (error) {
       console.error('Error getting engagement metrics:', error);
@@ -185,7 +183,7 @@ class StudentAnalyticsService {
         totalSkills: skills.length,
         skillLevels: this._calculateSkillLevels(skills),
         skillGaps: this._identifySkillGaps(skills, assessments),
-        recommendedSkills: this._recommendSkills(skills, studentData)
+        recommendedSkills: this._recommendSkills(skills, studentData),
       };
 
       // Get skill progression
@@ -196,7 +194,7 @@ class StudentAnalyticsService {
         assessments,
         metrics: skillMetrics,
         progression: skillProgression,
-        insights: this._generateSkillInsights(skillMetrics)
+        insights: this._generateSkillInsights(skillMetrics),
       };
     } catch (error) {
       console.error('Error getting skills analytics:', error);
@@ -212,7 +210,7 @@ class StudentAnalyticsService {
         studentId,
         period: { startDate, endDate },
         generatedAt: Timestamp.now(),
-        sections: {}
+        sections: {},
       };
 
       if (metrics === 'all' || metrics.includes('applications')) {
@@ -228,7 +226,11 @@ class StudentAnalyticsService {
       }
 
       if (metrics === 'all' || metrics.includes('performance')) {
-        reportData.sections.performance = await this._getPerformanceMetrics(studentId, startDate, endDate);
+        reportData.sections.performance = await this._getPerformanceMetrics(
+          studentId,
+          startDate,
+          endDate
+        );
       }
 
       // Generate insights and recommendations
@@ -248,7 +250,7 @@ class StudentAnalyticsService {
         studentId,
         progressType,
         ...progressData,
-        timestamp: Timestamp.now()
+        timestamp: Timestamp.now(),
       };
 
       // Add to student progress tracking
@@ -273,8 +275,8 @@ class StudentAnalyticsService {
       applicationStats: {
         total: 0,
         byStatus: {},
-        successRate: 0
-      }
+        successRate: 0,
+      },
     };
   }
 
@@ -284,8 +286,8 @@ class StudentAnalyticsService {
       engagementStats: {
         activeDays: 0,
         eventsPerDay: 0,
-        mostUsedFeatures: []
-      }
+        mostUsedFeatures: [],
+      },
     };
   }
 
@@ -295,8 +297,8 @@ class StudentAnalyticsService {
       skillsOverview: {
         totalSkills: 0,
         averageLevel: 0,
-        skillGaps: []
-      }
+        skillGaps: [],
+      },
     };
   }
 
@@ -305,7 +307,7 @@ class StudentAnalyticsService {
     return {
       performanceScore: 0,
       improvementAreas: [],
-      strengths: []
+      strengths: [],
     };
   }
 
@@ -314,7 +316,7 @@ class StudentAnalyticsService {
       engagementScore: 0,
       applicationSuccessRate: 0,
       skillDevelopmentRate: 0,
-      overallProgress: 0
+      overallProgress: 0,
     };
 
     // Calculate engagement score
@@ -337,11 +339,10 @@ class StudentAnalyticsService {
     }
 
     // Calculate overall progress (weighted average)
-    metrics.overallProgress = (
+    metrics.overallProgress =
       metrics.engagementScore * 0.3 +
       metrics.applicationSuccessRate * 0.4 +
-      metrics.skillDevelopmentRate * 0.3
-    );
+      metrics.skillDevelopmentRate * 0.3;
 
     return metrics;
   }
@@ -352,10 +353,10 @@ class StudentAnalyticsService {
       byStatus: {},
       byType: {},
       averageResponseTime: 0,
-      interviewConversionRate: 0
+      interviewConversionRate: 0,
     };
 
-    applications.forEach(app => {
+    applications.forEach((app) => {
       // Count by status
       const status = app.status || 'pending';
       metrics.byStatus[status] = (metrics.byStatus[status] || 0) + 1;
@@ -376,7 +377,7 @@ class StudentAnalyticsService {
   _calculateApplicationRate(applications) {
     if (applications.length === 0) return 0;
 
-    const dates = applications.map(app => app.appliedAt?.toDate().getTime()).filter(Boolean);
+    const dates = applications.map((app) => app.appliedAt?.toDate().getTime()).filter(Boolean);
     if (dates.length === 0) return 0;
 
     const minDate = Math.min(...dates);
@@ -389,27 +390,27 @@ class StudentAnalyticsService {
   _calculateSuccessRateByMonth(applications) {
     const monthlyStats = {};
 
-    applications.forEach(app => {
+    applications.forEach((app) => {
       if (!app.appliedAt) return;
 
       const date = app.appliedAt.toDate();
       const monthKey = `${date.getFullYear()}-${date.getMonth() + 1}`;
-      
+
       if (!monthlyStats[monthKey]) {
         monthlyStats[monthKey] = {
           total: 0,
           successful: 0,
-          successRate: 0
+          successRate: 0,
         };
       }
 
       monthlyStats[monthKey].total++;
-      
+
       if (['accepted', 'interviewed'].includes(app.status)) {
         monthlyStats[monthKey].successful++;
       }
 
-      monthlyStats[monthKey].successRate = 
+      monthlyStats[monthKey].successRate =
         (monthlyStats[monthKey].successful / monthlyStats[monthKey].total) * 100;
     });
 
@@ -419,7 +420,7 @@ class StudentAnalyticsService {
   _getPreferredJobTypes(applications) {
     const jobTypes = {};
 
-    applications.forEach(app => {
+    applications.forEach((app) => {
       const type = app.jobType || 'unknown';
       jobTypes[type] = (jobTypes[type] || 0) + 1;
     });
@@ -432,8 +433,8 @@ class StudentAnalyticsService {
 
   _countActiveDays(events) {
     const uniqueDays = new Set();
-    
-    events.forEach(event => {
+
+    events.forEach((event) => {
       const date = event.timestamp?.toDate().toDateString();
       if (date) uniqueDays.add(date);
     });
@@ -443,17 +444,21 @@ class StudentAnalyticsService {
 
   _countDaysInPeriod(period) {
     switch (period) {
-      case '7d': return 7;
-      case '30d': return 30;
-      case '90d': return 90;
-      default: return 30;
+      case '7d':
+        return 7;
+      case '30d':
+        return 30;
+      case '90d':
+        return 90;
+      default:
+        return 30;
     }
   }
 
   _analyzePlatformUsage(events) {
     const platformUsage = {};
 
-    events.forEach(event => {
+    events.forEach((event) => {
       const platform = event.platform || 'unknown';
       platformUsage[platform] = (platformUsage[platform] || 0) + 1;
     });
@@ -464,7 +469,7 @@ class StudentAnalyticsService {
   _analyzeFeatureUsage(events) {
     const featureUsage = {};
 
-    events.forEach(event => {
+    events.forEach((event) => {
       const feature = this._mapEventToFeature(event.eventName);
       featureUsage[feature] = (featureUsage[feature] || 0) + 1;
     });
@@ -474,12 +479,12 @@ class StudentAnalyticsService {
 
   _mapEventToFeature(eventName) {
     const featureMap = {
-      'page_view': 'Browsing',
-      'job_application': 'Applications',
-      'search': 'Search',
-      'profile_update': 'Profile Management',
-      'course_view': 'Learning',
-      'assessment_complete': 'Assessments'
+      page_view: 'Browsing',
+      job_application: 'Applications',
+      search: 'Search',
+      profile_update: 'Profile Management',
+      course_view: 'Learning',
+      assessment_complete: 'Assessments',
     };
 
     return featureMap[eventName] || 'Other';
@@ -489,28 +494,27 @@ class StudentAnalyticsService {
     const patterns = {
       preferredLearningTime: null,
       learningDuration: 0,
-      topics: new Set()
+      topics: new Set(),
     };
 
-    const learningEvents = events.filter(e => 
+    const learningEvents = events.filter((e) =>
       ['course_view', 'assessment_complete', 'resource_view'].includes(e.eventName)
     );
 
     if (learningEvents.length > 0) {
       // Find preferred learning time
       const hourCounts = {};
-      learningEvents.forEach(event => {
+      learningEvents.forEach((event) => {
         const hour = event.timestamp?.toDate().getHours();
         hourCounts[hour] = (hourCounts[hour] || 0) + 1;
       });
 
-      const preferredHour = Object.entries(hourCounts)
-        .sort(([, a], [, b]) => b - a)[0]?.[0];
-      
+      const preferredHour = Object.entries(hourCounts).sort(([, a], [, b]) => b - a)[0]?.[0];
+
       patterns.preferredLearningTime = preferredHour ? `${preferredHour}:00` : 'unknown';
 
       // Extract topics
-      learningEvents.forEach(event => {
+      learningEvents.forEach((event) => {
         if (event.topic) patterns.topics.add(event.topic);
       });
     }
@@ -523,14 +527,14 @@ class StudentAnalyticsService {
   _createActivityHeatmap(events) {
     const heatmap = {};
 
-    events.forEach(event => {
+    events.forEach((event) => {
       const date = event.timestamp?.toDate().toDateString();
       const hour = event.timestamp?.toDate().getHours();
-      
+
       if (!heatmap[date]) {
         heatmap[date] = {};
       }
-      
+
       heatmap[date][hour] = (heatmap[date][hour] || 0) + 1;
     });
 
@@ -542,10 +546,10 @@ class StudentAnalyticsService {
       beginner: 0,
       intermediate: 0,
       advanced: 0,
-      expert: 0
+      expert: 0,
     };
 
-    skills.forEach(skill => {
+    skills.forEach((skill) => {
       const level = skill.level || 'beginner';
       levels[level]++;
     });
@@ -555,7 +559,7 @@ class StudentAnalyticsService {
 
   _identifySkillGaps(skills, assessments) {
     const gaps = [];
-    
+
     // This is a simplified implementation
     // In production, you would compare with job market requirements
     const requiredSkills = [
@@ -563,12 +567,12 @@ class StudentAnalyticsService {
       'Teamwork',
       'Problem Solving',
       'Technical Writing',
-      'Project Management'
+      'Project Management',
     ];
 
-    const studentSkills = skills.map(skill => skill.name);
-    
-    requiredSkills.forEach(requiredSkill => {
+    const studentSkills = skills.map((skill) => skill.name);
+
+    requiredSkills.forEach((requiredSkill) => {
       if (!studentSkills.includes(requiredSkill)) {
         gaps.push(requiredSkill);
       }
@@ -589,8 +593,8 @@ class StudentAnalyticsService {
     }
 
     // Based on current skill gaps
-    const skillNames = currentSkills.map(skill => skill.name);
-    
+    const skillNames = currentSkills.map((skill) => skill.name);
+
     if (!skillNames.includes('Communication')) {
       recommendations.push('Communication', 'Public Speaking');
     }
@@ -632,21 +636,25 @@ class StudentAnalyticsService {
 
     if (sections.applications) {
       const { metrics } = sections.applications;
-      
+
       if (metrics.total < 5) {
         insights.push('Low application volume detected. Consider applying to more positions.');
       }
-      
+
       if (metrics.interviewConversionRate < 20) {
-        insights.push('Low interview conversion rate. Consider improving resume or application strategy.');
+        insights.push(
+          'Low interview conversion rate. Consider improving resume or application strategy.'
+        );
       }
     }
 
     if (sections.engagement) {
       const { metrics } = sections.engagement;
-      
+
       if (metrics.activeDays < 10) {
-        insights.push('Low platform engagement. Regular use can improve job matching and learning.');
+        insights.push(
+          'Low platform engagement. Regular use can improve job matching and learning.'
+        );
       }
     }
 
@@ -677,9 +685,9 @@ class StudentAnalyticsService {
 
   async _updateStudentMetrics(studentId, progressType, progressData) {
     const metricsMap = {
-      'skill_improvement': 'skillsImproved',
-      'course_completed': 'coursesCompleted',
-      'application_submitted': 'applicationsSubmitted'
+      skill_improvement: 'skillsImproved',
+      course_completed: 'coursesCompleted',
+      application_submitted: 'applicationsSubmitted',
     };
 
     const metricField = metricsMap[progressType];
@@ -687,7 +695,7 @@ class StudentAnalyticsService {
       const studentRef = doc(this.db, 'students', studentId);
       await updateDoc(studentRef, {
         [`analytics.${metricField}`]: increment(1),
-        'analytics.lastProgressUpdate': Timestamp.now()
+        'analytics.lastProgressUpdate': Timestamp.now(),
       });
     }
   }

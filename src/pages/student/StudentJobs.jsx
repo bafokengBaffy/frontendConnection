@@ -16,7 +16,7 @@ import {
   Pagination,
   Dropdown,
   InputGroup,
-  FormControl
+  FormControl,
 } from 'react-bootstrap';
 import {
   Search,
@@ -30,7 +30,7 @@ import {
   Briefcase,
   DollarSign,
   Users,
-  Upload
+  Upload,
 } from 'react-feather';
 import { useAuth } from '../../context/AuthContext';
 import { formatDistanceToNow, format } from 'date-fns';
@@ -52,7 +52,7 @@ const MOCK_JOBS = [
     datePosted: '2024-01-15T10:30:00Z',
     deadline: '2024-02-15',
     description: 'We are looking for a skilled Frontend Developer...',
-    skills: ['React', 'JavaScript', 'CSS', 'HTML5']
+    skills: ['React', 'JavaScript', 'CSS', 'HTML5'],
   },
   {
     id: 2,
@@ -68,7 +68,7 @@ const MOCK_JOBS = [
     datePosted: '2024-01-16T14:20:00Z',
     deadline: '2024-02-28',
     description: 'Join our backend engineering team...',
-    skills: ['Node.js', 'Python', 'PostgreSQL', 'AWS']
+    skills: ['Node.js', 'Python', 'PostgreSQL', 'AWS'],
   },
   {
     id: 3,
@@ -84,7 +84,7 @@ const MOCK_JOBS = [
     datePosted: '2024-01-10T09:15:00Z',
     deadline: '2024-02-10',
     description: 'Design beautiful user experiences...',
-    skills: ['Figma', 'Sketch', 'UI/UX', 'Prototyping']
+    skills: ['Figma', 'Sketch', 'UI/UX', 'Prototyping'],
   },
   {
     id: 4,
@@ -100,7 +100,7 @@ const MOCK_JOBS = [
     datePosted: '2024-01-18T11:45:00Z',
     deadline: '2024-01-31',
     description: 'Analyze financial data and create reports...',
-    skills: ['Excel', 'SQL', 'Python', 'Statistics']
+    skills: ['Excel', 'SQL', 'Python', 'Statistics'],
   },
   {
     id: 5,
@@ -116,58 +116,58 @@ const MOCK_JOBS = [
     datePosted: '2024-01-20T08:00:00Z',
     deadline: '2024-03-01',
     description: 'Build and maintain our cloud infrastructure...',
-    skills: ['Docker', 'Kubernetes', 'AWS', 'CI/CD']
-  }
+    skills: ['Docker', 'Kubernetes', 'AWS', 'CI/CD'],
+  },
 ];
 
 const STATUS_COLORS = {
-  'active': 'success',
-  'pending': 'warning',
-  'expired': 'secondary',
-  'closed': 'danger',
-  'draft': 'info'
+  active: 'success',
+  pending: 'warning',
+  expired: 'secondary',
+  closed: 'danger',
+  draft: 'info',
 };
 
 const JOB_TYPES = {
   'full-time': { label: 'Full Time', color: 'primary' },
   'part-time': { label: 'Part Time', color: 'info' },
-  'internship': { label: 'Internship', color: 'success' },
-  'contract': { label: 'Contract', color: 'warning' },
-  'remote': { label: 'Remote', color: 'secondary' }
+  internship: { label: 'Internship', color: 'success' },
+  contract: { label: 'Contract', color: 'warning' },
+  remote: { label: 'Remote', color: 'secondary' },
 };
 
 // Mock services for development
 const mockJobService = {
   getJobs: async (filters = {}) => {
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
     let filteredJobs = [...MOCK_JOBS];
-    
+
     // Apply filters
     if (filters.jobType && filters.jobType !== 'all') {
-      filteredJobs = filteredJobs.filter(job => job.type === filters.jobType);
+      filteredJobs = filteredJobs.filter((job) => job.type === filters.jobType);
     }
-    
+
     if (filters.location) {
-      filteredJobs = filteredJobs.filter(job => 
+      filteredJobs = filteredJobs.filter((job) =>
         job.location.toLowerCase().includes(filters.location.toLowerCase())
       );
     }
-    
+
     if (filters.experienceLevel && filters.experienceLevel !== 'all') {
       // Simple mock experience filter
       if (filters.experienceLevel === 'entry') {
-        filteredJobs = filteredJobs.filter(job => job.salaryMax < 70000);
+        filteredJobs = filteredJobs.filter((job) => job.salaryMax < 70000);
       } else if (filters.experienceLevel === 'mid') {
-        filteredJobs = filteredJobs.filter(job => 
-          job.salaryMax >= 70000 && job.salaryMax < 120000
+        filteredJobs = filteredJobs.filter(
+          (job) => job.salaryMax >= 70000 && job.salaryMax < 120000
         );
       } else if (filters.experienceLevel === 'senior') {
-        filteredJobs = filteredJobs.filter(job => job.salaryMax >= 120000);
+        filteredJobs = filteredJobs.filter((job) => job.salaryMax >= 120000);
       }
     }
-    
+
     // Apply sorting
     if (filters.sortBy === 'datePosted') {
       filteredJobs.sort((a, b) => {
@@ -183,34 +183,34 @@ const mockJobService = {
       });
     } else if (filters.sortBy === 'title') {
       filteredJobs.sort((a, b) => {
-        return filters.sortOrder === 'asc' 
+        return filters.sortOrder === 'asc'
           ? a.title.localeCompare(b.title)
           : b.title.localeCompare(a.title);
       });
     }
-    
+
     // Pagination
     const startIndex = ((filters.page || 1) - 1) * (filters.limit || 10);
     const endIndex = startIndex + (filters.limit || 10);
     const paginatedJobs = filteredJobs.slice(startIndex, endIndex);
-    
+
     return {
       jobs: paginatedJobs,
       total: filteredJobs.length,
       page: filters.page || 1,
       limit: filters.limit || 10,
       totalPages: Math.ceil(filteredJobs.length / (filters.limit || 10)),
-      matches: filteredJobs.length
+      matches: filteredJobs.length,
     };
   },
-  
+
   getSavedJobs: async (userId) => {
     if (!userId) return [];
     // Mock saved jobs
     const saved = JSON.parse(localStorage.getItem(`savedJobs_${userId}`) || '[]');
     return saved;
   },
-  
+
   saveJob: async (userId, jobId) => {
     const saved = JSON.parse(localStorage.getItem(`savedJobs_${userId}`) || '[]');
     if (!saved.includes(jobId)) {
@@ -219,13 +219,13 @@ const mockJobService = {
     }
     return true;
   },
-  
+
   unsaveJob: async (userId, jobId) => {
     const saved = JSON.parse(localStorage.getItem(`savedJobs_${userId}`) || '[]');
-    const newSaved = saved.filter(id => id !== jobId);
+    const newSaved = saved.filter((id) => id !== jobId);
     localStorage.setItem(`savedJobs_${userId}`, JSON.stringify(newSaved));
     return true;
-  }
+  },
 };
 
 const mockApplicationService = {
@@ -234,17 +234,19 @@ const mockApplicationService = {
     const apps = JSON.parse(localStorage.getItem(`applications_${userId}`) || '[]');
     return apps;
   },
-  
+
   submitApplication: async (applicationData) => {
-    const apps = JSON.parse(localStorage.getItem(`applications_${applicationData.applicantId}`) || '[]');
+    const apps = JSON.parse(
+      localStorage.getItem(`applications_${applicationData.applicantId}`) || '[]'
+    );
     apps.push({
       ...applicationData,
       id: Date.now(),
-      appliedAt: new Date().toISOString()
+      appliedAt: new Date().toISOString(),
     });
     localStorage.setItem(`applications_${applicationData.applicantId}`, JSON.stringify(apps));
     return { success: true, id: Date.now() };
-  }
+  },
 };
 
 // Simple notification utility
@@ -262,7 +264,7 @@ function StudentJobs() {
     total: 0,
     applied: 0,
     saved: 0,
-    matches: 0
+    matches: 0,
   });
   const [applications, setApplications] = useState([]);
   const [savedJobs, setSavedJobs] = useState([]);
@@ -272,7 +274,7 @@ function StudentJobs() {
   const [applyForm, setApplyForm] = useState({
     coverLetter: '',
     resumeUrl: '',
-    additionalInfo: ''
+    additionalInfo: '',
   });
   const [uploading, setUploading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -281,12 +283,12 @@ function StudentJobs() {
     location: '',
     salaryRange: [0, 100000],
     experienceLevel: 'all',
-    deadline: ''
+    deadline: '',
   });
   const [pagination, setPagination] = useState({
     currentPage: 1,
     itemsPerPage: 10,
-    totalPages: 1
+    totalPages: 1,
   });
   const [sortBy, setSortBy] = useState('datePosted');
   const [sortOrder, setSortOrder] = useState('desc');
@@ -297,7 +299,7 @@ function StudentJobs() {
   const loadData = useCallback(async () => {
     try {
       setLoading(true);
-      
+
       // Load jobs with filters
       const jobsData = await mockJobService.getJobs({
         status: 'active',
@@ -305,31 +307,31 @@ function StudentJobs() {
         sortOrder,
         page: pagination.currentPage,
         limit: pagination.itemsPerPage,
-        ...filters
+        ...filters,
       });
-      
+
       // Load user's applications
       const appsData = await mockApplicationService.getUserApplications(user?.uid);
-      
+
       // Load saved jobs
       const savedData = await mockJobService.getSavedJobs(user?.uid);
-      
+
       setJobs(jobsData.jobs || []);
       setFilteredJobs(jobsData.jobs || []);
       setApplications(appsData || []);
       setSavedJobs(savedData || []);
-      
+
       // Calculate stats
       setStats({
         total: jobsData.total || 0,
         applied: appsData?.length || 0,
         saved: savedData?.length || 0,
-        matches: jobsData.matches || 0
+        matches: jobsData.matches || 0,
       });
-      
-      setPagination(prev => ({
+
+      setPagination((prev) => ({
         ...prev,
-        totalPages: jobsData.totalPages || 1
+        totalPages: jobsData.totalPages || 1,
       }));
     } catch (error) {
       console.error('Error loading jobs:', error);
@@ -352,7 +354,7 @@ function StudentJobs() {
           sortOrder,
           page: pagination.currentPage,
           limit: pagination.itemsPerPage,
-          ...filters
+          ...filters,
         });
         setJobs(jobsData.jobs || []);
         setFilteredJobs(jobsData.jobs || []);
@@ -360,7 +362,7 @@ function StudentJobs() {
           total: jobsData.total || 0,
           applied: 0,
           saved: 0,
-          matches: jobsData.matches || 0
+          matches: jobsData.matches || 0,
         });
         setLoading(false);
       };
@@ -377,9 +379,9 @@ function StudentJobs() {
 
     try {
       setUploading(true);
-      
+
       // Check if already applied
-      const hasApplied = applications.some(app => app.jobId === job.id);
+      const hasApplied = applications.some((app) => app.jobId === job.id);
       if (hasApplied) {
         showNotification('Already Applied', `You have already applied for "${job.title}"`, 'info');
         return;
@@ -397,27 +399,31 @@ function StudentJobs() {
         resumeUrl: applyForm.resumeUrl || '',
         status: 'submitted',
         appliedAt: new Date().toISOString(),
-        additionalInfo: applyForm.additionalInfo
+        additionalInfo: applyForm.additionalInfo,
       };
 
       await mockApplicationService.submitApplication(applicationData);
-      
+
       // Add to local state
-      setApplications(prev => [...prev, applicationData]);
-      
+      setApplications((prev) => [...prev, applicationData]);
+
       // Update stats
-      setStats(prev => ({
+      setStats((prev) => ({
         ...prev,
-        applied: prev.applied + 1
+        applied: prev.applied + 1,
       }));
 
-      showNotification('Application Submitted', `Successfully applied for "${job.title}"`, 'success');
+      showNotification(
+        'Application Submitted',
+        `Successfully applied for "${job.title}"`,
+        'success'
+      );
 
       setShowApplyModal(false);
       setApplyForm({
         coverLetter: '',
         resumeUrl: '',
-        additionalInfo: ''
+        additionalInfo: '',
       });
     } catch (error) {
       console.error('Error applying for job:', error);
@@ -437,15 +443,15 @@ function StudentJobs() {
     try {
       if (save) {
         await mockJobService.saveJob(user.uid, jobId);
-        setSavedJobs(prev => [...prev, jobId]);
-        setStats(prev => ({ ...prev, saved: prev.saved + 1 }));
-        
+        setSavedJobs((prev) => [...prev, jobId]);
+        setStats((prev) => ({ ...prev, saved: prev.saved + 1 }));
+
         showNotification('Job Saved', 'Job added to your saved list', 'success');
       } else {
         await mockJobService.unsaveJob(user.uid, jobId);
-        setSavedJobs(prev => prev.filter(id => id !== jobId));
-        setStats(prev => ({ ...prev, saved: prev.saved - 1 }));
-        
+        setSavedJobs((prev) => prev.filter((id) => id !== jobId));
+        setStats((prev) => ({ ...prev, saved: prev.saved - 1 }));
+
         showNotification('Job Removed', 'Job removed from saved list', 'info');
       }
     } catch (error) {
@@ -459,16 +465,16 @@ function StudentJobs() {
     try {
       setUploading(true);
       // Mock upload - in production, this would upload to Cloudinary
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       // Create a mock URL
       const mockUrl = URL.createObjectURL(file);
-      
-      setApplyForm(prev => ({
+
+      setApplyForm((prev) => ({
         ...prev,
-        resumeUrl: mockUrl
+        resumeUrl: mockUrl,
       }));
-      
+
       showNotification('Upload Successful', 'Resume uploaded successfully', 'success');
     } catch (error) {
       console.error('Error uploading resume:', error);
@@ -481,28 +487,27 @@ function StudentJobs() {
   // Search and filter
   const handleSearch = (term) => {
     setSearchTerm(term);
-    
+
     if (!term.trim()) {
       setFilteredJobs(jobs);
       return;
     }
-    
-    const filtered = jobs.filter(job =>
-      job.title.toLowerCase().includes(term.toLowerCase()) ||
-      job.companyName.toLowerCase().includes(term.toLowerCase()) ||
-      (job.description && job.description.toLowerCase().includes(term.toLowerCase())) ||
-      (job.skills && job.skills.some(skill => 
-        skill.toLowerCase().includes(term.toLowerCase())
-      ))
+
+    const filtered = jobs.filter(
+      (job) =>
+        job.title.toLowerCase().includes(term.toLowerCase()) ||
+        job.companyName.toLowerCase().includes(term.toLowerCase()) ||
+        (job.description && job.description.toLowerCase().includes(term.toLowerCase())) ||
+        (job.skills && job.skills.some((skill) => skill.toLowerCase().includes(term.toLowerCase())))
     );
-    
+
     setFilteredJobs(filtered);
   };
 
   const handleFilterChange = (key, value) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
-      [key]: value
+      [key]: value,
     }));
   };
 
@@ -518,9 +523,9 @@ function StudentJobs() {
 
   // Pagination
   const handlePageChange = (page) => {
-    setPagination(prev => ({
+    setPagination((prev) => ({
       ...prev,
-      currentPage: page
+      currentPage: page,
     }));
   };
 
@@ -528,8 +533,7 @@ function StudentJobs() {
   const isJobSaved = (jobId) => savedJobs.includes(jobId);
 
   // Check if job is applied
-  const hasAppliedToJob = (jobId) => 
-    applications.some(app => app.jobId === jobId);
+  const hasAppliedToJob = (jobId) => applications.some((app) => app.jobId === jobId);
 
   // Format salary
   const formatSalary = (min, max, currency = 'USD') => {
@@ -540,7 +544,7 @@ function StudentJobs() {
 
   // Get application status for a job
   const getApplicationStatus = (jobId) => {
-    const application = applications.find(app => app.jobId === jobId);
+    const application = applications.find((app) => app.jobId === jobId);
     return application ? application.status : null;
   };
 
@@ -584,16 +588,19 @@ function StudentJobs() {
           </p>
         </div>
         <div className="d-flex gap-2">
-          <Button
-            variant="outline-primary"
-            onClick={() => setShowFilters(!showFilters)}
-          >
+          <Button variant="outline-primary" onClick={() => setShowFilters(!showFilters)}>
             <Filter size={16} className="me-2" />
             Filters
           </Button>
-          <Button 
-            variant="primary" 
-            onClick={() => showNotification('Feature Coming Soon', 'Resume upload feature will be available soon', 'info')}
+          <Button
+            variant="primary"
+            onClick={() =>
+              showNotification(
+                'Feature Coming Soon',
+                'Resume upload feature will be available soon',
+                'info'
+              )
+            }
           >
             <Upload size={16} className="me-2" />
             Upload Resume
@@ -660,8 +667,12 @@ function StudentJobs() {
             <Col md={4} className="text-end mt-2 mt-md-0">
               <Dropdown>
                 <Dropdown.Toggle variant="outline-secondary">
-                  Sort by: {sortBy === 'datePosted' ? 'Date Posted' : 
-                           sortBy === 'salary' ? 'Salary' : 'Title'}
+                  Sort by:{' '}
+                  {sortBy === 'datePosted'
+                    ? 'Date Posted'
+                    : sortBy === 'salary'
+                      ? 'Salary'
+                      : 'Title'}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <Dropdown.Item onClick={() => handleSort('datePosted')}>
@@ -690,7 +701,9 @@ function StudentJobs() {
                     >
                       <option value="all">All Types</option>
                       {Object.entries(JOB_TYPES).map(([value, { label }]) => (
-                        <option key={value} value={value}>{label}</option>
+                        <option key={value} value={value}>
+                          {label}
+                        </option>
                       ))}
                     </Form.Select>
                   </Form.Group>
@@ -741,7 +754,7 @@ function StudentJobs() {
                       location: '',
                       salaryRange: [0, 100000],
                       experienceLevel: 'all',
-                      deadline: ''
+                      deadline: '',
                     });
                     setSearchTerm('');
                   }}
@@ -762,12 +775,12 @@ function StudentJobs() {
               <Briefcase size={48} className="text-muted mb-3" />
               <h4>No jobs found</h4>
               <p className="text-muted">
-                {searchTerm || Object.values(filters).some(f => f !== 'all' && f !== '') 
-                  ? 'Try adjusting your search terms or filters' 
+                {searchTerm || Object.values(filters).some((f) => f !== 'all' && f !== '')
+                  ? 'Try adjusting your search terms or filters'
                   : 'Check back later for new opportunities'}
               </p>
-              <Button 
-                variant="outline-primary" 
+              <Button
+                variant="outline-primary"
                 onClick={() => {
                   setSearchTerm('');
                   setFilters({
@@ -775,7 +788,7 @@ function StudentJobs() {
                     location: '',
                     salaryRange: [0, 100000],
                     experienceLevel: 'all',
-                    deadline: ''
+                    deadline: '',
                   });
                 }}
               >
@@ -803,15 +816,13 @@ function StudentJobs() {
                       const isSaved = isJobSaved(job.id);
                       const hasApplied = hasAppliedToJob(job.id);
                       const applicationStatus = getApplicationStatus(job.id);
-                      
+
                       return (
                         <tr key={job.id} className="job-row">
                           <td>
                             <div className="d-flex flex-column">
                               <strong className="job-title">{job.title}</strong>
-                              <small className="text-muted">
-                                {formatTimeAgo(job.datePosted)}
-                              </small>
+                              <small className="text-muted">{formatTimeAgo(job.datePosted)}</small>
                             </div>
                           </td>
                           <td>
@@ -830,7 +841,10 @@ function StudentJobs() {
                             </div>
                           </td>
                           <td>
-                            <Badge bg={JOB_TYPES[job.type]?.color || 'secondary'} className="badge-job-type">
+                            <Badge
+                              bg={JOB_TYPES[job.type]?.color || 'secondary'}
+                              className="badge-job-type"
+                            >
                               {JOB_TYPES[job.type]?.label || job.type}
                             </Badge>
                           </td>
@@ -843,7 +857,9 @@ function StudentJobs() {
                           <td>
                             <div className="d-flex align-items-center salary-display">
                               <DollarSign size={14} className="me-1 text-muted" />
-                              <span>{formatSalary(job.salaryMin, job.salaryMax, job.currency)}</span>
+                              <span>
+                                {formatSalary(job.salaryMin, job.salaryMax, job.currency)}
+                              </span>
                             </div>
                           </td>
                           <td>
@@ -858,7 +874,10 @@ function StudentJobs() {
                                 {applicationStatus || 'Applied'}
                               </Badge>
                             ) : (
-                              <Badge bg={STATUS_COLORS[job.status] || 'secondary'} className="job-status">
+                              <Badge
+                                bg={STATUS_COLORS[job.status] || 'secondary'}
+                                className="job-status"
+                              >
                                 {job.status}
                               </Badge>
                             )}
@@ -872,18 +891,22 @@ function StudentJobs() {
                                   onClick={() => {
                                     setSelectedJob(job);
                                     // Navigate to job details or show modal
-                                    showNotification('Job Details', `Viewing details for "${job.title}"`, 'info');
+                                    showNotification(
+                                      'Job Details',
+                                      `Viewing details for "${job.title}"`,
+                                      'info'
+                                    );
                                   }}
                                   title="View Details"
                                 >
                                   <Eye size={14} />
                                 </Button>
                                 <Button
-                                  variant={isSaved ? "warning" : "outline-warning"}
+                                  variant={isSaved ? 'warning' : 'outline-warning'}
                                   className="me-1"
                                   onClick={() => handleSaveJob(job.id, !isSaved)}
                                   disabled={!user}
-                                  title={isSaved ? "Unsave Job" : "Save Job"}
+                                  title={isSaved ? 'Unsave Job' : 'Save Job'}
                                 >
                                   <Bookmark size={14} fill={isSaved} />
                                 </Button>
@@ -895,7 +918,7 @@ function StudentJobs() {
                                       setShowApplyModal(true);
                                     }}
                                     disabled={!user || job.status !== 'active'}
-                                    title={!user ? "Login to Apply" : "Apply Now"}
+                                    title={!user ? 'Login to Apply' : 'Apply Now'}
                                   >
                                     Apply
                                   </Button>
@@ -922,7 +945,7 @@ function StudentJobs() {
                       onClick={() => handlePageChange(pagination.currentPage - 1)}
                       disabled={pagination.currentPage === 1}
                     />
-                    {[...Array(pagination.totalPages).keys()].map(page => (
+                    {[...Array(pagination.totalPages).keys()].map((page) => (
                       <Pagination.Item
                         key={page + 1}
                         active={page + 1 === pagination.currentPage}
@@ -944,12 +967,7 @@ function StudentJobs() {
       </Card>
 
       {/* Application Modal */}
-      <Modal
-        show={showApplyModal}
-        onHide={() => setShowApplyModal(false)}
-        size="lg"
-        centered
-      >
+      <Modal show={showApplyModal} onHide={() => setShowApplyModal(false)} size="lg" centered>
         <Modal.Header closeButton>
           <Modal.Title>Apply for {selectedJob?.title}</Modal.Title>
         </Modal.Header>
@@ -958,20 +976,21 @@ function StudentJobs() {
             <div className="mb-4">
               <h5>{selectedJob.companyName}</h5>
               <p className="text-muted">
-                <MapPin size={14} className="me-1" /> {selectedJob.location} • 
+                <MapPin size={14} className="me-1" /> {selectedJob.location} •
                 <Badge bg={JOB_TYPES[selectedJob.type]?.color || 'secondary'} className="ms-2">
                   {JOB_TYPES[selectedJob.type]?.label || selectedJob.type}
                 </Badge>
               </p>
               <p className="mb-0">
-                <strong>Salary:</strong> {formatSalary(selectedJob.salaryMin, selectedJob.salaryMax, selectedJob.currency)}
+                <strong>Salary:</strong>{' '}
+                {formatSalary(selectedJob.salaryMin, selectedJob.salaryMax, selectedJob.currency)}
               </p>
               <p className="mb-0">
                 <strong>Deadline:</strong> {formatDate(selectedJob.deadline)}
               </p>
             </div>
           )}
-          
+
           {!user ? (
             <Alert variant="warning">
               <Alert.Heading>Authentication Required</Alert.Heading>
@@ -980,16 +999,20 @@ function StudentJobs() {
           ) : (
             <Form>
               <Form.Group className="mb-3">
-                <Form.Label>Cover Letter <span className="text-danger">*</span></Form.Label>
+                <Form.Label>
+                  Cover Letter <span className="text-danger">*</span>
+                </Form.Label>
                 <Form.Control
                   as="textarea"
                   rows={4}
                   placeholder="Explain why you're a good fit for this position..."
                   value={applyForm.coverLetter}
-                  onChange={(e) => setApplyForm(prev => ({
-                    ...prev,
-                    coverLetter: e.target.value
-                  }))}
+                  onChange={(e) =>
+                    setApplyForm((prev) => ({
+                      ...prev,
+                      coverLetter: e.target.value,
+                    }))
+                  }
                   required
                 />
                 <Form.Text className="text-muted">
@@ -1008,7 +1031,7 @@ function StudentJobs() {
                     <Button
                       size="sm"
                       variant="outline-danger"
-                      onClick={() => setApplyForm(prev => ({ ...prev, resumeUrl: '' }))}
+                      onClick={() => setApplyForm((prev) => ({ ...prev, resumeUrl: '' }))}
                     >
                       Remove
                     </Button>
@@ -1022,7 +1045,11 @@ function StudentJobs() {
                         const file = e.target.files[0];
                         if (file) {
                           if (file.size > 5 * 1024 * 1024) {
-                            showNotification('File Too Large', 'File must be less than 5MB', 'error');
+                            showNotification(
+                              'File Too Large',
+                              'File must be less than 5MB',
+                              'error'
+                            );
                             return;
                           }
                           handleResumeUpload(file);
@@ -1044,20 +1071,19 @@ function StudentJobs() {
                   rows={2}
                   placeholder="Any additional information you'd like to share (portfolio links, references, etc.)..."
                   value={applyForm.additionalInfo}
-                  onChange={(e) => setApplyForm(prev => ({
-                    ...prev,
-                    additionalInfo: e.target.value
-                  }))}
+                  onChange={(e) =>
+                    setApplyForm((prev) => ({
+                      ...prev,
+                      additionalInfo: e.target.value,
+                    }))
+                  }
                 />
               </Form.Group>
             </Form>
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button
-            variant="secondary"
-            onClick={() => setShowApplyModal(false)}
-          >
+          <Button variant="secondary" onClick={() => setShowApplyModal(false)}>
             Cancel
           </Button>
           {user && (
@@ -1083,9 +1109,7 @@ function StudentJobs() {
       {!user && (
         <Alert variant="info" className="mt-4">
           <Alert.Heading>Login Required for Full Features</Alert.Heading>
-          <p>
-            Please login to apply for jobs, save job listings, and track your applications.
-          </p>
+          <p>Please login to apply for jobs, save job listings, and track your applications.</p>
         </Alert>
       )}
     </Container>

@@ -1,13 +1,9 @@
 /* eslint-disable no-unused-vars */
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
-import { 
-  doc, 
-  getDoc, 
-  updateDoc
-} from 'firebase/firestore';
+import { doc, getDoc, updateDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { useAuth } from './AuthContext';
-import { 
+import {
   getStudentProfile,
   updateStudentProfile as updateProfile,
   getStudentApplications,
@@ -16,7 +12,8 @@ import {
   deleteDocument,
   getJobs,
   getRecommendedJobs,
-  getDashboardStats
+  getDashboardStats,
+  initializeStudentProfile,
 } from '../services/studentServices';
 
 const StudentContext = createContext();
@@ -39,42 +36,82 @@ export const StudentProvider = ({ children }) => {
   // Helper to determine if user is a student
   const isUserStudent = useCallback(() => {
     if (!userData) return false;
-    
+
     // Check multiple possible userType fields
     const userType = userData.userType || userData.role || userData.type;
-    
-    // If no userType is set, we need to check if this is a student based on email or other criteria
-    if (!userType) {
-      console.log('⚠️ No userType found in userData:', userData);
-      
-      // Check if this might be a student based on common patterns
-      const email = userData.email || currentUser?.email || '';
-      const displayName = userData.displayName || '';
-      
-      // If it has student-like email or no company/institution indicators, treat as student
-      const isLikelyStudent = !email.includes('@company.') && 
-                              !email.includes('@corp.') && 
-                              !displayName.includes('Inc') &&
-                              !displayName.includes('Ltd') &&
-                              !displayName.includes('Company');
-      
-      return isLikelyStudent;
+
+    // If userType is explicitly set
+    if (userType) {
+      return userType === 'student' || userType === 'Student';
     }
-    
-    return userType === 'student' || userType === 'Student';
+
+    // If no userType is set, check email pattern
+    const email = userData.email || currentUser?.email || '';
+
+    // If email doesn't look like a company email, assume student
+    const isCompanyEmail =
+      email.includes('@company.') || email.includes('@corp.') || email.includes('@business.');
+
+    return !isCompanyEmail;
   }, [userData, currentUser]);
+
+  // Ensure user document exists with correct type
+  const ensureUserDocument = useCallback(async () => {
+    if (!currentUser) return null;
+
+    try {
+      const userRef = doc(db, 'users', currentUser.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) {
+        // Create user document
+        const newUserData = {
+          uid: currentUser.uid,
+          email: currentUser.email,
+          displayName: currentUser.displayName || currentUser.email?.split('@')[0] || 'User',
+          userType: 'student', // Default to student
+          role: 'student',
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+          isActive: true,
+        };
+
+        await setDoc(userRef, newUserData);
+        console.log('✅ Created user document for:', currentUser.uid);
+        return newUserData;
+      }
+
+      // Ensure userType is set
+      const userData = userSnap.data();
+      if (!userData.userType) {
+        await updateDoc(userRef, {
+          userType: 'student',
+          role: 'student',
+          updatedAt: serverTimestamp(),
+        });
+        return { ...userData, userType: 'student', role: 'student' };
+      }
+
+      return userData;
+    } catch (error) {
+      console.error('❌ Error ensuring user document:', error);
+      return null;
+    }
+  }, [currentUser]);
 
   // Fetch student data
   const fetchStudentData = useCallback(async () => {
     console.log('🔄 fetchStudentData called:', {
       hasCurrentUser: !!currentUser,
-      userData: userData ? {
-        email: userData.email,
-        userType: userData.userType,
-        role: userData.role,
-        type: userData.type
-      } : null,
-      studentId: currentUser?.uid
+      userData: userData
+        ? {
+            email: userData.email,
+            userType: userData.userType,
+            role: userData.role,
+            type: userData.type,
+          }
+        : null,
+      studentId: currentUser?.uid,
     });
 
     if (!currentUser) {
@@ -85,113 +122,104 @@ export const StudentProvider = ({ children }) => {
       return { success: false, error: 'No authenticated user' };
     }
 
-    // Check if user is a student (with relaxed checking)
-    if (!isUserStudent()) {
-      console.log('⚠️ User may not be a student:', {
-        userType: userData?.userType,
-        role: userData?.role,
-        type: userData?.type,
-        email: userData?.email
-      });
-      
-      // Still try to fetch student data - maybe the userType hasn't been set yet
-      console.log('🔄 Trying to fetch student data anyway...');
-    }
-
     try {
       setLoading(true);
       setError(null);
-      
+
+      // First ensure user document exists
+      const userDoc = await ensureUserDocument();
+
       console.log('📡 Fetching student profile for:', currentUser.uid);
       const result = await getStudentProfile(currentUser.uid);
-      
-      if (result.success) {
+
+      if (result.success && result.data) {
         console.log('✅ Student profile fetched successfully:', result.data);
         const studentDataWithId = {
           id: currentUser.uid,
-          ...result.data
+          ...result.data,
         };
         setStudentData(studentDataWithId);
         setInitialized(true);
         return { success: true, data: studentDataWithId };
       } else {
-        console.error('❌ Failed to fetch student profile:', result.error);
-        
-        // Check if this is a "profile not found" error
-        const isProfileNotFound = result.error?.includes('not found') || 
-                                 result.error?.includes('does not exist') ||
-                                 result.error?.includes('No student found');
-        
-        if (isProfileNotFound) {
-          console.log('🆕 Student profile not found, creating basic profile...');
-          
-          // Create a basic student profile
-          const basicProfile = {
+        console.log('🆕 Student profile not found, initializing...');
+
+        // Initialize student profile
+        const initResult = await initializeStudentProfile(currentUser.uid, {
+          email: currentUser.email,
+          fullName: currentUser.displayName || currentUser.email?.split('@')[0] || '',
+          userType: 'student',
+        });
+
+        if (initResult.success) {
+          const studentDataWithId = {
             id: currentUser.uid,
-            email: userData?.email || currentUser.email,
-            displayName: userData?.displayName || currentUser.displayName || currentUser.email.split('@')[0],
-            userType: 'student',
-            role: 'student',
-            profileCompletion: 30,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            isActive: true,
-            status: 'active'
+            ...initResult.data,
           };
-          
-          try {
-            console.log('📝 Creating student document in Firestore...');
-            const userRef = doc(db, 'users', currentUser.uid);
-            await updateDoc(userRef, {
-              userType: 'student',
-              role: 'student',
-              updatedAt: new Date().toISOString(),
-              // Also update the userData fields if they're missing
-              ...(userData?.userType ? {} : { userType: 'student' }),
-              ...(userData?.role ? {} : { role: 'student' })
-            }, { merge: true });
-            
-            console.log('✅ Basic student profile created');
-            setStudentData(basicProfile);
-            setInitialized(true);
-            return { success: true, data: basicProfile };
-          } catch (createError) {
-            console.error('❌ Failed to create student profile:', createError);
-            // Still set basic profile locally
-            setStudentData(basicProfile);
-            setInitialized(true);
-            return { success: true, data: basicProfile };
-          }
+          setStudentData(studentDataWithId);
+          setInitialized(true);
+          return { success: true, data: studentDataWithId };
         }
-        
-        // Other error
-        setError(result.error || 'Failed to load student profile');
-        return { success: false, error: result.error };
+
+        // Fallback basic profile
+        const basicProfile = {
+          id: currentUser.uid,
+          email: currentUser.email || '',
+          fullName: currentUser.displayName || currentUser.email?.split('@')[0] || 'Student',
+          userType: 'student',
+          profileCompletion: 30,
+          qualifications: {
+            educationLevel: 'Not specified',
+            overallGrade: 'Not specified',
+            subjects: [],
+            certificates: [],
+          },
+          jobPreferences: {
+            industries: [],
+            jobTypes: [],
+            locations: [],
+            minSalary: null,
+          },
+          skills: [],
+        };
+
+        setStudentData(basicProfile);
+        setInitialized(true);
+        return { success: true, data: basicProfile };
       }
     } catch (err) {
       console.error('❌ Error fetching student data:', err);
-      
+
       // Create basic profile even on error
       const basicProfile = {
         id: currentUser.uid,
-        email: userData?.email || currentUser?.email || '',
-        displayName: userData?.displayName || currentUser?.displayName || 'Student',
+        email: currentUser?.email || '',
+        fullName: currentUser?.displayName || currentUser?.email?.split('@')[0] || 'Student',
         userType: 'student',
-        role: 'student',
         profileCompletion: 30,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        isActive: true
+        qualifications: {
+          educationLevel: 'Not specified',
+          overallGrade: 'Not specified',
+          subjects: [],
+          certificates: [],
+        },
+        jobPreferences: {
+          industries: [],
+          jobTypes: [],
+          locations: [],
+          minSalary: null,
+        },
+        skills: [],
       };
-      
+
       setStudentData(basicProfile);
+      setError(err.message);
       setInitialized(true);
       return { success: true, data: basicProfile };
     } finally {
       setLoading(false);
-      setInitialized(true);
     }
-  }, [currentUser, userData, isUserStudent]);
+  }, [currentUser, userData, ensureUserDocument]);
 
   // Update student data
   const updateStudent = async (updates) => {
@@ -202,13 +230,13 @@ export const StudentProvider = ({ children }) => {
     try {
       console.log('🔄 Updating student data:', updates);
       const result = await updateProfile(studentData.id, updates);
-      
+
       if (result.success) {
         // Update local state
-        setStudentData(prev => ({
+        setStudentData((prev) => ({
           ...prev,
           ...updates,
-          updatedAt: new Date().toISOString()
+          updatedAt: new Date().toISOString(),
         }));
         console.log('✅ Student data updated successfully');
         return true;
@@ -230,7 +258,7 @@ export const StudentProvider = ({ children }) => {
     try {
       console.log('📤 Uploading profile photo...');
       const result = await uploadDocument(studentData.id, file, 'profile_photo');
-      
+
       if (result.success) {
         console.log('✅ Profile photo uploaded:', result.url);
         await updateStudent({ profilePhoto: result.url });
@@ -258,7 +286,7 @@ export const StudentProvider = ({ children }) => {
         // Apply filters if any
         let applications = result.data;
         if (filters.status) {
-          applications = applications.filter(app => app.status === filters.status);
+          applications = applications.filter((app) => app.status === filters.status);
         }
         console.log(`✅ Fetched ${applications.length} applications`);
         return applications;
@@ -307,7 +335,7 @@ export const StudentProvider = ({ children }) => {
           id: result.id,
           url: result.url,
           name: file.name,
-          type: documentType
+          type: documentType,
         };
       } else {
         throw new Error(result.error);
@@ -400,16 +428,16 @@ export const StudentProvider = ({ children }) => {
   // Initial fetch
   useEffect(() => {
     let mounted = true;
-    
+
     const initialize = async () => {
       if (!mounted) return;
-      
+
       console.log('🚀 Initializing StudentContext...');
       await fetchStudentData();
     };
-    
+
     initialize();
-    
+
     return () => {
       mounted = false;
     };
@@ -443,12 +471,8 @@ export const StudentProvider = ({ children }) => {
     fetchRecommendedJobs,
     fetchDashboardStats,
     refreshData: fetchStudentData,
-    clearError: () => setError(null)
+    clearError: () => setError(null),
   };
 
-  return (
-    <StudentContext.Provider value={value}>
-      {children}
-    </StudentContext.Provider>
-  );
+  return <StudentContext.Provider value={value}>{children}</StudentContext.Provider>;
 };

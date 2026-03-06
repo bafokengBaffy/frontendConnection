@@ -28,7 +28,7 @@ class MediaService {
         folder = 'media',
         metadata = {},
         useCloudinary = true,
-        onProgress = () => {}
+        onProgress = () => {},
       } = options;
 
       // Validate file
@@ -39,26 +39,26 @@ class MediaService {
 
       // Determine best storage method
       let result;
-      
+
       if (useCloudinary && this.shouldUseCloudinary(file, type)) {
         // Use Cloudinary for images and certain file types
         result = await this.uploadToCloudinary(file, {
           folder: userId ? `${folder}/${userId}` : folder,
-          ...metadata
+          ...metadata,
         });
       } else {
         // Use Firebase Storage for other files
-        const path = userId 
+        const path = userId
           ? `${folder}/${userId}/${Date.now()}_${file.name}`
           : `${folder}/${Date.now()}_${file.name}`;
-        
+
         result = await storageService.uploadFile(file, path, {
           customMetadata: {
             userId,
             type,
             originalName: file.name,
-            ...metadata
-          }
+            ...metadata,
+          },
         });
       }
 
@@ -70,13 +70,13 @@ class MediaService {
         fileName: file.name,
         fileSize: file.size,
         mimeType: file.type,
-        uploadedAt: new Date().toISOString()
+        uploadedAt: new Date().toISOString(),
       };
     } catch (error) {
       console.error('❌ Media upload error:', error);
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -99,7 +99,7 @@ class MediaService {
         }
 
         lastError = result.error;
-        
+
         if (attempt < maxRetries) {
           // Exponential backoff
           await this.delay(attempt * 1000);
@@ -125,7 +125,7 @@ class MediaService {
     const {
       onProgress = () => {},
       onFileComplete = () => {},
-      concurrent = this.maxConcurrentUploads
+      concurrent = this.maxConcurrentUploads,
     } = options;
 
     const uploadFile = async (file, index) => {
@@ -134,13 +134,13 @@ class MediaService {
           ...options,
           onProgress: (progress) => {
             onProgress(index, progress, files.length);
-          }
+          },
         });
 
         results.push({
           file: file.name,
           index,
-          ...result
+          ...result,
         });
 
         onFileComplete(index, result, files.length);
@@ -148,9 +148,9 @@ class MediaService {
         errors.push({
           file: file.name,
           index,
-          error: error.message
+          error: error.message,
         });
-        
+
         onFileComplete(index, { success: false, error: error.message }, files.length);
       }
     };
@@ -163,9 +163,7 @@ class MediaService {
 
     for (const batch of batches) {
       await Promise.all(
-        batch.map((file, batchIndex) => 
-          uploadFile(file, results.length + batchIndex)
-        )
+        batch.map((file, batchIndex) => uploadFile(file, results.length + batchIndex))
       );
     }
 
@@ -175,7 +173,7 @@ class MediaService {
       errors,
       total: files.length,
       successful: results.length,
-      failed: errors.length
+      failed: errors.length,
     };
   }
 
@@ -191,18 +189,18 @@ class MediaService {
       }
 
       const url = cloudinaryService.getImageUrl(publicId, transformations);
-      
+
       return {
         success: true,
         url,
         transformations,
-        processedAt: new Date().toISOString()
+        processedAt: new Date().toISOString(),
       };
     } catch (error) {
       console.error('❌ Image processing error:', error);
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -220,7 +218,7 @@ class MediaService {
           height: size,
           crop: 'fill',
           gravity: 'auto',
-          quality: 'auto:good'
+          quality: 'auto:good',
         });
 
         if (result.success) {
@@ -231,13 +229,13 @@ class MediaService {
       return {
         success: true,
         thumbnails,
-        original: cloudinaryService.getImageUrl(publicId)
+        original: cloudinaryService.getImageUrl(publicId),
       };
     } catch (error) {
       console.error('❌ Thumbnail generation error:', error);
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -250,12 +248,12 @@ class MediaService {
       quality: 'auto:good',
       format: 'auto',
       fetch_format: 'auto',
-      width: options.maxWidth || 1920
+      width: options.maxWidth || 1920,
     };
 
     return this.processImage(publicId, {
       ...defaultOptions,
-      ...options
+      ...options,
     });
   }
 
@@ -294,7 +292,7 @@ class MediaService {
       console.error('❌ Media delete error:', error);
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -325,7 +323,7 @@ class MediaService {
       errors,
       total: urls.length,
       successful: results.length,
-      failed: errors.length
+      failed: errors.length,
     };
   }
 
@@ -356,7 +354,7 @@ class MediaService {
     try {
       const urlObj = new URL(url);
       const pathname = urlObj.pathname;
-      
+
       // Firebase Storage URLs have a specific pattern
       if (urlObj.hostname.includes('firebasestorage')) {
         // Remove /v0/b/{bucket-name}/o/ prefix and decode
@@ -365,7 +363,7 @@ class MediaService {
           return decodeURIComponent(match[1]);
         }
       }
-      
+
       return null;
     } catch (error) {
       console.warn('Could not extract Firebase path:', error);
@@ -392,13 +390,13 @@ class MediaService {
       if (file.type === 'application/pdf') return 'pdf';
       if (file.type.includes('word') || file.type.includes('document')) return 'document';
     }
-    
+
     const ext = this.getFileExtension(file.name || '');
     if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) return 'image';
     if (['mp4', 'avi', 'mov', 'wmv'].includes(ext)) return 'video';
     if (ext === 'pdf') return 'pdf';
     if (['doc', 'docx'].includes(ext)) return 'document';
-    
+
     return 'file';
   }
 
@@ -407,11 +405,11 @@ class MediaService {
    */
   formatFileSize(bytes) {
     if (bytes === 0) return '0 Bytes';
-    
+
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    
+
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 
@@ -419,7 +417,7 @@ class MediaService {
    * Delay helper for retries
    */
   delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
@@ -427,18 +425,18 @@ class MediaService {
    */
   getOptimizedImageUrl(url, width = 800) {
     if (!url) return null;
-    
+
     if (cloudinaryService.isCloudinaryUrl(url)) {
       const publicId = cloudinaryService.extractPublicId(url);
       if (publicId) {
         return cloudinaryService.getImageUrl(publicId, {
           width,
           quality: 'auto:good',
-          fetch_format: 'auto'
+          fetch_format: 'auto',
         });
       }
     }
-    
+
     return url;
   }
 
@@ -476,12 +474,12 @@ class MediaService {
         img.onload = () => {
           const canvas = document.createElement('canvas');
           const ctx = canvas.getContext('2d');
-          
+
           // Calculate dimensions
           let width = img.width;
           let height = img.height;
           const maxDimension = 1920;
-          
+
           if (width > maxDimension || height > maxDimension) {
             if (width > height) {
               height = (height * maxDimension) / width;
@@ -491,11 +489,11 @@ class MediaService {
               height = maxDimension;
             }
           }
-          
+
           canvas.width = width;
           canvas.height = height;
           ctx.drawImage(img, 0, 0, width, height);
-          
+
           // Adjust quality based on target size
           let quality = 0.9;
           const adjustQuality = (qlty) => {
@@ -513,11 +511,11 @@ class MediaService {
               );
             });
           };
-          
+
           adjustQuality(quality).then((blob) => {
             const compressedFile = new File([blob], file.name, {
               type: 'image/jpeg',
-              lastModified: Date.now()
+              lastModified: Date.now(),
             });
             resolve(compressedFile);
           });

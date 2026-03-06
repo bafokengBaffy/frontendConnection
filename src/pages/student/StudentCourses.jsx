@@ -9,7 +9,7 @@ const StudentCourses = () => {
       institution: 'Online Tech Academy',
       progress: 85,
       nextDeadline: '2024-01-20',
-      status: 'in-progress'
+      status: 'in-progress',
     },
     {
       id: 2,
@@ -17,7 +17,7 @@ const StudentCourses = () => {
       institution: 'Coursera',
       progress: 100,
       completionDate: '2024-01-10',
-      status: 'completed'
+      status: 'completed',
     },
     {
       id: 3,
@@ -25,8 +25,8 @@ const StudentCourses = () => {
       institution: 'Lesotho College of Education',
       progress: 30,
       nextDeadline: '2024-01-25',
-      status: 'in-progress'
-    }
+      status: 'in-progress',
+    },
   ];
 
   const recommendedCourses = [
@@ -36,7 +36,7 @@ const StudentCourses = () => {
       institution: 'Udemy',
       duration: '8 weeks',
       level: 'Intermediate',
-      match: 92
+      match: 92,
     },
     {
       id: 2,
@@ -44,7 +44,7 @@ const StudentCourses = () => {
       institution: 'AWS Academy',
       duration: '6 weeks',
       level: 'Beginner',
-      match: 85
+      match: 85,
     },
     {
       id: 3,
@@ -52,14 +52,14 @@ const StudentCourses = () => {
       institution: 'Coursera',
       duration: '5 weeks',
       level: 'Beginner',
-      match: 78
-    }
+      match: 78,
+    },
   ];
 
   return (
     <Container className="py-4">
       <h2 className="mb-4">My Courses</h2>
-      
+
       <Row className="mb-4">
         <Col md={8}>
           <Card className="shadow-sm mb-4">
@@ -77,7 +77,10 @@ const StudentCourses = () => {
                             <span>Progress</span>
                             <span>{course.progress}%</span>
                           </div>
-                          <ProgressBar now={course.progress} variant={course.progress === 100 ? "success" : "primary"} />
+                          <ProgressBar
+                            now={course.progress}
+                            variant={course.progress === 100 ? 'success' : 'primary'}
+                          />
                         </div>
                         {course.status === 'completed' ? (
                           <Badge bg="success" className="me-2">
@@ -92,7 +95,10 @@ const StudentCourses = () => {
                         )}
                       </Col>
                       <Col md={4} className="text-end">
-                        <Button variant={course.status === 'completed' ? "outline-success" : "primary"} className="mb-2">
+                        <Button
+                          variant={course.status === 'completed' ? 'outline-success' : 'primary'}
+                          className="mb-2"
+                        >
                           {course.status === 'completed' ? 'View Certificate' : 'Continue Learning'}
                         </Button>
                       </Col>
@@ -103,7 +109,7 @@ const StudentCourses = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col md={4}>
           <Card className="shadow-sm h-100">
             <Card.Body>
@@ -114,11 +120,17 @@ const StudentCourses = () => {
                   <p className="text-muted small mb-2">{course.institution}</p>
                   <div className="d-flex justify-content-between align-items-center">
                     <div>
-                      <Badge bg="info" className="me-2">{course.level}</Badge>
-                      <Badge bg="light" text="dark">{course.duration}</Badge>
+                      <Badge bg="info" className="me-2">
+                        {course.level}
+                      </Badge>
+                      <Badge bg="light" text="dark">
+                        {course.duration}
+                      </Badge>
                     </div>
                     <div>
-                      <Badge bg="success" className="me-2">{course.match}%</Badge>
+                      <Badge bg="success" className="me-2">
+                        {course.match}%
+                      </Badge>
                       <Button variant="outline-primary" size="sm">
                         Enroll
                       </Button>
@@ -133,7 +145,7 @@ const StudentCourses = () => {
           </Card>
         </Col>
       </Row>
-      
+
       <Card className="shadow-sm">
         <Card.Body>
           <Card.Title>Learning Statistics</Card.Title>
@@ -165,7 +177,7 @@ const StudentCourses = () => {
           </Row>
         </Card.Body>
       </Card>
-      
+
       <div className="text-center mt-4">
         <Button variant="primary" size="lg" className="me-3">
           <i className="bi bi-search me-2"></i>
@@ -180,4 +192,4 @@ const StudentCourses = () => {
   );
 };
 
-export default StudentCourses;  
+export default StudentCourses;

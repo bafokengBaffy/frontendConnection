@@ -1,8 +1,33 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-no-undef */
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Table, Form, Button, Badge, InputGroup, Spinner, Pagination, Dropdown, Modal } from 'react-bootstrap';
-import { FaSearch, FaUserCheck, FaChartLine, FaFilter, FaSort, FaEnvelope, FaCalendarAlt, FaGraduationCap, FaMapMarkerAlt, FaExternalLinkAlt } from 'react-icons/fa';
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Table,
+  Form,
+  Button,
+  Badge,
+  InputGroup,
+  Spinner,
+  Pagination,
+  Dropdown,
+  Modal,
+} from 'react-bootstrap';
+import {
+  FaSearch,
+  FaUserCheck,
+  FaChartLine,
+  FaFilter,
+  FaSort,
+  FaEnvelope,
+  FaCalendarAlt,
+  FaGraduationCap,
+  FaMapMarkerAlt,
+  FaExternalLinkAlt,
+} from 'react-icons/fa';
 import './CompanyFollowers.css';
 
 const CompanyFollowers = () => {
@@ -36,18 +61,20 @@ const CompanyFollowers = () => {
         location: ['Maseru', 'Leribe', 'Berea', 'Mafeteng'][i % 4],
         education: ['High School', 'Diploma', 'Bachelor', 'Masters'][i % 4],
         skills: ['JavaScript', 'React', 'Python', 'Marketing', 'Design'].slice(0, (i % 3) + 2),
-        followingSince: new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000).toISOString(),
+        followingSince: new Date(
+          Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000
+        ).toISOString(),
         lastActive: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
         applications: Math.floor(Math.random() * 5),
         status: ['active', 'inactive', 'new'][i % 3],
-        matchScore: Math.floor(Math.random() * 30) + 70
+        matchScore: Math.floor(Math.random() * 30) + 70,
       }));
-      
+
       setFollowers(mockFollowers);
       setStats({
         total: mockFollowers.length,
-        active: mockFollowers.filter(f => f.status === 'active').length,
-        newThisMonth: Math.floor(mockFollowers.length * 0.2)
+        active: mockFollowers.filter((f) => f.status === 'active').length,
+        newThisMonth: Math.floor(mockFollowers.length * 0.2),
       });
       setLoading(false);
     }, 1500);
@@ -58,17 +85,18 @@ const CompanyFollowers = () => {
 
     // Apply search
     if (searchTerm) {
-      filtered = filtered.filter(f =>
-        f.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        f.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        f.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        f.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))
+      filtered = filtered.filter(
+        (f) =>
+          f.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          f.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          f.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          f.skills.some((skill) => skill.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
 
     // Apply filter
     if (filter !== 'all') {
-      filtered = filtered.filter(f => f.status === filter);
+      filtered = filtered.filter((f) => f.status === filter);
     }
 
     // Apply sorting
@@ -91,10 +119,8 @@ const CompanyFollowers = () => {
   };
 
   const handleSelectFollower = (id) => {
-    setSelectedFollowers(prev =>
-      prev.includes(id)
-        ? prev.filter(fId => fId !== id)
-        : [...prev, id]
+    setSelectedFollowers((prev) =>
+      prev.includes(id) ? prev.filter((fId) => fId !== id) : [...prev, id]
     );
   };
 
@@ -102,7 +128,7 @@ const CompanyFollowers = () => {
     if (selectedFollowers.length === currentFollowers.length) {
       setSelectedFollowers([]);
     } else {
-      setSelectedFollowers(currentFollowers.map(f => f.id));
+      setSelectedFollowers(currentFollowers.map((f) => f.id));
     }
   };
 
@@ -128,7 +154,7 @@ const CompanyFollowers = () => {
     const now = new Date();
     const past = new Date(date);
     const diffDays = Math.floor((now - past) / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 0) return 'Today';
     if (diffDays === 1) return 'Yesterday';
     if (diffDays < 7) return `${diffDays} days ago`;
@@ -171,7 +197,9 @@ const CompanyFollowers = () => {
         <Col md={4}>
           <Card className="border-0 shadow-sm h-100">
             <Card.Body className="text-center py-4">
-              <div className="text-warning mb-3" style={{ fontSize: '32px' }}>↑</div>
+              <div className="text-warning mb-3" style={{ fontSize: '32px' }}>
+                ↑
+              </div>
               <h3>{stats.newThisMonth}</h3>
               <p className="text-muted mb-0">New This Month</p>
             </Card.Body>
@@ -207,9 +235,14 @@ const CompanyFollowers = () => {
               <Dropdown>
                 <Dropdown.Toggle variant="outline-secondary" className="w-100">
                   <FaSort className="me-2" />
-                  Sort by: {sortBy === 'recent' ? 'Most Recent' : 
-                           sortBy === 'name' ? 'Name' : 
-                           sortBy === 'match' ? 'Best Match' : 'Last Active'}
+                  Sort by:{' '}
+                  {sortBy === 'recent'
+                    ? 'Most Recent'
+                    : sortBy === 'name'
+                      ? 'Name'
+                      : sortBy === 'match'
+                        ? 'Best Match'
+                        : 'Last Active'}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <Dropdown.Item onClick={() => setSortBy('recent')}>Most Recent</Dropdown.Item>
@@ -230,7 +263,9 @@ const CompanyFollowers = () => {
             <h5 className="mb-0">
               Followers ({filteredFollowers.length})
               {selectedFollowers.length > 0 && (
-                <Badge bg="primary" className="ms-2">{selectedFollowers.length} selected</Badge>
+                <Badge bg="primary" className="ms-2">
+                  {selectedFollowers.length} selected
+                </Badge>
               )}
             </h5>
             <div className="d-flex gap-2">
@@ -240,7 +275,9 @@ const CompanyFollowers = () => {
                 </Button>
               )}
               <Button variant="light" size="sm" onClick={handleSelectAll}>
-                {selectedFollowers.length === currentFollowers.length ? 'Deselect All' : 'Select All'}
+                {selectedFollowers.length === currentFollowers.length
+                  ? 'Deselect All'
+                  : 'Select All'}
               </Button>
             </div>
           </div>
@@ -260,7 +297,10 @@ const CompanyFollowers = () => {
                     <th style={{ width: '40px' }}>
                       <Form.Check
                         type="checkbox"
-                        checked={selectedFollowers.length === currentFollowers.length && currentFollowers.length > 0}
+                        checked={
+                          selectedFollowers.length === currentFollowers.length &&
+                          currentFollowers.length > 0
+                        }
                         onChange={handleSelectAll}
                       />
                     </th>
@@ -274,7 +314,7 @@ const CompanyFollowers = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentFollowers.map(follower => (
+                  {currentFollowers.map((follower) => (
                     <tr key={follower.id}>
                       <td>
                         <Form.Check
@@ -286,15 +326,26 @@ const CompanyFollowers = () => {
                       <td>
                         <div className="d-flex align-items-center">
                           <div className="me-3">
-                            <div className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
-                                 style={{ width: '36px', height: '36px' }}>
+                            <div
+                              className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                              style={{ width: '36px', height: '36px' }}
+                            >
                               {follower.name.charAt(0)}
                             </div>
                           </div>
                           <div>
                             <strong>{follower.name}</strong>
                             <div className="small text-muted">{follower.email}</div>
-                            <Badge bg={follower.status === 'active' ? 'success' : follower.status === 'new' ? 'info' : 'secondary'} className="mt-1">
+                            <Badge
+                              bg={
+                                follower.status === 'active'
+                                  ? 'success'
+                                  : follower.status === 'new'
+                                    ? 'info'
+                                    : 'secondary'
+                              }
+                              className="mt-1"
+                            >
                               {follower.status}
                             </Badge>
                           </div>
@@ -326,14 +377,14 @@ const CompanyFollowers = () => {
                           )}
                         </div>
                       </td>
-                      <td className="text-muted">
-                        {getTimeAgo(follower.followingSince)}
-                      </td>
+                      <td className="text-muted">{getTimeAgo(follower.followingSince)}</td>
                       <td>
                         <div className="d-flex align-items-center">
                           <div className="progress flex-grow-1 me-2" style={{ height: '8px' }}>
-                            <div className="progress-bar bg-success" 
-                                 style={{ width: `${follower.matchScore}%` }}></div>
+                            <div
+                              className="progress-bar bg-success"
+                              style={{ width: `${follower.matchScore}%` }}
+                            ></div>
                           </div>
                           <span>{follower.matchScore}%</span>
                         </div>
@@ -364,11 +415,13 @@ const CompanyFollowers = () => {
           <Card.Footer className="bg-white border-top">
             <div className="d-flex justify-content-between align-items-center">
               <div className="text-muted">
-                Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, filteredFollowers.length)} of {filteredFollowers.length} followers
+                Showing {indexOfFirstItem + 1} to{' '}
+                {Math.min(indexOfLastItem, filteredFollowers.length)} of {filteredFollowers.length}{' '}
+                followers
               </div>
               <Pagination className="mb-0">
-                <Pagination.Prev 
-                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                <Pagination.Prev
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
                 />
                 {[...Array(totalPages)].map((_, i) => (
@@ -381,7 +434,7 @@ const CompanyFollowers = () => {
                   </Pagination.Item>
                 ))}
                 <Pagination.Next
-                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                   disabled={currentPage === totalPages}
                 />
               </Pagination>
@@ -397,7 +450,7 @@ const CompanyFollowers = () => {
         </Modal.Header>
         <Modal.Body>
           <p>Send a message or notification to {selectedFollowers.length} selected followers:</p>
-          
+
           <div className="mb-3">
             <Form.Label>Select Message Type</Form.Label>
             <Form.Select>
@@ -408,16 +461,16 @@ const CompanyFollowers = () => {
               <option>Custom Message</option>
             </Form.Select>
           </div>
-          
+
           <div className="mb-3">
             <Form.Label>Message Content</Form.Label>
             <Form.Control as="textarea" rows={4} placeholder="Enter your message here..." />
           </div>
-          
+
           <div className="alert alert-info">
             <small>
-              <strong>Note:</strong> This will send notifications to all selected followers. 
-              They will receive this in their inbox and app notifications.
+              <strong>Note:</strong> This will send notifications to all selected followers. They
+              will receive this in their inbox and app notifications.
             </small>
           </div>
         </Modal.Body>

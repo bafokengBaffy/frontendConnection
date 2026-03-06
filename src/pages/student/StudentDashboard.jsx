@@ -1,13 +1,13 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 import React, { useState, useEffect, useCallback } from 'react';
-import { 
-  Container, 
-  Row, 
-  Col, 
-  Card, 
-  Button, 
-  Badge, 
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Badge,
   ProgressBar,
   Dropdown,
   Tab,
@@ -17,22 +17,15 @@ import {
   OverlayTrigger,
   Tooltip,
   Modal,
-  Form
+  Form,
 } from 'react-bootstrap';
-import { 
-  Link, 
-  useNavigate,
-  useLocation
-} from 'react-router-dom';
-import { 
-  motion, 
-  AnimatePresence 
-} from 'framer-motion';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { 
-  FaUserGraduate, 
-  FaBriefcase, 
-  FaBook, 
+import {
+  FaUserGraduate,
+  FaBriefcase,
+  FaBook,
   FaFileAlt,
   FaCalendarAlt,
   FaBell,
@@ -65,14 +58,14 @@ import {
   FaSort,
   FaPlus,
   FaTimes,
-  FaEllipsisV
+  FaEllipsisV,
 } from 'react-icons/fa';
 import { Line, Doughnut } from 'react-chartjs-2';
 import { format, parseISO, differenceInDays, isBefore, addDays } from 'date-fns';
 import { useStudent } from '../../context/StudentContext';
 import { useAuth } from '../../context/AuthContext';
 import { useNotification } from '../../context/NotificationContext';
-import { 
+import {
   getStudentApplications,
   getStudentDocuments,
   getDashboardStats,
@@ -82,7 +75,7 @@ import {
   uploadDocument,
   uploadResume,
   deleteDocument as deleteDocumentService,
-  getStudentProfile
+  getStudentProfile,
 } from '../../services/studentServices';
 import { storageService } from '../../services/storageService';
 import './StudentDashboard.css';
@@ -98,8 +91,8 @@ import {
   Title,
   Tooltip as ChartTooltip,
   Legend,
-  Filler
-} from "chart.js";
+  Filler,
+} from 'chart.js';
 
 ChartJS.register(
   CategoryScale,
@@ -119,7 +112,7 @@ const StudentDashboard = () => {
   const { studentData, loading, updateStudent, refreshData } = useStudent();
   const { currentUser, logout, userData } = useAuth();
   const { notifications, unreadCount, markAsRead, fetchNotifications } = useNotification();
-  
+
   const [stats, setStats] = useState(null);
   const [applications, setApplications] = useState([]);
   const [documents, setDocuments] = useState([]);
@@ -147,7 +140,7 @@ const StudentDashboard = () => {
   // Load all dashboard data
   const loadDashboardData = useCallback(async () => {
     if (!studentData?.id) return;
-    
+
     setLoadingData(true);
     try {
       const [
@@ -156,14 +149,14 @@ const StudentDashboard = () => {
         documentsData,
         jobsData,
         recommendedJobsData,
-        notificationsData
+        notificationsData,
       ] = await Promise.all([
         getDashboardStats(studentData.id),
         getStudentApplications(studentData.id),
         getStudentDocuments(studentData.id),
         getJobs(studentData.id),
         getRecommendedJobs(studentData.id),
-        getStudentNotifications(studentData.id)
+        getStudentNotifications(studentData.id),
       ]);
 
       if (statsData.success) setStats(statsData.data);
@@ -174,12 +167,12 @@ const StudentDashboard = () => {
 
       // Calculate deadlines from applications
       const upcomingDeadlines = (applicationsData.success ? applicationsData.data : [])
-        .filter(app => app.deadline)
-        .map(app => ({
+        .filter((app) => app.deadline)
+        .map((app) => ({
           ...app,
           type: 'application',
           deadline: app.deadline,
-          title: app.jobTitle || 'Application Deadline'
+          title: app.jobTitle || 'Application Deadline',
         }))
         .sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
         .slice(0, 5);
@@ -191,7 +184,6 @@ const StudentDashboard = () => {
 
       // Fetch notifications
       await fetchNotifications();
-
     } catch (error) {
       console.error('Error loading dashboard data:', error);
       toast.error('Failed to load dashboard data');
@@ -208,10 +200,10 @@ const StudentDashboard = () => {
       under_review: 0,
       accepted: 0,
       rejected: 0,
-      interview: 0
+      interview: 0,
     };
 
-    apps.forEach(app => {
+    apps.forEach((app) => {
       const status = app.status?.toLowerCase() || 'pending';
       if (statusCounts[status] !== undefined) {
         statusCounts[status]++;
@@ -220,7 +212,7 @@ const StudentDashboard = () => {
 
     const performanceLabels = Object.keys(statusCounts);
     const performanceValues = Object.values(statusCounts);
-    
+
     setPerformanceData({
       labels: performanceLabels,
       datasets: [
@@ -234,14 +226,14 @@ const StudentDashboard = () => {
           pointBackgroundColor: 'rgba(54, 162, 235, 1)',
           pointBorderColor: '#fff',
           pointHoverBackgroundColor: '#fff',
-          pointHoverBorderColor: 'rgba(54, 162, 235, 1)'
-        }
-      ]
+          pointHoverBorderColor: 'rgba(54, 162, 235, 1)',
+        },
+      ],
     });
 
     // Skills chart data - from student profile
     const studentSkills = studentData?.skills || [];
-    const skillLevels = studentSkills.map(skill => Math.floor(Math.random() * 30) + 70); // Random levels for demo
+    const skillLevels = studentSkills.map((skill) => Math.floor(Math.random() * 30) + 70); // Random levels for demo
 
     setSkillData({
       labels: studentSkills.length > 0 ? studentSkills : ['Skills', 'Development', 'Progress'],
@@ -254,7 +246,7 @@ const StudentDashboard = () => {
             'rgba(255, 206, 86, 0.8)',
             'rgba(75, 192, 192, 0.8)',
             'rgba(153, 102, 255, 0.8)',
-            'rgba(255, 159, 64, 0.8)'
+            'rgba(255, 159, 64, 0.8)',
           ],
           borderColor: [
             'rgba(255, 99, 132, 1)',
@@ -262,12 +254,12 @@ const StudentDashboard = () => {
             'rgba(255, 206, 86, 1)',
             'rgba(75, 192, 192, 1)',
             'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)'
+            'rgba(255, 159, 64, 1)',
           ],
           borderWidth: 1,
-          hoverOffset: 4
-        }
-      ]
+          hoverOffset: 4,
+        },
+      ],
     });
   };
 
@@ -295,16 +287,16 @@ const StudentDashboard = () => {
 
       if (result.success) {
         toast.success('Document uploaded successfully');
-        
+
         // Refresh documents list
         const documentsResult = await getStudentDocuments(studentData.id);
         if (documentsResult.success) {
           setDocuments(documentsResult.data);
         }
-        
+
         // Refresh profile data
         await refreshData();
-        
+
         setShowUploadModal(false);
         setUploadFile(null);
         setUploadType('resume');
@@ -326,7 +318,7 @@ const StudentDashboard = () => {
         const result = await deleteDocumentService(documentId, storagePath);
         if (result.success) {
           toast.success('Document deleted successfully');
-          setDocuments(prev => prev.filter(doc => doc.id !== documentId));
+          setDocuments((prev) => prev.filter((doc) => doc.id !== documentId));
         }
       } catch (error) {
         toast.error('Failed to delete document');
@@ -363,7 +355,7 @@ const StudentDashboard = () => {
       description: 'Complete your profile to get better matches',
       icon: <FaUserGraduate />,
       action: () => navigate('/student/profile'),
-      color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+      color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     },
     {
       id: 2,
@@ -371,7 +363,7 @@ const StudentDashboard = () => {
       description: 'Find internships and job opportunities',
       icon: <FaBriefcase />,
       action: () => navigate('/student/search/jobs'),
-      color: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
+      color: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
     },
     {
       id: 3,
@@ -379,7 +371,7 @@ const StudentDashboard = () => {
       description: 'Track your job applications',
       icon: <FaFileAlt />,
       action: () => navigate('/student/applications'),
-      color: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
+      color: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
     },
     {
       id: 4,
@@ -387,8 +379,8 @@ const StudentDashboard = () => {
       description: 'Upload resume or certificates',
       icon: <FaUpload />,
       action: () => setShowUploadModal(true),
-      color: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
-    }
+      color: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+    },
   ];
 
   // Stats cards configuration
@@ -400,7 +392,7 @@ const StudentDashboard = () => {
       icon: <FaUserCircle />,
       color: '#667eea',
       progress: stats?.profileCompletion || 0,
-      link: '/student/profile'
+      link: '/student/profile',
     },
     {
       id: 2,
@@ -409,7 +401,7 @@ const StudentDashboard = () => {
       icon: <FaFileAlt />,
       color: '#f093fb',
       description: 'Pending applications',
-      link: '/student/applications'
+      link: '/student/applications',
     },
     {
       id: 3,
@@ -418,7 +410,7 @@ const StudentDashboard = () => {
       icon: <FaBriefcase />,
       color: '#4facfe',
       description: 'Accepted applications',
-      link: '/student/applications'
+      link: '/student/applications',
     },
     {
       id: 4,
@@ -427,8 +419,8 @@ const StudentDashboard = () => {
       icon: <FaBullseye />,
       color: '#43e97b',
       description: 'Recommended jobs',
-      link: '/student/jobs'
-    }
+      link: '/student/jobs',
+    },
   ];
 
   // Get status badge color
@@ -476,10 +468,16 @@ const StudentDashboard = () => {
               transition={{ delay: 0.2 }}
             >
               <h1 className="dashboard-title">
-                {greeting}, {studentData?.firstName || studentData?.fullName || studentData?.displayName || 'Student'}! 👋
+                {greeting},{' '}
+                {studentData?.firstName ||
+                  studentData?.fullName ||
+                  studentData?.displayName ||
+                  'Student'}
+                ! 👋
               </h1>
               <p className="dashboard-subtitle text-muted">
-                Welcome to your personalized career dashboard. Track your progress and opportunities.
+                Welcome to your personalized career dashboard. Track your progress and
+                opportunities.
               </p>
             </motion.div>
           </Col>
@@ -489,8 +487,8 @@ const StudentDashboard = () => {
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.3 }}
             >
-              <Button 
-                variant="outline-primary" 
+              <Button
+                variant="outline-primary"
                 className="me-2"
                 onClick={loadDashboardData}
                 disabled={loadingData}
@@ -543,15 +541,16 @@ const StudentDashboard = () => {
                       </div>
                       {stat.progress && (
                         <div className="text-end">
-                          <div className="progress-circle" style={{ '--progress': `${stat.progress}%` }}>
+                          <div
+                            className="progress-circle"
+                            style={{ '--progress': `${stat.progress}%` }}
+                          >
                             <span>{stat.progress}%</span>
                           </div>
                         </div>
                       )}
                     </div>
-                    {stat.link && (
-                      <Link to={stat.link} className="stretched-link"></Link>
-                    )}
+                    {stat.link && <Link to={stat.link} className="stretched-link"></Link>}
                   </Card.Body>
                 </Card>
               </motion.div>
@@ -582,24 +581,19 @@ const StudentDashboard = () => {
                 <Row className="g-3">
                   {quickActions.map((action, index) => (
                     <Col key={action.id} xs={12} sm={6}>
-                      <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        <Button 
-                          variant="light" 
+                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <Button
+                          variant="light"
                           className="quick-action-btn w-100 h-100 text-start p-3"
                           onClick={action.action}
-                          style={{ 
+                          style={{
                             background: action.color,
                             color: 'white',
-                            border: 'none'
+                            border: 'none',
                           }}
                         >
                           <div className="d-flex align-items-center">
-                            <div className="action-icon me-3">
-                              {action.icon}
-                            </div>
+                            <div className="action-icon me-3">{action.icon}</div>
                             <div>
                               <h6 className="mb-1">{action.title}</h6>
                               <p className="small mb-0 opacity-75">{action.description}</p>
@@ -633,13 +627,11 @@ const StudentDashboard = () => {
                       </Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
-                      <Nav.Link eventKey="documents">
-                        Documents ({documents.length})
-                      </Nav.Link>
+                      <Nav.Link eventKey="documents">Documents ({documents.length})</Nav.Link>
                     </Nav.Item>
                   </Nav>
                 </Card.Header>
-                
+
                 <Card.Body>
                   <Tab.Content>
                     {/* Overview Tab */}
@@ -650,21 +642,21 @@ const StudentDashboard = () => {
                           <h6 className="mb-3">Applications by Status</h6>
                           {performanceData && (
                             <div className="chart-container">
-                              <Line 
+                              <Line
                                 data={performanceData}
                                 options={{
                                   responsive: true,
                                   plugins: {
                                     legend: { display: false },
-                                    tooltip: { mode: 'index', intersect: false }
+                                    tooltip: { mode: 'index', intersect: false },
                                   },
                                   scales: {
                                     y: {
                                       beginAtZero: true,
-                                      grid: { display: false }
+                                      grid: { display: false },
                                     },
-                                    x: { grid: { display: false } }
-                                  }
+                                    x: { grid: { display: false } },
+                                  },
                                 }}
                               />
                             </div>
@@ -676,14 +668,14 @@ const StudentDashboard = () => {
                           <h6 className="mb-3">Skill Distribution</h6>
                           {skillData && (
                             <div className="chart-container">
-                              <Doughnut 
+                              <Doughnut
                                 data={skillData}
                                 options={{
                                   responsive: true,
                                   cutout: '70%',
                                   plugins: {
-                                    legend: { position: 'right' }
-                                  }
+                                    legend: { position: 'right' },
+                                  },
                                 }}
                               />
                             </div>
@@ -707,18 +699,19 @@ const StudentDashboard = () => {
                                     <div>
                                       <h6 className="mb-1">{deadline.title}</h6>
                                       <small className="text-muted">
-                                        Application • 
-                                        Due {formatDate(deadline.deadline)}
+                                        Application • Due {formatDate(deadline.deadline)}
                                       </small>
                                     </div>
-                                    <Badge 
+                                    <Badge
                                       bg={
-                                        differenceInDays(new Date(deadline.deadline), new Date()) <= 3 
-                                          ? 'danger' 
+                                        differenceInDays(new Date(deadline.deadline), new Date()) <=
+                                        3
+                                          ? 'danger'
                                           : 'warning'
                                       }
                                     >
-                                      {differenceInDays(new Date(deadline.deadline), new Date())} days
+                                      {differenceInDays(new Date(deadline.deadline), new Date())}{' '}
+                                      days
                                     </Badge>
                                   </div>
                                 </motion.div>
@@ -757,10 +750,7 @@ const StudentDashboard = () => {
                                   </small>
                                 </div>
                                 <div className="text-end">
-                                  <Badge 
-                                    bg={getStatusColor(app.status)}
-                                    className="mb-2"
-                                  >
+                                  <Badge bg={getStatusColor(app.status)} className="mb-2">
                                     {app.status || 'pending'}
                                   </Badge>
                                   <div>
@@ -785,8 +775,8 @@ const StudentDashboard = () => {
                           <FaFileAlt size={48} className="text-muted mb-3" />
                           <h5>No applications yet</h5>
                           <p className="text-muted">Start applying for jobs to see them here</p>
-                          <Button 
-                            variant="primary" 
+                          <Button
+                            variant="primary"
                             onClick={() => navigate('/student/search/jobs')}
                           >
                             <FaSearch className="me-2" /> Search Jobs
@@ -799,15 +789,15 @@ const StudentDashboard = () => {
                     <Tab.Pane eventKey="documents">
                       <div className="d-flex justify-content-between align-items-center mb-3">
                         <h6 className="mb-0">Your Documents</h6>
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           variant="outline-primary"
                           onClick={() => setShowUploadModal(true)}
                         >
                           <FaUpload className="me-1" /> Upload New
                         </Button>
                       </div>
-                      
+
                       {documents.length > 0 ? (
                         <div className="documents-list">
                           {documents.slice(0, 5).map((doc, index) => (
@@ -826,18 +816,16 @@ const StudentDashboard = () => {
                                   <div>
                                     <h6 className="mb-1">{doc.fileName}</h6>
                                     <small className="text-muted">
-                                      {doc.documentType} • {doc.uploadedAt ? formatDate(doc.uploadedAt) : 'Unknown date'}
+                                      {doc.documentType} •{' '}
+                                      {doc.uploadedAt ? formatDate(doc.uploadedAt) : 'Unknown date'}
                                     </small>
                                   </div>
                                 </div>
                                 <div className="document-actions">
-                                  <OverlayTrigger
-                                    placement="top"
-                                    overlay={<Tooltip>View</Tooltip>}
-                                  >
-                                    <Button 
-                                      variant="light" 
-                                      size="sm" 
+                                  <OverlayTrigger placement="top" overlay={<Tooltip>View</Tooltip>}>
+                                    <Button
+                                      variant="light"
+                                      size="sm"
                                       className="me-2"
                                       onClick={() => window.open(doc.fileUrl, '_blank')}
                                     >
@@ -848,9 +836,9 @@ const StudentDashboard = () => {
                                     placement="top"
                                     overlay={<Tooltip>Download</Tooltip>}
                                   >
-                                    <Button 
-                                      variant="light" 
-                                      size="sm" 
+                                    <Button
+                                      variant="light"
+                                      size="sm"
                                       className="me-2"
                                       onClick={() => {
                                         const link = document.createElement('a');
@@ -866,8 +854,8 @@ const StudentDashboard = () => {
                                     placement="top"
                                     overlay={<Tooltip>Delete</Tooltip>}
                                   >
-                                    <Button 
-                                      variant="light" 
+                                    <Button
+                                      variant="light"
                                       size="sm"
                                       onClick={() => handleDeleteDocument(doc.id, doc.storagePath)}
                                     >
@@ -890,11 +878,10 @@ const StudentDashboard = () => {
                         <div className="text-center py-4">
                           <FaFileAlt size={48} className="text-muted mb-3" />
                           <h5>No documents uploaded</h5>
-                          <p className="text-muted">Upload your resume, certificates, and other documents</p>
-                          <Button 
-                            variant="primary" 
-                            onClick={() => setShowUploadModal(true)}
-                          >
+                          <p className="text-muted">
+                            Upload your resume, certificates, and other documents
+                          </p>
+                          <Button variant="primary" onClick={() => setShowUploadModal(true)}>
                             <FaUpload className="me-2" /> Upload Document
                           </Button>
                         </div>
@@ -924,7 +911,10 @@ const StudentDashboard = () => {
                 </Badge>
               </Card.Header>
               <Card.Body className="p-0">
-                <div className="notifications-list" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                <div
+                  className="notifications-list"
+                  style={{ maxHeight: '300px', overflowY: 'auto' }}
+                >
                   {notifications.length > 0 ? (
                     notifications.slice(0, 5).map((notification, index) => (
                       <motion.div
@@ -946,7 +936,9 @@ const StudentDashboard = () => {
                           <div className="flex-grow-1">
                             <p className="mb-1">{notification.message || notification.title}</p>
                             <small className="text-muted">
-                              {notification.createdAt ? formatDate(notification.createdAt) : 'Recently'}
+                              {notification.createdAt
+                                ? formatDate(notification.createdAt)
+                                : 'Recently'}
                             </small>
                           </div>
                           {!notification.read && (
@@ -1019,10 +1011,11 @@ const StudentDashboard = () => {
                       </div>
                       <div className="mt-3 d-flex justify-content-between align-items-center">
                         <small className="text-muted">
-                          {job.jobType || 'Full-time'} • {job.deadline ? `Deadline ${formatDate(job.deadline)}` : 'Open'}
+                          {job.jobType || 'Full-time'} •{' '}
+                          {job.deadline ? `Deadline ${formatDate(job.deadline)}` : 'Open'}
                         </small>
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           variant="outline-primary"
                           onClick={(e) => {
                             e.stopPropagation();
@@ -1038,9 +1031,9 @@ const StudentDashboard = () => {
                   <div className="text-center py-4">
                     <FaBriefcase size={32} className="text-muted mb-2" />
                     <p className="text-muted mb-0">No job recommendations yet</p>
-                    <Button 
-                      variant="outline-primary" 
-                      size="sm" 
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
                       className="mt-2"
                       onClick={() => navigate('/student/search/jobs')}
                     >
@@ -1069,8 +1062,8 @@ const StudentDashboard = () => {
                       <span>Profile Strength</span>
                       <span>{stats?.profileCompletion || 0}%</span>
                     </div>
-                    <ProgressBar 
-                      now={stats?.profileCompletion || 0} 
+                    <ProgressBar
+                      now={stats?.profileCompletion || 0}
                       variant="primary"
                       className="rounded-pill"
                       style={{ height: '8px' }}
@@ -1081,8 +1074,8 @@ const StudentDashboard = () => {
                       <span>Applications</span>
                       <span>{applications.length || 0}</span>
                     </div>
-                    <ProgressBar 
-                      now={Math.min((applications.length / 10) * 100, 100)} 
+                    <ProgressBar
+                      now={Math.min((applications.length / 10) * 100, 100)}
                       variant="success"
                       className="rounded-pill"
                       style={{ height: '8px' }}
@@ -1093,8 +1086,8 @@ const StudentDashboard = () => {
                       <span>Documents</span>
                       <span>{documents.length || 0}</span>
                     </div>
-                    <ProgressBar 
-                      now={Math.min((documents.length / 5) * 100, 100)} 
+                    <ProgressBar
+                      now={Math.min((documents.length / 5) * 100, 100)}
                       variant="info"
                       className="rounded-pill"
                       style={{ height: '8px' }}
@@ -1105,8 +1098,8 @@ const StudentDashboard = () => {
                       <span>Skills Development</span>
                       <span>{studentData?.skills?.length || 0}</span>
                     </div>
-                    <ProgressBar 
-                      now={Math.min(((studentData?.skills?.length || 0) / 10) * 100, 100)} 
+                    <ProgressBar
+                      now={Math.min(((studentData?.skills?.length || 0) / 10) * 100, 100)}
                       variant="warning"
                       className="rounded-pill"
                       style={{ height: '8px' }}
@@ -1133,10 +1126,7 @@ const StudentDashboard = () => {
           <Form>
             <Form.Group className="mb-3">
               <Form.Label>Document Type</Form.Label>
-              <Form.Select 
-                value={uploadType} 
-                onChange={(e) => setUploadType(e.target.value)}
-              >
+              <Form.Select value={uploadType} onChange={(e) => setUploadType(e.target.value)}>
                 <option value="resume">Resume/CV</option>
                 <option value="transcript">Academic Transcript</option>
                 <option value="certificate">Certificate</option>
@@ -1162,11 +1152,7 @@ const StudentDashboard = () => {
           <Button variant="secondary" onClick={() => setShowUploadModal(false)}>
             Cancel
           </Button>
-          <Button 
-            variant="primary" 
-            onClick={handleFileUpload}
-            disabled={!uploadFile || uploading}
-          >
+          <Button variant="primary" onClick={handleFileUpload} disabled={!uploadFile || uploading}>
             {uploading ? (
               <>
                 <Spinner size="sm" className="me-2" />

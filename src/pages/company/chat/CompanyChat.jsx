@@ -2,25 +2,90 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-no-undef */
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { 
-  Container, Row, Col, Card, ListGroup, Form, Button, Badge, 
-  InputGroup, Spinner, Alert, Modal, Dropdown, OverlayTrigger, Tooltip,
-  Image, ProgressBar, Offcanvas
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  ListGroup,
+  Form,
+  Button,
+  Badge,
+  InputGroup,
+  Spinner,
+  Alert,
+  Modal,
+  Dropdown,
+  OverlayTrigger,
+  Tooltip,
+  Image,
+  ProgressBar,
+  Offcanvas,
 } from 'react-bootstrap';
-import { 
-  FaSearch, FaPaperPlane, FaUsers, FaComment, FaBell, FaRegClock, 
-  FaCheckDouble, FaRegUserCircle, FaEllipsisV, FaPhone, FaVideo,
-  FaPaperclip, FaSmile, FaImage, FaFile, FaMicrophone, FaTimes,
-  FaTrash, FaEdit, FaReply, FaForward, FaArchive, FaCog,
-  FaExternalLinkAlt, FaUserPlus, FaUserFriends, FaInfoCircle,
-  FaRegSmile, FaCamera, FaMapMarkerAlt, FaLink, FaShare,
-  FaThumbsUp, FaHeart, FaLaugh, FaSadTear, FaAngry,
-  FaRegThumbsUp, FaRegHeart, FaRegLaugh, FaRegSadTear, FaRegAngry,
-  FaDownload, FaExpand, FaCompress, FaVolumeUp, FaVolumeMute,
-  FaStar, FaRegStar, FaFilter, FaSort, FaEye, FaEyeSlash,
-  FaCheckCircle, FaExclamationCircle, FaCloudUploadAlt,
-  FaSync, FaArrowLeft, FaArrowRight, FaChevronLeft, FaChevronRight,
-  FaBars, FaSignOutAlt
+import {
+  FaSearch,
+  FaPaperPlane,
+  FaUsers,
+  FaComment,
+  FaBell,
+  FaRegClock,
+  FaCheckDouble,
+  FaRegUserCircle,
+  FaEllipsisV,
+  FaPhone,
+  FaVideo,
+  FaPaperclip,
+  FaSmile,
+  FaImage,
+  FaFile,
+  FaMicrophone,
+  FaTimes,
+  FaTrash,
+  FaEdit,
+  FaReply,
+  FaForward,
+  FaArchive,
+  FaCog,
+  FaExternalLinkAlt,
+  FaUserPlus,
+  FaUserFriends,
+  FaInfoCircle,
+  FaRegSmile,
+  FaCamera,
+  FaMapMarkerAlt,
+  FaLink,
+  FaShare,
+  FaThumbsUp,
+  FaHeart,
+  FaLaugh,
+  FaSadTear,
+  FaAngry,
+  FaRegThumbsUp,
+  FaRegHeart,
+  FaRegLaugh,
+  FaRegSadTear,
+  FaRegAngry,
+  FaDownload,
+  FaExpand,
+  FaCompress,
+  FaVolumeUp,
+  FaVolumeMute,
+  FaStar,
+  FaRegStar,
+  FaFilter,
+  FaSort,
+  FaEye,
+  FaEyeSlash,
+  FaCheckCircle,
+  FaExclamationCircle,
+  FaCloudUploadAlt,
+  FaSync,
+  FaArrowLeft,
+  FaArrowRight,
+  FaChevronLeft,
+  FaChevronRight,
+  FaBars,
+  FaSignOutAlt,
 } from 'react-icons/fa';
 import { useAuth } from '../../../context/AuthContext';
 import { useCollaboration } from '../../../hooks/useCollaboration';
@@ -47,7 +112,7 @@ const CompanyChat = () => {
     updateMessage,
     clearError,
     hasActiveConversation,
-    getOtherParticipant
+    getOtherParticipant,
   } = useCollaboration();
 
   // State
@@ -83,10 +148,10 @@ const CompanyChat = () => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-    
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    
+
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
@@ -101,9 +166,9 @@ const CompanyChat = () => {
 
     // Apply search filter
     if (searchTerm.trim()) {
-      filtered = filtered.filter(conv => {
+      filtered = filtered.filter((conv) => {
         const searchLower = searchTerm.toLowerCase();
-        
+
         // Search in conversation name
         if (conv.name?.toLowerCase().includes(searchLower)) {
           return true;
@@ -111,10 +176,10 @@ const CompanyChat = () => {
 
         // Search in participant names
         const participantNames = conv.participants
-          .filter(p => p.id !== currentUser?.uid)
-          .map(p => p.name.toLowerCase());
-        
-        if (participantNames.some(name => name.includes(searchLower))) {
+          .filter((p) => p.id !== currentUser?.uid)
+          .map((p) => p.name.toLowerCase());
+
+        if (participantNames.some((name) => name.includes(searchLower))) {
           return true;
         }
 
@@ -129,21 +194,21 @@ const CompanyChat = () => {
 
     // Apply status filter
     if (activeFilter === 'unread') {
-      filtered = filtered.filter(conv => {
-        const participant = conv.participants.find(p => p.id === currentUser?.uid);
+      filtered = filtered.filter((conv) => {
+        const participant = conv.participants.find((p) => p.id === currentUser?.uid);
         return participant?.unreadCount > 0;
       });
     } else if (activeFilter === 'group') {
-      filtered = filtered.filter(conv => conv.type === 'group');
+      filtered = filtered.filter((conv) => conv.type === 'group');
     } else if (activeFilter === 'direct') {
-      filtered = filtered.filter(conv => conv.type === 'direct');
+      filtered = filtered.filter((conv) => conv.type === 'direct');
     }
 
     // Apply sorting
     filtered.sort((a, b) => {
       const dateA = a.updatedAt ? new Date(a.updatedAt) : new Date(0);
       const dateB = b.updatedAt ? new Date(b.updatedAt) : new Date(0);
-      
+
       return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
     });
 
@@ -162,35 +227,35 @@ const CompanyChat = () => {
   // Format message time
   const formatMessageTime = (date) => {
     if (!date) return 'Just now';
-    
+
     const now = new Date();
     const messageDate = new Date(date);
     const diffMs = now - messageDate;
     const diffMins = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
-    
+
     if (diffMins < 1) return 'Just now';
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffHours < 24) return `${diffHours}h ago`;
     if (diffDays < 7) return `${diffDays}d ago`;
-    
+
     return messageDate.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
-      year: 'numeric'
+      year: 'numeric',
     });
   };
 
   // Format conversation time
   const formatConversationTime = (date) => {
     if (!date) return '';
-    
+
     const now = new Date();
     const convDate = new Date(date);
     const diffMs = now - convDate;
     const diffDays = Math.floor(diffMs / 86400000);
-    
+
     if (diffDays === 0) {
       return convDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     } else if (diffDays === 1) {
@@ -200,7 +265,7 @@ const CompanyChat = () => {
     } else {
       return convDate.toLocaleDateString('en-US', {
         month: 'short',
-        day: 'numeric'
+        day: 'numeric',
       });
     }
   };
@@ -211,7 +276,7 @@ const CompanyChat = () => {
 
     try {
       let attachments = [];
-      
+
       // Upload files if any
       if (selectedFiles.length > 0) {
         for (const file of selectedFiles) {
@@ -225,7 +290,7 @@ const CompanyChat = () => {
 
       // Send message
       const result = await sendMessage(message, attachments);
-      
+
       if (result.success) {
         setMessage('');
         setReplyingTo(null);
@@ -239,15 +304,15 @@ const CompanyChat = () => {
   // Handle file selection
   const handleFileSelect = (e) => {
     const files = Array.from(e.target.files);
-    
+
     // Validate files
-    const validFiles = files.filter(file => {
+    const validFiles = files.filter((file) => {
       const maxSize = 10 * 1024 * 1024; // 10MB
       if (file.size > maxSize) {
         alert(`File ${file.name} exceeds 10MB limit`);
         return false;
       }
-      
+
       const allowedTypes = [
         'image/jpeg',
         'image/jpg',
@@ -257,28 +322,28 @@ const CompanyChat = () => {
         'application/pdf',
         'application/msword',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'text/plain'
+        'text/plain',
       ];
-      
+
       if (!allowedTypes.includes(file.type)) {
         alert(`File type ${file.type} not supported`);
         return false;
       }
-      
+
       return true;
     });
-    
-    setSelectedFiles(prev => [...prev, ...validFiles]);
+
+    setSelectedFiles((prev) => [...prev, ...validFiles]);
   };
 
   // Remove selected file
   const removeFile = (index) => {
-    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
   // Handle emoji selection
   const handleEmojiClick = (emojiData) => {
-    setMessage(prev => prev + emojiData.emoji);
+    setMessage((prev) => prev + emojiData.emoji);
     setShowEmojiPicker(false);
   };
 
@@ -287,9 +352,9 @@ const CompanyChat = () => {
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
-    
+
     setIsTyping(true);
-    
+
     typingTimeoutRef.current = setTimeout(() => {
       setIsTyping(false);
     }, 3000);
@@ -298,32 +363,28 @@ const CompanyChat = () => {
   // Get conversation display name
   const getConversationName = (conversation) => {
     if (conversation.name) return conversation.name;
-    
-    const otherParticipants = conversation.participants.filter(
-      p => p.id !== currentUser?.uid
-    );
-    
+
+    const otherParticipants = conversation.participants.filter((p) => p.id !== currentUser?.uid);
+
     if (otherParticipants.length === 1) {
       return otherParticipants[0].name;
     } else if (otherParticipants.length > 1) {
-      return otherParticipants.map(p => p.name.split(' ')[0]).join(', ');
+      return otherParticipants.map((p) => p.name.split(' ')[0]).join(', ');
     }
-    
+
     return 'Conversation';
   };
 
   // Get conversation avatar
   const getConversationAvatar = (conversation) => {
     if (conversation.avatar) return conversation.avatar;
-    
-    const otherParticipants = conversation.participants.filter(
-      p => p.id !== currentUser?.uid
-    );
-    
+
+    const otherParticipants = conversation.participants.filter((p) => p.id !== currentUser?.uid);
+
     if (otherParticipants.length === 1) {
       return otherParticipants[0].avatar;
     }
-    
+
     return null;
   };
 
@@ -337,8 +398,8 @@ const CompanyChat = () => {
           <div key={index} className="attachment-item mb-2">
             {attachment.type.startsWith('image/') ? (
               <div className="image-attachment">
-                <Image 
-                  src={attachment.url} 
+                <Image
+                  src={attachment.url}
                   alt={attachment.name}
                   className="img-fluid rounded"
                   style={{ maxWidth: '250px', maxHeight: '250px' }}
@@ -359,8 +420,8 @@ const CompanyChat = () => {
                       {(attachment.size / 1024).toFixed(1)} KB
                     </div>
                   </div>
-                  <Button 
-                    variant="link" 
+                  <Button
+                    variant="link"
                     size="sm"
                     onClick={() => window.open(attachment.url, '_blank')}
                     className="p-0"
@@ -388,12 +449,7 @@ const CompanyChat = () => {
     return (
       <div className="message-reactions mt-1">
         {Object.entries(groupedReactions).map(([reaction, count]) => (
-          <Badge 
-            key={reaction}
-            bg="light" 
-            text="dark" 
-            className="me-1 reaction-badge"
-          >
+          <Badge key={reaction} bg="light" text="dark" className="me-1 reaction-badge">
             {reaction} {count > 1 ? count : ''}
           </Badge>
         ))}
@@ -407,11 +463,7 @@ const CompanyChat = () => {
 
     return (
       <div className="emoji-picker-container position-absolute bottom-100 end-0 mb-2">
-        <EmojiPicker 
-          onEmojiClick={handleEmojiClick}
-          width={300}
-          height={400}
-        />
+        <EmojiPicker onEmojiClick={handleEmojiClick} width={300} height={400} />
       </div>
     );
   };
@@ -438,32 +490,30 @@ const CompanyChat = () => {
   const renderMobileHeader = () => (
     <div className="mobile-chat-header d-md-none sticky-top bg-white shadow-sm">
       <div className="d-flex align-items-center justify-content-between p-3">
-        <Button 
-          variant="link" 
-          className="p-0 text-dark"
-          onClick={() => setShowMobileSidebar(true)}
-        >
+        <Button variant="link" className="p-0 text-dark" onClick={() => setShowMobileSidebar(true)}>
           <FaBars size={20} />
         </Button>
-        
+
         <div className="d-flex align-items-center">
           <div className="mobile-logo-circle">
             <i className="bi bi-chat-left-text-fill text-primary"></i>
           </div>
           <span className="fw-bold ms-2">Company Chat</span>
         </div>
-        
+
         <div className="d-flex align-items-center gap-2">
           {hasActiveConversation && (
-            <Button 
-              variant="link" 
+            <Button
+              variant="link"
               className="p-0 text-dark"
               onClick={() => setShowMobileInfoPanel(true)}
             >
               <FaInfoCircle size={18} />
             </Button>
           )}
-          <Badge bg="primary" pill>{unreadCount}</Badge>
+          <Badge bg="primary" pill>
+            {unreadCount}
+          </Badge>
         </div>
       </div>
     </div>
@@ -494,9 +544,11 @@ const CompanyChat = () => {
               <div className="d-flex justify-content-between align-items-center">
                 <h5 className="mb-0 fw-bold">Messages</h5>
                 <div className="d-flex gap-1">
-                  <Badge bg="primary" pill>{unreadCount}</Badge>
-                  <Button 
-                    variant="outline-primary" 
+                  <Badge bg="primary" pill>
+                    {unreadCount}
+                  </Badge>
+                  <Button
+                    variant="outline-primary"
                     size="sm"
                     onClick={() => setShowNewChatModal(true)}
                     title="New Chat"
@@ -520,8 +572,8 @@ const CompanyChat = () => {
                     className="border-start-0 bg-light"
                   />
                   {searchTerm && (
-                    <Button 
-                      variant="link" 
+                    <Button
+                      variant="link"
                       onClick={() => setSearchTerm('')}
                       className="bg-light border-start-0"
                     >
@@ -564,13 +616,13 @@ const CompanyChat = () => {
             <Card.Body className="p-0 overflow-auto flex-grow-1">
               {filteredConversations.length > 0 ? (
                 <ListGroup variant="flush" className="conversations-list">
-                  {filteredConversations.map(conversation => {
+                  {filteredConversations.map((conversation) => {
                     const participant = conversation.participants.find(
-                      p => p.id === currentUser?.uid
+                      (p) => p.id === currentUser?.uid
                     );
                     const unread = participant?.unreadCount || 0;
                     const otherParticipant = conversation.participants.find(
-                      p => p.id !== currentUser?.uid
+                      (p) => p.id !== currentUser?.uid
                     );
 
                     return (
@@ -597,14 +649,18 @@ const CompanyChat = () => {
                                 style={{ width: '48px', height: '48px', objectFit: 'cover' }}
                               />
                             ) : (
-                              <div className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
-                                   style={{ width: '48px', height: '48px' }}>
+                              <div
+                                className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                                style={{ width: '48px', height: '48px' }}
+                              >
                                 {getConversationName(conversation).charAt(0)}
                               </div>
                             )}
                             {otherParticipant?.isOnline && (
-                              <span className="position-absolute bottom-0 end-0 translate-middle p-1 border border-2 border-white rounded-circle bg-success"
-                                    style={{ width: '12px', height: '12px' }}></span>
+                              <span
+                                className="position-absolute bottom-0 end-0 translate-middle p-1 border border-2 border-white rounded-circle bg-success"
+                                style={{ width: '12px', height: '12px' }}
+                              ></span>
                             )}
                           </div>
 
@@ -621,14 +677,18 @@ const CompanyChat = () => {
                                 {formatConversationTime(conversation.updatedAt)}
                               </small>
                             </div>
-                            
+
                             <div className="d-flex justify-content-between align-items-center">
-                              <p className="mb-0 text-truncate small text-muted"
-                                 style={{ maxWidth: '180px' }}>
+                              <p
+                                className="mb-0 text-truncate small text-muted"
+                                style={{ maxWidth: '180px' }}
+                              >
                                 {conversation.lastMessage || 'No messages yet'}
                               </p>
                               {unread > 0 && (
-                                <Badge bg="danger" pill className="ms-1">{unread}</Badge>
+                                <Badge bg="danger" pill className="ms-1">
+                                  {unread}
+                                </Badge>
                               )}
                             </div>
 
@@ -649,11 +709,7 @@ const CompanyChat = () => {
                   <FaComment className="text-muted mb-3" size={48} />
                   <p className="text-muted mb-2">No conversations found</p>
                   {searchTerm && (
-                    <Button 
-                      variant="outline-primary" 
-                      size="sm"
-                      onClick={() => setSearchTerm('')}
-                    >
+                    <Button variant="outline-primary" size="sm" onClick={() => setSearchTerm('')}>
                       Clear search
                     </Button>
                   )}
@@ -664,7 +720,11 @@ const CompanyChat = () => {
         </Col>
 
         {/* Main Chat Area */}
-        <Col md={8} lg={9} className={`chat-col h-100 ${isMobile && !hasActiveConversation ? 'd-none' : ''}`}>
+        <Col
+          md={8}
+          lg={9}
+          className={`chat-col h-100 ${isMobile && !hasActiveConversation ? 'd-none' : ''}`}
+        >
           <Card className="h-100 border-0 rounded-0">
             {hasActiveConversation ? (
               <>
@@ -672,8 +732,8 @@ const CompanyChat = () => {
                 <Card.Header className="bg-white border-bottom py-3">
                   <div className="d-flex justify-content-between align-items-center">
                     <div className="d-flex align-items-center">
-                      <Button 
-                        variant="link" 
+                      <Button
+                        variant="link"
                         className="d-lg-none me-2 p-0 text-dark"
                         onClick={() => {
                           if (isMobile) {
@@ -683,7 +743,7 @@ const CompanyChat = () => {
                       >
                         <FaArrowLeft />
                       </Button>
-                      
+
                       {/* Conversation Info */}
                       <div className="d-flex align-items-center">
                         <div className="position-relative me-3">
@@ -695,14 +755,18 @@ const CompanyChat = () => {
                               style={{ width: '42px', height: '42px', objectFit: 'cover' }}
                             />
                           ) : (
-                            <div className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
-                                 style={{ width: '42px', height: '42px' }}>
+                            <div
+                              className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                              style={{ width: '42px', height: '42px' }}
+                            >
                               {getConversationName(activeConversation).charAt(0)}
                             </div>
                           )}
                           {getOtherParticipant?.isOnline && (
-                            <span className="position-absolute bottom-0 end-0 translate-middle p-1 border border-2 border-white rounded-circle bg-success"
-                                  style={{ width: '10px', height: '10px' }}></span>
+                            <span
+                              className="position-absolute bottom-0 end-0 translate-middle p-1 border border-2 border-white rounded-circle bg-success"
+                              style={{ width: '10px', height: '10px' }}
+                            ></span>
                           )}
                         </div>
                         <div>
@@ -710,8 +774,10 @@ const CompanyChat = () => {
                             {getConversationName(activeConversation)}
                           </h5>
                           <small className="text-muted">
-                            {activeConversation.type === 'direct' 
-                              ? (getOtherParticipant?.isOnline ? 'Online' : 'Offline')
+                            {activeConversation.type === 'direct'
+                              ? getOtherParticipant?.isOnline
+                                ? 'Online'
+                                : 'Offline'
                               : `${activeConversation.participants.length} members • Online`}
                           </small>
                         </div>
@@ -726,8 +792,8 @@ const CompanyChat = () => {
                       <Button variant="outline-success" size="sm" className="rounded-circle">
                         <FaVideo size={14} />
                       </Button>
-                      <Button 
-                        variant="outline-info" 
+                      <Button
+                        variant="outline-info"
                         size="sm"
                         onClick={() => setShowInfoPanel(!showInfoPanel)}
                         className="d-none d-lg-block rounded-circle"
@@ -735,7 +801,11 @@ const CompanyChat = () => {
                         <FaInfoCircle size={14} />
                       </Button>
                       <Dropdown>
-                        <Dropdown.Toggle variant="outline-secondary" size="sm" className="rounded-circle">
+                        <Dropdown.Toggle
+                          variant="outline-secondary"
+                          size="sm"
+                          className="rounded-circle"
+                        >
                           <FaEllipsisV size={14} />
                         </Dropdown.Toggle>
                         <Dropdown.Menu align="end">
@@ -759,9 +829,9 @@ const CompanyChat = () => {
                   <div className="chat-messages flex-grow-1 p-3 overflow-auto">
                     {messages.length > 0 ? (
                       <>
-                        {messages.map(msg => (
-                          <div 
-                            key={msg.id} 
+                        {messages.map((msg) => (
+                          <div
+                            key={msg.id}
                             className={`message-wrapper mb-3 ${msg.senderId === currentUser?.uid ? 'message-sent' : 'message-received'}`}
                           >
                             {/* Reply indicator */}
@@ -794,25 +864,27 @@ const CompanyChat = () => {
 
                               <div className="flex-grow-1">
                                 {/* Sender name for received messages */}
-                                {msg.senderId !== currentUser?.uid && activeConversation.type === 'group' && (
-                                  <small className="fw-medium d-block mb-1">
-                                    {msg.sender?.name}
-                                  </small>
-                                )}
+                                {msg.senderId !== currentUser?.uid &&
+                                  activeConversation.type === 'group' && (
+                                    <small className="fw-medium d-block mb-1">
+                                      {msg.sender?.name}
+                                    </small>
+                                  )}
 
-                                <div className={`message-bubble p-3 ${msg.senderId === currentUser?.uid ? 'bg-primary text-white' : 'bg-light'}`}
-                                     style={{ 
-                                       borderRadius: '18px', 
-                                       maxWidth: '85%',
-                                       borderTopLeftRadius: msg.senderId === currentUser?.uid ? '18px' : '4px',
-                                       borderTopRightRadius: msg.senderId === currentUser?.uid ? '4px' : '18px'
-                                     }}>
-                                  
+                                <div
+                                  className={`message-bubble p-3 ${msg.senderId === currentUser?.uid ? 'bg-primary text-white' : 'bg-light'}`}
+                                  style={{
+                                    borderRadius: '18px',
+                                    maxWidth: '85%',
+                                    borderTopLeftRadius:
+                                      msg.senderId === currentUser?.uid ? '18px' : '4px',
+                                    borderTopRightRadius:
+                                      msg.senderId === currentUser?.uid ? '4px' : '18px',
+                                  }}
+                                >
                                   {/* Message content */}
                                   {msg.content && (
-                                    <div className="message-content">
-                                      {msg.content}
-                                    </div>
+                                    <div className="message-content">{msg.content}</div>
                                   )}
 
                                   {/* Attachments */}
@@ -820,15 +892,23 @@ const CompanyChat = () => {
 
                                   {/* Message metadata */}
                                   <div className="d-flex justify-content-between align-items-center mt-2">
-                                    <small className={`${msg.senderId === currentUser?.uid ? 'text-white-50' : 'text-muted'}`}>
+                                    <small
+                                      className={`${msg.senderId === currentUser?.uid ? 'text-white-50' : 'text-muted'}`}
+                                    >
                                       {formatMessageTime(msg.createdAt)}
                                       {msg.edited && ' (edited)'}
                                     </small>
                                     {msg.senderId === currentUser?.uid && (
                                       <div className="d-flex align-items-center">
-                                        {msg.status === 'sent' && <FaCheckCircle className="ms-2" size={12} />}
-                                        {msg.status === 'delivered' && <FaCheckDouble className="ms-2" size={12} />}
-                                        {msg.status === 'read' && <FaCheckDouble className="ms-2 text-info" size={12} />}
+                                        {msg.status === 'sent' && (
+                                          <FaCheckCircle className="ms-2" size={12} />
+                                        )}
+                                        {msg.status === 'delivered' && (
+                                          <FaCheckDouble className="ms-2" size={12} />
+                                        )}
+                                        {msg.status === 'read' && (
+                                          <FaCheckDouble className="ms-2 text-info" size={12} />
+                                        )}
                                       </div>
                                     )}
                                   </div>
@@ -839,9 +919,9 @@ const CompanyChat = () => {
 
                                 {/* Message actions */}
                                 <div className="message-actions mt-1 d-flex gap-2">
-                                  <Button 
-                                    variant="link" 
-                                    size="sm" 
+                                  <Button
+                                    variant="link"
+                                    size="sm"
                                     className="p-0 text-decoration-none"
                                     onClick={() => setReplyingTo(msg)}
                                   >
@@ -849,17 +929,17 @@ const CompanyChat = () => {
                                   </Button>
                                   {msg.senderId === currentUser?.uid && (
                                     <>
-                                      <Button 
-                                        variant="link" 
-                                        size="sm" 
+                                      <Button
+                                        variant="link"
+                                        size="sm"
                                         className="p-0 text-decoration-none"
                                         onClick={() => setEditingMessage(msg)}
                                       >
                                         <FaEdit className="me-1" /> Edit
                                       </Button>
-                                      <Button 
-                                        variant="link" 
-                                        size="sm" 
+                                      <Button
+                                        variant="link"
+                                        size="sm"
                                         className="p-0 text-decoration-none text-danger"
                                         onClick={() => {
                                           if (window.confirm('Delete this message?')) {
@@ -872,7 +952,11 @@ const CompanyChat = () => {
                                     </>
                                   )}
                                   <Dropdown>
-                                    <Dropdown.Toggle variant="link" size="sm" className="p-0 text-decoration-none">
+                                    <Dropdown.Toggle
+                                      variant="link"
+                                      size="sm"
+                                      className="p-0 text-decoration-none"
+                                    >
                                       <FaRegSmile />
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
@@ -892,7 +976,7 @@ const CompanyChat = () => {
                             </div>
                           </div>
                         ))}
-                        
+
                         {/* Typing indicator */}
                         {renderTypingIndicator()}
                       </>
@@ -919,9 +1003,9 @@ const CompanyChat = () => {
                           <small className="fw-medium">Replying to {replyingTo.sender?.name}</small>
                           <p className="mb-0 small text-truncate">{replyingTo.content}</p>
                         </div>
-                        <Button 
-                          variant="link" 
-                          size="sm" 
+                        <Button
+                          variant="link"
+                          size="sm"
                           className="p-0 ms-2"
                           onClick={() => setReplyingTo(null)}
                         >
@@ -938,9 +1022,9 @@ const CompanyChat = () => {
                         <div className="flex-grow-1">
                           <small className="fw-medium">Editing message</small>
                         </div>
-                        <Button 
-                          variant="link" 
-                          size="sm" 
+                        <Button
+                          variant="link"
+                          size="sm"
                           className="p-0 ms-2"
                           onClick={() => setEditingMessage(null)}
                         >
@@ -955,9 +1039,9 @@ const CompanyChat = () => {
                     <div className="file-previews mb-2 p-2 border rounded">
                       <div className="d-flex justify-content-between align-items-center mb-2">
                         <small className="fw-medium">Attachments ({selectedFiles.length})</small>
-                        <Button 
-                          variant="link" 
-                          size="sm" 
+                        <Button
+                          variant="link"
+                          size="sm"
                           className="p-0 text-danger"
                           onClick={() => setSelectedFiles([])}
                         >
@@ -974,9 +1058,9 @@ const CompanyChat = () => {
                                 <FaFile className="me-2" />
                               )}
                               <small className="me-2">{file.name}</small>
-                              <Button 
-                                variant="link" 
-                                size="sm" 
+                              <Button
+                                variant="link"
+                                size="sm"
                                 className="p-0 text-danger"
                                 onClick={() => removeFile(index)}
                               >
@@ -992,8 +1076,8 @@ const CompanyChat = () => {
                   {/* Input area */}
                   <div className="d-flex align-items-center gap-2">
                     {/* Attachment button */}
-                    <Button 
-                      variant="light" 
+                    <Button
+                      variant="light"
                       size="sm"
                       onClick={() => fileInputRef.current?.click()}
                       className="rounded-circle"
@@ -1009,8 +1093,8 @@ const CompanyChat = () => {
                     />
 
                     {/* Emoji button */}
-                    <Button 
-                      variant="light" 
+                    <Button
+                      variant="light"
                       size="sm"
                       onClick={() => setShowEmojiPicker(!showEmojiPicker)}
                       className="rounded-circle position-relative"
@@ -1043,8 +1127,8 @@ const CompanyChat = () => {
                     </div>
 
                     {/* Send button */}
-                    <Button 
-                      variant="primary" 
+                    <Button
+                      variant="primary"
                       size="sm"
                       onClick={handleSendMessage}
                       disabled={!message.trim() && selectedFiles.length === 0}
@@ -1068,14 +1152,14 @@ const CompanyChat = () => {
                   Select a conversation or start a new one to begin messaging
                 </p>
                 <div className="d-flex gap-3">
-                  <Button 
-                    variant="primary" 
+                  <Button
+                    variant="primary"
                     onClick={() => setShowNewChatModal(true)}
                     className="rounded-pill px-4"
                   >
                     <FaComment className="me-2" /> New Message
                   </Button>
-                  <Button 
+                  <Button
                     variant="outline-primary"
                     onClick={() => setShowGroupModal(true)}
                     className="rounded-pill px-4"
@@ -1084,8 +1168,8 @@ const CompanyChat = () => {
                   </Button>
                 </div>
                 {isMobile && (
-                  <Button 
-                    variant="link" 
+                  <Button
+                    variant="link"
                     className="mt-4"
                     onClick={() => setShowMobileSidebar(true)}
                   >
@@ -1104,9 +1188,9 @@ const CompanyChat = () => {
               <Card.Header className="bg-white border-bottom py-3">
                 <div className="d-flex justify-content-between align-items-center">
                   <h6 className="mb-0 fw-bold">Conversation Info</h6>
-                  <Button 
-                    variant="link" 
-                    size="sm" 
+                  <Button
+                    variant="link"
+                    size="sm"
                     className="p-0"
                     onClick={() => setShowInfoPanel(false)}
                   >
@@ -1121,7 +1205,7 @@ const CompanyChat = () => {
                     Participants ({activeConversation.participants.length})
                   </h6>
                   <ListGroup variant="flush">
-                    {activeConversation.participants.map(participant => (
+                    {activeConversation.participants.map((participant) => (
                       <ListGroup.Item key={participant.id} className="border-0 px-0 py-2">
                         <div className="d-flex align-items-center">
                           <div className="position-relative me-3">
@@ -1132,15 +1216,19 @@ const CompanyChat = () => {
                               style={{ width: '42px', height: '42px', objectFit: 'cover' }}
                             />
                             {participant.isOnline && (
-                              <span className="position-absolute bottom-0 end-0 translate-middle p-1 border border-2 border-white rounded-circle bg-success"
-                                    style={{ width: '10px', height: '10px' }}></span>
+                              <span
+                                className="position-absolute bottom-0 end-0 translate-middle p-1 border border-2 border-white rounded-circle bg-success"
+                                style={{ width: '10px', height: '10px' }}
+                              ></span>
                             )}
                           </div>
                           <div className="flex-grow-1">
                             <div className="d-flex align-items-center">
                               <h6 className="mb-0 small fw-semibold">{participant.name}</h6>
                               {participant.id === currentUser?.uid && (
-                                <Badge bg="light" text="dark" className="ms-2 small px-2 py-1">You</Badge>
+                                <Badge bg="light" text="dark" className="ms-2 small px-2 py-1">
+                                  You
+                                </Badge>
                               )}
                             </div>
                             <small className="text-muted">
@@ -1157,13 +1245,25 @@ const CompanyChat = () => {
                 <div className="mb-4">
                   <h6 className="mb-3 fw-semibold">Shared Media</h6>
                   <div className="d-grid gap-2">
-                    <Button variant="outline-light" size="sm" className="text-start p-3 border rounded">
+                    <Button
+                      variant="outline-light"
+                      size="sm"
+                      className="text-start p-3 border rounded"
+                    >
                       <FaImage className="me-2" /> Photos & Videos
                     </Button>
-                    <Button variant="outline-light" size="sm" className="text-start p-3 border rounded">
+                    <Button
+                      variant="outline-light"
+                      size="sm"
+                      className="text-start p-3 border rounded"
+                    >
                       <FaFile className="me-2" /> Files & Documents
                     </Button>
-                    <Button variant="outline-light" size="sm" className="text-start p-3 border rounded">
+                    <Button
+                      variant="outline-light"
+                      size="sm"
+                      className="text-start p-3 border rounded"
+                    >
                       <FaLink className="me-2" /> Links
                     </Button>
                   </div>
@@ -1185,7 +1285,10 @@ const CompanyChat = () => {
                       <FaArchive className="me-3 text-muted" />
                       <span>Archive Chat</span>
                     </ListGroup.Item>
-                    <ListGroup.Item action className="border-0 px-0 py-2 d-flex align-items-center text-danger">
+                    <ListGroup.Item
+                      action
+                      className="border-0 px-0 py-2 d-flex align-items-center text-danger"
+                    >
                       <FaTrash className="me-3" />
                       <span>Delete Chat</span>
                     </ListGroup.Item>
@@ -1198,7 +1301,11 @@ const CompanyChat = () => {
       </Row>
 
       {/* Mobile Sidebar Offcanvas */}
-      <Offcanvas show={showMobileSidebar} onHide={() => setShowMobileSidebar(false)} placement="start">
+      <Offcanvas
+        show={showMobileSidebar}
+        onHide={() => setShowMobileSidebar(false)}
+        placement="start"
+      >
         <Offcanvas.Header closeButton className="border-bottom">
           <Offcanvas.Title className="fw-bold">Messages</Offcanvas.Title>
         </Offcanvas.Header>
@@ -1241,11 +1348,12 @@ const CompanyChat = () => {
           </div>
 
           {/* Conversations List */}
-          <div className="conversations-list overflow-auto" style={{ height: 'calc(100vh - 200px)' }}>
-            {filteredConversations.map(conversation => {
-              const participant = conversation.participants.find(
-                p => p.id === currentUser?.uid
-              );
+          <div
+            className="conversations-list overflow-auto"
+            style={{ height: 'calc(100vh - 200px)' }}
+          >
+            {filteredConversations.map((conversation) => {
+              const participant = conversation.participants.find((p) => p.id === currentUser?.uid);
               const unread = participant?.unreadCount || 0;
 
               return (
@@ -1269,8 +1377,10 @@ const CompanyChat = () => {
                           style={{ width: '48px', height: '48px', objectFit: 'cover' }}
                         />
                       ) : (
-                        <div className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
-                             style={{ width: '48px', height: '48px' }}>
+                        <div
+                          className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                          style={{ width: '48px', height: '48px' }}
+                        >
                           {getConversationName(conversation).charAt(0)}
                         </div>
                       )}
@@ -1279,21 +1389,23 @@ const CompanyChat = () => {
                     {/* Conversation Info */}
                     <div className="flex-grow-1">
                       <div className="d-flex justify-content-between align-items-center mb-1">
-                        <h6 className="mb-0 fw-semibold">
-                          {getConversationName(conversation)}
-                        </h6>
+                        <h6 className="mb-0 fw-semibold">{getConversationName(conversation)}</h6>
                         <small className="text-muted">
                           {formatConversationTime(conversation.updatedAt)}
                         </small>
                       </div>
-                      
+
                       <div className="d-flex justify-content-between align-items-center">
-                        <p className="mb-0 text-truncate small text-muted"
-                           style={{ maxWidth: '200px' }}>
+                        <p
+                          className="mb-0 text-truncate small text-muted"
+                          style={{ maxWidth: '200px' }}
+                        >
                           {conversation.lastMessage || 'No messages yet'}
                         </p>
                         {unread > 0 && (
-                          <Badge bg="danger" pill className="ms-1">{unread}</Badge>
+                          <Badge bg="danger" pill className="ms-1">
+                            {unread}
+                          </Badge>
                         )}
                       </div>
                     </div>
@@ -1306,7 +1418,11 @@ const CompanyChat = () => {
       </Offcanvas>
 
       {/* Mobile Info Panel Offcanvas */}
-      <Offcanvas show={showMobileInfoPanel} onHide={() => setShowMobileInfoPanel(false)} placement="end">
+      <Offcanvas
+        show={showMobileInfoPanel}
+        onHide={() => setShowMobileInfoPanel(false)}
+        placement="end"
+      >
         <Offcanvas.Header closeButton className="border-bottom">
           <Offcanvas.Title className="fw-bold">Conversation Info</Offcanvas.Title>
         </Offcanvas.Header>
@@ -1317,7 +1433,7 @@ const CompanyChat = () => {
               Participants ({activeConversation?.participants?.length || 0})
             </h6>
             <ListGroup variant="flush">
-              {activeConversation?.participants?.map(participant => (
+              {activeConversation?.participants?.map((participant) => (
                 <ListGroup.Item key={participant.id} className="border-0 px-0 py-3">
                   <div className="d-flex align-items-center">
                     <div className="position-relative me-3">
@@ -1328,15 +1444,19 @@ const CompanyChat = () => {
                         style={{ width: '48px', height: '48px', objectFit: 'cover' }}
                       />
                       {participant.isOnline && (
-                        <span className="position-absolute bottom-0 end-0 translate-middle p-1 border border-2 border-white rounded-circle bg-success"
-                              style={{ width: '12px', height: '12px' }}></span>
+                        <span
+                          className="position-absolute bottom-0 end-0 translate-middle p-1 border border-2 border-white rounded-circle bg-success"
+                          style={{ width: '12px', height: '12px' }}
+                        ></span>
                       )}
                     </div>
                     <div className="flex-grow-1">
                       <div className="d-flex align-items-center">
                         <h6 className="mb-0 fw-semibold">{participant.name}</h6>
                         {participant.id === currentUser?.uid && (
-                          <Badge bg="light" text="dark" className="ms-2 small px-2 py-1">You</Badge>
+                          <Badge bg="light" text="dark" className="ms-2 small px-2 py-1">
+                            You
+                          </Badge>
                         )}
                       </div>
                       <small className="text-muted">
@@ -1404,9 +1524,7 @@ const CompanyChat = () => {
           <div className="text-center py-4">
             <FaComment className="text-muted mb-3" size={48} />
             <p className="text-muted mb-0">Start a conversation</p>
-            <p className="small text-muted">
-              Select a contact to start chatting
-            </p>
+            <p className="small text-muted">Select a contact to start chatting</p>
           </div>
         </Modal.Body>
       </Modal>
@@ -1419,9 +1537,7 @@ const CompanyChat = () => {
           <div className="text-center py-4">
             <FaUsers className="text-muted mb-3" size={48} />
             <p className="text-muted mb-0">Create group chat</p>
-            <p className="small text-muted">
-              Select participants for your group
-            </p>
+            <p className="small text-muted">Select participants for your group</p>
           </div>
         </Modal.Body>
       </Modal>

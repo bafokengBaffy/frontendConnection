@@ -16,13 +16,9 @@ import {
   Spinner,
   Modal,
   Pagination,
-  ProgressBar
+  ProgressBar,
 } from 'react-bootstrap';
-import {
-  Link,
-  useNavigate,
-  useLocation
-} from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   FiSearch,
   FiFilter,
@@ -45,15 +41,9 @@ import {
   FiExternalLink,
   FiCopy,
   FiArchive,
-  FiMessageSquare
+  FiMessageSquare,
 } from 'react-icons/fi';
-import { 
-  MdAssignment, 
-  MdWork,
-  MdBusiness,
-  MdLocationOn,
-  MdAccessTime
-} from 'react-icons/md';
+import { MdAssignment, MdWork, MdBusiness, MdLocationOn, MdAccessTime } from 'react-icons/md';
 import { useAuth, useStudent } from '../../context';
 import {
   getStudentApplications,
@@ -61,13 +51,9 @@ import {
   withdrawApplication,
   updateApplicationStatus,
   exportApplications,
-  shareApplication
+  shareApplication,
 } from '../../services/applicationService';
-import {
-  formatDate,
-  formatCurrency,
-  truncateText
-} from '../../utils/dataFormatters';
+import { formatDate, formatCurrency, truncateText } from '../../utils/dataFormatters';
 import { sendNotification } from '../../services/notificationService';
 import './StudentApplications.css';
 
@@ -88,7 +74,7 @@ const Applications = () => {
     accepted: 0,
     rejected: 0,
     interviewing: 0,
-    submitted: 0
+    submitted: 0,
   });
 
   // Filters
@@ -97,14 +83,14 @@ const Applications = () => {
     status: 'all',
     type: 'all',
     dateRange: 'all',
-    sortBy: 'newest'
+    sortBy: 'newest',
   });
 
   // Pagination
   const [pagination, setPagination] = useState({
     currentPage: 1,
     itemsPerPage: 10,
-    totalPages: 1
+    totalPages: 1,
   });
 
   // Modal states
@@ -127,19 +113,19 @@ const Applications = () => {
       setError(null);
 
       const result = await getStudentApplications(studentData.id);
-      
+
       if (result.success) {
         const apps = result.data || [];
         setApplications(apps);
         setFilteredApplications(apps);
-        
+
         // Calculate stats
         calculateStats(apps);
-        
+
         // Set pagination
-        setPagination(prev => ({
+        setPagination((prev) => ({
           ...prev,
-          totalPages: Math.ceil(apps.length / prev.itemsPerPage)
+          totalPages: Math.ceil(apps.length / prev.itemsPerPage),
         }));
       } else {
         setError(result.error || 'Failed to load applications');
@@ -160,10 +146,10 @@ const Applications = () => {
       accepted: 0,
       rejected: 0,
       interviewing: 0,
-      submitted: 0
+      submitted: 0,
     };
 
-    apps.forEach(app => {
+    apps.forEach((app) => {
       const status = app.status?.toLowerCase();
       switch (status) {
         case 'pending':
@@ -203,17 +189,18 @@ const Applications = () => {
     // Search filter
     if (filters.search) {
       const searchTerm = filters.search.toLowerCase();
-      filtered = filtered.filter(app =>
-        app.jobTitle?.toLowerCase().includes(searchTerm) ||
-        app.companyName?.toLowerCase().includes(searchTerm) ||
-        app.jobDescription?.toLowerCase().includes(searchTerm) ||
-        app.applicationId?.toLowerCase().includes(searchTerm)
+      filtered = filtered.filter(
+        (app) =>
+          app.jobTitle?.toLowerCase().includes(searchTerm) ||
+          app.companyName?.toLowerCase().includes(searchTerm) ||
+          app.jobDescription?.toLowerCase().includes(searchTerm) ||
+          app.applicationId?.toLowerCase().includes(searchTerm)
       );
     }
 
     // Status filter
     if (filters.status !== 'all') {
-      filtered = filtered.filter(app => {
+      filtered = filtered.filter((app) => {
         const status = app.status?.toLowerCase();
         switch (filters.status) {
           case 'pending':
@@ -234,7 +221,7 @@ const Applications = () => {
 
     // Type filter
     if (filters.type !== 'all') {
-      filtered = filtered.filter(app => app.jobType === filters.type);
+      filtered = filtered.filter((app) => app.jobType === filters.type);
     }
 
     // Date range filter
@@ -259,7 +246,7 @@ const Applications = () => {
           break;
       }
 
-      filtered = filtered.filter(app => {
+      filtered = filtered.filter((app) => {
         const appDate = new Date(app.appliedAt || app.createdAt);
         return appDate >= cutoffDate;
       });
@@ -268,13 +255,19 @@ const Applications = () => {
     // Sort
     switch (filters.sortBy) {
       case 'newest':
-        filtered.sort((a, b) => new Date(b.appliedAt || b.createdAt) - new Date(a.appliedAt || a.createdAt));
+        filtered.sort(
+          (a, b) => new Date(b.appliedAt || b.createdAt) - new Date(a.appliedAt || a.createdAt)
+        );
         break;
       case 'oldest':
-        filtered.sort((a, b) => new Date(a.appliedAt || a.createdAt) - new Date(b.appliedAt || b.createdAt));
+        filtered.sort(
+          (a, b) => new Date(a.appliedAt || a.createdAt) - new Date(b.appliedAt || b.createdAt)
+        );
         break;
       case 'deadline':
-        filtered.sort((a, b) => new Date(a.deadline || '9999-12-31') - new Date(b.deadline || '9999-12-31'));
+        filtered.sort(
+          (a, b) => new Date(a.deadline || '9999-12-31') - new Date(b.deadline || '9999-12-31')
+        );
         break;
       case 'title':
         filtered.sort((a, b) => (a.jobTitle || '').localeCompare(b.jobTitle || ''));
@@ -285,18 +278,18 @@ const Applications = () => {
 
     // Update filtered applications and pagination
     setFilteredApplications(filtered);
-    setPagination(prev => ({
+    setPagination((prev) => ({
       ...prev,
       currentPage: 1,
-      totalPages: Math.ceil(filtered.length / prev.itemsPerPage)
+      totalPages: Math.ceil(filtered.length / prev.itemsPerPage),
     }));
   }, [applications, filters]);
 
   // Handle filter changes
   const handleFilterChange = (key, value) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
-      [key]: value
+      [key]: value,
     }));
   };
 
@@ -310,21 +303,21 @@ const Applications = () => {
 
       if (result.success) {
         // Remove from state
-        setApplications(prev => prev.filter(app => app.id !== selectedApplication.id));
-        
+        setApplications((prev) => prev.filter((app) => app.id !== selectedApplication.id));
+
         // Send notification
         await sendNotification({
           userId: currentUser.uid,
           type: 'application_deleted',
           title: 'Application Deleted',
           message: `Your application for ${selectedApplication.jobTitle} has been deleted`,
-          data: { applicationId: selectedApplication.id }
+          data: { applicationId: selectedApplication.id },
         });
 
         // Close modal and show success
         setShowDeleteModal(false);
         setSelectedApplication(null);
-        
+
         // Refresh applications
         fetchApplications();
       } else {
@@ -348,11 +341,13 @@ const Applications = () => {
 
       if (result.success) {
         // Update status in state
-        setApplications(prev => prev.map(app =>
-          app.id === selectedApplication.id
-            ? { ...app, status: 'withdrawn', updatedAt: new Date().toISOString() }
-            : app
-        ));
+        setApplications((prev) =>
+          prev.map((app) =>
+            app.id === selectedApplication.id
+              ? { ...app, status: 'withdrawn', updatedAt: new Date().toISOString() }
+              : app
+          )
+        );
 
         // Send notification
         await sendNotification({
@@ -360,13 +355,13 @@ const Applications = () => {
           type: 'application_withdrawn',
           title: 'Application Withdrawn',
           message: `You have withdrawn your application for ${selectedApplication.jobTitle}`,
-          data: { applicationId: selectedApplication.id }
+          data: { applicationId: selectedApplication.id },
         });
 
         // Close modal
         setShowWithdrawModal(false);
         setSelectedApplication(null);
-        
+
         // Refresh applications
         fetchApplications();
       } else {
@@ -412,7 +407,9 @@ const Applications = () => {
 
       if (result.success && result.data) {
         // Create download link
-        const blob = new Blob([result.data], { type: format === 'pdf' ? 'application/pdf' : 'text/csv' });
+        const blob = new Blob([result.data], {
+          type: format === 'pdf' ? 'application/pdf' : 'text/csv',
+        });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -466,7 +463,7 @@ const Applications = () => {
   // Format status text
   const formatStatus = (status) => {
     if (!status) return 'Unknown';
-    return status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    return status.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
   };
 
   // Get status icon
@@ -504,9 +501,9 @@ const Applications = () => {
 
   // Handle page change
   const handlePageChange = (pageNumber) => {
-    setPagination(prev => ({
+    setPagination((prev) => ({
       ...prev,
-      currentPage: pageNumber
+      currentPage: pageNumber,
     }));
   };
 
@@ -565,11 +562,7 @@ const Applications = () => {
                 <FiRefreshCw className={loading ? 'spin' : ''} />
                 <span className="ms-1 d-none d-md-inline">Refresh</span>
               </Button>
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => navigate('/student/search/jobs')}
-              >
+              <Button variant="primary" size="sm" onClick={() => navigate('/student/search/jobs')}>
                 <FiPlus />
                 <span className="ms-1 d-none d-md-inline">Apply for Jobs</span>
               </Button>
@@ -711,9 +704,7 @@ const Applications = () => {
       {/* Applications Table */}
       <Card className="mb-4">
         <Card.Header className="d-flex justify-content-between align-items-center">
-          <h5 className="mb-0">
-            Application History ({filteredApplications.length})
-          </h5>
+          <h5 className="mb-0">Application History ({filteredApplications.length})</h5>
           <div className="d-flex gap-2">
             <Dropdown>
               <Dropdown.Toggle variant="outline-secondary" size="sm">
@@ -721,12 +712,8 @@ const Applications = () => {
                 Export
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item onClick={() => handleExport('csv')}>
-                  Export as CSV
-                </Dropdown.Item>
-                <Dropdown.Item onClick={() => handleExport('pdf')}>
-                  Export as PDF
-                </Dropdown.Item>
+                <Dropdown.Item onClick={() => handleExport('csv')}>Export as CSV</Dropdown.Item>
+                <Dropdown.Item onClick={() => handleExport('pdf')}>Export as PDF</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </div>
@@ -744,13 +731,10 @@ const Applications = () => {
               <p className="text-muted mb-3">
                 {applications.length === 0
                   ? "You haven't applied to any jobs yet."
-                  : "No applications match your filters."}
+                  : 'No applications match your filters.'}
               </p>
               {applications.length === 0 && (
-                <Button
-                  variant="primary"
-                  onClick={() => navigate('/student/search/jobs')}
-                >
+                <Button variant="primary" onClick={() => navigate('/student/search/jobs')}>
                   <FiSearch className="me-2" />
                   Browse Jobs
                 </Button>
@@ -795,12 +779,8 @@ const Applications = () => {
                         </td>
                         <td>
                           <div>
-                            <strong className="d-block">
-                              {application.companyName || 'N/A'}
-                            </strong>
-                            <small className="text-muted">
-                              {application.industry || 'N/A'}
-                            </small>
+                            <strong className="d-block">{application.companyName || 'N/A'}</strong>
+                            <small className="text-muted">{application.industry || 'N/A'}</small>
                           </div>
                         </td>
                         <td>
@@ -827,7 +807,8 @@ const Applications = () => {
                               <div>{formatDate(application.deadline)}</div>
                               {new Date(application.deadline) < new Date() ? (
                                 <small className="text-danger">Expired</small>
-                              ) : new Date(application.deadline) < new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) ? (
+                              ) : new Date(application.deadline) <
+                                new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) ? (
                                 <small className="text-warning">Due Soon</small>
                               ) : null}
                             </>
@@ -898,7 +879,7 @@ const Applications = () => {
                     >
                       <FiChevronLeft />
                     </Pagination.Prev>
-                    
+
                     {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
                       let pageNum;
                       if (pagination.totalPages <= 5) {
@@ -910,7 +891,7 @@ const Applications = () => {
                       } else {
                         pageNum = pagination.currentPage - 2 + i;
                       }
-                      
+
                       return (
                         <Pagination.Item
                           key={pageNum}
@@ -921,7 +902,7 @@ const Applications = () => {
                         </Pagination.Item>
                       );
                     })}
-                    
+
                     <Pagination.Next
                       disabled={pagination.currentPage === pagination.totalPages}
                       onClick={() => handlePageChange(pagination.currentPage + 1)}
@@ -1005,11 +986,7 @@ const Applications = () => {
           >
             Cancel
           </Button>
-          <Button
-            variant="danger"
-            onClick={handleDelete}
-            disabled={actionLoading}
-          >
+          <Button variant="danger" onClick={handleDelete} disabled={actionLoading}>
             {actionLoading ? 'Deleting...' : 'Delete Application'}
           </Button>
         </Modal.Footer>
@@ -1035,11 +1012,7 @@ const Applications = () => {
           >
             Cancel
           </Button>
-          <Button
-            variant="warning"
-            onClick={handleWithdraw}
-            disabled={actionLoading}
-          >
+          <Button variant="warning" onClick={handleWithdraw} disabled={actionLoading}>
             {actionLoading ? 'Withdrawing...' : 'Withdraw Application'}
           </Button>
         </Modal.Footer>
@@ -1051,7 +1024,9 @@ const Applications = () => {
           <Modal.Title>Share Application</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>Share your application for <strong>{selectedApplication?.jobTitle}</strong></p>
+          <p>
+            Share your application for <strong>{selectedApplication?.jobTitle}</strong>
+          </p>
           <div className="d-grid gap-2">
             <Button
               variant="outline-primary"

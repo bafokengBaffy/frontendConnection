@@ -1,0 +1,103 @@
+image: node:18.17.0
+
+variables:
+  npm_config_cache: "$CI_PROJECT_DIR/.npm"
+  FRONTEND_DIR: "frontend"
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - .npm/
+    - frontend/node_modules/
+
+stages:
+  - lint
+  - test
+  - build
+  - deploy
+  - security
+  - performance
+
+before_script:
+  - cd $FRONTEND_DIR
+  - npm ci --legacy-peer-deps
+
+lint:
+  stage: lint
+  script:
+    - npm run lint
+    - npm run format:check
+  artifacts:
+    reports:
+      eslint: eslint-report.json
+    expire_in: 1 week
+
+unit-test:
+  stage: test
+  script:
+    - npm run test:ci
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
+    paths:
+      - coverage/
+    expire_in: 1 week
+
+build:
+  stage: build
+  script:
+    - npm run build
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 month
+
+deploy-staging:
+  stage: deploy
+  script:
+    - npm install -g firebase-tools
+    - firebase deploy --only hosting --project career-connect-lesotho-staging --token "$FIREBASE_TOKEN"
+  environment:
+    name: staging
+    url: https://staging.career-connect-lesotho.web.app
+  only:
+    - staging
+
+deploy-production:
+  stage: deploy
+  script:
+    - npm install -g firebase-tools
+    - firebase deploy --only hosting --project career-connect-lesotho --token "$FIREBASE_TOKEN"
+  environment:
+    name: production
+    url: https://career-connect-lesotho.web.app
+  only:
+    - main
+  when: manual
+
+security-scan:
+  stage: security
+  script:
+    - npm audit --audit-level=high
+    - npx snyk test --severity-threshold=high
+  allow_failure: true
+
+performance-check:
+  stage: performance
+  script:
+    - npm run build
+    - npx lhci autorun --upload.target=temporary-public-storage
+  allow_failure: true
+
+pages:
+  stage: deploy
+  script:
+    - npm run build
+    - mv dist public
+  artifacts:
+    paths:
+      - public
+  only:
+    - main

@@ -3,18 +3,40 @@
 /* eslint-disable react/no-unescaped-entities */
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import {
-  Container, Row, Col, Card, Button, Badge, Table,
-  ProgressBar, Modal, Form, Alert, Spinner, Dropdown
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Badge,
+  Table,
+  ProgressBar,
+  Modal,
+  Form,
+  Alert,
+  Spinner,
+  Dropdown,
 } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import {
-  collection, query, where, orderBy, getDocs,
-  addDoc, updateDoc, deleteDoc, doc, getDoc,
-  onSnapshot, serverTimestamp, Timestamp, limit
+  collection,
+  query,
+  where,
+  orderBy,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  getDoc,
+  onSnapshot,
+  serverTimestamp,
+  Timestamp,
+  limit,
 } from 'firebase/firestore';
 import { db, storage, auth } from '../../config/firebase';
 import { useNotification } from '../../context/NotificationContext';
-import { uploadFile  } from '../../services/cloudinaryService';
+import { uploadFile } from '../../services/cloudinaryService';
 
 // Constants
 const COLLECTIONS = {
@@ -22,7 +44,7 @@ const COLLECTIONS = {
   JOB_APPLICATIONS: 'jobApplications',
   JOBS: 'jobs',
   USER_PROFILES: 'userProfiles',
-  USER_DOCUMENTS: 'userDocuments'
+  USER_DOCUMENTS: 'userDocuments',
 };
 
 const STATUS_CONFIG = {
@@ -31,11 +53,15 @@ const STATUS_CONFIG = {
   interview_scheduled: { variant: 'info', label: 'Interview Scheduled' },
   assessment_pending: { variant: 'primary', label: 'Assessment Pending' },
   accepted: { variant: 'success', label: 'Accepted' },
-  rejected: { variant: 'danger', label: 'Rejected' }
+  rejected: { variant: 'danger', label: 'Rejected' },
 };
 
 const EDUCATION_LEVELS = ['high_school', 'diploma', 'bachelor', 'master', 'phd'];
-const VALID_FILE_TYPES = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+const VALID_FILE_TYPES = [
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+];
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const MAX_APPLICATIONS_DISPLAY = 5;
 
@@ -50,7 +76,7 @@ const safeNotification = (notificationContext, message, type = 'info') => {
 
 const formatDate = (date) => {
   if (!date) return 'N/A';
-  
+
   try {
     let dateObj;
     if (date instanceof Timestamp) {
@@ -72,7 +98,7 @@ const formatDate = (date) => {
     return dateObj.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
-      year: 'numeric'
+      year: 'numeric',
     });
   } catch (error) {
     console.error('Error formatting date:', error);
@@ -88,10 +114,11 @@ const calculateMatchScore = (job, profile) => {
   const userSkills = profile.skills || [];
 
   // Skill matching
-  const matchedSkills = userSkills.filter(skill =>
-    jobSkills.some(jobSkill => 
-      jobSkill.toLowerCase().includes(skill.toLowerCase()) ||
-      skill.toLowerCase().includes(jobSkill.toLowerCase())
+  const matchedSkills = userSkills.filter((skill) =>
+    jobSkills.some(
+      (jobSkill) =>
+        jobSkill.toLowerCase().includes(skill.toLowerCase()) ||
+        skill.toLowerCase().includes(jobSkill.toLowerCase())
     )
   );
 
@@ -136,13 +163,13 @@ const Jobs = () => {
   const navigate = useNavigate();
   const notificationContext = useNotification();
   const unsubscribeRef = useRef(null);
-  
+
   // State Management
   const [loading, setLoading] = useState({
     savedJobs: true,
     appliedJobs: true,
     stats: true,
-    profile: true
+    profile: true,
   });
   const [savedJobs, setSavedJobs] = useState([]);
   const [appliedJobs, setAppliedJobs] = useState([]);
@@ -151,7 +178,7 @@ const Jobs = () => {
     pending: 0,
     rejected: 0,
     accepted: 0,
-    total: 0
+    total: 0,
   });
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -180,12 +207,12 @@ const Jobs = () => {
   const fetchUserProfile = useCallback(async () => {
     try {
       if (!userId) {
-        setLoading(prev => ({ ...prev, profile: false }));
+        setLoading((prev) => ({ ...prev, profile: false }));
         return;
       }
 
-      setLoading(prev => ({ ...prev, profile: true }));
-      
+      setLoading((prev) => ({ ...prev, profile: true }));
+
       // Fetch user profile
       const profileDoc = await getDoc(doc(db, COLLECTIONS.USER_PROFILES, userId));
       if (profileDoc.exists()) {
@@ -203,21 +230,21 @@ const Jobs = () => {
         orderBy('uploadedAt', 'desc'),
         limit(1)
       );
-      
+
       const docsSnapshot = await getDocs(docsQuery);
       if (!docsSnapshot.empty) {
         const docData = docsSnapshot.docs[0].data();
         setActiveResume({
           id: docsSnapshot.docs[0].id,
           ...docData,
-          uploadedAt: docData.uploadedAt?.toDate?.() || new Date()
+          uploadedAt: docData.uploadedAt?.toDate?.() || new Date(),
         });
       }
     } catch (error) {
       console.error('Error fetching user profile:', error);
       safeNotification(notificationContext, 'Error loading profile information', 'error');
     } finally {
-      setLoading(prev => ({ ...prev, profile: false }));
+      setLoading((prev) => ({ ...prev, profile: false }));
     }
   }, [userId, notificationContext]);
 
@@ -229,9 +256,9 @@ const Jobs = () => {
   // Fetch Saved Jobs
   const fetchSavedJobs = useCallback(async () => {
     try {
-      setLoading(prev => ({ ...prev, savedJobs: true }));
+      setLoading((prev) => ({ ...prev, savedJobs: true }));
       if (!userId) {
-        setLoading(prev => ({ ...prev, savedJobs: false }));
+        setLoading((prev) => ({ ...prev, savedJobs: false }));
         return;
       }
 
@@ -245,22 +272,22 @@ const Jobs = () => {
 
       const snapshot = await getDocs(savedJobsQuery);
       const jobs = [];
-      
+
       for (const docSnap of snapshot.docs) {
         try {
           const savedJob = { id: docSnap.id, ...docSnap.data() };
-          
+
           const jobDoc = await getDoc(doc(db, COLLECTIONS.JOBS, savedJob.jobId));
           if (jobDoc.exists()) {
             const jobData = jobDoc.data();
             jobs.push({
               ...savedJob,
-              jobDetails: { 
-                id: jobDoc.id, 
+              jobDetails: {
+                id: jobDoc.id,
                 ...jobData,
-                deadline: jobData.deadline?.toDate?.()
+                deadline: jobData.deadline?.toDate?.(),
               },
-              savedDate: savedJob.savedAt?.toDate?.()
+              savedDate: savedJob.savedAt?.toDate?.(),
             });
           }
         } catch (error) {
@@ -273,7 +300,7 @@ const Jobs = () => {
       console.error('Error fetching saved jobs:', error);
       safeNotification(notificationContext, 'Error loading saved jobs', 'error');
     } finally {
-      setLoading(prev => ({ ...prev, savedJobs: false }));
+      setLoading((prev) => ({ ...prev, savedJobs: false }));
     }
   }, [userId, notificationContext]);
 
@@ -304,11 +331,11 @@ const Jobs = () => {
             for (const docSnap of snapshot.docs) {
               try {
                 const application = { id: docSnap.id, ...docSnap.data() };
-                
+
                 // Fetch job details for display
                 let jobTitle = application.jobTitle;
                 let companyName = application.companyName;
-                
+
                 if (!jobTitle || !companyName) {
                   const jobDoc = await getDoc(doc(db, COLLECTIONS.JOBS, application.jobId));
                   if (jobDoc.exists()) {
@@ -323,7 +350,7 @@ const Jobs = () => {
                   jobTitle,
                   companyName,
                   appliedDate: application.appliedAt?.toDate?.(),
-                  statusUpdated: application.statusUpdatedAt?.toDate?.()
+                  statusUpdated: application.statusUpdatedAt?.toDate?.(),
                 });
 
                 stats.total++;
@@ -355,13 +382,13 @@ const Jobs = () => {
           } catch (error) {
             console.error('Error processing snapshot:', error);
           } finally {
-            setLoading(prev => ({ ...prev, appliedJobs: false, stats: false }));
+            setLoading((prev) => ({ ...prev, appliedJobs: false, stats: false }));
           }
         },
         (error) => {
           console.error('Error in applications snapshot:', error);
           safeNotification(notificationContext, 'Error loading applications', 'error');
-          setLoading(prev => ({ ...prev, appliedJobs: false, stats: false }));
+          setLoading((prev) => ({ ...prev, appliedJobs: false, stats: false }));
         }
       );
 
@@ -370,7 +397,7 @@ const Jobs = () => {
     } catch (error) {
       console.error('Error setting up applications listener:', error);
       safeNotification(notificationContext, 'Error loading applications', 'error');
-      setLoading(prev => ({ ...prev, appliedJobs: false, stats: false }));
+      setLoading((prev) => ({ ...prev, appliedJobs: false, stats: false }));
       return null;
     }
   }, [userId, notificationContext]);
@@ -390,30 +417,37 @@ const Jobs = () => {
   }, [userId, fetchSavedJobs, setupAppliedJobsListener]);
 
   // Handle Job Application
-  const handleApplyJob = useCallback((job) => {
-    if (!userId) {
-      safeNotification(notificationContext, 'Please sign in to apply for jobs', 'warning');
-      return;
-    }
+  const handleApplyJob = useCallback(
+    (job) => {
+      if (!userId) {
+        safeNotification(notificationContext, 'Please sign in to apply for jobs', 'warning');
+        return;
+      }
 
-    if (!activeResume) {
-      safeNotification(notificationContext, 'Please upload a resume first', 'warning');
-      setShowUploadModal(true);
-      return;
-    }
+      if (!activeResume) {
+        safeNotification(notificationContext, 'Please upload a resume first', 'warning');
+        setShowUploadModal(true);
+        return;
+      }
 
-    if (!userProfile?.fullName) {
-      safeNotification(notificationContext, 'Please complete your profile before applying', 'warning');
-      navigate('/student/profile');
-      return;
-    }
+      if (!userProfile?.fullName) {
+        safeNotification(
+          notificationContext,
+          'Please complete your profile before applying',
+          'warning'
+        );
+        navigate('/student/profile');
+        return;
+      }
 
-    setSelectedJob(job);
-    setCoverLetter('');
-    setResumeFile(null);
-    setUploadError('');
-    setShowApplyModal(true);
-  }, [activeResume, userId, userProfile, notificationContext, navigate]);
+      setSelectedJob(job);
+      setCoverLetter('');
+      setResumeFile(null);
+      setUploadError('');
+      setShowApplyModal(true);
+    },
+    [activeResume, userId, userProfile, notificationContext, navigate]
+  );
 
   const submitApplication = async () => {
     if (!userId || !selectedJob || !activeResume) {
@@ -424,7 +458,7 @@ const Jobs = () => {
     try {
       setUploading(true);
       let coverLetterUrl = null;
-      
+
       // Upload cover letter file if provided
       if (coverLetter && resumeFile) {
         try {
@@ -439,12 +473,16 @@ const Jobs = () => {
           formData.append('file', resumeFile);
           formData.append('upload_preset', 'cover_letters');
           formData.append('folder', `cover_letters/${userId}`);
-          
-          const result = await uploadFile (formData);
+
+          const result = await uploadFile(formData);
           coverLetterUrl = result.secure_url;
         } catch (error) {
           console.error('Error uploading cover letter:', error);
-          safeNotification(notificationContext, 'Cover letter upload failed, continuing with text only', 'warning');
+          safeNotification(
+            notificationContext,
+            'Cover letter upload failed, continuing with text only',
+            'warning'
+          );
         }
       }
 
@@ -467,8 +505,8 @@ const Jobs = () => {
           studentName: userProfile?.fullName || '',
           studentSkills: userProfile?.skills || [],
           educationLevel: userProfile?.educationLevel || '',
-          yearsOfExperience: userProfile?.yearsOfExperience || 0
-        }
+          yearsOfExperience: userProfile?.yearsOfExperience || 0,
+        },
       };
 
       // Check for duplicate application
@@ -477,10 +515,14 @@ const Jobs = () => {
         where('studentId', '==', userId),
         where('jobId', '==', applicationData.jobId)
       );
-      
+
       const existingApps = await getDocs(existingAppQuery);
       if (!existingApps.empty) {
-        safeNotification(notificationContext, 'You have already applied for this position', 'warning');
+        safeNotification(
+          notificationContext,
+          'You have already applied for this position',
+          'warning'
+        );
         setUploading(false);
         setShowApplyModal(false);
         return;
@@ -492,7 +534,7 @@ const Jobs = () => {
       if (selectedJob.id) {
         try {
           await deleteDoc(doc(db, COLLECTIONS.SAVED_JOBS, selectedJob.id));
-          setSavedJobs(prev => prev.filter(job => job.id !== selectedJob.id));
+          setSavedJobs((prev) => prev.filter((job) => job.id !== selectedJob.id));
         } catch (error) {
           console.error('Error removing from saved jobs:', error);
         }
@@ -504,27 +546,34 @@ const Jobs = () => {
       setResumeFile(null);
     } catch (error) {
       console.error('Error submitting application:', error);
-      safeNotification(notificationContext, `Failed to submit application: ${error.message}`, 'error');
+      safeNotification(
+        notificationContext,
+        `Failed to submit application: ${error.message}`,
+        'error'
+      );
     } finally {
       setUploading(false);
     }
   };
 
   // Handle Resume Upload
-  const handleResumeUpload = useCallback((event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+  const handleResumeUpload = useCallback(
+    (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
 
-    const validation = validateFile(file);
-    if (!validation.valid) {
-      safeNotification(notificationContext, validation.error, 'error');
-      setUploadError(validation.error);
-      return;
-    }
+      const validation = validateFile(file);
+      if (!validation.valid) {
+        safeNotification(notificationContext, validation.error, 'error');
+        setUploadError(validation.error);
+        return;
+      }
 
-    setResumeFile(file);
-    setUploadError('');
-  }, [notificationContext]);
+      setResumeFile(file);
+      setUploadError('');
+    },
+    [notificationContext]
+  );
 
   const uploadResumeToCloudinary = async () => {
     if (!userId || !resumeFile) return;
@@ -539,7 +588,7 @@ const Jobs = () => {
       formData.append('folder', `resumes/${userId}`);
       formData.append('tags', `resume,${userId},${new Date().getFullYear()}`);
 
-      const cloudinaryResult = await uploadFile (formData);
+      const cloudinaryResult = await uploadFile(formData);
 
       // Deactivate previous active resumes
       const previousResumesQuery = query(
@@ -550,10 +599,10 @@ const Jobs = () => {
       );
 
       const previousSnapshot = await getDocs(previousResumesQuery);
-      const updatePromises = previousSnapshot.docs.map(docSnap =>
-        updateDoc(doc(db, COLLECTIONS.USER_DOCUMENTS, docSnap.id), { 
+      const updatePromises = previousSnapshot.docs.map((docSnap) =>
+        updateDoc(doc(db, COLLECTIONS.USER_DOCUMENTS, docSnap.id), {
           isActive: false,
-          deactivatedAt: serverTimestamp()
+          deactivatedAt: serverTimestamp(),
         })
       );
       await Promise.all(updatePromises);
@@ -573,14 +622,14 @@ const Jobs = () => {
           format: cloudinaryResult.format,
           resourceType: cloudinaryResult.resource_type,
           width: cloudinaryResult.width,
-          height: cloudinaryResult.height
-        }
+          height: cloudinaryResult.height,
+        },
       };
 
       await addDoc(collection(db, COLLECTIONS.USER_DOCUMENTS), documentData);
       setActiveResume({
         ...documentData,
-        uploadedAt: new Date()
+        uploadedAt: new Date(),
       });
 
       safeNotification(notificationContext, 'Resume uploaded successfully!', 'success');
@@ -596,18 +645,21 @@ const Jobs = () => {
   };
 
   // Remove Saved Job
-  const handleRemoveSavedJob = useCallback(async (jobId) => {
-    if (!window.confirm('Are you sure you want to remove this job from your saved list?')) return;
+  const handleRemoveSavedJob = useCallback(
+    async (jobId) => {
+      if (!window.confirm('Are you sure you want to remove this job from your saved list?')) return;
 
-    try {
-      await deleteDoc(doc(db, COLLECTIONS.SAVED_JOBS, jobId));
-      setSavedJobs(prev => prev.filter(job => job.id !== jobId));
-      safeNotification(notificationContext, 'Job removed from saved list', 'success');
-    } catch (error) {
-      console.error('Error removing saved job:', error);
-      safeNotification(notificationContext, 'Failed to remove job', 'error');
-    }
-  }, [notificationContext]);
+      try {
+        await deleteDoc(doc(db, COLLECTIONS.SAVED_JOBS, jobId));
+        setSavedJobs((prev) => prev.filter((job) => job.id !== jobId));
+        safeNotification(notificationContext, 'Job removed from saved list', 'success');
+      } catch (error) {
+        console.error('Error removing saved job:', error);
+        safeNotification(notificationContext, 'Failed to remove job', 'error');
+      }
+    },
+    [notificationContext]
+  );
 
   // Get Status Badge Component
   const getStatusBadge = useCallback((status) => {
@@ -628,16 +680,11 @@ const Jobs = () => {
   const renderEmptyState = (type) => (
     <Alert variant="info" className="text-center">
       <i className="bi bi-info-circle me-2"></i>
-      {type === 'saved' 
+      {type === 'saved'
         ? "You haven't saved any jobs yet. Start browsing to find opportunities!"
-        : "You haven't applied to any jobs yet. Start applying today!"
-      }
+        : "You haven't applied to any jobs yet. Start applying today!"}
       <div className="mt-2">
-        <Button 
-          variant="outline-info" 
-          size="sm"
-          onClick={() => navigate('/student/search/jobs')}
-        >
+        <Button variant="outline-info" size="sm" onClick={() => navigate('/student/search/jobs')}>
           <i className="bi bi-search me-1"></i>
           Browse Jobs
         </Button>
@@ -650,7 +697,7 @@ const Jobs = () => {
     const matchScore = job.matchScore || calculateMatchScore(job, userProfile);
     const deadline = job.jobDetails?.deadline || job.deadline;
     const isDeadlinePassed = deadline && new Date(deadline) < new Date();
-    
+
     return (
       <Card key={job.id || index} className="mb-3 border hover-shadow">
         <Card.Body>
@@ -662,7 +709,7 @@ const Jobs = () => {
                 {job.jobDetails?.company || job.company}
                 {job.jobDetails?.location && ` • ${job.jobDetails.location}`}
               </p>
-              
+
               <div className="d-flex align-items-center mb-2">
                 <ProgressBar
                   now={matchScore}
@@ -739,9 +786,7 @@ const Jobs = () => {
       <td>
         <div className="fw-medium">{application.jobTitle}</div>
         {application.matchScore && (
-          <small className="text-muted">
-            {application.matchScore}% match
-          </small>
+          <small className="text-muted">{application.matchScore}% match</small>
         )}
       </td>
       <td>{application.companyName}</td>
@@ -749,26 +794,18 @@ const Jobs = () => {
         <small>{formatDate(application.appliedDate)}</small>
         {application.statusUpdated && (
           <div>
-            <small className="text-muted">
-              Updated: {formatDate(application.statusUpdated)}
-            </small>
+            <small className="text-muted">Updated: {formatDate(application.statusUpdated)}</small>
           </div>
         )}
       </td>
       <td>{getStatusBadge(application.status)}</td>
       <td>
         <Dropdown>
-          <Dropdown.Toggle
-            variant="outline-info"
-            size="sm"
-            id={`dropdown-${application.id}`}
-          >
+          <Dropdown.Toggle variant="outline-info" size="sm" id={`dropdown-${application.id}`}>
             Actions
           </Dropdown.Toggle>
           <Dropdown.Menu>
-            <Dropdown.Item
-              onClick={() => navigate(`/student/application/${application.id}`)}
-            >
+            <Dropdown.Item onClick={() => navigate(`/student/application/${application.id}`)}>
               <i className="bi bi-eye me-2"></i>
               View Details
             </Dropdown.Item>
@@ -787,12 +824,20 @@ const Jobs = () => {
                     await updateDoc(doc(db, COLLECTIONS.JOB_APPLICATIONS, application.id), {
                       status: 'withdrawn',
                       statusUpdatedAt: serverTimestamp(),
-                      withdrawnAt: serverTimestamp()
+                      withdrawnAt: serverTimestamp(),
                     });
-                    safeNotification(notificationContext, 'Application withdrawn successfully', 'success');
+                    safeNotification(
+                      notificationContext,
+                      'Application withdrawn successfully',
+                      'success'
+                    );
                   } catch (error) {
                     console.error('Error withdrawing application:', error);
-                    safeNotification(notificationContext, 'Failed to withdraw application', 'error');
+                    safeNotification(
+                      notificationContext,
+                      'Failed to withdraw application',
+                      'error'
+                    );
                   }
                 }
               }}
@@ -886,7 +931,11 @@ const Jobs = () => {
           <Card className="shadow-sm border-success">
             <Card.Body className="text-center">
               <h3 className="text-success mb-1">
-                {loading.stats ? <Spinner animation="border" size="sm" /> : applicationStats.accepted}
+                {loading.stats ? (
+                  <Spinner animation="border" size="sm" />
+                ) : (
+                  applicationStats.accepted
+                )}
               </h3>
               <small className="text-muted">Accepted Offers</small>
             </Card.Body>
@@ -906,20 +955,16 @@ const Jobs = () => {
                   Saved Jobs
                 </span>
                 <Badge bg="primary" pill>
-                  {loading.savedJobs ? (
-                    <Spinner animation="border" size="sm" />
-                  ) : (
-                    savedJobs.length
-                  )} jobs
+                  {loading.savedJobs ? <Spinner animation="border" size="sm" /> : savedJobs.length}{' '}
+                  jobs
                 </Badge>
               </Card.Title>
 
-              {loading.savedJobs 
+              {loading.savedJobs
                 ? renderLoading('saved')
-                : savedJobs.length === 0 
+                : savedJobs.length === 0
                   ? renderEmptyState('saved')
-                  : savedJobs.map(renderJobCard)
-              }
+                  : savedJobs.map(renderJobCard)}
 
               <Button
                 variant="outline-primary"
@@ -947,111 +992,113 @@ const Jobs = () => {
                     <Spinner animation="border" size="sm" />
                   ) : (
                     applicationStats.total
-                  )} applications
+                  )}{' '}
+                  applications
                 </Badge>
               </Card.Title>
 
-              {loading.appliedJobs 
-                ? renderLoading('applied')
-                : appliedJobs.length === 0 
-                  ? renderEmptyState('applied')
-                  : (
-                    <>
-                      <div className="table-responsive">
-                        <Table hover className="mb-0">
-                          <thead>
-                            <tr>
-                              <th>Position</th>
-                              <th>Company</th>
-                              <th>Applied</th>
-                              <th>Status</th>
-                              <th>Actions</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {appliedJobs.slice(0, MAX_APPLICATIONS_DISPLAY).map(renderApplicationRow)}
-                          </tbody>
-                        </Table>
-                      </div>
+              {loading.appliedJobs ? (
+                renderLoading('applied')
+              ) : appliedJobs.length === 0 ? (
+                renderEmptyState('applied')
+              ) : (
+                <>
+                  <div className="table-responsive">
+                    <Table hover className="mb-0">
+                      <thead>
+                        <tr>
+                          <th>Position</th>
+                          <th>Company</th>
+                          <th>Applied</th>
+                          <th>Status</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {appliedJobs.slice(0, MAX_APPLICATIONS_DISPLAY).map(renderApplicationRow)}
+                      </tbody>
+                    </Table>
+                  </div>
 
-                      {appliedJobs.length > MAX_APPLICATIONS_DISPLAY && (
-                        <div className="text-center mt-3">
-                          <Button
-                            variant="link"
-                            onClick={() => navigate('/student/applications')}
-                          >
-                            View all {appliedJobs.length} applications
-                            <i className="bi bi-chevron-right ms-1"></i>
-                          </Button>
-                        </div>
-                      )}
+                  {appliedJobs.length > MAX_APPLICATIONS_DISPLAY && (
+                    <div className="text-center mt-3">
+                      <Button variant="link" onClick={() => navigate('/student/applications')}>
+                        View all {appliedJobs.length} applications
+                        <i className="bi bi-chevron-right ms-1"></i>
+                      </Button>
+                    </div>
+                  )}
 
-                      {/* Application Statistics */}
-                      <div className="mt-4">
-                        <h6 className="mb-3">
-                          <i className="bi bi-graph-up me-2"></i>
-                          Application Statistics
-                        </h6>
-                        <Row className="text-center">
-                          <Col xs={3}>
-                            <div className="p-2">
-                              <h4 className="text-success mb-1">{applicationStats.active}</h4>
-                              <small className="text-muted">Active</small>
-                            </div>
-                          </Col>
-                          <Col xs={3}>
-                            <div className="p-2">
-                              <h4 className="text-warning mb-1">{applicationStats.pending}</h4>
-                              <small className="text-muted">Pending</small>
-                            </div>
-                          </Col>
-                          <Col xs={3}>
-                            <div className="p-2">
-                              <h4 className="text-danger mb-1">{applicationStats.rejected}</h4>
-                              <small className="text-muted">Rejected</small>
-                            </div>
-                          </Col>
-                          <Col xs={3}>
-                            <div className="p-2">
-                              <h4 className="text-info mb-1">{applicationStats.accepted}</h4>
-                              <small className="text-muted">Accepted</small>
-                            </div>
-                          </Col>
-                        </Row>
-                        
-                        {/* Progress Visualization */}
-                        <div className="mt-3">
-                          <div className="d-flex justify-content-between mb-1">
-                            <small>Application Progress</small>
-                            <small>
-                              {applicationStats.total > 0
-                                ? `${Math.round((applicationStats.accepted / applicationStats.total) * 100)}% success rate`
-                                : 'No applications yet'
-                              }
-                            </small>
-                          </div>
-                          <ProgressBar>
-                            <ProgressBar
-                              variant="success"
-                              now={(applicationStats.accepted / Math.max(applicationStats.total, 1)) * 100}
-                              key={1}
-                            />
-                            <ProgressBar
-                              variant="warning"
-                              now={(applicationStats.pending / Math.max(applicationStats.total, 1)) * 100}
-                              key={2}
-                            />
-                            <ProgressBar
-                              variant="danger"
-                              now={(applicationStats.rejected / Math.max(applicationStats.total, 1)) * 100}
-                              key={3}
-                            />
-                          </ProgressBar>
+                  {/* Application Statistics */}
+                  <div className="mt-4">
+                    <h6 className="mb-3">
+                      <i className="bi bi-graph-up me-2"></i>
+                      Application Statistics
+                    </h6>
+                    <Row className="text-center">
+                      <Col xs={3}>
+                        <div className="p-2">
+                          <h4 className="text-success mb-1">{applicationStats.active}</h4>
+                          <small className="text-muted">Active</small>
                         </div>
+                      </Col>
+                      <Col xs={3}>
+                        <div className="p-2">
+                          <h4 className="text-warning mb-1">{applicationStats.pending}</h4>
+                          <small className="text-muted">Pending</small>
+                        </div>
+                      </Col>
+                      <Col xs={3}>
+                        <div className="p-2">
+                          <h4 className="text-danger mb-1">{applicationStats.rejected}</h4>
+                          <small className="text-muted">Rejected</small>
+                        </div>
+                      </Col>
+                      <Col xs={3}>
+                        <div className="p-2">
+                          <h4 className="text-info mb-1">{applicationStats.accepted}</h4>
+                          <small className="text-muted">Accepted</small>
+                        </div>
+                      </Col>
+                    </Row>
+
+                    {/* Progress Visualization */}
+                    <div className="mt-3">
+                      <div className="d-flex justify-content-between mb-1">
+                        <small>Application Progress</small>
+                        <small>
+                          {applicationStats.total > 0
+                            ? `${Math.round((applicationStats.accepted / applicationStats.total) * 100)}% success rate`
+                            : 'No applications yet'}
+                        </small>
                       </div>
-                    </>
-                  )
-              }
+                      <ProgressBar>
+                        <ProgressBar
+                          variant="success"
+                          now={
+                            (applicationStats.accepted / Math.max(applicationStats.total, 1)) * 100
+                          }
+                          key={1}
+                        />
+                        <ProgressBar
+                          variant="warning"
+                          now={
+                            (applicationStats.pending / Math.max(applicationStats.total, 1)) * 100
+                          }
+                          key={2}
+                        />
+                        <ProgressBar
+                          variant="danger"
+                          now={
+                            (applicationStats.rejected / Math.max(applicationStats.total, 1)) * 100
+                          }
+                          key={3}
+                        />
+                      </ProgressBar>
+                    </div>
+                  </div>
+                </>
+              )}
             </Card.Body>
           </Card>
         </Col>
@@ -1074,7 +1121,8 @@ const Jobs = () => {
                   <div>
                     <strong>Application Summary</strong>
                     <p className="mb-0 mt-1">
-                      You're applying to <strong>{selectedJob.jobDetails?.company || selectedJob.company}</strong> as{' '}
+                      You're applying to{' '}
+                      <strong>{selectedJob.jobDetails?.company || selectedJob.company}</strong> as{' '}
                       <strong>{selectedJob.jobDetails?.title || selectedJob.title}</strong>
                     </p>
                     {selectedJob.deadline && (
@@ -1121,7 +1169,10 @@ const Jobs = () => {
               <Form.Group className="mb-4">
                 <Form.Label>
                   <strong>Cover Letter (Optional)</strong>
-                  <small className="text-muted ms-1"> - Personalized applications perform better</small>
+                  <small className="text-muted ms-1">
+                    {' '}
+                    - Personalized applications perform better
+                  </small>
                 </Form.Label>
                 <Form.Control
                   as="textarea"
@@ -1131,9 +1182,7 @@ const Jobs = () => {
                   onChange={(e) => setCoverLetter(e.target.value)}
                   maxLength={2000}
                 />
-                <Form.Text className="text-muted">
-                  {coverLetter.length}/2000 characters
-                </Form.Text>
+                <Form.Text className="text-muted">{coverLetter.length}/2000 characters</Form.Text>
               </Form.Group>
 
               <Form.Group className="mb-4">
@@ -1147,7 +1196,8 @@ const Jobs = () => {
                   disabled={uploading}
                 />
                 <Form.Text className="text-muted">
-                  Upload certificates, portfolio, or other supporting documents (PDF, DOC, DOCX, max 5MB each)
+                  Upload certificates, portfolio, or other supporting documents (PDF, DOC, DOCX, max
+                  5MB each)
                 </Form.Text>
               </Form.Group>
 
@@ -1158,7 +1208,8 @@ const Jobs = () => {
                   <li>Review your resume for accuracy</li>
                   <li>Check for spelling errors in your cover letter</li>
                   <li>Ensure your contact information is up-to-date</li>
-                  <li>Your match score for this position: 
+                  <li>
+                    Your match score for this position:
                     <Badge bg="success" className="ms-2">
                       {calculateMatchScore(selectedJob, userProfile)}%
                     </Badge>
@@ -1216,9 +1267,7 @@ const Jobs = () => {
               onChange={handleResumeUpload}
               disabled={uploading}
             />
-            <Form.Text className="text-muted">
-              Accepted formats: PDF, DOC, DOCX (Max 5MB)
-            </Form.Text>
+            <Form.Text className="text-muted">Accepted formats: PDF, DOC, DOCX (Max 5MB)</Form.Text>
           </Form.Group>
 
           {uploadError && (
@@ -1241,9 +1290,7 @@ const Jobs = () => {
                       </div>
                     </div>
                   </div>
-                  <Badge bg="info">
-                    {resumeFile.type.split('/')[1].toUpperCase()}
-                  </Badge>
+                  <Badge bg="info">{resumeFile.type.split('/')[1].toUpperCase()}</Badge>
                 </div>
               </Card.Body>
             </Card>
@@ -1264,7 +1311,11 @@ const Jobs = () => {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowUploadModal(false)} disabled={uploading}>
+          <Button
+            variant="secondary"
+            onClick={() => setShowUploadModal(false)}
+            disabled={uploading}
+          >
             Cancel
           </Button>
           <Button

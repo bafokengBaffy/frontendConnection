@@ -5,18 +5,18 @@ export const ROUTES = {
   LOGIN: '/login',
   REGISTER: '/register',
   RESOURCES: '/resources',
-  
+
   // Dashboard Redirects
   DASHBOARD: '/dashboard',
   STUDENT_DASHBOARD: '/student/dashboard',
   COMPANY_DASHBOARD: '/company/dashboard',
   ADMIN_DASHBOARD: '/admin/dashboard',
-  
+
   // Common Routes
   SETTINGS: '/settings',
   SEARCH: '/search',
   NOTIFICATIONS: '/notifications',
-  
+
   // Admin Routes
   ADMIN: {
     BASE: '/admin',
@@ -33,10 +33,10 @@ export const ROUTES = {
     SEARCH: {
       USERS: '/admin/search/users',
       COMPANIES: '/admin/search/companies',
-      APPLICATIONS: '/admin/search/applications'
-    }
+      APPLICATIONS: '/admin/search/applications',
+    },
   },
-  
+
   // Student Routes
   STUDENT: {
     BASE: '/student',
@@ -57,7 +57,7 @@ export const ROUTES = {
       JOBS: '/student/search/jobs',
       COURSES: '/student/search/courses',
       INSTITUTIONS: '/student/search/institutions',
-      INTERNSHIPS: '/student/search/internships'
+      INTERNSHIPS: '/student/search/internships',
     },
     // Extended Features
     JOB_MATCHES: '/student/job-matches',
@@ -70,9 +70,9 @@ export const ROUTES = {
     BROWSE_COURSES: '/student/browse-courses',
     BROWSE_JOBS: '/student/browse-jobs',
     INSTITUTIONS: '/student/institutions',
-    APPLICATION_DETAILS: '/student/application/:applicationId'
+    APPLICATION_DETAILS: '/student/application/:applicationId',
   },
-  
+
   // Company Routes
   COMPANY: {
     BASE: '/company',
@@ -97,7 +97,7 @@ export const ROUTES = {
       MARKET: '/company/search/market',
       PARTNERS: '/company/search/partners',
       STUDENTS: '/company/search/students',
-      CANDIDATES: '/company/search/candidates'
+      CANDIDATES: '/company/search/candidates',
     },
     // Extended Features
     AI_MATCHING: '/company/ai-matching',
@@ -112,9 +112,9 @@ export const ROUTES = {
     PREDICTIVE_ANALYTICS: '/company/predictive-analytics',
     MARKETPLACE: '/company/marketplace',
     TEAM_WORKSPACE: '/company/team-workspace',
-    FOLLOWERS: '/company/followers'
+    FOLLOWERS: '/company/followers',
   },
-  
+
   // AI Routes
   AI: {
     BASE: '/ai',
@@ -123,18 +123,18 @@ export const ROUTES = {
     BUSINESS_INSIGHTS_ADVANCED: '/ai/business-insights-advanced',
     PREDICTIVE_ANALYTICS: '/ai/analytics',
     RECOMMENDATIONS: '/ai/recommendations',
-    RECOMMENDATIONS_ADVANCED: '/ai/recommendations-advanced'
-  }
+    RECOMMENDATIONS_ADVANCED: '/ai/recommendations-advanced',
+  },
 };
 
 export const USER_TYPES = {
   ADMIN: 'admin',
   STUDENT: 'student',
-  COMPANY: 'company'
+  COMPANY: 'company',
 };
 
 export const ROLE_BASED_REDIRECTS = {
   admin: '/admin',
   student: '/student',
-  company: '/company'
+  company: '/company',
 };

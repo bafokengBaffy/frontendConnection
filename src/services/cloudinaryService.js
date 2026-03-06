@@ -4,12 +4,14 @@
  */
 
 const CLOUDINARY_CONFIG = {
-  cloudName: ( import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET_APP_CLOUDINARY_CLOUD_NAME || 'dwz0osyou').trim(),
-  uploadPreset: ( import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'career_connect_upload').trim(),
+  cloudName: (
+    import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET_APP_CLOUDINARY_CLOUD_NAME || 'dwz0osyou'
+  ).trim(),
+  uploadPreset: (import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'career_connect_upload').trim(),
   apiKey: (import.meta.env.VITE_CLOUDINARY_API_KEY || '').trim(),
   apiSecret: (import.meta.env.VITE_CLOUDINARY_API_SECRET || '').trim(),
   baseUrl: 'https://api.cloudinary.com/v1_1',
-  secure: true
+  secure: true,
 };
 
 class CloudinaryService {
@@ -26,13 +28,13 @@ class CloudinaryService {
       cloudName: this.config.cloudName,
       uploadPreset: this.config.uploadPreset,
       envLoaded: !!import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
-      isProduction: import.meta.env.NODE_ENV === 'production'
+      isProduction: import.meta.env.NODE_ENV === 'production',
     });
   }
 
   validateConfig() {
     const required = ['cloudName', 'uploadPreset'];
-    required.forEach(key => {
+    required.forEach((key) => {
       if (!this.config[key]) {
         console.warn(`⚠️ Cloudinary ${key} is not configured`);
       }
@@ -58,7 +60,7 @@ class CloudinaryService {
 
     const baseUrl = `https://res.cloudinary.com/${this.config.cloudName}/image/upload`;
     const transformString = this.generateTransformString(transformations);
-    
+
     return `${baseUrl}/${transformString}/${publicId}`;
   }
 
@@ -71,7 +73,7 @@ class CloudinaryService {
       format: 'auto',
       fetch_format: 'auto',
       dpr: 'auto',
-      responsive: true
+      responsive: true,
     };
 
     const merged = { ...defaultTransforms, ...transformations };
@@ -93,7 +95,7 @@ class CloudinaryService {
     if (merged.quality) parts.push(`q_${merged.quality}`);
     if (merged.format) parts.push(`f_${merged.format}`);
     if (merged.fetch_format) parts.push(`f_${merged.fetch_format}`);
-    
+
     // Mobile-specific optimizations
     if (merged.dpr) parts.push(`dpr_${merged.dpr}`);
     if (merged.responsive) parts.push('fl_progressive');
@@ -112,14 +114,17 @@ class CloudinaryService {
    */
   async uploadImage(file, options = {}) {
     let lastError = null;
-    
+
     for (let attempt = 1; attempt <= this.retryAttempts; attempt++) {
       try {
         if (!file) {
           throw new Error('No file provided');
         }
 
-        console.log(`☁️ Uploading to Cloudinary (Attempt ${attempt}/${this.retryAttempts}):`, file.name);
+        console.log(
+          `☁️ Uploading to Cloudinary (Attempt ${attempt}/${this.retryAttempts}):`,
+          file.name
+        );
 
         // Validate file before upload
         const validation = this.validateFile(file, 'image');
@@ -134,7 +139,7 @@ class CloudinaryService {
         const formData = new FormData();
         formData.append('file', optimizedFile);
         formData.append('upload_preset', this.config.uploadPreset);
-        
+
         // Add optional parameters
         if (options.folder) formData.append('folder', options.folder);
         if (options.tags) formData.append('tags', options.tags.join(','));
@@ -160,9 +165,9 @@ class CloudinaryService {
             mode: 'cors',
             credentials: 'omit',
             headers: {
-              'Accept': 'application/json',
-              'X-Requested-With': 'XMLHttpRequest'
-            }
+              Accept: 'application/json',
+              'X-Requested-With': 'XMLHttpRequest',
+            },
           });
 
           clearTimeout(timeoutId);
@@ -172,9 +177,9 @@ class CloudinaryService {
             console.error('❌ Cloudinary response error:', {
               status: response.status,
               statusText: response.statusText,
-              error: errorText
+              error: errorText,
             });
-            
+
             if (response.status === 400) {
               throw new Error('Invalid upload request. Check your upload preset.');
             } else if (response.status === 401) {
@@ -192,7 +197,7 @@ class CloudinaryService {
             public_id: data.public_id,
             format: data.format,
             size: `${(data.bytes / 1024).toFixed(2)}KB`,
-            dimensions: `${data.width}x${data.height}`
+            dimensions: `${data.width}x${data.height}`,
           });
 
           return {
@@ -206,22 +211,27 @@ class CloudinaryService {
             created_at: data.created_at,
             tags: data.tags || [],
             context: data.context || {},
-            thumbnail_url: this.getThumbnailUrl(data.public_id)
+            thumbnail_url: this.getThumbnailUrl(data.public_id),
           };
         } catch (fetchError) {
           clearTimeout(timeoutId);
-          
+
           if (fetchError.name === 'AbortError') {
             throw new Error('Upload timeout. Please check your internet connection.');
-          } else if (fetchError.name === 'TypeError' && fetchError.message.includes('Failed to fetch')) {
-            throw new Error('Network error. Please check your internet connection and CORS settings.');
+          } else if (
+            fetchError.name === 'TypeError' &&
+            fetchError.message.includes('Failed to fetch')
+          ) {
+            throw new Error(
+              'Network error. Please check your internet connection and CORS settings.'
+            );
           }
           throw fetchError;
         }
       } catch (error) {
         lastError = error;
         console.warn(`⚠️ Upload attempt ${attempt} failed:`, error.message);
-        
+
         if (attempt < this.retryAttempts) {
           await this.delay(this.retryDelay * attempt);
           continue;
@@ -234,7 +244,7 @@ class CloudinaryService {
       success: false,
       error: lastError.message,
       code: 'UPLOAD_FAILED',
-      attempts: this.retryAttempts
+      attempts: this.retryAttempts,
     };
   }
 
@@ -252,14 +262,14 @@ class CloudinaryService {
         name: file.name,
         type: file.type,
         size: `${(file.size / 1024).toFixed(2)}KB`,
-        folder: folderPath
+        folder: folderPath,
       });
 
       // Determine resource type based on file
       const isImage = file.type.startsWith('image/');
       const isVideo = file.type.startsWith('video/');
       const isPdf = file.type === 'application/pdf';
-      
+
       let resourceType = 'auto';
       if (isImage) resourceType = 'image';
       if (isVideo) resourceType = 'video';
@@ -269,7 +279,7 @@ class CloudinaryService {
       const uploadOptions = {
         folder: folderPath,
         resource_type: resourceType,
-        ...options
+        ...options,
       };
 
       // Use appropriate upload method
@@ -284,7 +294,7 @@ class CloudinaryService {
         console.log('✅ Cloudinary upload completed:', {
           public_id: result.public_id,
           url: result.url,
-          size: `${(result.bytes / 1024).toFixed(2)}KB`
+          size: `${(result.bytes / 1024).toFixed(2)}KB`,
         });
       }
 
@@ -294,7 +304,7 @@ class CloudinaryService {
       return {
         success: false,
         error: error.message,
-        code: 'UPLOAD_FAILED'
+        code: 'UPLOAD_FAILED',
       };
     }
   }
@@ -344,8 +354,8 @@ class CloudinaryService {
         body: formData,
         headers: {
           'X-Requested-With': 'XMLHttpRequest',
-          'Accept': 'application/json'
-        }
+          Accept: 'application/json',
+        },
       });
 
       if (!response.ok) {
@@ -362,14 +372,14 @@ class CloudinaryService {
         resource_type: data.resource_type,
         bytes: data.bytes,
         format: data.format,
-        created_at: data.created_at
+        created_at: data.created_at,
       };
     } catch (error) {
       console.error('❌ Cloudinary file upload error:', error);
       return {
         success: false,
         error: error.message,
-        code: 'FILE_UPLOAD_FAILED'
+        code: 'FILE_UPLOAD_FAILED',
       };
     }
   }
@@ -398,7 +408,7 @@ class CloudinaryService {
         `https://api.cloudinary.com/v1_1/${this.config.cloudName}/image/destroy`,
         {
           method: 'POST',
-          body: formData
+          body: formData,
         }
       );
 
@@ -419,7 +429,7 @@ class CloudinaryService {
       console.error('❌ Cloudinary delete error:', error);
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -432,17 +442,17 @@ class CloudinaryService {
       image: {
         types: ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'],
         maxSize: 5 * 1024 * 1024, // 5MB
-        maxDimensions: { width: 5000, height: 5000 }
+        maxDimensions: { width: 5000, height: 5000 },
       },
       document: {
         types: [
           'application/pdf',
           'application/msword',
           'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-          'text/plain'
+          'text/plain',
         ],
-        maxSize: 10 * 1024 * 1024 // 10MB
-      }
+        maxSize: 10 * 1024 * 1024, // 10MB
+      },
     };
 
     const validation = validations[type] || validations.document;
@@ -451,7 +461,7 @@ class CloudinaryService {
     if (!validation.types.includes(file.type)) {
       return {
         valid: false,
-        error: `Invalid file type. Allowed: ${validation.types.map(t => t.split('/')[1]).join(', ')}`
+        error: `Invalid file type. Allowed: ${validation.types.map((t) => t.split('/')[1]).join(', ')}`,
       };
     }
 
@@ -460,7 +470,7 @@ class CloudinaryService {
       const maxSizeMB = validation.maxSize / (1024 * 1024);
       return {
         valid: false,
-        error: `File too large. Maximum size: ${maxSizeMB}MB`
+        error: `File too large. Maximum size: ${maxSizeMB}MB`,
       };
     }
 
@@ -473,7 +483,8 @@ class CloudinaryService {
   async optimizeImageForMobile(file, options = {}) {
     return new Promise((resolve) => {
       // Skip optimization for small files
-      if (file.size <= 1024 * 512) { // 512KB
+      if (file.size <= 1024 * 512) {
+        // 512KB
         resolve(file);
         return;
       }
@@ -521,18 +532,18 @@ class CloudinaryService {
 
           // Convert to WebP for better mobile performance
           const format = 'image/webp';
-          
+
           canvas.toBlob(
             (blob) => {
               const optimizedFile = new File([blob], file.name.replace(/\.[^/.]+$/, '') + '.webp', {
                 type: format,
-                lastModified: Date.now()
+                lastModified: Date.now(),
               });
               console.log('📱 Image optimized for mobile:', {
                 original: `${(file.size / 1024).toFixed(2)}KB`,
                 optimized: `${(blob.size / 1024).toFixed(2)}KB`,
                 reduction: `${((1 - blob.size / file.size) * 100).toFixed(1)}%`,
-                dimensions: `${width}x${height}`
+                dimensions: `${width}x${height}`,
               });
               resolve(optimizedFile);
             },
@@ -566,7 +577,7 @@ class CloudinaryService {
       gravity: 'face',
       quality: 'auto:good',
       dpr: 'auto',
-      format: 'webp'
+      format: 'webp',
     });
   }
 
@@ -577,19 +588,19 @@ class CloudinaryService {
     if (!publicId) return {};
 
     const urls = {};
-    breakpoints.forEach(bp => {
+    breakpoints.forEach((bp) => {
       urls[`w${bp}`] = this.getImageUrl(publicId, {
         width: bp,
         quality: 'auto:good',
         fetch_format: 'auto',
         dpr: 'auto',
-        crop: 'scale'
+        crop: 'scale',
       });
     });
 
     // Add srcset string for HTML
     urls.srcset = breakpoints
-      .map(bp => `${this.getImageUrl(publicId, { width: bp })} ${bp}w`)
+      .map((bp) => `${this.getImageUrl(publicId, { width: bp })} ${bp}w`)
       .join(', ');
 
     return urls;
@@ -604,11 +615,11 @@ class CloudinaryService {
       const stringToSign = `public_id=${publicId}&timestamp=${timestamp}${this.config.apiSecret}`;
       const encoder = new TextEncoder();
       const data = encoder.encode(stringToSign);
-      
+
       // Simple hash - in production use proper server-side signing
       const hashBuffer = await crypto.subtle.digest('SHA-1', data);
       const hashArray = Array.from(new Uint8Array(hashBuffer));
-      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
     } catch (error) {
       console.error('❌ Signature generation error:', error);
       throw new Error('Signature generation failed');
@@ -619,7 +630,7 @@ class CloudinaryService {
    * Delay helper for retries
    */
   delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
@@ -634,12 +645,12 @@ class CloudinaryService {
    */
   extractPublicId(url) {
     if (!this.isCloudinaryUrl(url)) return null;
-    
+
     try {
       const urlObj = new URL(url);
       const pathParts = urlObj.pathname.split('/');
       const uploadIndex = pathParts.indexOf('upload');
-      
+
       if (uploadIndex !== -1 && pathParts.length > uploadIndex + 1) {
         const publicIdWithExtension = pathParts.slice(uploadIndex + 1).join('/');
         return publicIdWithExtension.replace(/\.[^/.]+$/, '');
@@ -647,7 +658,7 @@ class CloudinaryService {
     } catch (error) {
       console.warn('Could not extract public ID from URL:', url);
     }
-    
+
     return null;
   }
 

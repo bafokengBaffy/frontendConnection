@@ -1,0 +1,160 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@5.1.0
+  browser-tools: circleci/browser-tools@1.4.0
+
+executors:
+  node-executor:
+    docker:
+      - image: cimg/node:18.17.0
+    working_directory: ~/project
+
+commands:
+  install-deps:
+    steps:
+      - node/install-packages:
+          pkg-manager: npm
+          app-dir: frontend
+          cache-key: package-lock.json
+          override-ci-command: npm ci --legacy-peer-deps
+
+jobs:
+  lint:
+    executor: node-executor
+    steps:
+      - checkout
+      - install-deps
+      - run:
+          name: Run ESLint
+          command: |
+            cd frontend
+            npm run lint
+      - run:
+          name: Check formatting
+          command: |
+            cd frontend
+            npm run format:check
+
+  test:
+    executor: node-executor
+    steps:
+      - checkout
+      - install-deps
+      - run:
+          name: Run tests
+          command: |
+            cd frontend
+            npm run test:ci
+      - store_test_results:
+          path: frontend/test-results
+      - store_artifacts:
+          path: frontend/coverage
+
+  build:
+    executor: node-executor
+    steps:
+      - checkout
+      - install-deps
+      - run:
+          name: Create environment file
+          command: |
+            cd frontend
+            echo "VITE_FIREBASE_API_KEY=${VITE_FIREBASE_API_KEY}" >> .env
+            echo "VITE_FIREBASE_AUTH_DOMAIN=${VITE_FIREBASE_AUTH_DOMAIN}" >> .env
+            echo "VITE_FIREBASE_PROJECT_ID=${VITE_FIREBASE_PROJECT_ID}" >> .env
+            echo "VITE_FIREBASE_STORAGE_BUCKET=${VITE_FIREBASE_STORAGE_BUCKET}" >> .env
+            echo "VITE_FIREBASE_MESSAGING_SENDER_ID=${VITE_FIREBASE_MESSAGING_SENDER_ID}" >> .env
+            echo "VITE_FIREBASE_APP_ID=${VITE_FIREBASE_APP_ID}" >> .env
+            echo "VITE_APP_ENVIRONMENT=${CIRCLE_BRANCH}" >> .env
+      - run:
+          name: Build application
+          command: |
+            cd frontend
+            npm run build
+      - persist_to_workspace:
+          root: frontend
+          paths:
+            - dist
+            - package.json
+
+  deploy-staging:
+    executor: node-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: frontend
+      - run:
+          name: Install Firebase CLI
+          command: npm install -g firebase-tools
+      - run:
+          name: Deploy to Firebase Staging
+          command: |
+            cd frontend
+            firebase deploy --only hosting --project career-connect-lesotho-staging --token "$FIREBASE_TOKEN"
+
+  deploy-production:
+    executor: node-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: frontend
+      - run:
+          name: Install Firebase CLI
+          command: npm install -g firebase-tools
+      - run:
+          name: Deploy to Firebase Production
+          command: |
+            cd frontend
+            firebase deploy --only hosting --project career-connect-lesotho --token "$FIREBASE_TOKEN"
+
+  security-scan:
+    executor: node-executor
+    steps:
+      - checkout
+      - install-deps
+      - run:
+          name: Run Snyk Security Scan
+          command: |
+            cd frontend
+            npx snyk test --severity-threshold=high
+          environment:
+            SNYK_TOKEN: ${SNYK_TOKEN}
+
+workflows:
+  version: 2
+  build-test-deploy:
+    jobs:
+      - lint:
+          filters:
+            branches:
+              ignore: main
+      - test:
+          requires:
+            - lint
+      - security-scan:
+          requires:
+            - lint
+      - build:
+          requires:
+            - test
+            - security-scan
+      - deploy-staging:
+          requires:
+            - build
+          filters:
+            branches:
+              only: staging
+      - hold-for-production:
+          type: approval
+          requires:
+            - build
+          filters:
+            branches:
+              only: main
+      - deploy-production:
+          requires:
+            - hold-for-production
+          filters:
+            branches:
+              only: main

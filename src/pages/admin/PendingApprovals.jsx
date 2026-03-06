@@ -1,28 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Container, 
-  Row, 
-  Col, 
-  Card, 
-  Table, 
-  Button, 
-  Badge, 
-  Modal, 
-  Form, 
-  Alert, 
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Table,
+  Button,
+  Badge,
+  Modal,
+  Form,
+  Alert,
   Spinner,
   InputGroup,
   FormControl,
   Pagination,
-  Dropdown
+  Dropdown,
 } from 'react-bootstrap';
-import { 
-  FaCheck, 
-  FaTimes, 
-  FaEye, 
-  FaUser, 
-  FaBuilding, 
-  FaUniversity, 
+import {
+  FaCheck,
+  FaTimes,
+  FaEye,
+  FaUser,
+  FaBuilding,
+  FaUniversity,
   FaBusinessTime,
   FaSearch,
   FaEnvelope,
@@ -34,7 +34,7 @@ import {
   FaTrash,
   FaClipboardCheck,
   FaUsers,
-  FaArrowLeft
+  FaArrowLeft,
 } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import { useNotification } from '../../context/NotificationContext';
@@ -45,7 +45,7 @@ const PendingApprovals = () => {
   const { currentUser, userProfile, isAdmin } = useAuth();
   const { addSuccessNotification, addErrorNotification } = useNotification();
   const navigate = useNavigate();
-  
+
   const [pendingUsers, setPendingUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -67,7 +67,7 @@ const PendingApprovals = () => {
     entrepreneurs: 0,
     youth: 0,
     students: 0,
-    employers: 0
+    employers: 0,
   });
   const itemsPerPage = 20;
 
@@ -81,33 +81,34 @@ const PendingApprovals = () => {
   const loadPendingUsers = async () => {
     try {
       setLoading(true);
-      
+
       // Use admin service to get pending users
       const result = await adminService.users.getPendingApprovals(currentUser, userProfile);
-      
+
       if (result.success) {
         let users = result.data.users || [];
-        
+
         // Apply filters
         if (filterType !== 'all') {
-          users = users.filter(user => user.userType === filterType);
+          users = users.filter((user) => user.userType === filterType);
         }
-        
+
         if (searchTerm) {
           const term = searchTerm.toLowerCase();
-          users = users.filter(user => 
-            user.email?.toLowerCase().includes(term) ||
-            user.displayName?.toLowerCase().includes(term) ||
-            user.userType?.toLowerCase().includes(term) ||
-            user.phoneNumber?.toLowerCase().includes(term)
+          users = users.filter(
+            (user) =>
+              user.email?.toLowerCase().includes(term) ||
+              user.displayName?.toLowerCase().includes(term) ||
+              user.userType?.toLowerCase().includes(term) ||
+              user.phoneNumber?.toLowerCase().includes(term)
           );
         }
-        
+
         // Apply pagination
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         const paginatedUsers = users.slice(startIndex, endIndex);
-        
+
         setTotalPages(Math.ceil(users.length / itemsPerPage));
         setPendingUsers(paginatedUsers);
       } else {
@@ -126,20 +127,20 @@ const PendingApprovals = () => {
   const loadStats = async () => {
     try {
       const result = await adminService.users.getPendingApprovals(currentUser, userProfile);
-      
+
       if (result.success) {
         const users = result.data.users || [];
-        
+
         const statsData = {
           total: users.length,
-          companies: users.filter(u => u.userType === 'company').length,
-          institutes: users.filter(u => u.userType === 'institute').length,
-          entrepreneurs: users.filter(u => u.userType === 'entrepreneur').length,
-          youth: users.filter(u => u.userType === 'youth').length,
-          students: users.filter(u => u.userType === 'student').length,
-          employers: users.filter(u => u.userType === 'employer').length
+          companies: users.filter((u) => u.userType === 'company').length,
+          institutes: users.filter((u) => u.userType === 'institute').length,
+          entrepreneurs: users.filter((u) => u.userType === 'entrepreneur').length,
+          youth: users.filter((u) => u.userType === 'youth').length,
+          students: users.filter((u) => u.userType === 'student').length,
+          employers: users.filter((u) => u.userType === 'employer').length,
         };
-        
+
         setStats(statsData);
       }
     } catch (error) {
@@ -167,25 +168,25 @@ const PendingApprovals = () => {
   const handleApprove = async (userId, isBulk = false, comments = '') => {
     try {
       const result = await adminService.users.approveUser(
-        userId, 
-        comments || approveComments, 
-        currentUser, 
+        userId,
+        comments || approveComments,
+        currentUser,
         userProfile
       );
-      
+
       if (result.success) {
         addSuccessNotification('Success', 'User approved successfully');
-        
+
         if (!isBulk) {
           setShowApproveModal(false);
           setApproveComments('');
         }
-        
+
         // Remove from selected users if in bulk mode
         if (isBulk) {
-          setSelectedUsers(prev => prev.filter(id => id !== userId));
+          setSelectedUsers((prev) => prev.filter((id) => id !== userId));
         }
-        
+
         // Refresh data
         loadPendingUsers();
         loadStats();
@@ -198,39 +199,39 @@ const PendingApprovals = () => {
     }
   };
 
- const handleReject = async (userId, isBulk = false, reason = '') => {
-  try {
-    const result = await adminService.rejectUser(
-      userId, 
-      reason || rejectReason, 
-      currentUser, 
-      userProfile
-    );
-    
-    if (result.success) {
-      addSuccessNotification('Success', 'User rejected successfully');
-      
-      if (!isBulk) {
-        setShowRejectModal(false);
-        setRejectReason('');
+  const handleReject = async (userId, isBulk = false, reason = '') => {
+    try {
+      const result = await adminService.rejectUser(
+        userId,
+        reason || rejectReason,
+        currentUser,
+        userProfile
+      );
+
+      if (result.success) {
+        addSuccessNotification('Success', 'User rejected successfully');
+
+        if (!isBulk) {
+          setShowRejectModal(false);
+          setRejectReason('');
+        }
+
+        // Remove from selected users if in bulk mode
+        if (isBulk) {
+          setSelectedUsers((prev) => prev.filter((id) => id !== userId));
+        }
+
+        // Refresh data
+        loadPendingUsers();
+        loadStats();
+      } else {
+        throw new Error(result.error || 'Rejection failed');
       }
-      
-      // Remove from selected users if in bulk mode
-      if (isBulk) {
-        setSelectedUsers(prev => prev.filter(id => id !== userId));
-      }
-      
-      // Refresh data
-      loadPendingUsers();
-      loadStats();
-    } else {
-      throw new Error(result.error || 'Rejection failed');
+    } catch (error) {
+      console.error('Error rejecting user:', error);
+      addErrorNotification('Error', error.message || 'Failed to reject user');
     }
-  } catch (error) {
-    console.error('Error rejecting user:', error);
-    addErrorNotification('Error', error.message || 'Failed to reject user');
-  }
-};
+  };
 
   const handleBulkApprove = async () => {
     if (selectedUsers.length === 0) {
@@ -240,12 +241,12 @@ const PendingApprovals = () => {
 
     try {
       const result = await adminService.users.bulkApproveUsers(
-        selectedUsers, 
-        'Bulk approval', 
-        currentUser, 
+        selectedUsers,
+        'Bulk approval',
+        currentUser,
         userProfile
       );
-      
+
       if (result.success) {
         addSuccessNotification('Success', `${selectedUsers.length} users approved successfully`);
         setSelectedUsers([]);
@@ -260,42 +261,40 @@ const PendingApprovals = () => {
     }
   };
 
- const handleBulkReject = async () => {
-  if (selectedUsers.length === 0) {
-    addErrorNotification('Error', 'Please select users to reject');
-    return;
-  }
-
-  const reason = prompt('Enter rejection reason for all selected users:');
-  if (!reason) return;
-
-  try {
-    const result = await adminService.bulkRejectUsers(
-      selectedUsers,
-      reason,
-      currentUser,
-      userProfile
-    );
-    
-    if (result.success) {
-      addSuccessNotification('Success', result.message);
-      setSelectedUsers([]);
-      loadPendingUsers();
-      loadStats();
-    } else {
-      throw new Error(result.error || 'Bulk rejection failed');
+  const handleBulkReject = async () => {
+    if (selectedUsers.length === 0) {
+      addErrorNotification('Error', 'Please select users to reject');
+      return;
     }
-  } catch (error) {
-    console.error('Error bulk rejecting users:', error);
-    addErrorNotification('Error', error.message || 'Failed to reject users');
-  }
-};
+
+    const reason = prompt('Enter rejection reason for all selected users:');
+    if (!reason) return;
+
+    try {
+      const result = await adminService.bulkRejectUsers(
+        selectedUsers,
+        reason,
+        currentUser,
+        userProfile
+      );
+
+      if (result.success) {
+        addSuccessNotification('Success', result.message);
+        setSelectedUsers([]);
+        loadPendingUsers();
+        loadStats();
+      } else {
+        throw new Error(result.error || 'Bulk rejection failed');
+      }
+    } catch (error) {
+      console.error('Error bulk rejecting users:', error);
+      addErrorNotification('Error', error.message || 'Failed to reject users');
+    }
+  };
 
   const handleSelectUser = (userId) => {
-    setSelectedUsers(prev => 
-      prev.includes(userId) 
-        ? prev.filter(id => id !== userId)
-        : [...prev, userId]
+    setSelectedUsers((prev) =>
+      prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]
     );
   };
 
@@ -303,19 +302,26 @@ const PendingApprovals = () => {
     if (selectedUsers.length === pendingUsers.length) {
       setSelectedUsers([]);
     } else {
-      setSelectedUsers(pendingUsers.map(user => user.id));
+      setSelectedUsers(pendingUsers.map((user) => user.id));
     }
   };
 
   const getUserIcon = (userType) => {
     switch (userType) {
-      case 'company': return <FaBuilding className="text-warning" />;
-      case 'institute': return <FaUniversity className="text-info" />;
-      case 'entrepreneur': return <FaBusinessTime className="text-success" />;
-      case 'youth': return <FaUser className="text-primary" />;
-      case 'student': return <FaUser className="text-secondary" />;
-      case 'employer': return <FaUser className="text-dark" />;
-      default: return <FaUser className="text-secondary" />;
+      case 'company':
+        return <FaBuilding className="text-warning" />;
+      case 'institute':
+        return <FaUniversity className="text-info" />;
+      case 'entrepreneur':
+        return <FaBusinessTime className="text-success" />;
+      case 'youth':
+        return <FaUser className="text-primary" />;
+      case 'student':
+        return <FaUser className="text-secondary" />;
+      case 'employer':
+        return <FaUser className="text-dark" />;
+      default:
+        return <FaUser className="text-secondary" />;
     }
   };
 
@@ -326,9 +332,9 @@ const PendingApprovals = () => {
       entrepreneur: { label: 'Entrepreneur', variant: 'success' },
       youth: { label: 'Youth', variant: 'primary' },
       student: { label: 'Student', variant: 'secondary' },
-      employer: { label: 'Employer', variant: 'dark' }
+      employer: { label: 'Employer', variant: 'dark' },
     };
-    
+
     const type = types[userType] || { label: userType, variant: 'secondary' };
     return <Badge bg={type.variant}>{type.label}</Badge>;
   };
@@ -340,7 +346,7 @@ const PendingApprovals = () => {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   };
 
@@ -365,11 +371,7 @@ const PendingApprovals = () => {
       <Row className="mb-4">
         <Col>
           <div className="d-flex align-items-center">
-            <Button 
-              variant="outline-secondary" 
-              onClick={goBackToDashboard}
-              className="me-3"
-            >
+            <Button variant="outline-secondary" onClick={goBackToDashboard} className="me-3">
               <FaArrowLeft />
             </Button>
             <div>
@@ -382,8 +384,8 @@ const PendingApprovals = () => {
           </div>
         </Col>
         <Col className="text-end">
-          <Button 
-            variant="outline-primary" 
+          <Button
+            variant="outline-primary"
             onClick={handleRefresh}
             disabled={refreshing}
             className="me-2"
@@ -391,10 +393,7 @@ const PendingApprovals = () => {
             <FaSync className={refreshing ? 'spin' : ''} />
             {refreshing ? ' Refreshing...' : ' Refresh'}
           </Button>
-          <Button 
-            variant="outline-secondary" 
-            onClick={goBackToDashboard}
-          >
+          <Button variant="outline-secondary" onClick={goBackToDashboard}>
             Back to Dashboard
           </Button>
         </Col>
@@ -410,9 +409,7 @@ const PendingApprovals = () => {
                   <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
                     Total Pending
                   </div>
-                  <div className="h5 mb-0 font-weight-bold text-gray-800">
-                    {stats.total}
-                  </div>
+                  <div className="h5 mb-0 font-weight-bold text-gray-800">{stats.total}</div>
                   <small className="text-muted">Awaiting review</small>
                 </div>
                 <div className="stat-icon">
@@ -431,9 +428,7 @@ const PendingApprovals = () => {
                   <div className="text-xs font-weight-bold text-warning text-uppercase mb-1">
                     Companies
                   </div>
-                  <div className="h5 mb-0 font-weight-bold text-gray-800">
-                    {stats.companies}
-                  </div>
+                  <div className="h5 mb-0 font-weight-bold text-gray-800">{stats.companies}</div>
                   <small className="text-muted">Need verification</small>
                 </div>
                 <div className="stat-icon">
@@ -452,9 +447,7 @@ const PendingApprovals = () => {
                   <div className="text-xs font-weight-bold text-info text-uppercase mb-1">
                     Institutes
                   </div>
-                  <div className="h5 mb-0 font-weight-bold text-gray-800">
-                    {stats.institutes}
-                  </div>
+                  <div className="h5 mb-0 font-weight-bold text-gray-800">{stats.institutes}</div>
                   <small className="text-muted">Universities/Colleges</small>
                 </div>
                 <div className="stat-icon">
@@ -508,10 +501,7 @@ const PendingApprovals = () => {
                 <InputGroup.Text>
                   <FaFilter />
                 </InputGroup.Text>
-                <Form.Select
-                  value={filterType}
-                  onChange={(e) => setFilterType(e.target.value)}
-                >
+                <Form.Select value={filterType} onChange={(e) => setFilterType(e.target.value)}>
                   <option value="all">All Types</option>
                   <option value="company">Companies</option>
                   <option value="institute">Institutes</option>
@@ -526,8 +516,8 @@ const PendingApprovals = () => {
               <div className="d-flex justify-content-end gap-2">
                 {selectedUsers.length > 0 && (
                   <>
-                    <Button 
-                      variant="success" 
+                    <Button
+                      variant="success"
                       size="sm"
                       onClick={handleBulkApprove}
                       className="d-flex align-items-center"
@@ -535,8 +525,8 @@ const PendingApprovals = () => {
                       <FaCheck className="me-1" />
                       Approve Selected ({selectedUsers.length})
                     </Button>
-                    <Button 
-                      variant="danger" 
+                    <Button
+                      variant="danger"
                       size="sm"
                       onClick={handleBulkReject}
                       className="d-flex align-items-center"
@@ -544,8 +534,8 @@ const PendingApprovals = () => {
                       <FaTimes className="me-1" />
                       Reject Selected ({selectedUsers.length})
                     </Button>
-                    <Button 
-                      variant="outline-secondary" 
+                    <Button
+                      variant="outline-secondary"
                       size="sm"
                       onClick={() => setSelectedUsers([])}
                       className="d-flex align-items-center"
@@ -584,11 +574,7 @@ const PendingApprovals = () => {
               <FaClipboardCheck size="3em" className="text-success mb-3" />
               <h5>No pending approvals</h5>
               <p className="text-muted">All users have been reviewed and approved.</p>
-              <Button 
-                variant="primary" 
-                onClick={goBackToDashboard}
-                className="mt-2"
-              >
+              <Button variant="primary" onClick={goBackToDashboard} className="mt-2">
                 Back to Dashboard
               </Button>
             </div>
@@ -600,7 +586,9 @@ const PendingApprovals = () => {
                     <th style={{ width: '40px' }}>
                       <Form.Check
                         type="checkbox"
-                        checked={selectedUsers.length === pendingUsers.length && pendingUsers.length > 0}
+                        checked={
+                          selectedUsers.length === pendingUsers.length && pendingUsers.length > 0
+                        }
                         onChange={handleSelectAll}
                       />
                     </th>
@@ -624,18 +612,16 @@ const PendingApprovals = () => {
                       </td>
                       <td>
                         <div className="d-flex align-items-center">
-                          <div className="me-3">
-                            {getUserIcon(user.userType)}
-                          </div>
+                          <div className="me-3">{getUserIcon(user.userType)}</div>
                           <div>
                             <div className="fw-bold">{user.displayName || 'No Name'}</div>
-                            <small className="text-muted">ID: {user.id?.substring(0, 8) || 'N/A'}...</small>
+                            <small className="text-muted">
+                              ID: {user.id?.substring(0, 8) || 'N/A'}...
+                            </small>
                           </div>
                         </div>
                       </td>
-                      <td>
-                        {getUserTypeBadge(user.userType)}
-                      </td>
+                      <td>{getUserTypeBadge(user.userType)}</td>
                       <td>
                         <div className="d-flex align-items-center">
                           <FaEnvelope className="me-2 text-muted" size="14" />
@@ -704,22 +690,23 @@ const PendingApprovals = () => {
             </div>
           )}
         </Card.Body>
-        
+
         {/* Pagination */}
         {totalPages > 1 && (
           <Card.Footer>
             <div className="d-flex justify-content-between align-items-center">
               <div>
                 <small className="text-muted">
-                  Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, stats.total)} of {stats.total} users
+                  Showing {(currentPage - 1) * itemsPerPage + 1} to{' '}
+                  {Math.min(currentPage * itemsPerPage, stats.total)} of {stats.total} users
                 </small>
               </div>
               <Pagination className="mb-0">
-                <Pagination.Prev 
-                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                <Pagination.Prev
+                  onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                   disabled={currentPage === 1}
                 />
-                
+
                 {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                   let pageNum;
                   if (totalPages <= 5) {
@@ -731,7 +718,7 @@ const PendingApprovals = () => {
                   } else {
                     pageNum = currentPage - 2 + i;
                   }
-                  
+
                   return (
                     <Pagination.Item
                       key={pageNum}
@@ -742,9 +729,9 @@ const PendingApprovals = () => {
                     </Pagination.Item>
                   );
                 })}
-                
-                <Pagination.Next 
-                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+
+                <Pagination.Next
+                  onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                   disabled={currentPage === totalPages}
                 />
               </Pagination>
@@ -754,11 +741,7 @@ const PendingApprovals = () => {
       </Card>
 
       {/* User Details Modal */}
-      <Modal
-        show={showDetailsModal}
-        onHide={() => setShowDetailsModal(false)}
-        size="lg"
-      >
+      <Modal show={showDetailsModal} onHide={() => setShowDetailsModal(false)} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>User Details</Modal.Title>
         </Modal.Header>
@@ -768,7 +751,10 @@ const PendingApprovals = () => {
               <Row className="mb-4">
                 <Col md={4} className="text-center">
                   <div className="user-avatar mb-3">
-                    <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto" style={{ width: '80px', height: '80px' }}>
+                    <div
+                      className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto"
+                      style={{ width: '80px', height: '80px' }}
+                    >
                       {getUserIcon(selectedUser.userType)}
                     </div>
                   </div>
@@ -794,7 +780,7 @@ const PendingApprovals = () => {
                       <strong>Registered:</strong> {formatDate(selectedUser.createdAt)}
                     </div>
                   </div>
-                  
+
                   {/* Additional user-specific information */}
                   {selectedUser.additionalData && (
                     <div className="mb-4">
@@ -808,9 +794,10 @@ const PendingApprovals = () => {
                   )}
                 </Col>
               </Row>
-              
+
               <div className="alert alert-info">
-                <strong>Note:</strong> This user is currently pending approval. You can approve or reject their registration request.
+                <strong>Note:</strong> This user is currently pending approval. You can approve or
+                reject their registration request.
               </div>
             </div>
           )}
@@ -819,7 +806,7 @@ const PendingApprovals = () => {
           <Button variant="secondary" onClick={() => setShowDetailsModal(false)}>
             Close
           </Button>
-          <Button 
+          <Button
             variant="success"
             onClick={() => {
               setShowDetailsModal(false);
@@ -828,7 +815,7 @@ const PendingApprovals = () => {
           >
             Approve User
           </Button>
-          <Button 
+          <Button
             variant="danger"
             onClick={() => {
               setShowDetailsModal(false);
@@ -841,16 +828,14 @@ const PendingApprovals = () => {
       </Modal>
 
       {/* Approve Modal */}
-      <Modal
-        show={showApproveModal}
-        onHide={() => setShowApproveModal(false)}
-      >
+      <Modal show={showApproveModal} onHide={() => setShowApproveModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Approve User Registration</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <p>
-            Are you sure you want to approve <strong>{selectedUser?.displayName || selectedUser?.email}</strong>?
+            Are you sure you want to approve{' '}
+            <strong>{selectedUser?.displayName || selectedUser?.email}</strong>?
           </p>
           <p className="text-muted small">
             User Type: <Badge bg="info">{selectedUser?.userType}</Badge>
@@ -873,7 +858,7 @@ const PendingApprovals = () => {
           <Button variant="secondary" onClick={() => setShowApproveModal(false)}>
             Cancel
           </Button>
-          <Button 
+          <Button
             variant="success"
             onClick={() => handleApprove(selectedUser?.id, false, approveComments)}
           >
@@ -883,19 +868,18 @@ const PendingApprovals = () => {
       </Modal>
 
       {/* Reject Modal */}
-      <Modal
-        show={showRejectModal}
-        onHide={() => setShowRejectModal(false)}
-      >
+      <Modal show={showRejectModal} onHide={() => setShowRejectModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Reject User Registration</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Alert variant="warning">
-            <strong>Warning:</strong> Rejecting a user will prevent them from accessing the platform.
+            <strong>Warning:</strong> Rejecting a user will prevent them from accessing the
+            platform.
           </Alert>
           <p>
-            Are you sure you want to reject <strong>{selectedUser?.displayName || selectedUser?.email}</strong>?
+            Are you sure you want to reject{' '}
+            <strong>{selectedUser?.displayName || selectedUser?.email}</strong>?
           </p>
           <Form.Group className="mb-3">
             <Form.Label>Reason for rejection *</Form.Label>
@@ -916,7 +900,7 @@ const PendingApprovals = () => {
           <Button variant="secondary" onClick={() => setShowRejectModal(false)}>
             Cancel
           </Button>
-          <Button 
+          <Button
             variant="danger"
             onClick={() => handleReject(selectedUser?.id, false, rejectReason)}
             disabled={!rejectReason.trim()}

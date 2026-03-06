@@ -5,19 +5,19 @@ export const useDevice = () => {
     isMobile: false,
     isTablet: false,
     isDesktop: false,
-    orientation: 'portrait'
+    orientation: 'portrait',
   });
 
   useEffect(() => {
     const checkDevice = () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
-      
+
       setDeviceInfo({
         isMobile: width <= 768,
         isTablet: width > 768 && width <= 1024,
         isDesktop: width > 1024,
-        orientation: width > height ? 'landscape' : 'portrait'
+        orientation: width > height ? 'landscape' : 'portrait',
       });
     };
 

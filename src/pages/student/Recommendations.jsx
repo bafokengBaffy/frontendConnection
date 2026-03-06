@@ -11,7 +11,7 @@ const Recommendations = () => {
       skills: ['JavaScript', 'React', 'Node.js'],
       location: 'Maseru',
       type: 'full-time',
-      salary: 'M8,000 - M12,000'
+      salary: 'M8,000 - M12,000',
     },
     {
       id: 2,
@@ -21,7 +21,7 @@ const Recommendations = () => {
       skills: ['Excel', 'SQL', 'Data Visualization'],
       location: 'Maseru',
       type: 'internship',
-      salary: 'M5,000 - M7,000'
+      salary: 'M5,000 - M7,000',
     },
     {
       id: 3,
@@ -31,8 +31,8 @@ const Recommendations = () => {
       skills: ['Networking', 'Hardware', 'Troubleshooting'],
       location: 'Maseru',
       type: 'full-time',
-      salary: 'M7,000 - M10,000'
-    }
+      salary: 'M7,000 - M10,000',
+    },
   ];
 
   const courseRecommendations = [
@@ -42,7 +42,7 @@ const Recommendations = () => {
       institution: 'Online Tech Academy',
       duration: '6 weeks',
       level: 'Intermediate',
-      match: 90
+      match: 90,
     },
     {
       id: 2,
@@ -50,7 +50,7 @@ const Recommendations = () => {
       institution: 'Coursera',
       duration: '8 weeks',
       level: 'Beginner',
-      match: 85
+      match: 85,
     },
     {
       id: 3,
@@ -58,8 +58,8 @@ const Recommendations = () => {
       institution: 'Lesotho College of Education',
       duration: '12 weeks',
       level: 'Intermediate',
-      match: 78
-    }
+      match: 78,
+    },
   ];
 
   const skillRecommendations = [
@@ -67,26 +67,26 @@ const Recommendations = () => {
       skill: 'React Native',
       importance: 'High',
       reason: 'Required for 60% of mobile developer roles',
-      resources: 5
+      resources: 5,
     },
     {
       skill: 'Python',
       importance: 'Medium',
       reason: 'Growing demand in data and automation roles',
-      resources: 8
+      resources: 8,
     },
     {
       skill: 'Cloud Computing',
       importance: 'High',
       reason: 'Essential for modern IT infrastructure roles',
-      resources: 6
-    }
+      resources: 6,
+    },
   ];
 
   return (
     <Container className="py-4">
       <h2 className="mb-4">Personalized Recommendations</h2>
-      
+
       <div className="mb-4">
         <h4 className="mb-3">📊 Based on Your Profile & Activity</h4>
         <Card className="shadow-sm">
@@ -114,7 +114,7 @@ const Recommendations = () => {
           </Card.Body>
         </Card>
       </div>
-      
+
       <Row className="mb-4">
         <Col md={8}>
           <Card className="shadow-sm h-100">
@@ -123,14 +123,16 @@ const Recommendations = () => {
                 <span>🎯 Top Job Recommendations</span>
                 <Badge bg="primary">{jobRecommendations.length} jobs</Badge>
               </Card.Title>
-              
+
               {jobRecommendations.map((job) => (
                 <Card key={job.id} className="mb-3 border">
                   <Card.Body>
                     <div className="d-flex justify-content-between align-items-start">
                       <div>
                         <h5 className="mb-1">{job.title}</h5>
-                        <p className="text-muted mb-2">{job.company} • {job.location}</p>
+                        <p className="text-muted mb-2">
+                          {job.company} • {job.location}
+                        </p>
                         <div className="mb-2">
                           {job.skills.map((skill, index) => (
                             <Badge key={index} bg="light" text="dark" className="me-1">
@@ -140,16 +142,13 @@ const Recommendations = () => {
                         </div>
                         <p className="mb-0">
                           <i className="bi bi-cash me-1"></i>
-                          {job.salary} • 
-                          <i className="bi bi-briefcase ms-2 me-1"></i>
+                          {job.salary} •<i className="bi bi-briefcase ms-2 me-1"></i>
                           {job.type}
                         </p>
                       </div>
                       <div className="text-end">
                         <div className="mb-2">
-                          <Badge bg="success">
-                            {job.match}% Match
-                          </Badge>
+                          <Badge bg="success">{job.match}% Match</Badge>
                         </div>
                         <Button variant="primary" size="sm">
                           Apply Now
@@ -162,7 +161,7 @@ const Recommendations = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col md={4}>
           <Card className="shadow-sm h-100">
             <Card.Body>
@@ -173,8 +172,12 @@ const Recommendations = () => {
                   <p className="text-muted small mb-2">{course.institution}</p>
                   <div className="d-flex justify-content-between align-items-center">
                     <div>
-                      <Badge bg="info" className="me-2">{course.level}</Badge>
-                      <Badge bg="light" text="dark">{course.duration}</Badge>
+                      <Badge bg="info" className="me-2">
+                        {course.level}
+                      </Badge>
+                      <Badge bg="light" text="dark">
+                        {course.duration}
+                      </Badge>
                     </div>
                     <Badge bg="success">{course.match}%</Badge>
                   </div>
@@ -187,12 +190,12 @@ const Recommendations = () => {
           </Card>
         </Col>
       </Row>
-      
+
       <Card className="shadow-sm">
         <Card.Body>
           <Card.Title>🛠️ Skill Development Recommendations</Card.Title>
           <p className="text-muted">Skills to learn based on market demand</p>
-          
+
           <Row>
             {skillRecommendations.map((skill, index) => (
               <Col md={4} key={index}>
@@ -216,7 +219,7 @@ const Recommendations = () => {
           </Row>
         </Card.Body>
       </Card>
-      
+
       <div className="mt-4 text-center">
         <Button variant="primary" size="lg" className="me-3">
           <i className="bi bi-arrow-repeat me-2"></i>

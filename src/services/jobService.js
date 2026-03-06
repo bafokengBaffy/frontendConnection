@@ -11,7 +11,7 @@ import {
   serverTimestamp,
   Timestamp,
   updateDoc,
-  where
+  where,
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
@@ -84,7 +84,7 @@ const jobService = {
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         applicantsCount: 0,
-        views: 0
+        views: 0,
       };
 
       const docRef = await addDoc(collection(db, 'jobs'), job);
@@ -115,7 +115,7 @@ const jobService = {
           const jobData = convertFirestoreData(doc.data());
           jobs.push({
             id: doc.id,
-            ...jobData
+            ...jobData,
           });
         } catch (docError) {
           console.warn('?? Error processing job document:', doc.id, docError);
@@ -129,24 +129,25 @@ const jobService = {
       let filteredJobs = jobs;
 
       if (filters.type && filters.type !== '') {
-        filteredJobs = filteredJobs.filter(job =>
-          job.type?.toLowerCase() === filters.type.toLowerCase()
+        filteredJobs = filteredJobs.filter(
+          (job) => job.type?.toLowerCase() === filters.type.toLowerCase()
         );
       }
 
       if (filters.location && filters.location !== '') {
-        filteredJobs = filteredJobs.filter(job =>
+        filteredJobs = filteredJobs.filter((job) =>
           job.location?.toLowerCase().includes(filters.location.toLowerCase())
         );
       }
 
       if (filters.search && filters.search !== '') {
         const searchLower = filters.search.toLowerCase();
-        filteredJobs = filteredJobs.filter(job =>
-          job.title?.toLowerCase().includes(searchLower) ||
-          job.companyName?.toLowerCase().includes(searchLower) ||
-          job.description?.toLowerCase().includes(searchLower) ||
-          job.department?.toLowerCase().includes(searchLower)
+        filteredJobs = filteredJobs.filter(
+          (job) =>
+            job.title?.toLowerCase().includes(searchLower) ||
+            job.companyName?.toLowerCase().includes(searchLower) ||
+            job.description?.toLowerCase().includes(searchLower) ||
+            job.department?.toLowerCase().includes(searchLower)
         );
       }
 
@@ -177,7 +178,7 @@ const jobService = {
           const jobData = convertFirestoreData(doc.data());
           jobs.push({
             id: doc.id,
-            ...jobData
+            ...jobData,
           });
         } catch (docError) {
           console.warn('?? Error processing job document:', doc.id, docError);
@@ -207,7 +208,7 @@ const jobService = {
 
       await updateDoc(jobRef, {
         ...processedUpdates,
-        updatedAt: serverTimestamp()
+        updatedAt: serverTimestamp(),
       });
 
       console.log('? Job updated successfully');
@@ -245,8 +246,8 @@ const jobService = {
           success: true,
           data: {
             id: docSnap.id,
-            ...jobData
-          }
+            ...jobData,
+          },
         };
       } else {
         console.log('? Job not found:', jobId);
@@ -268,7 +269,7 @@ const jobService = {
         const currentCount = jobSnap.data().applicantsCount || 0;
         await updateDoc(jobRef, {
           applicantsCount: currentCount + 1,
-          updatedAt: serverTimestamp()
+          updatedAt: serverTimestamp(),
         });
         console.log('? Applicant count incremented for job:', jobId);
       }
@@ -280,10 +281,7 @@ const jobService = {
   // Get job types for filtering
   async getJobTypes() {
     try {
-      const q = query(
-        collection(db, 'jobs'),
-        where('status', '==', 'active')
-      );
+      const q = query(collection(db, 'jobs'), where('status', '==', 'active'));
 
       const querySnapshot = await getDocs(q);
       const types = new Set();
@@ -305,10 +303,7 @@ const jobService = {
   // Get locations for filtering
   async getLocations() {
     try {
-      const q = query(
-        collection(db, 'jobs'),
-        where('status', '==', 'active')
-      );
+      const q = query(collection(db, 'jobs'), where('status', '==', 'active'));
 
       const querySnapshot = await getDocs(q);
       const locations = new Set();
@@ -325,7 +320,7 @@ const jobService = {
       console.error('? Error getting locations:', error);
       return [];
     }
-  }
+  },
 };
 
 // Export as both named and default export for flexibility

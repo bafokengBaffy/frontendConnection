@@ -9,7 +9,10 @@ export const profileValidationSchema = yup.object().shape({
     .required('Full name is required')
     .min(2, 'Full name must be at least 2 characters')
     .max(100, 'Full name must be less than 100 characters')
-    .matches(/^[a-zA-Z\s\-'.]+$/, 'Full name can only contain letters, spaces, hyphens, apostrophes, and periods'),
+    .matches(
+      /^[a-zA-Z\s\-'.]+$/,
+      'Full name can only contain letters, spaces, hyphens, apostrophes, and periods'
+    ),
 
   email: yup
     .string()
@@ -20,7 +23,7 @@ export const profileValidationSchema = yup.object().shape({
   phone: yup
     .string()
     .nullable()
-    .transform((value) => value === '' ? null : value)
+    .transform((value) => (value === '' ? null : value))
     .matches(
       /^(\+266|0)?[2-8]\d{7}$/,
       'Please enter a valid Lesotho phone number (e.g., +266 1234 5678)'
@@ -29,7 +32,7 @@ export const profileValidationSchema = yup.object().shape({
   dateOfBirth: yup
     .date()
     .nullable()
-    .transform((value) => value === '' ? null : value)
+    .transform((value) => (value === '' ? null : value))
     .max(new Date(), 'Date of birth cannot be in the future')
     .test(
       'age',
@@ -42,10 +45,7 @@ export const profileValidationSchema = yup.object().shape({
     .nullable()
     .oneOf(['male', 'female', 'other', 'prefer-not-to-say', ''], 'Please select a valid gender'),
 
-  address: yup
-    .string()
-    .nullable()
-    .max(200, 'Address must be less than 200 characters'),
+  address: yup.string().nullable().max(200, 'Address must be less than 200 characters'),
 
   // Academic Information
   studentId: yup
@@ -74,18 +74,14 @@ export const profileValidationSchema = yup.object().shape({
   // Skills and Bio
   skills: yup
     .array()
-    .of(yup.string().min(1, 'Skill cannot be empty').max(50, 'Skill must be less than 50 characters'))
+    .of(
+      yup.string().min(1, 'Skill cannot be empty').max(50, 'Skill must be less than 50 characters')
+    )
     .max(20, 'Maximum 20 skills allowed'),
 
-  bio: yup
-    .string()
-    .nullable()
-    .max(500, 'Bio must be less than 500 characters'),
+  bio: yup.string().nullable().max(500, 'Bio must be less than 500 characters'),
 
-  careerGoals: yup
-    .string()
-    .nullable()
-    .max(500, 'Career goals must be less than 500 characters'),
+  careerGoals: yup.string().nullable().max(500, 'Career goals must be less than 500 characters'),
 
   // Social Links
   'socialLinks.linkedin': yup
@@ -101,15 +97,9 @@ export const profileValidationSchema = yup.object().shape({
     .string()
     .nullable()
     .url('Please enter a valid GitHub URL')
-    .matches(
-      /^(https?:\/\/)?(www\.)?github\.com\/.*$/,
-      'Please enter a valid GitHub profile URL'
-    ),
+    .matches(/^(https?:\/\/)?(www\.)?github\.com\/.*$/, 'Please enter a valid GitHub profile URL'),
 
-  'socialLinks.portfolio': yup
-    .string()
-    .nullable()
-    .url('Please enter a valid portfolio URL'),
+  'socialLinks.portfolio': yup.string().nullable().url('Please enter a valid portfolio URL'),
 
   // Preferences
   jobPreferences: yup.object().shape({
@@ -134,8 +124,8 @@ export const profileValidationSchema = yup.object().shape({
     industryInterests: yup
       .string()
       .nullable()
-      .max(500, 'Industry interests must be less than 500 characters')
-  })
+      .max(500, 'Industry interests must be less than 500 characters'),
+  }),
 });
 
 // File validation schemas
@@ -145,17 +135,17 @@ export const fileValidationSchemas = {
     maxSize: 5 * 1024 * 1024, // 5MB
     maxDimensions: { width: 5000, height: 5000 },
     minDimensions: { width: 100, height: 100 },
-    aspectRatio: 1 // Square
+    aspectRatio: 1, // Square
   },
 
   resume: {
     allowedTypes: [
       'application/pdf',
       'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     ],
     maxSize: 10 * 1024 * 1024, // 10MB
-    allowedExtensions: ['.pdf', '.doc', '.docx']
+    allowedExtensions: ['.pdf', '.doc', '.docx'],
   },
 
   document: {
@@ -165,11 +155,11 @@ export const fileValidationSchemas = {
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       'image/jpeg',
       'image/jpg',
-      'image/png'
+      'image/png',
     ],
     maxSize: 10 * 1024 * 1024,
-    allowedExtensions: ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png']
-  }
+    allowedExtensions: ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png'],
+  },
 };
 
 // Validation helper functions
@@ -213,21 +203,25 @@ export const validateFile = (file, fileType = 'document') => {
       const img = new Image();
       img.onload = () => {
         if (img.width > schema.maxDimensions.width || img.height > schema.maxDimensions.height) {
-          errors.push(`Image dimensions too large. Maximum: ${schema.maxDimensions.width}x${schema.maxDimensions.height}px`);
+          errors.push(
+            `Image dimensions too large. Maximum: ${schema.maxDimensions.width}x${schema.maxDimensions.height}px`
+          );
         }
         if (img.width < schema.minDimensions.width || img.height < schema.minDimensions.height) {
-          errors.push(`Image dimensions too small. Minimum: ${schema.minDimensions.width}x${schema.minDimensions.height}px`);
+          errors.push(
+            `Image dimensions too small. Minimum: ${schema.minDimensions.width}x${schema.minDimensions.height}px`
+          );
         }
         resolve({
           isValid: errors.length === 0,
-          errors: errors.length > 0 ? errors.join(' ') : null
+          errors: errors.length > 0 ? errors.join(' ') : null,
         });
       };
       img.onerror = () => {
         errors.push('Invalid image file');
         resolve({
           isValid: false,
-          errors: errors.join(' ')
+          errors: errors.join(' '),
         });
       };
       img.src = URL.createObjectURL(file);
@@ -236,7 +230,7 @@ export const validateFile = (file, fileType = 'document') => {
 
   return Promise.resolve({
     isValid: errors.length === 0,
-    errors: errors.length > 0 ? errors.join(' ') : null
+    errors: errors.length > 0 ? errors.join(' ') : null,
   });
 };
 
@@ -282,7 +276,7 @@ export const validateProfileForm = (formData) => {
 
   // Required fields
   const requiredFields = ['fullName', 'email', 'studentId', 'institution', 'course', 'yearOfStudy'];
-  requiredFields.forEach(field => {
+  requiredFields.forEach((field) => {
     if (!formData[field] || formData[field].toString().trim() === '') {
       errors[field] = `${field.replace(/([A-Z])/g, ' $1').toLowerCase()} is required`;
       hasErrors = true;
@@ -319,5 +313,5 @@ export default {
   validatePhone,
   validateStudentId,
   validateFullName,
-  validateProfileForm
+  validateProfileForm,
 };

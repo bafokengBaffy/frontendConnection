@@ -1,8 +1,26 @@
 /* eslint-disable no-unused-vars */
 // frontend/src/pages/company/predictive-analytics/PredictiveAnalytics.js (Enhanced)
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Table, Form, Spinner, Alert, ProgressBar } from 'react-bootstrap';
-import { FaChartLine, FaBrain, FaLightbulb, FaRobot, FaCalendarAlt, FaUserCheck } from 'react-icons/fa';
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Table,
+  Form,
+  Spinner,
+  Alert,
+  ProgressBar,
+} from 'react-bootstrap';
+import {
+  FaChartLine,
+  FaBrain,
+  FaLightbulb,
+  FaRobot,
+  FaCalendarAlt,
+  FaUserCheck,
+} from 'react-icons/fa';
 import analyticsService from '../../../services/companyExtendedServices';
 import { useAuth } from '../../../context/AuthContext';
 import './PredictiveAnalytics.css';
@@ -21,11 +39,11 @@ const PredictiveAnalytics = () => {
 
   const fetchAnalytics = async () => {
     if (!currentUser?.uid) return;
-    
+
     try {
       setLoading(true);
       const result = await analyticsService.getCompanyAnalytics(currentUser.uid, timeRange);
-      
+
       if (result.success) {
         setAnalytics(result.data);
       }
@@ -47,7 +65,7 @@ const PredictiveAnalytics = () => {
         prediction: 'High success rate expected',
         factors: ['Strong candidate pool', 'Competitive salaries', 'Good employer brand'],
         timeline: 'Next 3 months',
-        impact: 'high'
+        impact: 'high',
       },
       {
         id: 2,
@@ -57,7 +75,7 @@ const PredictiveAnalytics = () => {
         prediction: 'Moderate attrition risk',
         factors: ['Market competition', 'Salary benchmarks', 'Remote work options'],
         timeline: 'Next 6 months',
-        impact: 'medium'
+        impact: 'medium',
       },
       {
         id: 3,
@@ -67,7 +85,7 @@ const PredictiveAnalytics = () => {
         prediction: 'AI/ML skills becoming critical',
         factors: ['Industry trends', 'Job requirements', 'Candidate skills'],
         timeline: 'Next 12 months',
-        impact: 'high'
+        impact: 'high',
       },
       {
         id: 4,
@@ -77,10 +95,10 @@ const PredictiveAnalytics = () => {
         prediction: 'Costs may increase by 15%',
         factors: ['Platform fees', 'Agency costs', 'Time to hire'],
         timeline: 'Next quarter',
-        impact: 'medium'
-      }
+        impact: 'medium',
+      },
     ];
-    
+
     setPredictions(mockPredictions);
   };
 
@@ -88,11 +106,11 @@ const PredictiveAnalytics = () => {
     const variants = {
       high: { bg: 'danger', text: 'High Impact' },
       medium: { bg: 'warning', text: 'Medium Impact' },
-      low: { bg: 'info', text: 'Low Impact' }
+      low: { bg: 'info', text: 'Low Impact' },
     };
-    
+
     const variant = variants[impact] || { bg: 'secondary', text: 'Unknown' };
-    
+
     return <span className={`badge bg-${variant.bg}`}>{variant.text}</span>;
   };
 
@@ -126,19 +144,19 @@ const PredictiveAnalytics = () => {
               <p className="text-muted small mb-0">Select time range for predictions</p>
             </div>
             <div className="d-flex gap-2">
-              <Button 
+              <Button
                 variant={timeRange === 'week' ? 'primary' : 'outline-primary'}
                 onClick={() => setTimeRange('week')}
               >
                 Week
               </Button>
-              <Button 
+              <Button
                 variant={timeRange === 'month' ? 'primary' : 'outline-primary'}
                 onClick={() => setTimeRange('month')}
               >
                 Month
               </Button>
-              <Button 
+              <Button
                 variant={timeRange === 'year' ? 'primary' : 'outline-primary'}
                 onClick={() => setTimeRange('year')}
               >
@@ -154,7 +172,7 @@ const PredictiveAnalytics = () => {
         <Col>
           <h4 className="mb-3">🤖 AI Predictions & Insights</h4>
           <Row className="g-4">
-            {predictions.map(prediction => (
+            {predictions.map((prediction) => (
               <Col key={prediction.id} xl={6} lg={6} md={12}>
                 <Card className="border-0 shadow-sm h-100">
                   <Card.Body>
@@ -171,9 +189,9 @@ const PredictiveAnalytics = () => {
                         <div className="small text-muted">Confidence</div>
                       </div>
                     </div>
-                    
+
                     <p className="mb-3">{prediction.prediction}</p>
-                    
+
                     <div className="mb-3">
                       <div className="small text-muted mb-2">Key Factors:</div>
                       <div className="d-flex flex-wrap gap-1">
@@ -184,7 +202,7 @@ const PredictiveAnalytics = () => {
                         ))}
                       </div>
                     </div>
-                    
+
                     <div className="d-flex justify-content-between align-items-center">
                       <div>
                         <FaCalendarAlt className="me-1 text-muted" />
@@ -258,7 +276,7 @@ const PredictiveAnalytics = () => {
               </Card.Body>
             </Card>
           </Col>
-          
+
           <Col xl={4}>
             <Card className="border-0 shadow-sm h-100">
               <Card.Header className="bg-white">
@@ -273,8 +291,8 @@ const PredictiveAnalytics = () => {
                           <span>{skill.skill}</span>
                           <span>{skill.count} candidates</span>
                         </div>
-                        <ProgressBar 
-                          now={(skill.count / analytics.topSkills[0].count) * 100} 
+                        <ProgressBar
+                          now={(skill.count / analytics.topSkills[0].count) * 100}
                           variant={index === 0 ? 'success' : index === 1 ? 'info' : 'warning'}
                           style={{ height: '8px' }}
                         />

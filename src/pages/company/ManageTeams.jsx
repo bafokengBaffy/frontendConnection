@@ -1,16 +1,40 @@
 /* eslint-disable no-unused-vars */
 // src/pages/company/ManageTeams.js
 import React, { useState, useEffect } from 'react';
-import { 
-  Container, Row, Col, Card, Button, Form, 
-  Table, Modal, Alert, Spinner, Badge, 
-  Dropdown, OverlayTrigger, Tooltip, InputGroup
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Form,
+  Table,
+  Modal,
+  Alert,
+  Spinner,
+  Badge,
+  Dropdown,
+  OverlayTrigger,
+  Tooltip,
+  InputGroup,
 } from 'react-bootstrap';
-import { 
-  FaUsers, FaUserPlus, FaEdit, FaTrash, FaSearch,
-  FaEnvelope, FaPhone, FaUserTag, FaFilter, FaSort,
-  FaCheckCircle, FaTimesCircle, FaClock, FaUserShield,
-  FaPaperPlane, FaEllipsisV
+import {
+  FaUsers,
+  FaUserPlus,
+  FaEdit,
+  FaTrash,
+  FaSearch,
+  FaEnvelope,
+  FaPhone,
+  FaUserTag,
+  FaFilter,
+  FaSort,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaClock,
+  FaUserShield,
+  FaPaperPlane,
+  FaEllipsisV,
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { companyFirebaseService } from '../../services/companyServices';
@@ -39,9 +63,9 @@ const ManageTeams = () => {
       manageApplications: false,
       scheduleInterviews: false,
       viewAnalytics: false,
-      manageTeam: false
+      manageTeam: false,
     },
-    sendInvitation: true
+    sendInvitation: true,
   });
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState('');
@@ -64,38 +88,38 @@ const ManageTeams = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!formData.name.trim()) {
       newErrors.name = 'Name is required';
     }
-    
+
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email address';
     }
-    
+
     if (formData.phone && !/^[+]?[1-9][\d]{0,15}$/.test(formData.phone.replace(/\D/g, ''))) {
       newErrors.phone = 'Please enter a valid phone number';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleAddMember = async () => {
     if (!validateForm()) return;
-    
+
     try {
       setLoading(true);
       await companyFirebaseService.addTeamMember(formData);
-      
+
       setSuccess('Team member added successfully!');
       setShowAddModal(false);
       resetForm();
-      
+
       await loadTeamMembers();
-      
+
       if (formData.sendInvitation) {
         sendInvitationEmail();
       }
@@ -109,15 +133,15 @@ const ManageTeams = () => {
 
   const handleUpdateMember = async () => {
     if (!validateForm() || !selectedMember) return;
-    
+
     try {
       setLoading(true);
       await companyFirebaseService.updateTeamMember(selectedMember.id, formData);
-      
+
       setSuccess('Team member updated successfully!');
       setShowEditModal(false);
       resetForm();
-      
+
       await loadTeamMembers();
     } catch (error) {
       console.error('Error updating team member:', error);
@@ -129,15 +153,15 @@ const ManageTeams = () => {
 
   const handleDeleteMember = async () => {
     if (!selectedMember) return;
-    
+
     try {
       setLoading(true);
       await companyFirebaseService.updateTeamMember(selectedMember.id, { status: 'inactive' });
-      
+
       setSuccess('Team member deactivated successfully!');
       setShowDeleteModal(false);
       setSelectedMember(null);
-      
+
       await loadTeamMembers();
     } catch (error) {
       console.error('Error deleting team member:', error);
@@ -165,9 +189,9 @@ const ManageTeams = () => {
         manageApplications: false,
         scheduleInterviews: false,
         viewAnalytics: false,
-        manageTeam: false
+        manageTeam: false,
       },
-      sendInvitation: true
+      sendInvitation: true,
     });
     setErrors({});
   };
@@ -178,11 +202,11 @@ const ManageTeams = () => {
       manager: { bg: 'warning', text: 'Manager' },
       recruiter: { bg: 'primary', text: 'Recruiter' },
       interviewer: { bg: 'info', text: 'Interviewer' },
-      viewer: { bg: 'secondary', text: 'Viewer' }
+      viewer: { bg: 'secondary', text: 'Viewer' },
     };
-    
+
     const variant = variants[role] || { bg: 'light', text: 'dark' };
-    
+
     return (
       <Badge bg={variant.bg} className="px-2 py-1" style={{ fontSize: '0.75rem' }}>
         {variant.text}
@@ -198,7 +222,7 @@ const ManageTeams = () => {
         </Badge>
       );
     }
-    
+
     if (status === 'pending') {
       return (
         <Badge bg="warning" className="px-2 py-1" style={{ fontSize: '0.75rem' }}>
@@ -206,7 +230,7 @@ const ManageTeams = () => {
         </Badge>
       );
     }
-    
+
     return (
       <Badge bg="danger" className="px-2 py-1" style={{ fontSize: '0.75rem' }}>
         <FaTimesCircle className="me-1" /> Inactive
@@ -229,9 +253,9 @@ const ManageTeams = () => {
         manageApplications: false,
         scheduleInterviews: false,
         viewAnalytics: false,
-        manageTeam: false
+        manageTeam: false,
       },
-      sendInvitation: false
+      sendInvitation: false,
     });
     setShowEditModal(true);
   };
@@ -241,30 +265,30 @@ const ManageTeams = () => {
     setShowDeleteModal(true);
   };
 
-  const filteredMembers = teamMembers.filter(member => {
+  const filteredMembers = teamMembers.filter((member) => {
     if (filterRole !== 'all' && member.role !== filterRole) return false;
     if (filterStatus !== 'all' && member.status !== filterStatus) return false;
-    
+
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       return (
-        (member.name?.toLowerCase().includes(term)) ||
-        (member.email?.toLowerCase().includes(term)) ||
-        (member.role?.toLowerCase().includes(term)) ||
-        (member.department?.toLowerCase().includes(term))
+        member.name?.toLowerCase().includes(term) ||
+        member.email?.toLowerCase().includes(term) ||
+        member.role?.toLowerCase().includes(term) ||
+        member.department?.toLowerCase().includes(term)
       );
     }
-    
+
     return true;
   });
 
   const handlePermissionChange = (permission, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       permissions: {
         ...prev.permissions,
-        [permission]: value
-      }
+        [permission]: value,
+      },
     }));
   };
 
@@ -277,7 +301,7 @@ const ManageTeams = () => {
         manageApplications: true,
         scheduleInterviews: true,
         viewAnalytics: true,
-        manageTeam: true
+        manageTeam: true,
       },
       manager: {
         viewJobs: true,
@@ -286,7 +310,7 @@ const ManageTeams = () => {
         manageApplications: true,
         scheduleInterviews: true,
         viewAnalytics: true,
-        manageTeam: false
+        manageTeam: false,
       },
       recruiter: {
         viewJobs: true,
@@ -295,7 +319,7 @@ const ManageTeams = () => {
         manageApplications: true,
         scheduleInterviews: true,
         viewAnalytics: true,
-        manageTeam: false
+        manageTeam: false,
       },
       interviewer: {
         viewJobs: true,
@@ -304,7 +328,7 @@ const ManageTeams = () => {
         manageApplications: false,
         scheduleInterviews: true,
         viewAnalytics: false,
-        manageTeam: false
+        manageTeam: false,
       },
       viewer: {
         viewJobs: true,
@@ -313,24 +337,32 @@ const ManageTeams = () => {
         manageApplications: false,
         scheduleInterviews: false,
         viewAnalytics: false,
-        manageTeam: false
-      }
+        manageTeam: false,
+      },
     };
-    
+
     return presets[role] || presets.viewer;
   };
 
   const handleRoleChange = (role) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       role,
-      permissions: getPermissionPreset(role)
+      permissions: getPermissionPreset(role),
     }));
   };
 
   if (loading && teamMembers.length === 0) {
     return (
-      <div style={{ width: '100%', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div
+        style={{
+          width: '100%',
+          height: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
         <div className="text-center">
           <Spinner animation="border" variant="primary" />
           <p className="mt-3">Loading team members...</p>
@@ -345,15 +377,19 @@ const ManageTeams = () => {
       <Card.Body className="p-3">
         <div className="d-flex justify-content-between align-items-start mb-3">
           <div className="d-flex align-items-center">
-            <div 
+            <div
               className="rounded-circle d-flex align-items-center justify-content-center bg-primary text-white me-3"
               style={{ width: '40px', height: '40px', fontSize: '0.875rem' }}
             >
               {member.name?.charAt(0) || 'U'}
             </div>
             <div>
-              <h6 className="mb-0 fw-bold" style={{ fontSize: '0.95rem' }}>{member.name}</h6>
-              <small className="text-muted" style={{ fontSize: '0.8rem' }}>{member.email}</small>
+              <h6 className="mb-0 fw-bold" style={{ fontSize: '0.95rem' }}>
+                {member.name}
+              </h6>
+              <small className="text-muted" style={{ fontSize: '0.8rem' }}>
+                {member.email}
+              </small>
               <div className="d-flex gap-2 mt-1">
                 {getRoleBadge(member.role)}
                 {getStatusBadge(member.status)}
@@ -379,7 +415,7 @@ const ManageTeams = () => {
             </Dropdown.Menu>
           </Dropdown>
         </div>
-        
+
         <div className="row" style={{ fontSize: '0.85rem' }}>
           <div className="col-6">
             <div className="text-muted">Department</div>
@@ -396,15 +432,35 @@ const ManageTeams = () => {
             )}
           </div>
         </div>
-        
+
         <div className="mt-2" style={{ fontSize: '0.85rem' }}>
           <div className="text-muted mb-1">Permissions</div>
           <div className="d-flex flex-wrap gap-1">
-            {member.permissions?.manageJobs && <Badge bg="info" className="px-2 py-1">Jobs</Badge>}
-            {member.permissions?.manageApplications && <Badge bg="info" className="px-2 py-1">Applications</Badge>}
-            {member.permissions?.scheduleInterviews && <Badge bg="info" className="px-2 py-1">Interviews</Badge>}
-            {member.permissions?.viewAnalytics && <Badge bg="info" className="px-2 py-1">Analytics</Badge>}
-            {member.permissions?.manageTeam && <Badge bg="info" className="px-2 py-1">Team</Badge>}
+            {member.permissions?.manageJobs && (
+              <Badge bg="info" className="px-2 py-1">
+                Jobs
+              </Badge>
+            )}
+            {member.permissions?.manageApplications && (
+              <Badge bg="info" className="px-2 py-1">
+                Applications
+              </Badge>
+            )}
+            {member.permissions?.scheduleInterviews && (
+              <Badge bg="info" className="px-2 py-1">
+                Interviews
+              </Badge>
+            )}
+            {member.permissions?.viewAnalytics && (
+              <Badge bg="info" className="px-2 py-1">
+                Analytics
+              </Badge>
+            )}
+            {member.permissions?.manageTeam && (
+              <Badge bg="info" className="px-2 py-1">
+                Team
+              </Badge>
+            )}
           </div>
         </div>
       </Card.Body>
@@ -425,8 +481,8 @@ const ManageTeams = () => {
               Add and manage team members
             </p>
           </div>
-          <Button 
-            variant="primary" 
+          <Button
+            variant="primary"
             onClick={() => setShowAddModal(true)}
             className="d-flex align-items-center gap-2"
             size="sm"
@@ -440,7 +496,13 @@ const ManageTeams = () => {
       {/* Success Alert */}
       {success && (
         <div style={{ padding: '0 16px', marginTop: '16px' }}>
-          <Alert variant="success" onClose={() => setSuccess('')} dismissible className="py-2" style={{ fontSize: '0.875rem' }}>
+          <Alert
+            variant="success"
+            onClose={() => setSuccess('')}
+            dismissible
+            className="py-2"
+            style={{ fontSize: '0.875rem' }}
+          >
             <FaCheckCircle className="me-2" />
             {success}
           </Alert>
@@ -453,8 +515,12 @@ const ManageTeams = () => {
           <div className="col-6 col-md-3">
             <Card className="border-0 shadow-sm h-100">
               <Card.Body className="p-2 text-center">
-                <h3 className="mb-1 text-primary" style={{ fontSize: '1.25rem' }}>{teamMembers.length}</h3>
-                <p className="text-muted mb-0" style={{ fontSize: '0.75rem' }}>Total Members</p>
+                <h3 className="mb-1 text-primary" style={{ fontSize: '1.25rem' }}>
+                  {teamMembers.length}
+                </h3>
+                <p className="text-muted mb-0" style={{ fontSize: '0.75rem' }}>
+                  Total Members
+                </p>
               </Card.Body>
             </Card>
           </div>
@@ -462,9 +528,11 @@ const ManageTeams = () => {
             <Card className="border-0 shadow-sm h-100">
               <Card.Body className="p-2 text-center">
                 <h3 className="mb-1 text-success" style={{ fontSize: '1.25rem' }}>
-                  {teamMembers.filter(m => m.status === 'active').length}
+                  {teamMembers.filter((m) => m.status === 'active').length}
                 </h3>
-                <p className="text-muted mb-0" style={{ fontSize: '0.75rem' }}>Active</p>
+                <p className="text-muted mb-0" style={{ fontSize: '0.75rem' }}>
+                  Active
+                </p>
               </Card.Body>
             </Card>
           </div>
@@ -472,9 +540,11 @@ const ManageTeams = () => {
             <Card className="border-0 shadow-sm h-100">
               <Card.Body className="p-2 text-center">
                 <h3 className="mb-1 text-warning" style={{ fontSize: '1.25rem' }}>
-                  {teamMembers.filter(m => m.status === 'pending').length}
+                  {teamMembers.filter((m) => m.status === 'pending').length}
                 </h3>
-                <p className="text-muted mb-0" style={{ fontSize: '0.75rem' }}>Pending</p>
+                <p className="text-muted mb-0" style={{ fontSize: '0.75rem' }}>
+                  Pending
+                </p>
               </Card.Body>
             </Card>
           </div>
@@ -482,9 +552,11 @@ const ManageTeams = () => {
             <Card className="border-0 shadow-sm h-100">
               <Card.Body className="p-2 text-center">
                 <h3 className="mb-1 text-info" style={{ fontSize: '1.25rem' }}>
-                  {teamMembers.filter(m => m.role === 'recruiter').length}
+                  {teamMembers.filter((m) => m.role === 'recruiter').length}
                 </h3>
-                <p className="text-muted mb-0" style={{ fontSize: '0.75rem' }}>Recruiters</p>
+                <p className="text-muted mb-0" style={{ fontSize: '0.75rem' }}>
+                  Recruiters
+                </p>
               </Card.Body>
             </Card>
           </div>
@@ -509,7 +581,11 @@ const ManageTeams = () => {
           </InputGroup>
           <div className="d-flex gap-2">
             <Dropdown className="flex-grow-1">
-              <Dropdown.Toggle variant="outline-secondary" size="sm" className="d-flex align-items-center gap-1 w-100">
+              <Dropdown.Toggle
+                variant="outline-secondary"
+                size="sm"
+                className="d-flex align-items-center gap-1 w-100"
+              >
                 <FaFilter /> Role: {filterRole === 'all' ? 'All' : filterRole}
               </Dropdown.Toggle>
               <Dropdown.Menu className="w-100">
@@ -517,12 +593,18 @@ const ManageTeams = () => {
                 <Dropdown.Item onClick={() => setFilterRole('admin')}>Admin</Dropdown.Item>
                 <Dropdown.Item onClick={() => setFilterRole('manager')}>Manager</Dropdown.Item>
                 <Dropdown.Item onClick={() => setFilterRole('recruiter')}>Recruiter</Dropdown.Item>
-                <Dropdown.Item onClick={() => setFilterRole('interviewer')}>Interviewer</Dropdown.Item>
+                <Dropdown.Item onClick={() => setFilterRole('interviewer')}>
+                  Interviewer
+                </Dropdown.Item>
                 <Dropdown.Item onClick={() => setFilterRole('viewer')}>Viewer</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
             <Dropdown className="flex-grow-1">
-              <Dropdown.Toggle variant="outline-secondary" size="sm" className="d-flex align-items-center gap-1 w-100">
+              <Dropdown.Toggle
+                variant="outline-secondary"
+                size="sm"
+                className="d-flex align-items-center gap-1 w-100"
+              >
                 <FaFilter /> Status: {filterStatus === 'all' ? 'All' : filterStatus}
               </Dropdown.Toggle>
               <Dropdown.Menu className="w-100">
@@ -560,51 +642,61 @@ const ManageTeams = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredMembers.map(member => (
+                  {filteredMembers.map((member) => (
                     <tr key={member.id}>
                       <td style={{ padding: '8px' }}>
                         <div className="d-flex align-items-center">
-                          <div 
+                          <div
                             className="rounded-circle d-flex align-items-center justify-content-center bg-primary text-white me-2"
                             style={{ width: '32px', height: '32px', fontSize: '0.75rem' }}
                           >
                             {member.name?.charAt(0) || 'U'}
                           </div>
                           <div>
-                            <div className="fw-medium" style={{ fontSize: '0.875rem' }}>{member.name}</div>
-                            <small className="text-muted" style={{ fontSize: '0.75rem' }}>{member.email}</small>
+                            <div className="fw-medium" style={{ fontSize: '0.875rem' }}>
+                              {member.name}
+                            </div>
+                            <small className="text-muted" style={{ fontSize: '0.75rem' }}>
+                              {member.email}
+                            </small>
                           </div>
                         </div>
                       </td>
-                      <td style={{ padding: '8px' }}>
-                        {getRoleBadge(member.role)}
-                      </td>
+                      <td style={{ padding: '8px' }}>{getRoleBadge(member.role)}</td>
                       <td style={{ padding: '8px' }}>
                         <span>{member.department || '-'}</span>
                       </td>
                       <td style={{ padding: '8px' }}>
                         <div className="d-flex flex-column">
                           {member.email && (
-                            <small className="text-muted d-flex align-items-center" style={{ fontSize: '0.75rem' }}>
+                            <small
+                              className="text-muted d-flex align-items-center"
+                              style={{ fontSize: '0.75rem' }}
+                            >
                               <FaEnvelope className="me-1" style={{ fontSize: '0.75rem' }} />
-                              <span style={{ maxWidth: '140px' }} className="text-truncate">{member.email}</span>
+                              <span style={{ maxWidth: '140px' }} className="text-truncate">
+                                {member.email}
+                              </span>
                             </small>
                           )}
                           {member.phone && (
-                            <small className="text-muted d-flex align-items-center" style={{ fontSize: '0.75rem' }}>
+                            <small
+                              className="text-muted d-flex align-items-center"
+                              style={{ fontSize: '0.75rem' }}
+                            >
                               <FaPhone className="me-1" style={{ fontSize: '0.75rem' }} />
-                              <span style={{ maxWidth: '140px' }} className="text-truncate">{member.phone}</span>
+                              <span style={{ maxWidth: '140px' }} className="text-truncate">
+                                {member.phone}
+                              </span>
                             </small>
                           )}
                         </div>
                       </td>
-                      <td style={{ padding: '8px' }}>
-                        {getStatusBadge(member.status)}
-                      </td>
+                      <td style={{ padding: '8px' }}>{getStatusBadge(member.status)}</td>
                       <td style={{ padding: '8px' }}>
                         <div className="d-flex gap-1">
-                          <Button 
-                            variant="outline-primary" 
+                          <Button
+                            variant="outline-primary"
                             size="sm"
                             onClick={() => handleEditClick(member)}
                             className="p-1"
@@ -612,10 +704,10 @@ const ManageTeams = () => {
                           >
                             <FaEdit />
                           </Button>
-                          
+
                           {member.status === 'active' && (
-                            <Button 
-                              variant="outline-warning" 
+                            <Button
+                              variant="outline-warning"
                               size="sm"
                               onClick={() => sendInvitationEmail()}
                               className="p-1"
@@ -624,9 +716,9 @@ const ManageTeams = () => {
                               <FaPaperPlane />
                             </Button>
                           )}
-                          
-                          <Button 
-                            variant="outline-danger" 
+
+                          <Button
+                            variant="outline-danger"
                             size="sm"
                             onClick={() => handleDeleteClick(member)}
                             className="p-1"
@@ -646,15 +738,11 @@ const ManageTeams = () => {
               <FaUsers className="text-muted mb-3" style={{ fontSize: '2rem', opacity: 0.5 }} />
               <h6 style={{ fontSize: '0.875rem' }}>No team members found</h6>
               <p className="text-muted mb-3" style={{ fontSize: '0.75rem' }}>
-                {searchTerm || filterRole !== 'all' || filterStatus !== 'all' 
+                {searchTerm || filterRole !== 'all' || filterStatus !== 'all'
                   ? 'Try adjusting your filters'
                   : 'Add your first team member to get started'}
               </p>
-              <Button 
-                variant="primary" 
-                onClick={() => setShowAddModal(true)}
-                size="sm"
-              >
+              <Button variant="primary" onClick={() => setShowAddModal(true)} size="sm">
                 <FaUserPlus className="me-2" /> Add Team Member
               </Button>
             </div>
@@ -665,7 +753,7 @@ const ManageTeams = () => {
         <div className="d-md-none">
           {filteredMembers.length > 0 ? (
             <div>
-              {filteredMembers.map(member => (
+              {filteredMembers.map((member) => (
                 <TeamMemberCard key={member.id} member={member} />
               ))}
             </div>
@@ -674,15 +762,11 @@ const ManageTeams = () => {
               <FaUsers className="text-muted mb-3" style={{ fontSize: '2rem', opacity: 0.5 }} />
               <h6 style={{ fontSize: '0.875rem' }}>No team members found</h6>
               <p className="text-muted mb-3" style={{ fontSize: '0.75rem' }}>
-                {searchTerm || filterRole !== 'all' || filterStatus !== 'all' 
+                {searchTerm || filterRole !== 'all' || filterStatus !== 'all'
                   ? 'Try adjusting your filters'
                   : 'Add your first team member to get started'}
               </p>
-              <Button 
-                variant="primary" 
-                onClick={() => setShowAddModal(true)}
-                size="sm"
-              >
+              <Button variant="primary" onClick={() => setShowAddModal(true)} size="sm">
                 <FaUserPlus className="me-2" /> Add Team Member
               </Button>
             </div>
@@ -704,7 +788,7 @@ const ManageTeams = () => {
                   type="text"
                   placeholder="Enter full name"
                   value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   isInvalid={!!errors.name}
                   size="sm"
                 />
@@ -719,7 +803,7 @@ const ManageTeams = () => {
                   type="email"
                   placeholder="team.member@company.com"
                   value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   isInvalid={!!errors.email}
                   size="sm"
                 />
@@ -734,7 +818,7 @@ const ManageTeams = () => {
                   type="tel"
                   placeholder="+266 1234 5678"
                   value={formData.phone}
-                  onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   isInvalid={!!errors.phone}
                   size="sm"
                 />
@@ -764,7 +848,7 @@ const ManageTeams = () => {
                   type="text"
                   placeholder="e.g., HR, Engineering, Marketing"
                   value={formData.department}
-                  onChange={(e) => setFormData({...formData, department: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, department: e.target.value })}
                   size="sm"
                 />
               </Form.Group>
@@ -774,7 +858,7 @@ const ManageTeams = () => {
                 <div className="border rounded p-3" style={{ fontSize: '0.875rem' }}>
                   <div className="row">
                     <div className="col-6">
-                      <Form.Check 
+                      <Form.Check
                         type="checkbox"
                         id="viewJobs"
                         label="View Jobs"
@@ -782,7 +866,7 @@ const ManageTeams = () => {
                         onChange={(e) => handlePermissionChange('viewJobs', e.target.checked)}
                         className="mb-2"
                       />
-                      <Form.Check 
+                      <Form.Check
                         type="checkbox"
                         id="manageJobs"
                         label="Manage Jobs"
@@ -790,33 +874,39 @@ const ManageTeams = () => {
                         onChange={(e) => handlePermissionChange('manageJobs', e.target.checked)}
                         className="mb-2"
                       />
-                      <Form.Check 
+                      <Form.Check
                         type="checkbox"
                         id="viewApplications"
                         label="View Applications"
                         checked={formData.permissions.viewApplications}
-                        onChange={(e) => handlePermissionChange('viewApplications', e.target.checked)}
+                        onChange={(e) =>
+                          handlePermissionChange('viewApplications', e.target.checked)
+                        }
                         className="mb-2"
                       />
                     </div>
                     <div className="col-6">
-                      <Form.Check 
+                      <Form.Check
                         type="checkbox"
                         id="manageApplications"
                         label="Manage Applications"
                         checked={formData.permissions.manageApplications}
-                        onChange={(e) => handlePermissionChange('manageApplications', e.target.checked)}
+                        onChange={(e) =>
+                          handlePermissionChange('manageApplications', e.target.checked)
+                        }
                         className="mb-2"
                       />
-                      <Form.Check 
+                      <Form.Check
                         type="checkbox"
                         id="scheduleInterviews"
                         label="Schedule Interviews"
                         checked={formData.permissions.scheduleInterviews}
-                        onChange={(e) => handlePermissionChange('scheduleInterviews', e.target.checked)}
+                        onChange={(e) =>
+                          handlePermissionChange('scheduleInterviews', e.target.checked)
+                        }
                         className="mb-2"
                       />
-                      <Form.Check 
+                      <Form.Check
                         type="checkbox"
                         id="viewAnalytics"
                         label="View Analytics"
@@ -830,12 +920,12 @@ const ManageTeams = () => {
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Check 
+                <Form.Check
                   type="checkbox"
                   id="sendInvitation"
                   label="Send invitation email"
                   checked={formData.sendInvitation}
-                  onChange={(e) => setFormData({...formData, sendInvitation: e.target.checked})}
+                  onChange={(e) => setFormData({ ...formData, sendInvitation: e.target.checked })}
                   className="small"
                 />
                 <div className="text-muted small mt-1">
@@ -855,8 +945,8 @@ const ManageTeams = () => {
           <Button variant="light" onClick={() => setShowAddModal(false)} size="sm" className="px-3">
             Cancel
           </Button>
-          <Button 
-            variant="primary" 
+          <Button
+            variant="primary"
             onClick={handleAddMember}
             disabled={loading}
             size="sm"
@@ -886,7 +976,7 @@ const ManageTeams = () => {
                 <Form.Control
                   type="text"
                   value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   isInvalid={!!errors.name}
                   size="sm"
                 />
@@ -897,7 +987,7 @@ const ManageTeams = () => {
                 <Form.Control
                   type="email"
                   value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   isInvalid={!!errors.email}
                   size="sm"
                 />
@@ -908,7 +998,7 @@ const ManageTeams = () => {
                 <Form.Control
                   type="tel"
                   value={formData.phone}
-                  onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   size="sm"
                 />
               </Form.Group>
@@ -933,7 +1023,7 @@ const ManageTeams = () => {
                 <Form.Control
                   type="text"
                   value={formData.department}
-                  onChange={(e) => setFormData({...formData, department: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, department: e.target.value })}
                   size="sm"
                 />
               </Form.Group>
@@ -944,7 +1034,9 @@ const ManageTeams = () => {
                   value={selectedMember?.status}
                   onChange={(e) => {
                     if (selectedMember) {
-                      companyFirebaseService.updateTeamMember(selectedMember.id, { status: e.target.value });
+                      companyFirebaseService.updateTeamMember(selectedMember.id, {
+                        status: e.target.value,
+                      });
                     }
                   }}
                   size="sm"
@@ -964,11 +1056,16 @@ const ManageTeams = () => {
           </div>
         </Modal.Body>
         <Modal.Footer className="p-3 border-top">
-          <Button variant="light" onClick={() => setShowEditModal(false)} size="sm" className="px-3">
+          <Button
+            variant="light"
+            onClick={() => setShowEditModal(false)}
+            size="sm"
+            className="px-3"
+          >
             Cancel
           </Button>
-          <Button 
-            variant="primary" 
+          <Button
+            variant="primary"
             onClick={handleUpdateMember}
             disabled={loading}
             size="sm"
@@ -1003,11 +1100,16 @@ const ManageTeams = () => {
           </p>
         </Modal.Body>
         <Modal.Footer className="p-3 border-top">
-          <Button variant="light" onClick={() => setShowDeleteModal(false)} size="sm" className="px-3">
+          <Button
+            variant="light"
+            onClick={() => setShowDeleteModal(false)}
+            size="sm"
+            className="px-3"
+          >
             Cancel
           </Button>
-          <Button 
-            variant="danger" 
+          <Button
+            variant="danger"
             onClick={handleDeleteMember}
             disabled={loading}
             size="sm"

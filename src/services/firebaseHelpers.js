@@ -13,7 +13,7 @@ export const FirebaseHelpers = {
         userId,
         metadata,
         timestamp: Timestamp.now(),
-        createdAt: Timestamp.now()
+        createdAt: Timestamp.now(),
       });
       return true;
     } catch (error) {
@@ -29,7 +29,7 @@ export const FirebaseHelpers = {
       await addDoc(statsRef, {
         ...stats,
         timestamp: Timestamp.now(),
-        updatedAt: Timestamp.now()
+        updatedAt: Timestamp.now(),
       });
       return true;
     } catch (error) {
@@ -49,7 +49,7 @@ export const FirebaseHelpers = {
         type,
         link,
         read: false,
-        createdAt: Timestamp.now()
+        createdAt: Timestamp.now(),
       });
       return true;
     } catch (error) {
@@ -59,22 +59,27 @@ export const FirebaseHelpers = {
   },
 
   // Get collection with filters
-  getCollection: async (collectionName, filters = [], orderByField = 'createdAt', orderDirection = 'desc') => {
+  getCollection: async (
+    collectionName,
+    filters = [],
+    orderByField = 'createdAt',
+    orderDirection = 'desc'
+  ) => {
     try {
       let q = collection(db, collectionName);
-      
+
       // Apply filters
-      filters.forEach(filter => {
+      filters.forEach((filter) => {
         q = query(q, where(filter.field, filter.operator, filter.value));
       });
-      
+
       // Apply ordering
       q = query(q, orderBy(orderByField, orderDirection));
-      
+
       const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({
+      return snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       }));
     } catch (error) {
       console.error(`Error getting ${collectionName}:`, error);
@@ -88,7 +93,7 @@ export const FirebaseHelpers = {
       // Check if data already exists
       const usersRef = collection(db, 'users');
       const userSnapshot = await getDocs(usersRef);
-      
+
       if (userSnapshot.empty) {
         // Create admin user if not exists
         const adminUser = {
@@ -98,16 +103,16 @@ export const FirebaseHelpers = {
           status: 'active',
           isAdmin: true,
           createdAt: Timestamp.now(),
-          updatedAt: Timestamp.now()
+          updatedAt: Timestamp.now(),
         };
-        
+
         await addDoc(usersRef, adminUser);
         await FirebaseHelpers.logActivity(
           'system_init',
           'System initialized with admin user',
           'system'
         );
-        
+
         return true;
       }
       return false;
@@ -121,34 +126,34 @@ export const FirebaseHelpers = {
   backupData: async (collections = ['users', 'applications', 'jobs', 'funding_requests']) => {
     try {
       const backup = {};
-      
+
       for (const collectionName of collections) {
         const snapshot = await getDocs(collection(db, collectionName));
-        backup[collectionName] = snapshot.docs.map(doc => ({
+        backup[collectionName] = snapshot.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data()
+          ...doc.data(),
         }));
       }
-      
+
       // Create backup record
       const backupsRef = collection(db, 'backups');
       await addDoc(backupsRef, {
         data: backup,
         timestamp: Timestamp.now(),
-        size: JSON.stringify(backup).length
+        size: JSON.stringify(backup).length,
       });
-      
+
       return {
         success: true,
         message: 'Backup created successfully',
-        size: JSON.stringify(backup).length
+        size: JSON.stringify(backup).length,
       };
     } catch (error) {
       console.error('Error creating backup:', error);
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
-  }
+  },
 };

@@ -1,19 +1,53 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Container, Row, Col, Card, Button, Form, 
-  Table, Modal, Alert, Spinner, Badge, 
-  Dropdown, OverlayTrigger, Tooltip, InputGroup,
-  ProgressBar, ListGroup
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Form,
+  Table,
+  Modal,
+  Alert,
+  Spinner,
+  Badge,
+  Dropdown,
+  OverlayTrigger,
+  Tooltip,
+  InputGroup,
+  ProgressBar,
+  ListGroup,
 } from 'react-bootstrap';
-import { 
-  FaFileAlt, FaUpload, FaDownload, FaTrash, 
-  FaSearch, FaFilter, FaFolder, FaFilePdf,
-  FaFileWord, FaFileExcel, FaFileImage, FaFileArchive,
-  FaEye, FaEdit, FaShareAlt, FaCopy, FaCalendarAlt,
-  FaUser, FaSortAmountDown, FaSortAmountUp, FaCloudUploadAlt,
-  FaCheckCircle, FaTimesCircle, FaLock, FaUnlock,
-  FaFolderPlus, FaTags, FaExternalLinkAlt
+import {
+  FaFileAlt,
+  FaUpload,
+  FaDownload,
+  FaTrash,
+  FaSearch,
+  FaFilter,
+  FaFolder,
+  FaFilePdf,
+  FaFileWord,
+  FaFileExcel,
+  FaFileImage,
+  FaFileArchive,
+  FaEye,
+  FaEdit,
+  FaShareAlt,
+  FaCopy,
+  FaCalendarAlt,
+  FaUser,
+  FaSortAmountDown,
+  FaSortAmountUp,
+  FaCloudUploadAlt,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaLock,
+  FaUnlock,
+  FaFolderPlus,
+  FaTags,
+  FaExternalLinkAlt,
 } from 'react-icons/fa';
 import { companyFirebaseService } from '../../services/companyServices';
 
@@ -34,7 +68,7 @@ const DocumentHub = () => {
     description: '',
     category: 'general',
     tags: '',
-    accessLevel: 'private'
+    accessLevel: 'private',
   });
   const [file, setFile] = useState(null);
   const fileInputRef = useRef(null);
@@ -66,7 +100,7 @@ const DocumentHub = () => {
         setErrors({ file: 'File size must be less than 50MB' });
         return;
       }
-      
+
       // Validate file type
       const allowedTypes = [
         'application/pdf',
@@ -79,18 +113,18 @@ const DocumentHub = () => {
         'image/gif',
         'text/plain',
         'application/zip',
-        'application/x-rar-compressed'
+        'application/x-rar-compressed',
       ];
-      
+
       if (!allowedTypes.includes(selectedFile.type)) {
         setErrors({ file: 'File type not supported' });
         return;
       }
-      
+
       setFile(selectedFile);
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        name: selectedFile.name.replace(/\.[^/.]+$/, "") // Remove extension
+        name: selectedFile.name.replace(/\.[^/.]+$/, ''), // Remove extension
       }));
       setErrors({});
     }
@@ -98,19 +132,19 @@ const DocumentHub = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!file) {
       newErrors.file = 'Please select a file to upload';
     }
-    
+
     if (!formData.name.trim()) {
       newErrors.name = 'Document name is required';
     }
-    
+
     if (!formData.category) {
       newErrors.category = 'Category is required';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -121,7 +155,7 @@ const DocumentHub = () => {
       const interval = setInterval(() => {
         progress += 5;
         setUploadProgress(progress);
-        
+
         if (progress >= 100) {
           clearInterval(interval);
           resolve();
@@ -132,29 +166,32 @@ const DocumentHub = () => {
 
   const handleUpload = async () => {
     if (!validateForm()) return;
-    
+
     try {
       setUploading(true);
       setUploadProgress(0);
-      
+
       // Simulate upload progress
       await simulateUploadProgress();
-      
+
       // Upload file to Firebase
       const metadata = {
         name: formData.name,
         description: formData.description,
         category: formData.category,
-        tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
-        accessLevel: formData.accessLevel
+        tags: formData.tags
+          .split(',')
+          .map((tag) => tag.trim())
+          .filter((tag) => tag),
+        accessLevel: formData.accessLevel,
       };
-      
+
       await companyFirebaseService.uploadDocument(file, metadata);
-      
+
       setSuccess('Document uploaded successfully!');
       setShowUploadModal(false);
       resetForm();
-      
+
       await loadDocuments();
     } catch (error) {
       console.error('Error uploading document:', error);
@@ -167,15 +204,15 @@ const DocumentHub = () => {
 
   const handleDeleteDocument = async () => {
     if (!selectedDocument) return;
-    
+
     try {
       setLoading(true);
       await companyFirebaseService.deleteDocument(selectedDocument.id);
-      
+
       setSuccess('Document deleted successfully!');
       setShowDeleteModal(false);
       setSelectedDocument(null);
-      
+
       await loadDocuments();
     } catch (error) {
       console.error('Error deleting document:', error);
@@ -210,7 +247,7 @@ const DocumentHub = () => {
       description: '',
       category: 'general',
       tags: '',
-      accessLevel: 'private'
+      accessLevel: 'private',
     });
     setFile(null);
     setErrors({});
@@ -228,7 +265,11 @@ const DocumentHub = () => {
       return <FaFileExcel className="text-success" />;
     } else if (fileType?.includes('image')) {
       return <FaFileImage className="text-info" />;
-    } else if (fileType?.includes('zip') || fileType?.includes('rar') || fileType?.includes('archive')) {
+    } else if (
+      fileType?.includes('zip') ||
+      fileType?.includes('rar') ||
+      fileType?.includes('archive')
+    ) {
       return <FaFileArchive className="text-warning" />;
     } else {
       return <FaFileAlt className="text-secondary" />;
@@ -239,20 +280,20 @@ const DocumentHub = () => {
     if (!fileName) return 'Unknown';
     const extension = fileName.split('.').pop().toLowerCase();
     const typeMap = {
-      'pdf': 'PDF Document',
-      'doc': 'Word Document',
-      'docx': 'Word Document',
-      'xls': 'Excel Spreadsheet',
-      'xlsx': 'Excel Spreadsheet',
-      'jpg': 'JPEG Image',
-      'jpeg': 'JPEG Image',
-      'png': 'PNG Image',
-      'gif': 'GIF Image',
-      'txt': 'Text File',
-      'zip': 'ZIP Archive',
-      'rar': 'RAR Archive'
+      pdf: 'PDF Document',
+      doc: 'Word Document',
+      docx: 'Word Document',
+      xls: 'Excel Spreadsheet',
+      xlsx: 'Excel Spreadsheet',
+      jpg: 'JPEG Image',
+      jpeg: 'JPEG Image',
+      png: 'PNG Image',
+      gif: 'GIF Image',
+      txt: 'Text File',
+      zip: 'ZIP Archive',
+      rar: 'RAR Archive',
     };
-    
+
     return typeMap[extension] || 'File';
   };
 
@@ -269,37 +310,39 @@ const DocumentHub = () => {
     return new Date(date).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
-      year: 'numeric'
+      year: 'numeric',
     });
   };
 
-  const filteredDocuments = documents.filter(doc => {
-    if (filterType !== 'all' && doc.category !== filterType) return false;
-    
-    if (searchTerm) {
-      const term = searchTerm.toLowerCase();
-      return (
-        doc.name?.toLowerCase().includes(term) ||
-        doc.description?.toLowerCase().includes(term) ||
-        doc.tags?.some(tag => tag.toLowerCase().includes(term))
-      );
-    }
-    
-    return true;
-  }).sort((a, b) => {
-    switch (sortBy) {
-      case 'newest':
-        return new Date(b.uploadedAt) - new Date(a.uploadedAt);
-      case 'oldest':
-        return new Date(a.uploadedAt) - new Date(b.uploadedAt);
-      case 'name':
-        return (a.name || '').localeCompare(b.name || '');
-      case 'size':
-        return (b.fileSize || 0) - (a.fileSize || 0);
-      default:
-        return 0;
-    }
-  });
+  const filteredDocuments = documents
+    .filter((doc) => {
+      if (filterType !== 'all' && doc.category !== filterType) return false;
+
+      if (searchTerm) {
+        const term = searchTerm.toLowerCase();
+        return (
+          doc.name?.toLowerCase().includes(term) ||
+          doc.description?.toLowerCase().includes(term) ||
+          doc.tags?.some((tag) => tag.toLowerCase().includes(term))
+        );
+      }
+
+      return true;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case 'newest':
+          return new Date(b.uploadedAt) - new Date(a.uploadedAt);
+        case 'oldest':
+          return new Date(a.uploadedAt) - new Date(b.uploadedAt);
+        case 'name':
+          return (a.name || '').localeCompare(b.name || '');
+        case 'size':
+          return (b.fileSize || 0) - (a.fileSize || 0);
+        default:
+          return 0;
+      }
+    });
 
   const categories = [
     'general',
@@ -309,23 +352,23 @@ const DocumentHub = () => {
     'legal',
     'marketing',
     'technical',
-    'training'
+    'training',
   ];
 
   const getCategoryBadge = (category) => {
     const variants = {
-      'general': { bg: 'secondary', text: 'General' },
+      general: { bg: 'secondary', text: 'General' },
       'hr-policies': { bg: 'primary', text: 'HR Policies' },
-      'templates': { bg: 'info', text: 'Templates' },
-      'reports': { bg: 'success', text: 'Reports' },
-      'legal': { bg: 'warning', text: 'Legal' },
-      'marketing': { bg: 'danger', text: 'Marketing' },
-      'technical': { bg: 'dark', text: 'Technical' },
-      'training': { bg: 'light', text: 'dark' }
+      templates: { bg: 'info', text: 'Templates' },
+      reports: { bg: 'success', text: 'Reports' },
+      legal: { bg: 'warning', text: 'Legal' },
+      marketing: { bg: 'danger', text: 'Marketing' },
+      technical: { bg: 'dark', text: 'Technical' },
+      training: { bg: 'light', text: 'dark' },
     };
-    
+
     const variant = variants[category] || { bg: 'light', text: 'dark' };
-    
+
     return (
       <Badge bg={variant.bg} className="px-2 py-1">
         {variant.text}
@@ -358,8 +401,8 @@ const DocumentHub = () => {
                 Store and manage all your company documents in one place
               </p>
             </div>
-            <Button 
-              variant="primary" 
+            <Button
+              variant="primary"
               onClick={() => setShowUploadModal(true)}
               className="d-flex align-items-center gap-2"
             >
@@ -394,7 +437,7 @@ const DocumentHub = () => {
           <Card className="border-0 shadow-sm h-100">
             <Card.Body className="text-center">
               <h2 className="mb-0 text-info">
-                {documents.filter(d => d.fileType?.includes('pdf')).length}
+                {documents.filter((d) => d.fileType?.includes('pdf')).length}
               </h2>
               <p className="text-muted mb-0">PDF Files</p>
             </Card.Body>
@@ -404,7 +447,7 @@ const DocumentHub = () => {
           <Card className="border-0 shadow-sm h-100">
             <Card.Body className="text-center">
               <h2 className="mb-0 text-success">
-                {documents.filter(d => d.fileType?.includes('image')).length}
+                {documents.filter((d) => d.fileType?.includes('image')).length}
               </h2>
               <p className="text-muted mb-0">Images</p>
             </Card.Body>
@@ -441,12 +484,15 @@ const DocumentHub = () => {
               </InputGroup>
             </div>
             <Dropdown>
-              <Dropdown.Toggle variant="outline-secondary" className="d-flex align-items-center gap-2">
+              <Dropdown.Toggle
+                variant="outline-secondary"
+                className="d-flex align-items-center gap-2"
+              >
                 <FaFilter /> Category: {filterType === 'all' ? 'All' : filterType}
               </Dropdown.Toggle>
               <Dropdown.Menu>
                 <Dropdown.Item onClick={() => setFilterType('all')}>All Categories</Dropdown.Item>
-                {categories.map(category => (
+                {categories.map((category) => (
                   <Dropdown.Item key={category} onClick={() => setFilterType(category)}>
                     {category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ')}
                   </Dropdown.Item>
@@ -454,7 +500,10 @@ const DocumentHub = () => {
               </Dropdown.Menu>
             </Dropdown>
             <Dropdown>
-              <Dropdown.Toggle variant="outline-secondary" className="d-flex align-items-center gap-2">
+              <Dropdown.Toggle
+                variant="outline-secondary"
+                className="d-flex align-items-center gap-2"
+              >
                 {sortBy === 'newest' ? <FaSortAmountDown /> : <FaSortAmountUp />}
                 Sort
               </Dropdown.Toggle>
@@ -491,7 +540,7 @@ const DocumentHub = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredDocuments.map(doc => (
+                      {filteredDocuments.map((doc) => (
                         <tr key={doc.id}>
                           <td>
                             <div className="d-flex align-items-center">
@@ -505,7 +554,7 @@ const DocumentHub = () => {
                                 )}
                                 {doc.tags && doc.tags.length > 0 && (
                                   <div className="mt-1">
-                                    {doc.tags.slice(0, 2).map(tag => (
+                                    {doc.tags.slice(0, 2).map((tag) => (
                                       <Badge key={tag} bg="light" text="dark" className="me-1">
                                         {tag}
                                       </Badge>
@@ -520,9 +569,7 @@ const DocumentHub = () => {
                               </div>
                             </div>
                           </td>
-                          <td>
-                            {getCategoryBadge(doc.category)}
-                          </td>
+                          <td>{getCategoryBadge(doc.category)}</td>
                           <td>
                             <div className="d-flex flex-column">
                               <small>{getFileType(doc.fileName)}</small>
@@ -539,11 +586,17 @@ const DocumentHub = () => {
                           </td>
                           <td>
                             {doc.accessLevel === 'public' ? (
-                              <Badge bg="success" className="d-flex align-items-center gap-1 px-2 py-1">
+                              <Badge
+                                bg="success"
+                                className="d-flex align-items-center gap-1 px-2 py-1"
+                              >
                                 <FaUnlock /> Public
                               </Badge>
                             ) : (
-                              <Badge bg="secondary" className="d-flex align-items-center gap-1 px-2 py-1">
+                              <Badge
+                                bg="secondary"
+                                className="d-flex align-items-center gap-1 px-2 py-1"
+                              >
                                 <FaLock /> Private
                               </Badge>
                             )}
@@ -551,38 +604,38 @@ const DocumentHub = () => {
                           <td>
                             <div className="d-flex gap-1">
                               <OverlayTrigger overlay={<Tooltip>Preview</Tooltip>}>
-                                <Button 
-                                  variant="outline-primary" 
+                                <Button
+                                  variant="outline-primary"
                                   size="sm"
                                   onClick={() => window.open(doc.downloadURL, '_blank')}
                                 >
                                   <FaEye />
                                 </Button>
                               </OverlayTrigger>
-                              
+
                               <OverlayTrigger overlay={<Tooltip>Download</Tooltip>}>
-                                <Button 
-                                  variant="outline-success" 
+                                <Button
+                                  variant="outline-success"
                                   size="sm"
                                   onClick={() => handleDownload(doc)}
                                 >
                                   <FaDownload />
                                 </Button>
                               </OverlayTrigger>
-                              
+
                               <OverlayTrigger overlay={<Tooltip>Share</Tooltip>}>
-                                <Button 
-                                  variant="outline-info" 
+                                <Button
+                                  variant="outline-info"
                                   size="sm"
                                   onClick={() => handleShare(doc)}
                                 >
                                   <FaShareAlt />
                                 </Button>
                               </OverlayTrigger>
-                              
+
                               <OverlayTrigger overlay={<Tooltip>Delete</Tooltip>}>
-                                <Button 
-                                  variant="outline-danger" 
+                                <Button
+                                  variant="outline-danger"
                                   size="sm"
                                   onClick={() => {
                                     setSelectedDocument(doc);
@@ -601,17 +654,17 @@ const DocumentHub = () => {
                 </div>
               ) : (
                 <div className="text-center py-5">
-                  <FaFileAlt className="text-muted mb-3" style={{ fontSize: '3rem', opacity: 0.5 }} />
+                  <FaFileAlt
+                    className="text-muted mb-3"
+                    style={{ fontSize: '3rem', opacity: 0.5 }}
+                  />
                   <h5>No documents found</h5>
                   <p className="text-muted mb-3">
-                    {searchTerm || filterType !== 'all' 
+                    {searchTerm || filterType !== 'all'
                       ? 'Try adjusting your filters'
                       : 'Upload your first document to get started'}
                   </p>
-                  <Button 
-                    variant="primary" 
-                    onClick={() => setShowUploadModal(true)}
-                  >
+                  <Button variant="primary" onClick={() => setShowUploadModal(true)}>
                     <FaUpload className="me-2" /> Upload Document
                   </Button>
                 </div>
@@ -632,26 +685,27 @@ const DocumentHub = () => {
               <FaCloudUploadAlt className="text-primary mb-3" style={{ fontSize: '3rem' }} />
               <h5>Uploading Document</h5>
               <p className="text-muted mb-3">Please wait while we upload your document...</p>
-              <ProgressBar 
-                now={uploadProgress} 
-                label={`${uploadProgress}%`} 
-                variant="primary" 
-                animated 
+              <ProgressBar
+                now={uploadProgress}
+                label={`${uploadProgress}%`}
+                variant="primary"
+                animated
                 className="mb-3"
               />
-              <p className="text-muted small">
-                Uploading: {file?.name}
-              </p>
+              <p className="text-muted small">Uploading: {file?.name}</p>
             </div>
           ) : (
             <Form>
               {/* File Upload Area */}
-              <div 
+              <div
                 className="border rounded p-5 text-center mb-4 cursor-pointer hover-highlight"
                 onClick={() => fileInputRef.current?.click()}
                 style={{ borderStyle: 'dashed', borderWidth: '2px' }}
               >
-                <FaCloudUploadAlt className="text-muted mb-3" style={{ fontSize: '3rem', opacity: 0.5 }} />
+                <FaCloudUploadAlt
+                  className="text-muted mb-3"
+                  style={{ fontSize: '3rem', opacity: 0.5 }}
+                />
                 <h5>Click to select file or drag and drop</h5>
                 <p className="text-muted mb-3">
                   Max file size: 50MB. Supported: PDF, Word, Excel, Images, Text, Archives
@@ -663,9 +717,7 @@ const DocumentHub = () => {
                   style={{ display: 'none' }}
                   accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.gif,.txt,.zip,.rar"
                 />
-                <Button variant="outline-primary">
-                  Browse Files
-                </Button>
+                <Button variant="outline-primary">Browse Files</Button>
               </div>
 
               {file && (
@@ -680,8 +732,8 @@ const DocumentHub = () => {
                         </div>
                       </div>
                     </div>
-                    <Button 
-                      variant="link" 
+                    <Button
+                      variant="link"
                       className="text-danger"
                       onClick={() => {
                         setFile(null);
@@ -709,12 +761,10 @@ const DocumentHub = () => {
                   type="text"
                   placeholder="Enter descriptive document name"
                   value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   isInvalid={!!errors.name}
                 />
-                <Form.Control.Feedback type="invalid">
-                  {errors.name}
-                </Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">{errors.name}</Form.Control.Feedback>
               </Form.Group>
 
               <Form.Group className="mb-3">
@@ -724,7 +774,7 @@ const DocumentHub = () => {
                   rows={2}
                   placeholder="Brief description of the document"
                   value={formData.description}
-                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 />
               </Form.Group>
 
@@ -734,7 +784,7 @@ const DocumentHub = () => {
                     <Form.Label>Category *</Form.Label>
                     <Form.Select
                       value={formData.category}
-                      onChange={(e) => setFormData({...formData, category: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                       isInvalid={!!errors.category}
                     >
                       <option value="general">General</option>
@@ -746,9 +796,7 @@ const DocumentHub = () => {
                       <option value="technical">Technical Documents</option>
                       <option value="training">Training Materials</option>
                     </Form.Select>
-                    <Form.Control.Feedback type="invalid">
-                      {errors.category}
-                    </Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">{errors.category}</Form.Control.Feedback>
                   </Form.Group>
                 </Col>
                 <Col md={6}>
@@ -756,7 +804,7 @@ const DocumentHub = () => {
                     <Form.Label>Access Level</Form.Label>
                     <Form.Select
                       value={formData.accessLevel}
-                      onChange={(e) => setFormData({...formData, accessLevel: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, accessLevel: e.target.value })}
                     >
                       <option value="private">Private (Company Only)</option>
                       <option value="public">Public (Shareable)</option>
@@ -774,7 +822,7 @@ const DocumentHub = () => {
                   type="text"
                   placeholder="Enter tags separated by commas (e.g., policy, hr, benefits)"
                   value={formData.tags}
-                  onChange={(e) => setFormData({...formData, tags: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
                 />
                 <Form.Text className="text-muted">
                   Tags help in searching and organizing documents
@@ -793,11 +841,7 @@ const DocumentHub = () => {
           <Button variant="light" onClick={() => setShowUploadModal(false)}>
             Cancel
           </Button>
-          <Button 
-            variant="primary" 
-            onClick={handleUpload}
-            disabled={uploading || !file}
-          >
+          <Button variant="primary" onClick={handleUpload} disabled={uploading || !file}>
             {uploading ? (
               <>
                 <Spinner animation="border" size="sm" className="me-2" />
@@ -836,11 +880,7 @@ const DocumentHub = () => {
           <Button variant="light" onClick={() => setShowDeleteModal(false)}>
             Cancel
           </Button>
-          <Button 
-            variant="danger" 
-            onClick={handleDeleteDocument}
-            disabled={loading}
-          >
+          <Button variant="danger" onClick={handleDeleteDocument} disabled={loading}>
             {loading ? (
               <>
                 <Spinner animation="border" size="sm" className="me-2" />
@@ -868,7 +908,8 @@ const DocumentHub = () => {
                 <div>
                   <h6 className="mb-1">{selectedDocument.name}</h6>
                   <small className="text-muted">
-                    {getFileType(selectedDocument.fileName)} • {formatFileSize(selectedDocument.fileSize)}
+                    {getFileType(selectedDocument.fileName)} •{' '}
+                    {formatFileSize(selectedDocument.fileSize)}
                   </small>
                 </div>
               </div>
@@ -883,12 +924,8 @@ const DocumentHub = () => {
                   <Form.Group className="mb-3">
                     <Form.Label>Share Link</Form.Label>
                     <InputGroup>
-                      <Form.Control
-                        type="text"
-                        value={selectedDocument.downloadURL}
-                        readOnly
-                      />
-                      <Button 
+                      <Form.Control type="text" value={selectedDocument.downloadURL} readOnly />
+                      <Button
                         variant="outline-secondary"
                         onClick={() => copyShareLink(selectedDocument)}
                       >
@@ -914,15 +951,15 @@ const DocumentHub = () => {
               <div className="mt-4">
                 <h6 className="mb-3">Quick Actions</h6>
                 <div className="d-flex gap-2">
-                  <Button 
-                    variant="outline-primary" 
+                  <Button
+                    variant="outline-primary"
                     className="flex-grow-1"
                     onClick={() => window.open(selectedDocument.downloadURL, '_blank')}
                   >
                     <FaExternalLinkAlt className="me-2" /> Preview
                   </Button>
-                  <Button 
-                    variant="outline-success" 
+                  <Button
+                    variant="outline-success"
                     className="flex-grow-1"
                     onClick={() => handleDownload(selectedDocument)}
                   >

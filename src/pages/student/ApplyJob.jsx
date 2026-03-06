@@ -11,7 +11,7 @@ import {
   Modal,
   ProgressBar,
   Row,
-  Spinner
+  Spinner,
 } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -21,7 +21,7 @@ import {
   checkExistingApplication,
   getStudentProfile,
   updateStudentProfile,
-  uploadResume
+  uploadResume,
 } from '../../services/studentServices';
 
 const ApplyJob = () => {
@@ -48,7 +48,7 @@ const ApplyJob = () => {
     } else if (!jobId) {
       setMessage({
         type: 'warning',
-        text: 'No job selected. Please go back and select a job to apply.'
+        text: 'No job selected. Please go back and select a job to apply.',
       });
       setIsLoading(false);
     }
@@ -64,7 +64,7 @@ const ApplyJob = () => {
       const [jobResult, profileResult, appliedCheck] = await Promise.all([
         jobService.getJob(jobId),
         getStudentProfile(user.uid),
-        checkExistingApplication(user.uid, jobId)
+        checkExistingApplication(user.uid, jobId),
       ]);
 
       if (jobResult.success) {
@@ -73,7 +73,7 @@ const ApplyJob = () => {
       } else {
         setMessage({
           type: 'error',
-          text: jobResult.error || 'Failed to load job details'
+          text: jobResult.error || 'Failed to load job details',
         });
       }
 
@@ -83,7 +83,7 @@ const ApplyJob = () => {
       } else {
         setMessage({
           type: 'warning',
-          text: 'Please complete your student profile'
+          text: 'Please complete your student profile',
         });
       }
 
@@ -91,15 +91,14 @@ const ApplyJob = () => {
       if (appliedCheck) {
         setMessage({
           type: 'warning',
-          text: 'You have already applied for this job position.'
+          text: 'You have already applied for this job position.',
         });
       }
-
     } catch (error) {
       console.error('❌ Error loading data:', error);
       setMessage({
         type: 'error',
-        text: 'Failed to load application data. Please try again.'
+        text: 'Failed to load application data. Please try again.',
       });
     } finally {
       setIsLoading(false);
@@ -114,13 +113,13 @@ const ApplyJob = () => {
     const validTypes = [
       'application/pdf',
       'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     ];
 
     if (!validTypes.includes(file.type)) {
       setMessage({
         type: 'error',
-        text: 'Please upload a PDF or Word document (PDF, DOC, DOCX)'
+        text: 'Please upload a PDF or Word document (PDF, DOC, DOCX)',
       });
       return;
     }
@@ -129,7 +128,7 @@ const ApplyJob = () => {
     if (file.size > 5 * 1024 * 1024) {
       setMessage({
         type: 'error',
-        text: 'File size must be less than 5MB'
+        text: 'File size must be less than 5MB',
       });
       return;
     }
@@ -151,7 +150,7 @@ const ApplyJob = () => {
     try {
       // Simulate upload progress
       const progressInterval = setInterval(() => {
-        setUploadProgress(prev => {
+        setUploadProgress((prev) => {
           if (prev >= 90) {
             clearInterval(progressInterval);
             return 90;
@@ -169,37 +168,37 @@ const ApplyJob = () => {
         // Update student profile with new resume URL
         const updateResult = await updateStudentProfile(user.uid, {
           resumeUrl: uploadResult.url,
-          updatedAt: new Date()
+          updatedAt: new Date(),
         });
 
         if (updateResult.success) {
-          setStudentProfile(prev => ({
+          setStudentProfile((prev) => ({
             ...prev,
-            resumeUrl: uploadResult.url
+            resumeUrl: uploadResult.url,
           }));
           setMessage({
             type: 'success',
-            text: 'Resume uploaded successfully!'
+            text: 'Resume uploaded successfully!',
           });
           setShowUploadModal(false);
           setResumeFile(null);
         } else {
           setMessage({
             type: 'error',
-            text: 'Failed to update profile with resume URL'
+            text: 'Failed to update profile with resume URL',
           });
         }
       } else {
         setMessage({
           type: 'error',
-          text: uploadResult.error || 'Failed to upload resume'
+          text: uploadResult.error || 'Failed to upload resume',
         });
       }
     } catch (error) {
       console.error('❌ Error uploading resume:', error);
       setMessage({
         type: 'error',
-        text: 'An error occurred during upload. Please try again.'
+        text: 'An error occurred during upload. Please try again.',
       });
     } finally {
       setIsUploading(false);
@@ -218,7 +217,7 @@ const ApplyJob = () => {
     if (hasApplied) {
       setMessage({
         type: 'warning',
-        text: 'You have already applied for this position.'
+        text: 'You have already applied for this position.',
       });
       return;
     }
@@ -226,7 +225,7 @@ const ApplyJob = () => {
     if (!studentProfile?.fullName) {
       setMessage({
         type: 'error',
-        text: 'Please complete your profile information before applying'
+        text: 'Please complete your profile information before applying',
       });
       return;
     }
@@ -234,7 +233,7 @@ const ApplyJob = () => {
     if (!studentProfile?.resumeUrl) {
       setMessage({
         type: 'error',
-        text: 'Please upload your resume before applying'
+        text: 'Please upload your resume before applying',
       });
       setShowUploadModal(true);
       return;
@@ -243,7 +242,7 @@ const ApplyJob = () => {
     if (!coverLetter.trim()) {
       setMessage({
         type: 'error',
-        text: 'Please write a cover letter explaining your interest in this position'
+        text: 'Please write a cover letter explaining your interest in this position',
       });
       return;
     }
@@ -272,7 +271,7 @@ const ApplyJob = () => {
         studentSkills: studentProfile.skills,
         studentInstitution: studentProfile.institution,
         phoneNumber: studentProfile.phoneNumber,
-        address: studentProfile.address
+        address: studentProfile.address,
       };
 
       console.log('📤 Submitting application:', applicationData);
@@ -285,7 +284,7 @@ const ApplyJob = () => {
 
         setMessage({
           type: 'success',
-          text: '🎉 Application submitted successfully! Redirecting to your applications...'
+          text: '🎉 Application submitted successfully! Redirecting to your applications...',
         });
 
         // Redirect to applications page after success
@@ -295,14 +294,14 @@ const ApplyJob = () => {
       } else {
         setMessage({
           type: 'error',
-          text: result.error || 'Failed to submit application. Please try again.'
+          text: result.error || 'Failed to submit application. Please try again.',
         });
       }
     } catch (error) {
       console.error('❌ Error submitting application:', error);
       setMessage({
         type: 'error',
-        text: 'An unexpected error occurred. Please try again.'
+        text: 'An unexpected error occurred. Please try again.',
       });
     } finally {
       setIsSubmitting(false);
@@ -313,9 +312,9 @@ const ApplyJob = () => {
     const variants = {
       'full-time': 'primary',
       'part-time': 'info',
-      'contract': 'warning',
-      'internship': 'success',
-      'remote': 'dark'
+      contract: 'warning',
+      internship: 'success',
+      remote: 'dark',
     };
     return variants[type] || 'secondary';
   };
@@ -343,7 +342,10 @@ const ApplyJob = () => {
 
   if (isLoading) {
     return (
-      <Container className="d-flex justify-content-center align-items-center" style={{ minHeight: '50vh' }}>
+      <Container
+        className="d-flex justify-content-center align-items-center"
+        style={{ minHeight: '50vh' }}
+      >
         <div className="text-center">
           <Spinner animation="border" variant="primary" size="lg" />
           <p className="mt-3 text-muted">Loading job application form...</p>
@@ -362,10 +364,7 @@ const ApplyJob = () => {
               <h1 className="h2 mb-2">Apply for Job</h1>
               <p className="text-muted mb-0">Submit your application for the selected position</p>
             </div>
-            <Button
-              variant="outline-secondary"
-              onClick={() => navigate('/dashboard/student/jobs')}
-            >
+            <Button variant="outline-secondary" onClick={() => navigate('/dashboard/student/jobs')}>
               <i className="bi bi-arrow-left me-2"></i>
               Back to Jobs
             </Button>
@@ -377,8 +376,11 @@ const ApplyJob = () => {
       {message.text && (
         <Alert
           variant={
-            message.type === 'success' ? 'success' :
-              message.type === 'warning' ? 'warning' : 'danger'
+            message.type === 'success'
+              ? 'success'
+              : message.type === 'warning'
+                ? 'warning'
+                : 'danger'
           }
           className="mb-4"
           dismissible
@@ -396,10 +398,7 @@ const ApplyJob = () => {
             <p className="text-muted mb-4">
               The job you&apos;re trying to apply for could not be found or may have been removed.
             </p>
-            <Button
-              variant="primary"
-              onClick={() => navigate('/dashboard/student/jobs')}
-            >
+            <Button variant="primary" onClick={() => navigate('/dashboard/student/jobs')}>
               Browse Available Jobs
             </Button>
           </Card.Body>
@@ -578,7 +577,7 @@ const ApplyJob = () => {
                       </Form.Group>
                     )}
 
-                    {(!studentProfile?.fullName) && (
+                    {!studentProfile?.fullName && (
                       <Alert variant="warning" className="mt-3">
                         <div className="d-flex align-items-center">
                           <i className="bi bi-exclamation-triangle me-2"></i>
@@ -621,7 +620,8 @@ const ApplyJob = () => {
                         disabled={hasApplied}
                       />
                       <Form.Text className="text-muted">
-                        {coverLetter.length}/1000 characters {coverLetter.length > 1000 && ' - Too long!'}
+                        {coverLetter.length}/1000 characters{' '}
+                        {coverLetter.length > 1000 && ' - Too long!'}
                       </Form.Text>
                     </Form.Group>
                   </div>
@@ -685,9 +685,7 @@ const ApplyJob = () => {
         <Modal.Body>
           <div className="text-center mb-4">
             <i className="bi bi-file-earmark-pdf display-4 text-primary"></i>
-            <p className="text-muted mt-2">
-              Upload your resume in PDF or Word format (max 5MB)
-            </p>
+            <p className="text-muted mt-2">Upload your resume in PDF or Word format (max 5MB)</p>
           </div>
 
           <Form.Group>

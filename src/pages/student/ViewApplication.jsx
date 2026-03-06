@@ -4,17 +4,9 @@ import { useAuth } from '../../context/AuthContext';
 import {
   getStudentApplications,
   getStudentJobApplications,
-  getStudentProfile
+  getStudentProfile,
 } from '../../services/studentServices';
-import {
-  Container,
-  Row,
-  Col,
-  Card,
-  Button,
-  Badge,
-  Spinner
-} from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Badge, Spinner } from 'react-bootstrap';
 
 const ViewApplication = () => {
   const { user } = useAuth();
@@ -46,14 +38,14 @@ const ViewApplication = () => {
       if (type === 'course' || !type) {
         const courseApps = await getStudentApplications(user.uid);
         if (courseApps.success) {
-          applicationData = courseApps.data.find(app => app.id === applicationId);
+          applicationData = courseApps.data.find((app) => app.id === applicationId);
         }
       }
 
       if ((type === 'job' || !type) && !applicationData) {
         const jobApps = await getStudentJobApplications(user.uid);
         if (jobApps.success) {
-          applicationData = jobApps.data.find(app => app.id === applicationId);
+          applicationData = jobApps.data.find((app) => app.id === applicationId);
           if (applicationData) setApplicationType('job');
         }
       }
@@ -97,7 +89,7 @@ const ViewApplication = () => {
       pending: { variant: 'warning', label: 'Pending' },
       under_review: { variant: 'info', label: 'Under Review' },
       approved: { variant: 'success', label: 'Approved' },
-      rejected: { variant: 'danger', label: 'Rejected' }
+      rejected: { variant: 'danger', label: 'Rejected' },
     };
 
     const config = statusConfig[status] || { variant: 'warning', label: 'Pending' };
@@ -174,9 +166,7 @@ const ViewApplication = () => {
                   <h2 className="h4 mb-2">
                     {applicationType === 'job' ? application.jobTitle : application.courseName}
                   </h2>
-                  <p className="text-muted mb-0">
-                    Application ID: {application.id}
-                  </p>
+                  <p className="text-muted mb-0">Application ID: {application.id}</p>
                 </div>
                 {getStatusBadge(application.status)}
               </div>
@@ -281,7 +271,9 @@ const ViewApplication = () => {
                     <Col md={6}>
                       <div className="mb-3">
                         <small className="text-muted">Fees</small>
-                        <p className="mb-0 fw-bold">{application.fees ? `$${application.fees}` : 'Not specified'}</p>
+                        <p className="mb-0 fw-bold">
+                          {application.fees ? `$${application.fees}` : 'Not specified'}
+                        </p>
                       </div>
                     </Col>
                   </>
@@ -300,19 +292,25 @@ const ViewApplication = () => {
                 <Col md={6}>
                   <div className="mb-3">
                     <small className="text-muted">Full Name</small>
-                    <p className="mb-0 fw-bold">{studentProfile?.fullName || application.studentName}</p>
+                    <p className="mb-0 fw-bold">
+                      {studentProfile?.fullName || application.studentName}
+                    </p>
                   </div>
                 </Col>
                 <Col md={6}>
                   <div className="mb-3">
                     <small className="text-muted">Email</small>
-                    <p className="mb-0 fw-bold">{studentProfile?.email || application.studentEmail}</p>
+                    <p className="mb-0 fw-bold">
+                      {studentProfile?.email || application.studentEmail}
+                    </p>
                   </div>
                 </Col>
                 <Col md={6}>
                   <div className="mb-3">
                     <small className="text-muted">Education Level</small>
-                    <p className="mb-0 fw-bold">{studentProfile?.educationLevel || 'Not specified'}</p>
+                    <p className="mb-0 fw-bold">
+                      {studentProfile?.educationLevel || 'Not specified'}
+                    </p>
                   </div>
                 </Col>
                 <Col md={6}>
@@ -333,7 +331,10 @@ const ViewApplication = () => {
             <Card.Body>
               <div className="timeline">
                 <div className="d-flex align-items-center mb-4">
-                  <div className="timeline-marker bg-success rounded-circle me-3" style={{ width: '20px', height: '20px' }}></div>
+                  <div
+                    className="timeline-marker bg-success rounded-circle me-3"
+                    style={{ width: '20px', height: '20px' }}
+                  ></div>
                   <div>
                     <h6 className="mb-1">Application Submitted</h6>
                     <p className="text-muted mb-0">{formatDate(application.appliedAt)}</p>
@@ -341,24 +342,35 @@ const ViewApplication = () => {
                 </div>
 
                 <div className="d-flex align-items-center mb-4">
-                  <div className={`timeline-marker rounded-circle me-3 ${['under_review', 'approved', 'rejected'].includes(application.status) ? 'bg-success' : application.status === 'pending' ? 'bg-secondary' : 'bg-primary'}`} style={{ width: '20px', height: '20px' }}></div>
+                  <div
+                    className={`timeline-marker rounded-circle me-3 ${['under_review', 'approved', 'rejected'].includes(application.status) ? 'bg-success' : application.status === 'pending' ? 'bg-secondary' : 'bg-primary'}`}
+                    style={{ width: '20px', height: '20px' }}
+                  ></div>
                   <div>
                     <h6 className="mb-1">Under Review</h6>
                     <p className="text-muted mb-0">
-                      {application.status === 'under_review' ? 'Currently being reviewed' :
-                        ['approved', 'rejected'].includes(application.status) ? 'Review completed' : 'Pending review'}
+                      {application.status === 'under_review'
+                        ? 'Currently being reviewed'
+                        : ['approved', 'rejected'].includes(application.status)
+                          ? 'Review completed'
+                          : 'Pending review'}
                     </p>
                   </div>
                 </div>
 
                 <div className="d-flex align-items-center">
-                  <div className={`timeline-marker rounded-circle me-3 ${['approved', 'rejected'].includes(application.status) ? 'bg-success' : 'bg-secondary'}`} style={{ width: '20px', height: '20px' }}></div>
+                  <div
+                    className={`timeline-marker rounded-circle me-3 ${['approved', 'rejected'].includes(application.status) ? 'bg-success' : 'bg-secondary'}`}
+                    style={{ width: '20px', height: '20px' }}
+                  ></div>
                   <div>
                     <h6 className="mb-1">Decision Made</h6>
                     <p className="text-muted mb-0">
-                      {application.status === 'approved' ? 'Application approved' :
-                        application.status === 'rejected' ? 'Application rejected' :
-                          'Waiting for decision'}
+                      {application.status === 'approved'
+                        ? 'Application approved'
+                        : application.status === 'rejected'
+                          ? 'Application rejected'
+                          : 'Waiting for decision'}
                     </p>
                   </div>
                 </div>
@@ -374,9 +386,7 @@ const ViewApplication = () => {
                   Back to Applications
                 </Button>
                 {application.status === 'pending' && (
-                  <Button variant="outline-danger">
-                    Withdraw Application
-                  </Button>
+                  <Button variant="outline-danger">Withdraw Application</Button>
                 )}
               </div>
             </Card.Body>

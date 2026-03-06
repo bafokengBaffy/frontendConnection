@@ -12,7 +12,7 @@ import {
   Spinner,
   Alert,
   Pagination,
-  Modal
+  Modal,
 } from 'react-bootstrap';
 import {
   FaSearch,
@@ -25,7 +25,7 @@ import {
   FaStar,
   FaBookmark,
   FaShareAlt,
-  FaSync
+  FaSync,
 } from 'react-icons/fa';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
@@ -50,7 +50,7 @@ const SearchJobs = () => {
     location: '',
     experienceLevel: '',
     salaryRange: '',
-    remote: false
+    remote: false,
   });
   const [sortBy, setSortBy] = useState('recent');
   const [currentPage, setCurrentPage] = useState(1);
@@ -65,106 +65,108 @@ const SearchJobs = () => {
     coverLetter: '',
     resumeUrl: '',
     portfolioUrl: '',
-    additionalInfo: ''
+    additionalInfo: '',
   });
   const [uploadingResume, setUploadingResume] = useState(false);
 
   const JOBS_PER_PAGE = 10;
 
   // Fetch jobs from Firebase
-  const fetchJobs = useCallback(async (page = 1, isNewSearch = false) => {
-    try {
-      setLoading(true);
-      
-      let jobsQuery = query(
-        collection(db, 'jobs'),
-        where('status', '==', 'active'),
-        where('deadline', '>=', new Date().toISOString().split('T')[0]),
-        orderBy('deadline', 'asc'),
-        orderBy('createdAt', 'desc')
-      );
+  const fetchJobs = useCallback(
+    async (page = 1, isNewSearch = false) => {
+      try {
+        setLoading(true);
 
-      // Apply filters
-      if (filters.jobType) {
-        jobsQuery = query(jobsQuery, where('jobType', '==', filters.jobType));
-      }
-      if (filters.location) {
-        jobsQuery = query(jobsQuery, where('location', '==', filters.location));
-      }
-      if (filters.experienceLevel) {
-        jobsQuery = query(jobsQuery, where('experienceLevel', '==', filters.experienceLevel));
-      }
-      if (filters.remote) {
-        jobsQuery = query(jobsQuery, where('isRemote', '==', true));
-      }
+        let jobsQuery = query(
+          collection(db, 'jobs'),
+          where('status', '==', 'active'),
+          where('deadline', '>=', new Date().toISOString().split('T')[0]),
+          orderBy('deadline', 'asc'),
+          orderBy('createdAt', 'desc')
+        );
 
-      // Pagination
-      if (!isNewSearch && lastVisible && page > 1) {
-        jobsQuery = query(jobsQuery, startAfter(lastVisible));
-      }
-      jobsQuery = query(jobsQuery, limit(JOBS_PER_PAGE));
+        // Apply filters
+        if (filters.jobType) {
+          jobsQuery = query(jobsQuery, where('jobType', '==', filters.jobType));
+        }
+        if (filters.location) {
+          jobsQuery = query(jobsQuery, where('location', '==', filters.location));
+        }
+        if (filters.experienceLevel) {
+          jobsQuery = query(jobsQuery, where('experienceLevel', '==', filters.experienceLevel));
+        }
+        if (filters.remote) {
+          jobsQuery = query(jobsQuery, where('isRemote', '==', true));
+        }
 
-      const querySnapshot = await getDocs(jobsQuery);
-      const jobsData = [];
-      
-      querySnapshot.forEach((doc) => {
-        jobsData.push({
-          id: doc.id,
-          ...doc.data(),
-          deadline: formatDate(doc.data().deadline),
-          postedDate: formatDate(doc.data().createdAt)
+        // Pagination
+        if (!isNewSearch && lastVisible && page > 1) {
+          jobsQuery = query(jobsQuery, startAfter(lastVisible));
+        }
+        jobsQuery = query(jobsQuery, limit(JOBS_PER_PAGE));
+
+        const querySnapshot = await getDocs(jobsQuery);
+        const jobsData = [];
+
+        querySnapshot.forEach((doc) => {
+          jobsData.push({
+            id: doc.id,
+            ...doc.data(),
+            deadline: formatDate(doc.data().deadline),
+            postedDate: formatDate(doc.data().createdAt),
+          });
         });
-      });
 
-      // Update last visible document for pagination
-      if (querySnapshot.docs.length > 0) {
-        setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
-      }
+        // Update last visible document for pagination
+        if (querySnapshot.docs.length > 0) {
+          setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
+        }
 
-      // Fetch company details for each job
-      const jobsWithCompany = await Promise.all(
-        jobsData.map(async (job) => {
-          try {
-            const companyDoc = await getDocs(
-              query(collection(db, 'companies'), where('companyId', '==', job.companyId))
-            );
-            if (!companyDoc.empty) {
-              const companyData = companyDoc.docs[0].data();
-              return {
-                ...job,
-                companyName: companyData.companyName,
-                companyLogo: companyData.logoUrl,
-                companyIndustry: companyData.industry
-              };
+        // Fetch company details for each job
+        const jobsWithCompany = await Promise.all(
+          jobsData.map(async (job) => {
+            try {
+              const companyDoc = await getDocs(
+                query(collection(db, 'companies'), where('companyId', '==', job.companyId))
+              );
+              if (!companyDoc.empty) {
+                const companyData = companyDoc.docs[0].data();
+                return {
+                  ...job,
+                  companyName: companyData.companyName,
+                  companyLogo: companyData.logoUrl,
+                  companyIndustry: companyData.industry,
+                };
+              }
+              return job;
+            } catch (error) {
+              console.error('Error fetching company details:', error);
+              return job;
             }
-            return job;
-          } catch (error) {
-            console.error('Error fetching company details:', error);
-            return job;
-          }
-        })
-      );
+          })
+        );
 
-      if (isNewSearch || page === 1) {
-        setJobs(jobsWithCompany);
-        setFilteredJobs(jobsWithCompany);
-      } else {
-        setJobs(prev => [...prev, ...jobsWithCompany]);
-        setFilteredJobs(prev => [...prev, ...jobsWithCompany]);
+        if (isNewSearch || page === 1) {
+          setJobs(jobsWithCompany);
+          setFilteredJobs(jobsWithCompany);
+        } else {
+          setJobs((prev) => [...prev, ...jobsWithCompany]);
+          setFilteredJobs((prev) => [...prev, ...jobsWithCompany]);
+        }
+
+        // Calculate total pages
+        const totalCountQuery = query(collection(db, 'jobs'), where('status', '==', 'active'));
+        const totalSnapshot = await getDocs(totalCountQuery);
+        setTotalPages(Math.ceil(totalSnapshot.size / JOBS_PER_PAGE));
+      } catch (error) {
+        console.error('Error fetching jobs:', error);
+        toast.error('Failed to load jobs. Please try again.');
+      } finally {
+        setLoading(false);
       }
-
-      // Calculate total pages
-      const totalCountQuery = query(collection(db, 'jobs'), where('status', '==', 'active'));
-      const totalSnapshot = await getDocs(totalCountQuery);
-      setTotalPages(Math.ceil(totalSnapshot.size / JOBS_PER_PAGE));
-
-    } catch (error) {
-      console.error('Error fetching jobs:', error);
-      toast.error('Failed to load jobs. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  }, [filters, lastVisible]);
+    },
+    [filters, lastVisible]
+  );
 
   // Fetch user's saved and applied jobs
   const fetchUserJobStatus = useCallback(async () => {
@@ -172,21 +174,15 @@ const SearchJobs = () => {
 
     try {
       // Fetch saved jobs
-      const savedQuery = query(
-        collection(db, 'savedJobs'),
-        where('userId', '==', user.uid)
-      );
+      const savedQuery = query(collection(db, 'savedJobs'), where('userId', '==', user.uid));
       const savedSnapshot = await getDocs(savedQuery);
-      const saved = savedSnapshot.docs.map(doc => doc.data().jobId);
+      const saved = savedSnapshot.docs.map((doc) => doc.data().jobId);
       setSavedJobs(saved);
 
       // Fetch applied jobs
-      const appliedQuery = query(
-        collection(db, 'applications'),
-        where('userId', '==', user.uid)
-      );
+      const appliedQuery = query(collection(db, 'applications'), where('userId', '==', user.uid));
       const appliedSnapshot = await getDocs(appliedQuery);
-      const applied = appliedSnapshot.docs.map(doc => doc.data().jobId);
+      const applied = appliedSnapshot.docs.map((doc) => doc.data().jobId);
       setAppliedJobs(applied);
     } catch (error) {
       console.error('Error fetching user job status:', error);
@@ -204,11 +200,12 @@ const SearchJobs = () => {
     if (searchTerm.trim() === '') {
       setFilteredJobs(jobs);
     } else {
-      const filtered = jobs.filter(job =>
-        job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        job.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        job.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        job.requirements?.some(req => req.toLowerCase().includes(searchTerm.toLowerCase()))
+      const filtered = jobs.filter(
+        (job) =>
+          job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          job.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          job.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          job.requirements?.some((req) => req.toLowerCase().includes(searchTerm.toLowerCase()))
       );
       setFilteredJobs(filtered);
     }
@@ -221,15 +218,15 @@ const SearchJobs = () => {
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
   // Handle filter changes
   const handleFilterChange = (key, value) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
-      [key]: value
+      [key]: value,
     }));
   };
 
@@ -248,7 +245,7 @@ const SearchJobs = () => {
       location: '',
       experienceLevel: '',
       salaryRange: '',
-      remote: false
+      remote: false,
     });
     setSearchTerm('');
     setCurrentPage(1);
@@ -265,7 +262,7 @@ const SearchJobs = () => {
 
     try {
       const isSaved = savedJobs.includes(jobId);
-      
+
       if (isSaved) {
         // Remove from saved
         const savedQuery = query(
@@ -277,18 +274,18 @@ const SearchJobs = () => {
         savedSnapshot.docs.forEach(async (doc) => {
           await doc.ref.delete();
         });
-        
-        setSavedJobs(prev => prev.filter(id => id !== jobId));
+
+        setSavedJobs((prev) => prev.filter((id) => id !== jobId));
         toast.success('Job removed from saved');
       } else {
         // Add to saved
         await collection(db, 'savedJobs').add({
           userId: user.uid,
           jobId,
-          savedAt: new Date().toISOString()
+          savedAt: new Date().toISOString(),
         });
-        
-        setSavedJobs(prev => [...prev, jobId]);
+
+        setSavedJobs((prev) => [...prev, jobId]);
         toast.success('Job saved successfully');
       }
     } catch (error) {
@@ -307,14 +304,14 @@ const SearchJobs = () => {
   const handleResumeUpload = async (file) => {
     try {
       setUploadingResume(true);
-      
+
       // Upload to Cloudinary
       const uploadResult = await cloudinaryService.uploadFile(file, 'resumes');
-      
+
       if (uploadResult.url) {
-        setApplicationData(prev => ({
+        setApplicationData((prev) => ({
           ...prev,
-          resumeUrl: uploadResult.url
+          resumeUrl: uploadResult.url,
         }));
         toast.success('Resume uploaded successfully');
       } else {
@@ -341,15 +338,15 @@ const SearchJobs = () => {
         companyName: selectedJob.companyName,
         status: 'pending',
         appliedAt: new Date().toISOString(),
-        ...applicationData
+        ...applicationData,
       };
 
       // Save to Firebase
       await submitApplication(application);
-      
+
       // Update applied jobs list
-      setAppliedJobs(prev => [...prev, selectedJob.id]);
-      
+      setAppliedJobs((prev) => [...prev, selectedJob.id]);
+
       // Close modal and reset
       setShowApplyModal(false);
       setSelectedJob(null);
@@ -357,9 +354,9 @@ const SearchJobs = () => {
         coverLetter: '',
         resumeUrl: '',
         portfolioUrl: '',
-        additionalInfo: ''
+        additionalInfo: '',
       });
-      
+
       toast.success('Application submitted successfully!');
     } catch (error) {
       console.error('Error submitting application:', error);
@@ -384,22 +381,32 @@ const SearchJobs = () => {
   // Get job type badge color
   const getJobTypeColor = (type) => {
     switch (type?.toLowerCase()) {
-      case 'full-time': return 'success';
-      case 'part-time': return 'warning';
-      case 'contract': return 'info';
-      case 'internship': return 'primary';
-      case 'remote': return 'dark';
-      default: return 'secondary';
+      case 'full-time':
+        return 'success';
+      case 'part-time':
+        return 'warning';
+      case 'contract':
+        return 'info';
+      case 'internship':
+        return 'primary';
+      case 'remote':
+        return 'dark';
+      default:
+        return 'secondary';
     }
   };
 
   // Get experience level badge
   const getExperienceBadge = (level) => {
     switch (level?.toLowerCase()) {
-      case 'entry': return <Badge bg="success">Entry Level</Badge>;
-      case 'mid': return <Badge bg="warning">Mid Level</Badge>;
-      case 'senior': return <Badge bg="danger">Senior Level</Badge>;
-      default: return <Badge bg="secondary">{level || 'Not Specified'}</Badge>;
+      case 'entry':
+        return <Badge bg="success">Entry Level</Badge>;
+      case 'mid':
+        return <Badge bg="warning">Mid Level</Badge>;
+      case 'senior':
+        return <Badge bg="danger">Senior Level</Badge>;
+      default:
+        return <Badge bg="secondary">{level || 'Not Specified'}</Badge>;
     }
   };
 
@@ -435,13 +442,15 @@ const SearchJobs = () => {
                     style={{ width: '60px', height: '60px', objectFit: 'cover' }}
                   />
                 ) : (
-                  <div className="bg-light rounded-circle d-flex align-items-center justify-content-center"
-                    style={{ width: '60px', height: '60px' }}>
+                  <div
+                    className="bg-light rounded-circle d-flex align-items-center justify-content-center"
+                    style={{ width: '60px', height: '60px' }}
+                  >
                     <FaBriefcase size={24} className="text-muted" />
                   </div>
                 )}
               </Col>
-              
+
               <Col xs={10} md={9}>
                 <div className="d-flex justify-content-between align-items-start">
                   <div>
@@ -455,15 +464,13 @@ const SearchJobs = () => {
                         </Badge>
                       )}
                     </p>
-                    
+
                     <div className="d-flex flex-wrap gap-2 mb-2">
-                      <Badge bg={getJobTypeColor(job.jobType)}>
-                        {job.jobType || 'Full-time'}
-                      </Badge>
+                      <Badge bg={getJobTypeColor(job.jobType)}>{job.jobType || 'Full-time'}</Badge>
                       {getExperienceBadge(job.experienceLevel)}
                       {job.isRemote && <Badge bg="dark">Remote</Badge>}
                     </div>
-                    
+
                     <div className="d-flex flex-wrap gap-3 text-muted small">
                       <span>
                         <FaMapMarkerAlt className="me-1" />
@@ -479,7 +486,7 @@ const SearchJobs = () => {
                       </span>
                     </div>
                   </div>
-                  
+
                   <div className="d-flex gap-2">
                     <Button
                       variant="outline-primary"
@@ -489,9 +496,9 @@ const SearchJobs = () => {
                       <FaBookmark className={isSaved ? 'text-primary' : ''} />
                       {isSaved ? ' Saved' : ' Save'}
                     </Button>
-                    
+
                     <Button
-                      variant={hasApplied ? "success" : "primary"}
+                      variant={hasApplied ? 'success' : 'primary'}
                       size="sm"
                       onClick={() => handleApplyClick(job)}
                       disabled={hasApplied || new Date(job.deadline) < new Date()}
@@ -501,7 +508,7 @@ const SearchJobs = () => {
                     </Button>
                   </div>
                 </div>
-                
+
                 {job.description && (
                   <p className="mt-3 text-muted" style={{ fontSize: '0.9rem' }}>
                     {job.description.length > 200
@@ -509,7 +516,7 @@ const SearchJobs = () => {
                       : job.description}
                   </p>
                 )}
-                
+
                 {job.skills && job.skills.length > 0 && (
                   <div className="mt-2">
                     <strong className="me-2">Skills:</strong>
@@ -603,7 +610,7 @@ const SearchJobs = () => {
                     </Form.Select>
                   </Form.Group>
                 </Col>
-                
+
                 <Col md={3}>
                   <Form.Group className="mb-3">
                     <Form.Label>Location</Form.Label>
@@ -615,7 +622,7 @@ const SearchJobs = () => {
                     />
                   </Form.Group>
                 </Col>
-                
+
                 <Col md={3}>
                   <Form.Group className="mb-3">
                     <Form.Label>Experience Level</Form.Label>
@@ -630,7 +637,7 @@ const SearchJobs = () => {
                     </Form.Select>
                   </Form.Group>
                 </Col>
-                
+
                 <Col md={3}>
                   <Form.Group className="mb-3">
                     <Form.Label>Salary Range</Form.Label>
@@ -647,7 +654,7 @@ const SearchJobs = () => {
                   </Form.Group>
                 </Col>
               </Row>
-              
+
               <Row>
                 <Col>
                   <Form.Check
@@ -736,13 +743,13 @@ const SearchJobs = () => {
           {sortedJobs.map((job) => (
             <JobCard key={job.id} job={job} />
           ))}
-          
+
           {/* Pagination */}
           {totalPages > 1 && (
             <div className="d-flex justify-content-center mt-4">
               <Pagination>
                 <Pagination.Prev
-                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
                 />
                 {[...Array(Math.min(5, totalPages))].map((_, i) => {
@@ -762,7 +769,7 @@ const SearchJobs = () => {
                 })}
                 {totalPages > 5 && <Pagination.Ellipsis />}
                 <Pagination.Next
-                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                   disabled={currentPage === totalPages}
                 />
               </Pagination>
@@ -786,7 +793,7 @@ const SearchJobs = () => {
                 </p>
                 <p>{selectedJob.description?.substring(0, 150)}...</p>
               </div>
-              
+
               <Form>
                 <Form.Group className="mb-3">
                   <Form.Label>Cover Letter *</Form.Label>
@@ -794,15 +801,17 @@ const SearchJobs = () => {
                     as="textarea"
                     rows={4}
                     value={applicationData.coverLetter}
-                    onChange={(e) => setApplicationData(prev => ({
-                      ...prev,
-                      coverLetter: e.target.value
-                    }))}
+                    onChange={(e) =>
+                      setApplicationData((prev) => ({
+                        ...prev,
+                        coverLetter: e.target.value,
+                      }))
+                    }
                     placeholder="Explain why you're a good fit for this position..."
                     required
                   />
                 </Form.Group>
-                
+
                 <Form.Group className="mb-3">
                   <Form.Label>Resume/CV *</Form.Label>
                   <div className="d-flex align-items-center">
@@ -815,9 +824,7 @@ const SearchJobs = () => {
                       }}
                       disabled={uploadingResume}
                     />
-                    {uploadingResume && (
-                      <Spinner animation="border" size="sm" className="ms-2" />
-                    )}
+                    {uploadingResume && <Spinner animation="border" size="sm" className="ms-2" />}
                   </div>
                   {applicationData.resumeUrl && (
                     <Alert variant="success" className="mt-2 mb-0 py-2">
@@ -825,30 +832,34 @@ const SearchJobs = () => {
                     </Alert>
                   )}
                 </Form.Group>
-                
+
                 <Form.Group className="mb-3">
                   <Form.Label>Portfolio/Website URL (Optional)</Form.Label>
                   <Form.Control
                     type="url"
                     value={applicationData.portfolioUrl}
-                    onChange={(e) => setApplicationData(prev => ({
-                      ...prev,
-                      portfolioUrl: e.target.value
-                    }))}
+                    onChange={(e) =>
+                      setApplicationData((prev) => ({
+                        ...prev,
+                        portfolioUrl: e.target.value,
+                      }))
+                    }
                     placeholder="https://yourportfolio.com"
                   />
                 </Form.Group>
-                
+
                 <Form.Group className="mb-3">
                   <Form.Label>Additional Information (Optional)</Form.Label>
                   <Form.Control
                     as="textarea"
                     rows={2}
                     value={applicationData.additionalInfo}
-                    onChange={(e) => setApplicationData(prev => ({
-                      ...prev,
-                      additionalInfo: e.target.value
-                    }))}
+                    onChange={(e) =>
+                      setApplicationData((prev) => ({
+                        ...prev,
+                        additionalInfo: e.target.value,
+                      }))
+                    }
                     placeholder="Any additional comments or information..."
                   />
                 </Form.Group>

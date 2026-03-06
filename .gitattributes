@@ -1,0 +1,78 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Source code
+*.js text eol=lf
+*.jsx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.html text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+
+# Configuration files
+*.env text eol=lf
+*.config.js text eol=lf
+*.config.mjs text eol=lf
+.babelrc text eol=lf
+.eslintrc.js text eol=lf
+.prettierrc text eol=lf
+.stylelintrc text eol=lf
+.editorconfig text eol=lf
+.nvmrc text eol=lf
+
+# Shell scripts
+*.sh text eol=lf
+*.bash text eol=lf
+*.zsh text eol=lf
+
+# Batch files
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+*.pdf binary
+*.zip binary
+*.tar.gz binary
+*.tgz binary
+
+# Lock files
+package-lock.json -diff
+yarn.lock -diff
+pnpm-lock.yaml -diff
+
+# Logs
+*.log -diff
+
+# Build outputs
+dist/** -diff
+build/** -diff
+.firebase/** -diff
+*.min.js -diff
+*.bundle.js -diff
+*.chunk.js -diff
+*.map -diff
+*.css.map -diff
+
+# Environment files
+.env -diff
+.env.* -diff
+
+# Documentation
+CHANGELOG.md merge=union

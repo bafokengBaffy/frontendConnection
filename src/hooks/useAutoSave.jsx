@@ -9,7 +9,7 @@ export const useAutoSave = (initialData, options = {}) => {
     debounceTime = 2000,
     onSaveSuccess = () => {},
     onSaveError = () => {},
-    saveThreshold = 3 // Minimum changes before auto-save
+    saveThreshold = 3, // Minimum changes before auto-save
   } = options;
 
   const [data, setData] = useState(initialData);
@@ -27,12 +27,12 @@ export const useAutoSave = (initialData, options = {}) => {
   // Check if data has meaningful changes
   const hasMeaningfulChanges = useCallback((newData, oldData) => {
     if (!newData || !oldData) return false;
-    
+
     const ignoreFields = ['updatedAt', 'createdAt', 'profileCompletion'];
-    
+
     for (let key in newData) {
       if (ignoreFields.includes(key)) continue;
-      
+
       if (Array.isArray(newData[key])) {
         if (JSON.stringify(newData[key]) !== JSON.stringify(oldData[key])) {
           return true;
@@ -41,62 +41,65 @@ export const useAutoSave = (initialData, options = {}) => {
         return true;
       }
     }
-    
+
     return false;
   }, []);
 
   // Save function
-  const save = useCallback(async (force = false) => {
-    if (!data || Object.keys(data).length === 0) {
-      console.log('⏭️ No data to save');
-      return;
-    }
+  const save = useCallback(
+    async (force = false) => {
+      if (!data || Object.keys(data).length === 0) {
+        console.log('⏭️ No data to save');
+        return;
+      }
 
-    if (!hasMeaningfulChanges(data, previousDataRef.current) && !force) {
-      console.log('⏭️ No meaningful changes, skipping save');
-      return;
-    }
+      if (!hasMeaningfulChanges(data, previousDataRef.current) && !force) {
+        console.log('⏭️ No meaningful changes, skipping save');
+        return;
+      }
 
-    // Don't auto-save if too few changes
-    if (changesCountRef.current < saveThreshold && !force) {
-      console.log(`⏭️ Only ${changesCountRef.current} changes, waiting for ${saveThreshold}`);
-      return;
-    }
+      // Don't auto-save if too few changes
+      if (changesCountRef.current < saveThreshold && !force) {
+        console.log(`⏭️ Only ${changesCountRef.current} changes, waiting for ${saveThreshold}`);
+        return;
+      }
 
-    setIsSaving(true);
-    setSaveStatus('saving');
-    
-    try {
-      // Simulate save operation - in real app, call your save API here
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      setLastSaved(new Date());
-      setSaveCount(prev => prev + 1);
-      setHasUnsavedChanges(false);
-      setSaveStatus('success');
-      setOriginalData(data);
-      previousDataRef.current = data;
-      changesCountRef.current = 0;
-      
-      onSaveSuccess({ success: true, data });
-      
-      // Reset success status after 3 seconds
-      setTimeout(() => {
-        setSaveStatus('idle');
-      }, 3000);
-    } catch (error) {
-      console.error('❌ Auto-save error:', error);
-      setSaveStatus('error');
-      onSaveError(error);
-      
-      // Reset error status after 5 seconds
-      setTimeout(() => {
-        setSaveStatus('idle');
-      }, 5000);
-    } finally {
-      setIsSaving(false);
-    }
-  }, [data, onSaveSuccess, onSaveError, saveThreshold, hasMeaningfulChanges]);
+      setIsSaving(true);
+      setSaveStatus('saving');
+
+      try {
+        // Simulate save operation - in real app, call your save API here
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        setLastSaved(new Date());
+        setSaveCount((prev) => prev + 1);
+        setHasUnsavedChanges(false);
+        setSaveStatus('success');
+        setOriginalData(data);
+        previousDataRef.current = data;
+        changesCountRef.current = 0;
+
+        onSaveSuccess({ success: true, data });
+
+        // Reset success status after 3 seconds
+        setTimeout(() => {
+          setSaveStatus('idle');
+        }, 3000);
+      } catch (error) {
+        console.error('❌ Auto-save error:', error);
+        setSaveStatus('error');
+        onSaveError(error);
+
+        // Reset error status after 5 seconds
+        setTimeout(() => {
+          setSaveStatus('idle');
+        }, 5000);
+      } finally {
+        setIsSaving(false);
+      }
+    },
+    [data, onSaveSuccess, onSaveError, saveThreshold, hasMeaningfulChanges]
+  );
 
   // Manual save function
   const manualSave = useCallback(async () => {
@@ -104,21 +107,22 @@ export const useAutoSave = (initialData, options = {}) => {
   }, [save]);
 
   // Update data and trigger auto-save
-  const updateData = useCallback((updates) => {
-    setData(prev => {
-      const newData = typeof updates === 'function' 
-        ? updates(prev) 
-        : { ...prev, ...updates };
-      
-      // Check for changes
-      if (hasMeaningfulChanges(newData, previousDataRef.current)) {
-        changesCountRef.current += 1;
-        setHasUnsavedChanges(true);
-      }
-      
-      return newData;
-    });
-  }, [hasMeaningfulChanges]);
+  const updateData = useCallback(
+    (updates) => {
+      setData((prev) => {
+        const newData = typeof updates === 'function' ? updates(prev) : { ...prev, ...updates };
+
+        // Check for changes
+        if (hasMeaningfulChanges(newData, previousDataRef.current)) {
+          changesCountRef.current += 1;
+          setHasUnsavedChanges(true);
+        }
+
+        return newData;
+      });
+    },
+    [hasMeaningfulChanges]
+  );
 
   // Reset data to original
   const resetData = useCallback(() => {
@@ -181,7 +185,7 @@ export const useAutoSave = (initialData, options = {}) => {
     saveStatus,
     manualSave,
     resetData,
-    setData
+    setData,
   };
 };
 
@@ -189,46 +193,45 @@ export const useAutoSave = (initialData, options = {}) => {
  * Hook for form field auto-save
  */
 export const useFieldAutoSave = (fieldName, initialValue, options = {}) => {
-  const {
-    debounceTime = 1500,
-    onSave,
-    validate
-  } = options;
+  const { debounceTime = 1500, onSave, validate } = options;
 
   const [value, setValue] = useState(initialValue);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState(null);
   const timerRef = useRef(null);
 
-  const handleChange = useCallback((newValue) => {
-    setValue(newValue);
-    
-    if (validate) {
-      const validationError = validate(newValue);
-      if (validationError) {
-        setError(validationError);
-        return;
-      }
-      setError(null);
-    }
+  const handleChange = useCallback(
+    (newValue) => {
+      setValue(newValue);
 
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
-
-    timerRef.current = setTimeout(async () => {
-      setIsSaving(true);
-      try {
-        if (onSave) {
-          await onSave(newValue)
+      if (validate) {
+        const validationError = validate(newValue);
+        if (validationError) {
+          setError(validationError);
+          return;
         }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setIsSaving(false);
+        setError(null);
       }
-    }, debounceTime);
-  }, [debounceTime, onSave, validate]);
+
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+
+      timerRef.current = setTimeout(async () => {
+        setIsSaving(true);
+        try {
+          if (onSave) {
+            await onSave(newValue);
+          }
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setIsSaving(false);
+        }
+      }, debounceTime);
+    },
+    [debounceTime, onSave, validate]
+  );
 
   useEffect(() => {
     return () => {
@@ -242,7 +245,7 @@ export const useFieldAutoSave = (fieldName, initialValue, options = {}) => {
     value,
     setValue: handleChange,
     isSaving,
-    error
+    error,
   };
 };
 

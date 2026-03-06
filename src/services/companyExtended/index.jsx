@@ -16,7 +16,11 @@ export * from './analytics/analyticsServices';
 
 // Export all services as named exports
 export { followersService, chatService, companyBrandingService } from './social/socialServices';
-export { videoInterviewService, aiMatchingService, talentPoolService } from './recruitment/recruitmentServices';
+export {
+  videoInterviewService,
+  aiMatchingService,
+  talentPoolService,
+} from './recruitment/recruitmentServices';
 export { teamService, documentsService, settingsService } from './management/managementServices';
 export { analyticsService, notificationsService } from './analytics/analyticsServices';
 
@@ -26,21 +30,21 @@ export default {
   followersService,
   chatService,
   companyBrandingService,
-  
+
   // Recruitment Services
   videoInterviewService,
   aiMatchingService,
   talentPoolService,
-  
+
   // Management Services
   teamService,
   documentsService,
   settingsService,
-  
+
   // Analytics Services
   analyticsService,
   notificationsService,
-  
+
   // Utility functions
-  ...require('./utils/baseService')
+  ...require('./utils/baseService'),
 };

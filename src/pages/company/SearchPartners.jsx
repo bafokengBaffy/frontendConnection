@@ -14,20 +14,9 @@ import {
   Pagination,
   Spinner,
   Alert,
-  Modal
+  Modal,
 } from 'react-bootstrap';
-import {
-  Search,
-  Filter,
-  
-  Building,
-  People,
-  Star,
-  Eye,
-
-  Phone,
-  Globe
-} from 'react-bootstrap-icons';
+import { Search, Filter, Building, People, Star, Eye, Phone, Globe } from 'react-bootstrap-icons';
 import { db } from '../../config/firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import './SearchPartners.css';
@@ -42,7 +31,7 @@ const SearchPartners = () => {
     industry: '',
     location: '',
     companySize: '',
-    partnershipType: ''
+    partnershipType: '',
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedPartner, setSelectedPartner] = useState(null);
@@ -54,7 +43,7 @@ const SearchPartners = () => {
   const formattedDate = currentDate.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
   });
 
   // Fetch partners from Firestore
@@ -64,7 +53,7 @@ const SearchPartners = () => {
       const partnersRef = collection(db, 'companies');
       const q = query(partnersRef, where('userType', '==', 'company'));
       const querySnapshot = await getDocs(q);
-      
+
       const partnersList = [];
       querySnapshot.forEach((doc) => {
         const data = doc.data();
@@ -81,10 +70,10 @@ const SearchPartners = () => {
           partnershipTypes: data.partnershipTypes || ['General Partnership'],
           rating: data.rating || Math.floor(Math.random() * 3) + 3, // Random rating 3-5
           projectsCompleted: data.projectsCompleted || Math.floor(Math.random() * 50),
-          yearsInBusiness: data.yearsInBusiness || Math.floor(Math.random() * 20) + 1
+          yearsInBusiness: data.yearsInBusiness || Math.floor(Math.random() * 20) + 1,
         });
       });
-      
+
       setPartners(partnersList);
       setFilteredPartners(partnersList);
       setError('');
@@ -103,66 +92,68 @@ const SearchPartners = () => {
   // Apply filters and search
   useEffect(() => {
     let result = [...partners];
-    
+
     // Apply search term
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      result = result.filter(partner => 
-        partner.name.toLowerCase().includes(term) ||
-        partner.industry.toLowerCase().includes(term) ||
-        partner.description.toLowerCase().includes(term) ||
-        partner.location.toLowerCase().includes(term)
+      result = result.filter(
+        (partner) =>
+          partner.name.toLowerCase().includes(term) ||
+          partner.industry.toLowerCase().includes(term) ||
+          partner.description.toLowerCase().includes(term) ||
+          partner.location.toLowerCase().includes(term)
       );
     }
-    
+
     // Apply filters
     if (filters.industry) {
-      result = result.filter(partner => partner.industry === filters.industry);
+      result = result.filter((partner) => partner.industry === filters.industry);
     }
-    
+
     if (filters.location) {
-      result = result.filter(partner => partner.location === filters.location);
+      result = result.filter((partner) => partner.location === filters.location);
     }
-    
+
     if (filters.companySize) {
-      result = result.filter(partner => partner.companySize === filters.companySize);
+      result = result.filter((partner) => partner.companySize === filters.companySize);
     }
-    
+
     if (filters.partnershipType) {
-      result = result.filter(partner => 
-        partner.partnershipTypes && 
-        (Array.isArray(partner.partnershipTypes) 
-          ? partner.partnershipTypes.includes(filters.partnershipType)
-          : partner.partnershipTypes === filters.partnershipType)
+      result = result.filter(
+        (partner) =>
+          partner.partnershipTypes &&
+          (Array.isArray(partner.partnershipTypes)
+            ? partner.partnershipTypes.includes(filters.partnershipType)
+            : partner.partnershipTypes === filters.partnershipType)
       );
     }
-    
+
     setFilteredPartners(result);
     setCurrentPage(1);
   }, [searchTerm, filters, partners]);
 
   // Get unique values for filter dropdowns
   const industries = useMemo(() => {
-    const uniqueIndustries = [...new Set(partners.map(p => p.industry).filter(Boolean))];
+    const uniqueIndustries = [...new Set(partners.map((p) => p.industry).filter(Boolean))];
     return uniqueIndustries.sort();
   }, [partners]);
 
   const locations = useMemo(() => {
-    const uniqueLocations = [...new Set(partners.map(p => p.location).filter(Boolean))];
+    const uniqueLocations = [...new Set(partners.map((p) => p.location).filter(Boolean))];
     return uniqueLocations.sort();
   }, [partners]);
 
   const companySizes = useMemo(() => {
-    const uniqueSizes = [...new Set(partners.map(p => p.companySize).filter(Boolean))];
+    const uniqueSizes = [...new Set(partners.map((p) => p.companySize).filter(Boolean))];
     return uniqueSizes.sort();
   }, [partners]);
 
   const partnershipTypes = useMemo(() => {
     const typesSet = new Set();
-    partners.forEach(partner => {
+    partners.forEach((partner) => {
       if (partner.partnershipTypes) {
         if (Array.isArray(partner.partnershipTypes)) {
-          partner.partnershipTypes.forEach(type => typesSet.add(type));
+          partner.partnershipTypes.forEach((type) => typesSet.add(type));
         } else {
           typesSet.add(partner.partnershipTypes);
         }
@@ -183,9 +174,9 @@ const SearchPartners = () => {
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -195,7 +186,7 @@ const SearchPartners = () => {
       industry: '',
       location: '',
       companySize: '',
-      partnershipType: ''
+      partnershipType: '',
     });
   };
 
@@ -214,16 +205,15 @@ const SearchPartners = () => {
     // Implement meeting scheduling functionality
   };
 
-
   const renderStars = (rating) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
       stars.push(
-        <Star 
-          key={i} 
-          size={16} 
-          className={i <= rating ? "text-warning" : "text-muted"}
-          fill={i <= rating ? "currentColor" : "none"}
+        <Star
+          key={i}
+          size={16}
+          className={i <= rating ? 'text-warning' : 'text-muted'}
+          fill={i <= rating ? 'currentColor' : 'none'}
         />
       );
     }
@@ -237,9 +227,7 @@ const SearchPartners = () => {
           <div className="d-flex justify-content-between align-items-center">
             <div>
               <h1 className="mb-1">Find Business Partners</h1>
-              <p className="text-muted">
-                {formattedDate} | Company View
-              </p>
+              <p className="text-muted">{formattedDate} | Company View</p>
             </div>
             <div>
               <Button variant="outline-secondary" onClick={clearFilters} className="me-2">
@@ -267,9 +255,7 @@ const SearchPartners = () => {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
-                <Button variant="primary">
-               
-                </Button>
+                <Button variant="primary"></Button>
               </InputGroup>
             </Card.Body>
           </Card>
@@ -294,8 +280,10 @@ const SearchPartners = () => {
                       onChange={handleFilterChange}
                     >
                       <option value="">All Industries</option>
-                      {industries.map(industry => (
-                        <option key={industry} value={industry}>{industry}</option>
+                      {industries.map((industry) => (
+                        <option key={industry} value={industry}>
+                          {industry}
+                        </option>
                       ))}
                     </Form.Select>
                   </Form.Group>
@@ -309,8 +297,10 @@ const SearchPartners = () => {
                       onChange={handleFilterChange}
                     >
                       <option value="">All Locations</option>
-                      {locations.map(location => (
-                        <option key={location} value={location}>{location}</option>
+                      {locations.map((location) => (
+                        <option key={location} value={location}>
+                          {location}
+                        </option>
                       ))}
                     </Form.Select>
                   </Form.Group>
@@ -324,8 +314,10 @@ const SearchPartners = () => {
                       onChange={handleFilterChange}
                     >
                       <option value="">All Sizes</option>
-                      {companySizes.map(size => (
-                        <option key={size} value={size}>{size}</option>
+                      {companySizes.map((size) => (
+                        <option key={size} value={size}>
+                          {size}
+                        </option>
                       ))}
                     </Form.Select>
                   </Form.Group>
@@ -339,8 +331,10 @@ const SearchPartners = () => {
                       onChange={handleFilterChange}
                     >
                       <option value="">All Types</option>
-                      {partnershipTypes.map(type => (
-                        <option key={type} value={type}>{type}</option>
+                      {partnershipTypes.map((type) => (
+                        <option key={type} value={type}>
+                          {type}
+                        </option>
                       ))}
                     </Form.Select>
                   </Form.Group>
@@ -388,13 +382,15 @@ const SearchPartners = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {currentPartners.map(partner => (
+                      {currentPartners.map((partner) => (
                         <tr key={partner.id}>
                           <td>
                             <div className="d-flex align-items-center">
                               <div className="company-avatar me-3">
-                                <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
-                                  style={{ width: '40px', height: '40px' }}>
+                                <div
+                                  className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                                  style={{ width: '40px', height: '40px' }}
+                                >
                                   <Building size={20} />
                                 </div>
                               </div>
@@ -410,12 +406,18 @@ const SearchPartners = () => {
                             </Badge>
                           </td>
                           <td>
-                            <div>
-                              {partner.location}
-                            </div>
+                            <div>{partner.location}</div>
                           </td>
                           <td>
-                            <Badge bg={partner.companySize === 'Large' ? 'primary' : partner.companySize === 'Medium' ? 'warning' : 'secondary'}>
+                            <Badge
+                              bg={
+                                partner.companySize === 'Large'
+                                  ? 'primary'
+                                  : partner.companySize === 'Medium'
+                                    ? 'warning'
+                                    : 'secondary'
+                              }
+                            >
                               {partner.companySize}
                             </Badge>
                           </td>
@@ -429,7 +431,9 @@ const SearchPartners = () => {
                                     </Badge>
                                   ))}
                                   {partner.partnershipTypes.length > 2 && (
-                                    <Badge bg="secondary">+{partner.partnershipTypes.length - 2}</Badge>
+                                    <Badge bg="secondary">
+                                      +{partner.partnershipTypes.length - 2}
+                                    </Badge>
                                   )}
                                 </div>
                               ) : (
@@ -442,25 +446,25 @@ const SearchPartners = () => {
                           <td>
                             <div className="d-flex align-items-center">
                               {renderStars(partner.rating)}
-                              <span className="ms-2 small">({partner.projectsCompleted} projects)</span>
+                              <span className="ms-2 small">
+                                ({partner.projectsCompleted} projects)
+                              </span>
                             </div>
                           </td>
                           <td>
                             <div className="d-flex gap-2">
-                              <Button 
-                                variant="outline-primary" 
+                              <Button
+                                variant="outline-primary"
                                 size="sm"
                                 onClick={() => viewPartnerDetails(partner)}
                               >
                                 <Eye className="me-1" /> View
                               </Button>
-                              <Button 
-                                variant="outline-success" 
+                              <Button
+                                variant="outline-success"
                                 size="sm"
                                 onClick={() => sendConnectionRequest(partner.id)}
-                              >
-                             
-                              </Button>
+                              ></Button>
                             </div>
                           </td>
                         </tr>
@@ -472,15 +476,15 @@ const SearchPartners = () => {
                   {totalPages > 1 && (
                     <div className="d-flex justify-content-center mt-4">
                       <Pagination>
-                        <Pagination.First 
-                          onClick={() => handlePageChange(1)} 
+                        <Pagination.First
+                          onClick={() => handlePageChange(1)}
                           disabled={currentPage === 1}
                         />
-                        <Pagination.Prev 
-                          onClick={() => handlePageChange(currentPage - 1)} 
+                        <Pagination.Prev
+                          onClick={() => handlePageChange(currentPage - 1)}
                           disabled={currentPage === 1}
                         />
-                        
+
                         {[...Array(totalPages)].map((_, index) => {
                           const pageNumber = index + 1;
                           if (
@@ -505,13 +509,13 @@ const SearchPartners = () => {
                           }
                           return null;
                         })}
-                        
-                        <Pagination.Next 
-                          onClick={() => handlePageChange(currentPage + 1)} 
+
+                        <Pagination.Next
+                          onClick={() => handlePageChange(currentPage + 1)}
                           disabled={currentPage === totalPages}
                         />
-                        <Pagination.Last 
-                          onClick={() => handlePageChange(totalPages)} 
+                        <Pagination.Last
+                          onClick={() => handlePageChange(totalPages)}
                           disabled={currentPage === totalPages}
                         />
                       </Pagination>
@@ -534,8 +538,10 @@ const SearchPartners = () => {
             <Row>
               <Col md={4} className="text-center">
                 <div className="company-logo mb-3">
-                  <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto"
-                    style={{ width: '100px', height: '100px' }}>
+                  <div
+                    className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto"
+                    style={{ width: '100px', height: '100px' }}
+                  >
                     <Building size={48} />
                   </div>
                 </div>
@@ -545,9 +551,7 @@ const SearchPartners = () => {
                   <Badge bg="primary" className="me-2">
                     {selectedPartner.companySize}
                   </Badge>
-                  <Badge bg="info">
-                    {selectedPartner.yearsInBusiness} years
-                  </Badge>
+                  <Badge bg="info">{selectedPartner.yearsInBusiness} years</Badge>
                 </div>
                 <div className="mb-3">
                   <div className="d-flex justify-content-center mb-2">
@@ -573,15 +577,22 @@ const SearchPartners = () => {
                     <strong>Contact:</strong> {selectedPartner.phone || 'Not provided'}
                   </Col>
                   <Col>
-                    <strong>Website:</strong> 
+                    <strong>Website:</strong>
                     {selectedPartner.website ? (
-                      <a href={selectedPartner.website} target="_blank" rel="noopener noreferrer" className="ms-2">
+                      <a
+                        href={selectedPartner.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ms-2"
+                      >
                         <Globe size={14} /> Visit Site
                       </a>
-                    ) : ' Not provided'}
+                    ) : (
+                      ' Not provided'
+                    )}
                   </Col>
                 </Row>
-                
+
                 <h5 className="mt-4">Partnership Types</h5>
                 <div className="mb-4">
                   {selectedPartner.partnershipTypes ? (
@@ -594,13 +605,15 @@ const SearchPartners = () => {
                         ))}
                       </div>
                     ) : (
-                      <Badge bg="info" className="p-2">{selectedPartner.partnershipTypes}</Badge>
+                      <Badge bg="info" className="p-2">
+                        {selectedPartner.partnershipTypes}
+                      </Badge>
                     )
                   ) : (
                     <p className="text-muted">No partnership types specified</p>
                   )}
                 </div>
-                
+
                 <h5>Company Description</h5>
                 <p className="text-muted">{selectedPartner.description}</p>
               </Col>
@@ -611,8 +624,10 @@ const SearchPartners = () => {
           <Button variant="secondary" onClick={() => setShowDetails(false)}>
             Close
           </Button>
-          <Button variant="success" onClick={() => sendConnectionRequest(selectedPartner?.id)}>
-          </Button>
+          <Button
+            variant="success"
+            onClick={() => sendConnectionRequest(selectedPartner?.id)}
+          ></Button>
           <Button variant="primary" onClick={() => scheduleMeeting(selectedPartner?.id)}>
             <Phone className="me-1" /> Schedule Meeting
           </Button>
@@ -637,7 +652,6 @@ const SearchPartners = () => {
                 </Col>
                 <Col md={4}>
                   <div className="text-center p-3">
-             
                     <h3>{partnershipTypes.length}</h3>
                     <p className="text-muted mb-0">Partnership Types</p>
                   </div>

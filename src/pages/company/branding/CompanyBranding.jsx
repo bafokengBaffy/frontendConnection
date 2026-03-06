@@ -9,7 +9,7 @@ const CompanyBranding = () => {
   const [brandColors, setBrandColors] = useState({
     primary: '#007bff',
     secondary: '#6c757d',
-    accent: '#ffc107'
+    accent: '#ffc107',
   });
 
   return (
@@ -64,7 +64,7 @@ const CompanyBranding = () => {
                   </Card.Body>
                 </Card>
               </Tab.Pane>
-              
+
               <Tab.Pane eventKey="media">
                 <Card className="border-0 shadow-sm">
                   <Card.Header className="bg-white">

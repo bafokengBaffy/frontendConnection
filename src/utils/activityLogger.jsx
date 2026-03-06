@@ -7,7 +7,7 @@ export const ActivityLogger = {
     try {
       // Check if activities collection exists, if not we'll handle gracefully
       const activitiesRef = collection(db, 'activities');
-      
+
       const activity = {
         type,
         title: this.getActivityTitle(type),
@@ -16,7 +16,7 @@ export const ActivityLogger = {
         userEmail: email || 'system@careerconnect.ls',
         timestamp: serverTimestamp(),
         metadata,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
 
       await addDoc(activitiesRef, activity);
@@ -30,30 +30,27 @@ export const ActivityLogger = {
 
   getActivityTitle(type) {
     const titles = {
-      'user_registered': 'New User Registration',
-      'login': 'User Login',
-      'logout': 'User Logout',
-      'profile_updated': 'Profile Updated',
-      'application_submitted': 'Application Submitted',
-      'job_posted': 'Job Posted',
-      'funding_application': 'Funding Application',
-      'admin_action': 'Admin Action',
-      'system_start': 'System Started',
-      'error': 'System Error'
+      user_registered: 'New User Registration',
+      login: 'User Login',
+      logout: 'User Logout',
+      profile_updated: 'Profile Updated',
+      application_submitted: 'Application Submitted',
+      job_posted: 'Job Posted',
+      funding_application: 'Funding Application',
+      admin_action: 'Admin Action',
+      system_start: 'System Started',
+      error: 'System Error',
     };
-    
+
     return titles[type] || 'System Activity';
   },
 
   // Common activity logging functions
   async logUserLogin(user) {
-    return this.logActivity(
-      'login',
-      `${user.email} logged into the system`,
-      user.uid,
-      user.email,
-      { action: 'login', platform: 'web' }
-    );
+    return this.logActivity('login', `${user.email} logged into the system`, user.uid, user.email, {
+      action: 'login',
+      platform: 'web',
+    });
   },
 
   async logUserRegistration(user) {
@@ -74,7 +71,7 @@ export const ActivityLogger = {
       adminEmail,
       { action, details, userType: 'admin' }
     );
-  }
+  },
 };
 
 export default ActivityLogger;

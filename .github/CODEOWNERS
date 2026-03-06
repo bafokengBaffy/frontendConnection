@@ -1,0 +1,24 @@
+# Default owners for everything
+* @baffkay
+
+# Frontend specific owners
+/frontend/ @baffkay @frontend-team
+
+# Configuration files
+/.github/ @devops-team
+/.circleci/ @devops-team
+*.yml @devops-team
+*.yaml @devops-team
+
+# Documentation
+/docs/ @docs-team
+*.md @docs-team
+
+# Security related
+/SECURITY.md @security-team
+/security/ @security-team
+
+# Tests
+/tests/ @qa-team
+/cypress/ @qa-team
+/playwright/ @qa-team

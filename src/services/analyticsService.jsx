@@ -6,14 +6,14 @@
 
 // Import Firebase configuration
 import { db, auth } from '../config/firebase';
-import { 
-  collection, 
-  doc, 
-  getDoc, 
-  getDocs, 
-  query, 
-  where, 
-  orderBy, 
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+  orderBy,
   limit,
   startAfter,
   startAt,
@@ -24,7 +24,7 @@ import {
   updateDoc,
   increment,
   setDoc,
-  writeBatch
+  writeBatch,
 } from 'firebase/firestore';
 
 // Import modular analytics services
@@ -50,7 +50,7 @@ class AnalyticsService {
     this.studentAnalytics = studentAnalytics;
     this.adminAnalytics = adminAnalytics;
     this.dashboardAnalytics = dashboardAnalytics;
-    
+
     // Initialize services with database reference
     this.initializeServices();
   }
@@ -62,10 +62,10 @@ class AnalyticsService {
       this.companyAnalytics,
       this.studentAnalytics,
       this.adminAnalytics,
-      this.dashboardAnalytics
+      this.dashboardAnalytics,
     ];
-    
-    services.forEach(service => {
+
+    services.forEach((service) => {
       if (service.initialize) {
         service.initialize(db, auth);
       }
@@ -82,7 +82,7 @@ class AnalyticsService {
     try {
       const user = auth.currentUser;
       const currentUserId = userId || (user ? user.uid : 'anonymous');
-      
+
       const eventDoc = {
         eventName,
         eventData,
@@ -91,7 +91,7 @@ class AnalyticsService {
         userAgent: navigator.userAgent,
         platform: this._detectPlatform(),
         pathname: window.location.pathname,
-        ...eventData
+        ...eventData,
       };
 
       // Log to console in development
@@ -102,30 +102,30 @@ class AnalyticsService {
       // Store in Firestore
       const analyticsRef = collection(db, ANALYTICS_COLLECTION);
       const userAnalyticsRef = collection(
-        db, 
-        ANALYTICS_COLLECTION, 
-        currentUserId, 
+        db,
+        ANALYTICS_COLLECTION,
+        currentUserId,
         USER_ANALYTICS_SUBCOLLECTION
       );
-      
+
       // Use batch write for efficiency
       const batch = writeBatch(db);
-      
+
       // Add to main analytics collection
       const mainDocRef = doc(analyticsRef);
       batch.set(mainDocRef, eventDoc);
-      
+
       // Add to user-specific analytics
       const userDocRef = doc(userAnalyticsRef);
       batch.set(userDocRef, eventDoc);
-      
+
       await batch.commit();
-      
+
       // Increment event count in user profile if it's a registered user
       if (user) {
         await this._incrementUserEventCount(user.uid, eventName);
       }
-      
+
       return { success: true, eventId: mainDocRef.id };
     } catch (error) {
       console.error('Error tracking event:', error);
@@ -217,7 +217,7 @@ class AnalyticsService {
     return {
       metric,
       data: [],
-      unsubscribe: () => {} // Placeholder for unsubscribe function
+      unsubscribe: () => {}, // Placeholder for unsubscribe function
     };
   }
 
@@ -246,7 +246,7 @@ class AnalyticsService {
       await updateDoc(userRef, {
         [`analytics.eventCounts.${eventName}`]: increment(1),
         'analytics.lastEvent': Timestamp.now(),
-        'analytics.totalEvents': increment(1)
+        'analytics.totalEvents': increment(1),
       });
     } catch (error) {
       console.warn('Could not update user event count:', error);
@@ -255,20 +255,20 @@ class AnalyticsService {
 
   async _generateUserActivityReport(filters) {
     const { startDate, endDate, userType } = filters;
-    
+
     const q = query(
       collection(db, ANALYTICS_COLLECTION),
       where('timestamp', '>=', Timestamp.fromDate(new Date(startDate))),
       where('timestamp', '<=', Timestamp.fromDate(new Date(endDate))),
       orderBy('timestamp', 'desc')
     );
-    
+
     const snapshot = await getDocs(q);
-    const data = snapshot.docs.map(doc => ({
+    const data = snapshot.docs.map((doc) => ({
       id: doc.id,
-      ...doc.data()
+      ...doc.data(),
     }));
-    
+
     return {
       reportType: 'user-activity',
       period: { startDate, endDate },
@@ -276,7 +276,7 @@ class AnalyticsService {
       eventsByType: this._groupBy(data, 'eventName'),
       eventsByUser: this._groupBy(data, 'userId'),
       eventsByHour: this._groupByHour(data),
-      rawData: data
+      rawData: data,
     };
   }
 
@@ -295,30 +295,30 @@ class AnalyticsService {
   _exportToCSV(data) {
     // Convert data to CSV format
     const headers = Object.keys(data[0] || {}).join(',');
-    const rows = data.map(row => 
-      Object.values(row).map(value => 
-        typeof value === 'string' ? `"${value.replace(/"/g, '""')}"` : value
-      ).join(',')
+    const rows = data.map((row) =>
+      Object.values(row)
+        .map((value) => (typeof value === 'string' ? `"${value.replace(/"/g, '""')}"` : value))
+        .join(',')
     );
-    
+
     const csvContent = [headers, ...rows].join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    
+
     return {
       blob,
       filename: `analytics-export-${new Date().toISOString().split('T')[0]}.csv`,
-      type: 'csv'
+      type: 'csv',
     };
   }
 
   _exportToJSON(data) {
     const jsonContent = JSON.stringify(data, null, 2);
     const blob = new Blob([jsonContent], { type: 'application/json' });
-    
+
     return {
       blob,
       filename: `analytics-export-${new Date().toISOString().split('T')[0]}.json`,
-      type: 'json'
+      type: 'json',
     };
   }
 
@@ -328,7 +328,7 @@ class AnalyticsService {
     return {
       blob: new Blob(['PDF generation would be implemented here'], { type: 'application/pdf' }),
       filename: `analytics-export-${new Date().toISOString().split('T')[0]}.pdf`,
-      type: 'pdf'
+      type: 'pdf',
     };
   }
 
@@ -349,7 +349,7 @@ class AnalyticsService {
 
   _groupByHour(data) {
     const hours = {};
-    data.forEach(item => {
+    data.forEach((item) => {
       const date = item.timestamp?.toDate() || new Date();
       const hour = date.getHours();
       hours[hour] = (hours[hour] || 0) + 1;
@@ -361,7 +361,7 @@ class AnalyticsService {
   async trackPageView(pageName, additionalData = {}) {
     return this.trackEvent('page_view', {
       pageName,
-      ...additionalData
+      ...additionalData,
     });
   }
 
@@ -369,7 +369,7 @@ class AnalyticsService {
     return this.trackEvent('button_click', {
       buttonName,
       location,
-      ...additionalData
+      ...additionalData,
     });
   }
 
@@ -377,7 +377,7 @@ class AnalyticsService {
     return this.trackEvent('form_submission', {
       formName,
       success,
-      ...additionalData
+      ...additionalData,
     });
   }
 
@@ -385,7 +385,7 @@ class AnalyticsService {
     return this.trackEvent('search', {
       searchTerm,
       filters,
-      resultsCount
+      resultsCount,
     });
   }
 
@@ -393,13 +393,13 @@ class AnalyticsService {
     return this.trackEvent('job_application', {
       jobId,
       companyId,
-      status
+      status,
     });
   }
 
   async trackProfileUpdate(fieldsUpdated) {
     return this.trackEvent('profile_update', {
-      fieldsUpdated
+      fieldsUpdated,
     });
   }
 }
@@ -409,10 +409,4 @@ const analyticsService = new AnalyticsService();
 export default analyticsService;
 
 // Also export individual services for direct access if needed
-export { 
-  userAnalytics, 
-  companyAnalytics, 
-  studentAnalytics, 
-  adminAnalytics, 
-  dashboardAnalytics 
-};
+export { userAnalytics, companyAnalytics, studentAnalytics, adminAnalytics, dashboardAnalytics };

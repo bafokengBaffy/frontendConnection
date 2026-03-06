@@ -1,0 +1,8 @@
+# Lint your code
+npm run lint
+
+# Format your code
+npm run format
+
+# Check types
+npm run type-check

@@ -3,16 +3,48 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Container, Row, Col, Card, Button, Form, Table, 
-  Badge, Spinner, Modal, Dropdown, Alert, InputGroup
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Form,
+  Table,
+  Badge,
+  Spinner,
+  Modal,
+  Dropdown,
+  Alert,
+  InputGroup,
 } from 'react-bootstrap';
-import { 
-  FaBriefcase, FaUsers, FaCalendarAlt, FaEdit, 
-  FaTrash, FaEye, FaPlus, FaFilter, FaDollarSign,
-  FaMapMarkerAlt, FaClock, FaChartLine, FaSearch, FaEllipsisV
+import {
+  FaBriefcase,
+  FaUsers,
+  FaCalendarAlt,
+  FaEdit,
+  FaTrash,
+  FaEye,
+  FaPlus,
+  FaFilter,
+  FaDollarSign,
+  FaMapMarkerAlt,
+  FaClock,
+  FaChartLine,
+  FaSearch,
+  FaEllipsisV,
 } from 'react-icons/fa';
-import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy, where } from 'firebase/firestore';
+import {
+  collection,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  query,
+  orderBy,
+  where,
+} from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { jobService } from '../../services/companyServices';
 import './CompanyJobs.css';
@@ -47,7 +79,7 @@ const CompanyJobs = () => {
     applicationDeadline: '',
     maxApplications: 0,
     remote: false,
-    hybrid: false
+    hybrid: false,
   });
 
   // Check screen size on mount and resize
@@ -55,10 +87,10 @@ const CompanyJobs = () => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    
+
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
@@ -74,15 +106,15 @@ const CompanyJobs = () => {
     try {
       setLoading(true);
       const jobsData = await jobService.getCompanyJobs();
-      
+
       // Process jobs to ensure salary is properly formatted
-      const processedJobs = jobsData.map(job => ({
+      const processedJobs = jobsData.map((job) => ({
         ...job,
         // Convert salary object to string if needed
         salaryDisplay: formatSalaryForDisplay(job),
-        date: job.createdAt ? new Date(job.createdAt).toLocaleDateString() : 'N/A'
+        date: job.createdAt ? new Date(job.createdAt).toLocaleDateString() : 'N/A',
       }));
-      
+
       setJobs(processedJobs);
       setFilteredJobs(processedJobs);
     } catch (error) {
@@ -96,7 +128,7 @@ const CompanyJobs = () => {
   // Helper function to format salary for display
   const formatSalaryForDisplay = (job) => {
     if (!job.salary) return 'Not specified';
-    
+
     // If salary is an object (old format), convert it
     if (typeof job.salary === 'object') {
       const salaryObj = job.salary;
@@ -104,58 +136,59 @@ const CompanyJobs = () => {
       const currency = salaryObj.currency || 'M';
       const type = salaryObj.type || 'monthly';
       const negotiable = salaryObj.negotiable ? ' (Negotiable)' : '';
-      
+
       const typeMap = {
-        'monthly': 'per month',
-        'yearly': 'per year',
-        'hourly': 'per hour'
+        monthly: 'per month',
+        yearly: 'per year',
+        hourly: 'per hour',
       };
-      
+
       return `${currency}${amount} ${typeMap[type] || type}${negotiable}`;
     }
-    
+
     // If salary is already a string, return it
     if (typeof job.salary === 'string') {
       return job.salary;
     }
-    
+
     // If we have separate salary fields (new format)
     if (job.salaryAmount || job.salaryRange) {
       const amount = job.salaryAmount || job.salaryRange || '';
       const currency = job.currency || 'M';
       const type = job.salaryType || 'monthly';
       const negotiable = job.salaryNegotiable ? ' (Negotiable)' : '';
-      
+
       const typeMap = {
-        'monthly': 'per month',
-        'yearly': 'per year',
-        'hourly': 'per hour'
+        monthly: 'per month',
+        yearly: 'per year',
+        hourly: 'per hour',
       };
-      
+
       return `${currency}${amount} ${typeMap[type] || type}${negotiable}`;
     }
-    
+
     return 'Not specified';
   };
 
   const filterJobs = () => {
     let filtered = [...jobs];
-    
+
     // Apply status filter
     if (statusFilter !== 'all') {
-      filtered = filtered.filter(job => job.status === statusFilter);
+      filtered = filtered.filter((job) => job.status === statusFilter);
     }
-    
+
     // Apply search filter
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(job => 
-        job.title.toLowerCase().includes(term) ||
-        job.location.toLowerCase().includes(term) ||
-        job.type.toLowerCase().includes(term)
+      filtered = filtered.filter(
+        (job) =>
+          job.title.toLowerCase().includes(term) ||
+          job.location.toLowerCase().includes(term) ||
+          job.type.toLowerCase().includes(term)
       );
     }
-    
+
     setFilteredJobs(filtered);
   };
 
@@ -171,15 +204,17 @@ const CompanyJobs = () => {
       } else if (job.salaryAmount) {
         salaryValue = job.salaryAmount;
       }
-      
+
       setFormData({
         title: job.title || '',
         description: job.description || '',
         location: job.location || '',
         salary: salaryValue,
-        salaryType: job.salaryType || (typeof job.salary === 'object' ? job.salary.type : 'monthly'),
+        salaryType:
+          job.salaryType || (typeof job.salary === 'object' ? job.salary.type : 'monthly'),
         currency: job.currency || (typeof job.salary === 'object' ? job.salary.currency : 'M'),
-        salaryNegotiable: job.salaryNegotiable || (typeof job.salary === 'object' ? job.salary.negotiable : false),
+        salaryNegotiable:
+          job.salaryNegotiable || (typeof job.salary === 'object' ? job.salary.negotiable : false),
         type: job.type || 'Full-time',
         experience: job.experience || 'Entry Level',
         requirements: job.requirements || '',
@@ -190,7 +225,7 @@ const CompanyJobs = () => {
         applicationDeadline: job.applicationDeadline || '',
         maxApplications: job.maxApplications || 0,
         remote: job.remote || false,
-        hybrid: job.hybrid || false
+        hybrid: job.hybrid || false,
       });
     } else {
       setFormData({
@@ -211,7 +246,7 @@ const CompanyJobs = () => {
         applicationDeadline: '',
         maxApplications: 0,
         remote: false,
-        hybrid: false
+        hybrid: false,
       });
     }
     setShowModal(true);
@@ -240,7 +275,7 @@ const CompanyJobs = () => {
         maxApplications: formData.maxApplications || 0,
         remote: formData.remote,
         hybrid: formData.hybrid,
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       };
 
       if (editingJob) {
@@ -254,14 +289,14 @@ const CompanyJobs = () => {
         jobData.companyId = 'current-company-id'; // Should come from auth context
         jobData.companyName = 'Your Company'; // Should come from user profile
         jobData.isActive = formData.status === 'Active';
-        
+
         await jobService.createJob(jobData);
       }
-      
+
       await fetchJobs();
       setShowModal(false);
       setEditingJob(null);
-      
+
       // Reset form
       setFormData({
         title: '',
@@ -281,7 +316,7 @@ const CompanyJobs = () => {
         applicationDeadline: '',
         maxApplications: 0,
         remote: false,
-        hybrid: false
+        hybrid: false,
       });
     } catch (error) {
       console.error('Error saving job:', error);
@@ -303,22 +338,22 @@ const CompanyJobs = () => {
 
   const handleFormChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({ 
-      ...prev, 
-      [name]: type === 'checkbox' ? checked : value 
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
   const getStatusBadge = (status) => {
     const variants = {
-      'Active': { bg: 'success', text: 'white' },
-      'Draft': { bg: 'secondary', text: 'white' },
-      'Closed': { bg: 'danger', text: 'white' },
-      'Paused': { bg: 'warning', text: 'dark' }
+      Active: { bg: 'success', text: 'white' },
+      Draft: { bg: 'secondary', text: 'white' },
+      Closed: { bg: 'danger', text: 'white' },
+      Paused: { bg: 'warning', text: 'dark' },
     };
-    
+
     const variant = variants[status] || { bg: 'secondary', text: 'white' };
-    
+
     return (
       <Badge bg={variant.bg} text={variant.text}>
         {status}
@@ -328,9 +363,9 @@ const CompanyJobs = () => {
 
   const stats = {
     totalJobs: jobs.length,
-    activeJobs: jobs.filter(j => j.status === 'Active').length,
+    activeJobs: jobs.filter((j) => j.status === 'Active').length,
     totalApplicants: jobs.reduce((sum, job) => sum + (job.applicantsCount || 0), 0),
-    fullTimeJobs: jobs.filter(j => j.type === 'Full-time').length
+    fullTimeJobs: jobs.filter((j) => j.type === 'Full-time').length,
   };
 
   if (loading && jobs.length === 0) {
@@ -354,11 +389,9 @@ const CompanyJobs = () => {
               <span className="text-truncate">{job.location}</span>
             </div>
           </div>
-          <div>
-            {getStatusBadge(job.status)}
-          </div>
+          <div>{getStatusBadge(job.status)}</div>
         </div>
-        
+
         <div className="d-flex align-items-center mb-2">
           <Badge bg="info" className="me-2">
             {job.type}
@@ -368,11 +401,11 @@ const CompanyJobs = () => {
             <small className="text-muted">{job.applicantsCount || 0} applicants</small>
           </div>
         </div>
-        
+
         <div className="mb-2 small">
           <strong>Salary:</strong> {job.salaryDisplay || formatSalaryForDisplay(job)}
         </div>
-        
+
         <div className="d-flex justify-content-between align-items-center">
           <small className="text-muted">Posted: {job.date}</small>
           <div className="d-flex gap-1">
@@ -418,9 +451,9 @@ const CompanyJobs = () => {
             </h1>
             <p className="text-muted mb-0 small">Manage your company&apos;s job openings</p>
           </div>
-          <Button 
-            variant="primary" 
-            size={isMobile ? "sm" : undefined}
+          <Button
+            variant="primary"
+            size={isMobile ? 'sm' : undefined}
             onClick={() => handleEdit()}
             className="flex-shrink-0"
           >
@@ -492,14 +525,14 @@ const CompanyJobs = () => {
         <Card className="border-0 shadow-sm mb-3">
           <Card.Body className="p-3">
             <div className="mb-3">
-              <InputGroup size={isMobile ? "sm" : undefined}>
+              <InputGroup size={isMobile ? 'sm' : undefined}>
                 <InputGroup.Text className="bg-light">
                   <FaFilter size={isMobile ? 14 : undefined} />
                 </InputGroup.Text>
-                <Form.Select 
-                  value={statusFilter} 
+                <Form.Select
+                  value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  size={isMobile ? "sm" : undefined}
+                  size={isMobile ? 'sm' : undefined}
                 >
                   <option value="all">All Status</option>
                   <option value="Active">Active</option>
@@ -509,9 +542,9 @@ const CompanyJobs = () => {
                 </Form.Select>
               </InputGroup>
             </div>
-            
+
             <div className="mb-3">
-              <InputGroup size={isMobile ? "sm" : undefined}>
+              <InputGroup size={isMobile ? 'sm' : undefined}>
                 <InputGroup.Text className="bg-light">
                   <FaSearch size={isMobile ? 14 : undefined} />
                 </InputGroup.Text>
@@ -520,16 +553,16 @@ const CompanyJobs = () => {
                   placeholder="Search jobs..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  size={isMobile ? "sm" : undefined}
+                  size={isMobile ? 'sm' : undefined}
                 />
               </InputGroup>
             </div>
-            
+
             <div className="d-grid">
-              <Button 
-                variant="outline-secondary" 
+              <Button
+                variant="outline-secondary"
                 onClick={fetchJobs}
-                size={isMobile ? "sm" : undefined}
+                size={isMobile ? 'sm' : undefined}
               >
                 <FaFilter className="me-2" />
                 Refresh
@@ -546,11 +579,11 @@ const CompanyJobs = () => {
               <h6 className="fw-bold mb-0">Job Listings</h6>
               <small className="text-muted">{filteredJobs.length} jobs</small>
             </div>
-            
+
             {filteredJobs.map((job) => (
               <MobileJobCard key={job.id} job={job} />
             ))}
-            
+
             {filteredJobs.length === 0 && (
               <Card className="border-0 shadow-sm text-center py-5">
                 <Card.Body>
@@ -559,16 +592,12 @@ const CompanyJobs = () => {
                     {jobs.length === 0 ? 'No jobs posted yet' : 'No matching jobs'}
                   </h6>
                   <p className="text-muted mb-3 small">
-                    {jobs.length === 0 
-                      ? 'Click "New" to create your first job posting.' 
+                    {jobs.length === 0
+                      ? 'Click "New" to create your first job posting.'
                       : 'Try changing your filters or search term.'}
                   </p>
                   {jobs.length === 0 && (
-                    <Button 
-                      variant="primary" 
-                      size="sm"
-                      onClick={() => handleEdit()}
-                    >
+                    <Button variant="primary" size="sm" onClick={() => handleEdit()}>
                       <FaPlus className="me-1" />
                       Create First Job
                     </Button>
@@ -601,7 +630,9 @@ const CompanyJobs = () => {
                         <td>
                           <div>
                             <strong>{job.title}</strong>
-                            <div className="small text-muted">{job.companyName || 'Your Company'}</div>
+                            <div className="small text-muted">
+                              {job.companyName || 'Your Company'}
+                            </div>
                           </div>
                         </td>
                         <td>
@@ -611,9 +642,7 @@ const CompanyJobs = () => {
                           </div>
                         </td>
                         <td>
-                          <Badge bg="info">
-                            {job.type}
-                          </Badge>
+                          <Badge bg="info">{job.type}</Badge>
                         </td>
                         <td>
                           {/* Fixed: Using formatted salary instead of raw object */}
@@ -625,12 +654,8 @@ const CompanyJobs = () => {
                             <Badge bg="secondary">{job.applicantsCount || 0}</Badge>
                           </div>
                         </td>
-                        <td>
-                          {getStatusBadge(job.status)}
-                        </td>
-                        <td className="text-muted">
-                          {job.date}
-                        </td>
+                        <td>{getStatusBadge(job.status)}</td>
+                        <td className="text-muted">{job.date}</td>
                         <td>
                           <div className="d-flex gap-1">
                             <Button
@@ -665,11 +690,13 @@ const CompanyJobs = () => {
                             <>
                               <FaBriefcase className="mb-2" size={32} />
                               <p className="mb-1">No jobs posted yet</p>
-                              <p className="mb-0">Click "Post New Job" to create your first job posting.</p>
+                              <p className="mb-0">
+                                Click "Post New Job" to create your first job posting.
+                              </p>
                             </>
                           ) : (
                             'No jobs match your filters'
-                          )}   
+                          )}
                         </td>
                       </tr>
                     )}
@@ -682,16 +709,14 @@ const CompanyJobs = () => {
       </div>
 
       {/* Job Form Modal - Mobile optimized */}
-      <Modal 
-        show={showModal} 
-        onHide={() => setShowModal(false)} 
-        size={isMobile ? "md" : "lg"}
+      <Modal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        size={isMobile ? 'md' : 'lg'}
         scrollable
       >
         <Modal.Header closeButton className="px-3 py-3">
-          <Modal.Title className="h6">
-            {editingJob ? 'Edit Job' : 'Post New Job'}
-          </Modal.Title>
+          <Modal.Title className="h6">{editingJob ? 'Edit Job' : 'Post New Job'}</Modal.Title>
         </Modal.Header>
         <Modal.Body className="px-3">
           <Form>
@@ -706,7 +731,7 @@ const CompanyJobs = () => {
                     onChange={handleFormChange}
                     placeholder="e.g., Software Engineer"
                     required
-                    size={isMobile ? "sm" : undefined}
+                    size={isMobile ? 'sm' : undefined}
                   />
                 </Form.Group>
               </Col>
@@ -717,7 +742,7 @@ const CompanyJobs = () => {
                     name="type"
                     value={formData.type}
                     onChange={handleFormChange}
-                    size={isMobile ? "sm" : undefined}
+                    size={isMobile ? 'sm' : undefined}
                   >
                     <option value="Full-time">Full-time</option>
                     <option value="Part-time">Part-time</option>
@@ -741,7 +766,7 @@ const CompanyJobs = () => {
                     onChange={handleFormChange}
                     placeholder="e.g., Maseru, Lesotho"
                     required
-                    size={isMobile ? "sm" : undefined}
+                    size={isMobile ? 'sm' : undefined}
                   />
                 </Form.Group>
               </Col>
@@ -752,7 +777,7 @@ const CompanyJobs = () => {
                     name="experience"
                     value={formData.experience}
                     onChange={handleFormChange}
-                    size={isMobile ? "sm" : undefined}
+                    size={isMobile ? 'sm' : undefined}
                   >
                     <option value="Entry Level">Entry Level (0-2 years)</option>
                     <option value="Mid Level">Mid Level (3-5 years)</option>
@@ -774,7 +799,7 @@ const CompanyJobs = () => {
                     value={formData.salary}
                     onChange={handleFormChange}
                     placeholder="e.g., 10,000 - 15,000"
-                    size={isMobile ? "sm" : undefined}
+                    size={isMobile ? 'sm' : undefined}
                   />
                 </Form.Group>
               </Col>
@@ -785,7 +810,7 @@ const CompanyJobs = () => {
                     name="currency"
                     value={formData.currency}
                     onChange={handleFormChange}
-                    size={isMobile ? "sm" : undefined}
+                    size={isMobile ? 'sm' : undefined}
                   >
                     <option value="M">M (Maloti)</option>
                     <option value="$">$ (Dollar)</option>
@@ -802,7 +827,7 @@ const CompanyJobs = () => {
                     name="salaryType"
                     value={formData.salaryType}
                     onChange={handleFormChange}
-                    size={isMobile ? "sm" : undefined}
+                    size={isMobile ? 'sm' : undefined}
                   >
                     <option value="monthly">Per Month</option>
                     <option value="yearly">Per Year</option>
@@ -858,7 +883,7 @@ const CompanyJobs = () => {
                 onChange={handleFormChange}
                 placeholder="Describe the job responsibilities..."
                 required
-                size={isMobile ? "sm" : undefined}
+                size={isMobile ? 'sm' : undefined}
               />
             </Form.Group>
 
@@ -871,7 +896,7 @@ const CompanyJobs = () => {
                 value={formData.requirements}
                 onChange={handleFormChange}
                 placeholder="List job requirements..."
-                size={isMobile ? "sm" : undefined}
+                size={isMobile ? 'sm' : undefined}
               />
             </Form.Group>
 
@@ -884,20 +909,22 @@ const CompanyJobs = () => {
                     name="applicationDeadline"
                     value={formData.applicationDeadline}
                     onChange={handleFormChange}
-                    size={isMobile ? "sm" : undefined}
+                    size={isMobile ? 'sm' : undefined}
                   />
                 </Form.Group>
               </Col>
               <Col xs={12} md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label className="small fw-bold">Max Applications (0 = unlimited)</Form.Label>
+                  <Form.Label className="small fw-bold">
+                    Max Applications (0 = unlimited)
+                  </Form.Label>
                   <Form.Control
                     type="number"
                     name="maxApplications"
                     value={formData.maxApplications}
                     onChange={handleFormChange}
                     min="0"
-                    size={isMobile ? "sm" : undefined}
+                    size={isMobile ? 'sm' : undefined}
                   />
                 </Form.Group>
               </Col>
@@ -909,7 +936,7 @@ const CompanyJobs = () => {
                 name="status"
                 value={formData.status}
                 onChange={handleFormChange}
-                size={isMobile ? "sm" : undefined}
+                size={isMobile ? 'sm' : undefined}
               >
                 <option value="Active">Active</option>
                 <option value="Draft">Draft</option>
@@ -920,18 +947,14 @@ const CompanyJobs = () => {
           </Form>
         </Modal.Body>
         <Modal.Footer className="px-3 py-3">
-          <Button 
-            variant="secondary" 
+          <Button
+            variant="secondary"
             onClick={() => setShowModal(false)}
-            size={isMobile ? "sm" : undefined}
+            size={isMobile ? 'sm' : undefined}
           >
             Cancel
           </Button>
-          <Button 
-            variant="primary" 
-            onClick={handleSave}
-            size={isMobile ? "sm" : undefined}
-          >
+          <Button variant="primary" onClick={handleSave} size={isMobile ? 'sm' : undefined}>
             {editingJob ? 'Update Job' : 'Post Job'}
           </Button>
         </Modal.Footer>
@@ -946,17 +969,17 @@ const CompanyJobs = () => {
           Are you sure you want to delete this job? This action cannot be undone.
         </Modal.Body>
         <Modal.Footer className="px-3 py-3">
-          <Button 
-            variant="secondary" 
+          <Button
+            variant="secondary"
             onClick={() => setDeleteConfirm(null)}
-            size={isMobile ? "sm" : undefined}
+            size={isMobile ? 'sm' : undefined}
           >
             Cancel
           </Button>
-          <Button 
-            variant="danger" 
+          <Button
+            variant="danger"
             onClick={() => handleDelete(deleteConfirm)}
-            size={isMobile ? "sm" : undefined}
+            size={isMobile ? 'sm' : undefined}
           >
             Delete
           </Button>

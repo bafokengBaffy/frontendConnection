@@ -17,13 +17,13 @@ import {
   InputGroup,
   FormControl,
   ProgressBar,
-  Accordion
+  Accordion,
 } from 'react-bootstrap';
-import { 
-  FaCog, 
-  FaSave, 
-  FaUndo, 
-  FaShieldAlt, 
+import {
+  FaCog,
+  FaSave,
+  FaUndo,
+  FaShieldAlt,
   FaDatabase,
   FaServer,
   FaUsers,
@@ -38,7 +38,7 @@ import {
   FaTrash,
   FaHistory,
   FaEye,
-  FaEyeSlash
+  FaEyeSlash,
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../context/AuthContext';
@@ -67,9 +67,9 @@ const SystemSettings = () => {
       maintenanceMode: false,
       enableRegistration: true,
       enableEmailVerification: true,
-      defaultUserRole: 'student'
+      defaultUserRole: 'student',
     },
-    
+
     // Security Settings
     security: {
       requireStrongPasswords: true,
@@ -83,9 +83,9 @@ const SystemSettings = () => {
       enableRateLimiting: true,
       maxRequestsPerMinute: 100,
       enableSecurityHeaders: true,
-      enableCORS: true
+      enableCORS: true,
     },
-    
+
     // Email Settings
     email: {
       smtpHost: 'smtp.gmail.com',
@@ -98,9 +98,9 @@ const SystemSettings = () => {
       enableEmailNotifications: true,
       emailVerificationTemplate: 'default',
       passwordResetTemplate: 'default',
-      welcomeEmailTemplate: 'default'
+      welcomeEmailTemplate: 'default',
     },
-    
+
     // Storage Settings
     storage: {
       maxFileSize: 10, // MB
@@ -110,9 +110,9 @@ const SystemSettings = () => {
       storageProvider: 'firebase',
       backupFrequency: 'daily',
       keepBackupsFor: 30, // days
-      enableAutoCleanup: true
+      enableAutoCleanup: true,
     },
-    
+
     // API Settings
     api: {
       enableAPI: true,
@@ -122,9 +122,9 @@ const SystemSettings = () => {
       enableSwagger: true,
       enableWebhooks: true,
       webhookSecret: '',
-      apiKeys: []
+      apiKeys: [],
     },
-    
+
     // Analytics Settings
     analytics: {
       enableAnalytics: true,
@@ -134,9 +134,9 @@ const SystemSettings = () => {
       trackEvents: true,
       dataRetention: 365, // days
       enableGDPRCompliance: true,
-      anonymizeIP: true
+      anonymizeIP: true,
     },
-    
+
     // Notification Settings
     notifications: {
       enablePushNotifications: true,
@@ -146,14 +146,14 @@ const SystemSettings = () => {
       notifyFailedLogins: true,
       notifySystemErrors: true,
       notificationSound: true,
-      desktopNotifications: false
-    }
+      desktopNotifications: false,
+    },
   });
 
   // New API Key
   const [newApiKey, setNewApiKey] = useState({
     name: '',
-    permissions: ['read']
+    permissions: ['read'],
   });
 
   // Backup/Restore
@@ -184,7 +184,7 @@ const SystemSettings = () => {
   const saveSettings = async () => {
     try {
       setSaving(true);
-      
+
       // Validate settings
       if (!validateSettings()) {
         return;
@@ -193,12 +193,12 @@ const SystemSettings = () => {
       // TODO: Save to backend API
       // For now, save to localStorage
       localStorage.setItem('systemSettings', JSON.stringify(settings));
-      
+
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       toast.success('Settings saved successfully!');
-      
+
       // Reload settings to ensure consistency
       await loadSettings();
     } catch (error) {
@@ -244,7 +244,7 @@ const SystemSettings = () => {
         maintenanceMode: false,
         enableRegistration: true,
         enableEmailVerification: true,
-        defaultUserRole: 'student'
+        defaultUserRole: 'student',
       },
       security: {
         requireStrongPasswords: true,
@@ -258,7 +258,7 @@ const SystemSettings = () => {
         enableRateLimiting: true,
         maxRequestsPerMinute: 100,
         enableSecurityHeaders: true,
-        enableCORS: true
+        enableCORS: true,
       },
       email: {
         smtpHost: 'smtp.gmail.com',
@@ -271,7 +271,7 @@ const SystemSettings = () => {
         enableEmailNotifications: true,
         emailVerificationTemplate: 'default',
         passwordResetTemplate: 'default',
-        welcomeEmailTemplate: 'default'
+        welcomeEmailTemplate: 'default',
       },
       storage: {
         maxFileSize: 10,
@@ -281,7 +281,7 @@ const SystemSettings = () => {
         storageProvider: 'firebase',
         backupFrequency: 'daily',
         keepBackupsFor: 30,
-        enableAutoCleanup: true
+        enableAutoCleanup: true,
       },
       api: {
         enableAPI: true,
@@ -291,7 +291,7 @@ const SystemSettings = () => {
         enableSwagger: true,
         enableWebhooks: true,
         webhookSecret: '',
-        apiKeys: []
+        apiKeys: [],
       },
       analytics: {
         enableAnalytics: true,
@@ -301,7 +301,7 @@ const SystemSettings = () => {
         trackEvents: true,
         dataRetention: 365,
         enableGDPRCompliance: true,
-        anonymizeIP: true
+        anonymizeIP: true,
       },
       notifications: {
         enablePushNotifications: true,
@@ -311,10 +311,10 @@ const SystemSettings = () => {
         notifyFailedLogins: true,
         notifySystemErrors: true,
         notificationSound: true,
-        desktopNotifications: false
-      }
+        desktopNotifications: false,
+      },
     });
-    
+
     setShowResetModal(false);
     toast.info('Settings reset to defaults');
   };
@@ -332,45 +332,45 @@ const SystemSettings = () => {
       permissions: newApiKey.permissions,
       created: new Date().toISOString(),
       lastUsed: null,
-      status: 'active'
+      status: 'active',
     };
 
-    setSettings(prev => ({
+    setSettings((prev) => ({
       ...prev,
       api: {
         ...prev.api,
-        apiKeys: [...prev.api.apiKeys, newKey]
-      }
+        apiKeys: [...prev.api.apiKeys, newKey],
+      },
     }));
 
     setNewApiKey({
       name: '',
-      permissions: ['read']
+      permissions: ['read'],
     });
 
     toast.success('New API key generated successfully');
   };
 
   const revokeApiKey = (keyId) => {
-    setSettings(prev => ({
+    setSettings((prev) => ({
       ...prev,
       api: {
         ...prev.api,
-        apiKeys: prev.api.apiKeys.map(key => 
+        apiKeys: prev.api.apiKeys.map((key) =>
           key.id === keyId ? { ...key, status: 'revoked' } : key
-        )
-      }
+        ),
+      },
     }));
     toast.warning('API key revoked');
   };
 
   const deleteApiKey = (keyId) => {
-    setSettings(prev => ({
+    setSettings((prev) => ({
       ...prev,
       api: {
         ...prev.api,
-        apiKeys: prev.api.apiKeys.filter(key => key.id !== keyId)
-      }
+        apiKeys: prev.api.apiKeys.filter((key) => key.id !== keyId),
+      },
     }));
     toast.info('API key deleted');
   };
@@ -379,20 +379,20 @@ const SystemSettings = () => {
     const backupData = {
       settings,
       timestamp: new Date().toISOString(),
-      version: '1.0.0'
+      version: '1.0.0',
     };
 
     const dataStr = JSON.stringify(backupData, null, 2);
     const dataBlob = new Blob([dataStr], { type: 'application/json' });
     const url = URL.createObjectURL(dataBlob);
-    
+
     const link = document.createElement('a');
     link.href = url;
     link.download = `system-backup-${new Date().toISOString().split('T')[0]}.json`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
+
     toast.success('Backup downloaded successfully');
   };
 
@@ -407,7 +407,7 @@ const SystemSettings = () => {
       reader.onload = async (e) => {
         try {
           const backupData = JSON.parse(e.target.result);
-          
+
           // Validate backup file
           if (!backupData.settings || !backupData.timestamp) {
             toast.error('Invalid backup file format');
@@ -417,7 +417,7 @@ const SystemSettings = () => {
           setSettings(backupData.settings);
           setShowBackupModal(false);
           setBackupFile(null);
-          
+
           toast.success('Settings restored from backup');
         } catch (error) {
           console.error('Error parsing backup file:', error);
@@ -433,33 +433,33 @@ const SystemSettings = () => {
 
   const addAllowedIP = (ip) => {
     if (!ip.trim()) return;
-    
-    setSettings(prev => ({
+
+    setSettings((prev) => ({
       ...prev,
       security: {
         ...prev.security,
-        allowedIPs: [...prev.security.allowedIPs, ip.trim()]
-      }
+        allowedIPs: [...prev.security.allowedIPs, ip.trim()],
+      },
     }));
   };
 
   const removeAllowedIP = (index) => {
-    setSettings(prev => ({
+    setSettings((prev) => ({
       ...prev,
       security: {
         ...prev.security,
-        allowedIPs: prev.security.allowedIPs.filter((_, i) => i !== index)
-      }
+        allowedIPs: prev.security.allowedIPs.filter((_, i) => i !== index),
+      },
     }));
   };
 
   const handleSettingChange = (section, field, value) => {
-    setSettings(prev => ({
+    setSettings((prev) => ({
       ...prev,
       [section]: {
         ...prev[section],
-        [field]: value
-      }
+        [field]: value,
+      },
     }));
   };
 
@@ -484,18 +484,14 @@ const SystemSettings = () => {
           <p className="text-muted">Configure and manage system-wide settings</p>
         </Col>
         <Col xs="auto" className="d-flex align-items-center">
-          <Button 
-            variant="outline-secondary" 
+          <Button
+            variant="outline-secondary"
             className="me-2"
             onClick={() => setShowResetModal(true)}
           >
             <FaUndo className="me-2" /> Reset
           </Button>
-          <Button 
-            variant="primary" 
-            onClick={saveSettings}
-            disabled={saving}
-          >
+          <Button variant="primary" onClick={saveSettings} disabled={saving}>
             {saving ? (
               <>
                 <Spinner animation="border" size="sm" className="me-2" />
@@ -579,7 +575,9 @@ const SystemSettings = () => {
                           <Form.Control
                             type="text"
                             value={settings.general.siteName}
-                            onChange={(e) => handleSettingChange('general', 'siteName', e.target.value)}
+                            onChange={(e) =>
+                              handleSettingChange('general', 'siteName', e.target.value)
+                            }
                           />
                         </Form.Group>
                       </Col>
@@ -589,7 +587,9 @@ const SystemSettings = () => {
                           <Form.Control
                             type="url"
                             value={settings.general.siteUrl}
-                            onChange={(e) => handleSettingChange('general', 'siteUrl', e.target.value)}
+                            onChange={(e) =>
+                              handleSettingChange('general', 'siteUrl', e.target.value)
+                            }
                           />
                         </Form.Group>
                       </Col>
@@ -599,7 +599,9 @@ const SystemSettings = () => {
                           <Form.Control
                             type="email"
                             value={settings.general.adminEmail}
-                            onChange={(e) => handleSettingChange('general', 'adminEmail', e.target.value)}
+                            onChange={(e) =>
+                              handleSettingChange('general', 'adminEmail', e.target.value)
+                            }
                           />
                         </Form.Group>
                       </Col>
@@ -609,7 +611,9 @@ const SystemSettings = () => {
                           <Form.Control
                             type="email"
                             value={settings.general.supportEmail}
-                            onChange={(e) => handleSettingChange('general', 'supportEmail', e.target.value)}
+                            onChange={(e) =>
+                              handleSettingChange('general', 'supportEmail', e.target.value)
+                            }
                           />
                         </Form.Group>
                       </Col>
@@ -618,7 +622,9 @@ const SystemSettings = () => {
                           <Form.Label>Timezone</Form.Label>
                           <Form.Select
                             value={settings.general.timezone}
-                            onChange={(e) => handleSettingChange('general', 'timezone', e.target.value)}
+                            onChange={(e) =>
+                              handleSettingChange('general', 'timezone', e.target.value)
+                            }
                           >
                             <option value="Africa/Maseru">Africa/Maseru (GMT+2)</option>
                             <option value="UTC">UTC</option>
@@ -632,7 +638,9 @@ const SystemSettings = () => {
                           <Form.Label>Date Format</Form.Label>
                           <Form.Select
                             value={settings.general.dateFormat}
-                            onChange={(e) => handleSettingChange('general', 'dateFormat', e.target.value)}
+                            onChange={(e) =>
+                              handleSettingChange('general', 'dateFormat', e.target.value)
+                            }
                           >
                             <option value="DD/MM/YYYY">DD/MM/YYYY</option>
                             <option value="MM/DD/YYYY">MM/DD/YYYY</option>
@@ -645,7 +653,9 @@ const SystemSettings = () => {
                           <Form.Label>Time Format</Form.Label>
                           <Form.Select
                             value={settings.general.timeFormat}
-                            onChange={(e) => handleSettingChange('general', 'timeFormat', e.target.value)}
+                            onChange={(e) =>
+                              handleSettingChange('general', 'timeFormat', e.target.value)
+                            }
                           >
                             <option value="24h">24 Hour</option>
                             <option value="12h">12 Hour</option>
@@ -657,7 +667,9 @@ const SystemSettings = () => {
                           <Form.Label>Default User Role</Form.Label>
                           <Form.Select
                             value={settings.general.defaultUserRole}
-                            onChange={(e) => handleSettingChange('general', 'defaultUserRole', e.target.value)}
+                            onChange={(e) =>
+                              handleSettingChange('general', 'defaultUserRole', e.target.value)
+                            }
                           >
                             <option value="student">Student</option>
                             <option value="company">Company</option>
@@ -670,7 +682,9 @@ const SystemSettings = () => {
                           id="maintenance-mode"
                           label="Maintenance Mode"
                           checked={settings.general.maintenanceMode}
-                          onChange={(e) => handleSettingChange('general', 'maintenanceMode', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange('general', 'maintenanceMode', e.target.checked)
+                          }
                           className="mb-3"
                         />
                         <Form.Check
@@ -678,7 +692,9 @@ const SystemSettings = () => {
                           id="enable-registration"
                           label="Enable User Registration"
                           checked={settings.general.enableRegistration}
-                          onChange={(e) => handleSettingChange('general', 'enableRegistration', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange('general', 'enableRegistration', e.target.checked)
+                          }
                           className="mb-3"
                         />
                         <Form.Check
@@ -686,7 +702,13 @@ const SystemSettings = () => {
                           id="enable-email-verification"
                           label="Require Email Verification"
                           checked={settings.general.enableEmailVerification}
-                          onChange={(e) => handleSettingChange('general', 'enableEmailVerification', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange(
+                              'general',
+                              'enableEmailVerification',
+                              e.target.checked
+                            )
+                          }
                         />
                       </Col>
                     </Row>
@@ -712,7 +734,13 @@ const SystemSettings = () => {
                             min="6"
                             max="32"
                             value={settings.security.passwordMinLength}
-                            onChange={(e) => handleSettingChange('security', 'passwordMinLength', parseInt(e.target.value))}
+                            onChange={(e) =>
+                              handleSettingChange(
+                                'security',
+                                'passwordMinLength',
+                                parseInt(e.target.value)
+                              )
+                            }
                           />
                         </Form.Group>
                       </Col>
@@ -724,7 +752,13 @@ const SystemSettings = () => {
                             min="1"
                             max="10"
                             value={settings.security.maxLoginAttempts}
-                            onChange={(e) => handleSettingChange('security', 'maxLoginAttempts', parseInt(e.target.value))}
+                            onChange={(e) =>
+                              handleSettingChange(
+                                'security',
+                                'maxLoginAttempts',
+                                parseInt(e.target.value)
+                              )
+                            }
                           />
                         </Form.Group>
                       </Col>
@@ -736,7 +770,13 @@ const SystemSettings = () => {
                             min="1"
                             max="1440"
                             value={settings.security.lockoutDuration}
-                            onChange={(e) => handleSettingChange('security', 'lockoutDuration', parseInt(e.target.value))}
+                            onChange={(e) =>
+                              handleSettingChange(
+                                'security',
+                                'lockoutDuration',
+                                parseInt(e.target.value)
+                              )
+                            }
                           />
                         </Form.Group>
                       </Col>
@@ -748,7 +788,13 @@ const SystemSettings = () => {
                             min="5"
                             max="1440"
                             value={settings.security.sessionTimeout}
-                            onChange={(e) => handleSettingChange('security', 'sessionTimeout', parseInt(e.target.value))}
+                            onChange={(e) =>
+                              handleSettingChange(
+                                'security',
+                                'sessionTimeout',
+                                parseInt(e.target.value)
+                              )
+                            }
                           />
                         </Form.Group>
                       </Col>
@@ -758,7 +804,13 @@ const SystemSettings = () => {
                           id="require-strong-passwords"
                           label="Require Strong Passwords"
                           checked={settings.security.requireStrongPasswords}
-                          onChange={(e) => handleSettingChange('security', 'requireStrongPasswords', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange(
+                              'security',
+                              'requireStrongPasswords',
+                              e.target.checked
+                            )
+                          }
                           className="mb-3"
                         />
                         <Form.Check
@@ -766,7 +818,9 @@ const SystemSettings = () => {
                           id="enable-2fa"
                           label="Enable Two-Factor Authentication"
                           checked={settings.security.enable2FA}
-                          onChange={(e) => handleSettingChange('security', 'enable2FA', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange('security', 'enable2FA', e.target.checked)
+                          }
                           className="mb-3"
                         />
                         <Form.Check
@@ -774,7 +828,9 @@ const SystemSettings = () => {
                           id="enable-ip-whitelist"
                           label="Enable IP Whitelist"
                           checked={settings.security.enableIPWhitelist}
-                          onChange={(e) => handleSettingChange('security', 'enableIPWhitelist', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange('security', 'enableIPWhitelist', e.target.checked)
+                          }
                           className="mb-3"
                         />
                         <Form.Check
@@ -782,7 +838,9 @@ const SystemSettings = () => {
                           id="enable-rate-limiting"
                           label="Enable Rate Limiting"
                           checked={settings.security.enableRateLimiting}
-                          onChange={(e) => handleSettingChange('security', 'enableRateLimiting', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange('security', 'enableRateLimiting', e.target.checked)
+                          }
                           className="mb-3"
                         />
                         <Form.Check
@@ -790,7 +848,13 @@ const SystemSettings = () => {
                           id="enable-security-headers"
                           label="Enable Security Headers"
                           checked={settings.security.enableSecurityHeaders}
-                          onChange={(e) => handleSettingChange('security', 'enableSecurityHeaders', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange(
+                              'security',
+                              'enableSecurityHeaders',
+                              e.target.checked
+                            )
+                          }
                           className="mb-3"
                         />
                         <Form.Check
@@ -798,10 +862,12 @@ const SystemSettings = () => {
                           id="enable-cors"
                           label="Enable CORS"
                           checked={settings.security.enableCORS}
-                          onChange={(e) => handleSettingChange('security', 'enableCORS', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange('security', 'enableCORS', e.target.checked)
+                          }
                         />
                       </Col>
-                      
+
                       {settings.security.enableIPWhitelist && (
                         <Col md={12}>
                           <Form.Group>
@@ -817,10 +883,12 @@ const SystemSettings = () => {
                                   }
                                 }}
                               />
-                              <Button 
+                              <Button
                                 variant="outline-secondary"
                                 onClick={() => {
-                                  const input = document.querySelector('input[placeholder*="IP address"]');
+                                  const input = document.querySelector(
+                                    'input[placeholder*="IP address"]'
+                                  );
                                   addAllowedIP(input.value);
                                   input.value = '';
                                 }}
@@ -830,7 +898,11 @@ const SystemSettings = () => {
                             </InputGroup>
                             <div className="d-flex flex-wrap gap-2">
                               {settings.security.allowedIPs.map((ip, index) => (
-                                <Badge key={index} bg="primary" className="d-flex align-items-center">
+                                <Badge
+                                  key={index}
+                                  bg="primary"
+                                  className="d-flex align-items-center"
+                                >
                                   {ip}
                                   <button
                                     type="button"
@@ -861,9 +933,10 @@ const SystemSettings = () => {
                   <Card.Body>
                     <Alert variant="warning" className="mb-4">
                       <FaExclamationTriangle className="me-2" />
-                      For security, email passwords are not displayed. Enter a new password to update.
+                      For security, email passwords are not displayed. Enter a new password to
+                      update.
                     </Alert>
-                    
+
                     <Row className="g-3">
                       <Col md={6}>
                         <Form.Group>
@@ -871,7 +944,9 @@ const SystemSettings = () => {
                           <Form.Control
                             type="text"
                             value={settings.email.smtpHost}
-                            onChange={(e) => handleSettingChange('email', 'smtpHost', e.target.value)}
+                            onChange={(e) =>
+                              handleSettingChange('email', 'smtpHost', e.target.value)
+                            }
                           />
                         </Form.Group>
                       </Col>
@@ -881,7 +956,9 @@ const SystemSettings = () => {
                           <Form.Control
                             type="number"
                             value={settings.email.smtpPort}
-                            onChange={(e) => handleSettingChange('email', 'smtpPort', parseInt(e.target.value))}
+                            onChange={(e) =>
+                              handleSettingChange('email', 'smtpPort', parseInt(e.target.value))
+                            }
                           />
                         </Form.Group>
                       </Col>
@@ -891,7 +968,9 @@ const SystemSettings = () => {
                           <Form.Control
                             type="text"
                             value={settings.email.smtpUsername}
-                            onChange={(e) => handleSettingChange('email', 'smtpUsername', e.target.value)}
+                            onChange={(e) =>
+                              handleSettingChange('email', 'smtpUsername', e.target.value)
+                            }
                           />
                         </Form.Group>
                       </Col>
@@ -900,9 +979,11 @@ const SystemSettings = () => {
                           <Form.Label>SMTP Password</Form.Label>
                           <InputGroup>
                             <Form.Control
-                              type={apiKeyVisible ? "text" : "password"}
+                              type={apiKeyVisible ? 'text' : 'password'}
                               value={settings.email.smtpPassword}
-                              onChange={(e) => handleSettingChange('email', 'smtpPassword', e.target.value)}
+                              onChange={(e) =>
+                                handleSettingChange('email', 'smtpPassword', e.target.value)
+                              }
                               placeholder="Enter new password to update"
                             />
                             <Button
@@ -919,7 +1000,9 @@ const SystemSettings = () => {
                           <Form.Label>Encryption</Form.Label>
                           <Form.Select
                             value={settings.email.smtpEncryption}
-                            onChange={(e) => handleSettingChange('email', 'smtpEncryption', e.target.value)}
+                            onChange={(e) =>
+                              handleSettingChange('email', 'smtpEncryption', e.target.value)
+                            }
                           >
                             <option value="tls">TLS</option>
                             <option value="ssl">SSL</option>
@@ -933,7 +1016,9 @@ const SystemSettings = () => {
                           <Form.Control
                             type="text"
                             value={settings.email.fromName}
-                            onChange={(e) => handleSettingChange('email', 'fromName', e.target.value)}
+                            onChange={(e) =>
+                              handleSettingChange('email', 'fromName', e.target.value)
+                            }
                           />
                         </Form.Group>
                       </Col>
@@ -943,7 +1028,13 @@ const SystemSettings = () => {
                           id="enable-email-notifications"
                           label="Enable Email Notifications"
                           checked={settings.email.enableEmailNotifications}
-                          onChange={(e) => handleSettingChange('email', 'enableEmailNotifications', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange(
+                              'email',
+                              'enableEmailNotifications',
+                              e.target.checked
+                            )
+                          }
                         />
                       </Col>
                     </Row>
@@ -969,7 +1060,13 @@ const SystemSettings = () => {
                             min="1"
                             max="100"
                             value={settings.storage.maxFileSize}
-                            onChange={(e) => handleSettingChange('storage', 'maxFileSize', parseInt(e.target.value))}
+                            onChange={(e) =>
+                              handleSettingChange(
+                                'storage',
+                                'maxFileSize',
+                                parseInt(e.target.value)
+                              )
+                            }
                           />
                         </Form.Group>
                       </Col>
@@ -981,7 +1078,13 @@ const SystemSettings = () => {
                             min="10"
                             max="1000"
                             value={settings.storage.maxUserStorage}
-                            onChange={(e) => handleSettingChange('storage', 'maxUserStorage', parseInt(e.target.value))}
+                            onChange={(e) =>
+                              handleSettingChange(
+                                'storage',
+                                'maxUserStorage',
+                                parseInt(e.target.value)
+                              )
+                            }
                           />
                         </Form.Group>
                       </Col>
@@ -990,7 +1093,9 @@ const SystemSettings = () => {
                           <Form.Label>Backup Frequency</Form.Label>
                           <Form.Select
                             value={settings.storage.backupFrequency}
-                            onChange={(e) => handleSettingChange('storage', 'backupFrequency', e.target.value)}
+                            onChange={(e) =>
+                              handleSettingChange('storage', 'backupFrequency', e.target.value)
+                            }
                           >
                             <option value="hourly">Hourly</option>
                             <option value="daily">Daily</option>
@@ -1007,29 +1112,37 @@ const SystemSettings = () => {
                             min="1"
                             max="365"
                             value={settings.storage.keepBackupsFor}
-                            onChange={(e) => handleSettingChange('storage', 'keepBackupsFor', parseInt(e.target.value))}
+                            onChange={(e) =>
+                              handleSettingChange(
+                                'storage',
+                                'keepBackupsFor',
+                                parseInt(e.target.value)
+                              )
+                            }
                           />
                         </Form.Group>
                       </Col>
                       <Col md={12}>
                         <Form.Label>Allowed File Types</Form.Label>
                         <div className="d-flex flex-wrap gap-2 mb-3">
-                          {['pdf', 'doc', 'docx', 'xls', 'xlsx', 'jpg', 'jpeg', 'png', 'zip'].map(type => (
-                            <Form.Check
-                              key={type}
-                              type="checkbox"
-                              id={`file-type-${type}`}
-                              label={`.${type}`}
-                              checked={settings.storage.allowedFileTypes.includes(type)}
-                              onChange={(e) => {
-                                const newTypes = e.target.checked
-                                  ? [...settings.storage.allowedFileTypes, type]
-                                  : settings.storage.allowedFileTypes.filter(t => t !== type);
-                                handleSettingChange('storage', 'allowedFileTypes', newTypes);
-                              }}
-                              className="me-3"
-                            />
-                          ))}
+                          {['pdf', 'doc', 'docx', 'xls', 'xlsx', 'jpg', 'jpeg', 'png', 'zip'].map(
+                            (type) => (
+                              <Form.Check
+                                key={type}
+                                type="checkbox"
+                                id={`file-type-${type}`}
+                                label={`.${type}`}
+                                checked={settings.storage.allowedFileTypes.includes(type)}
+                                onChange={(e) => {
+                                  const newTypes = e.target.checked
+                                    ? [...settings.storage.allowedFileTypes, type]
+                                    : settings.storage.allowedFileTypes.filter((t) => t !== type);
+                                  handleSettingChange('storage', 'allowedFileTypes', newTypes);
+                                }}
+                                className="me-3"
+                              />
+                            )
+                          )}
                         </div>
                       </Col>
                       <Col md={12}>
@@ -1038,7 +1151,9 @@ const SystemSettings = () => {
                           id="enable-compression"
                           label="Enable File Compression"
                           checked={settings.storage.enableCompression}
-                          onChange={(e) => handleSettingChange('storage', 'enableCompression', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange('storage', 'enableCompression', e.target.checked)
+                          }
                           className="mb-3"
                         />
                         <Form.Check
@@ -1046,7 +1161,9 @@ const SystemSettings = () => {
                           id="enable-auto-cleanup"
                           label="Enable Automatic Cleanup"
                           checked={settings.storage.enableAutoCleanup}
-                          onChange={(e) => handleSettingChange('storage', 'enableAutoCleanup', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange('storage', 'enableAutoCleanup', e.target.checked)
+                          }
                         />
                       </Col>
                     </Row>
@@ -1061,8 +1178,8 @@ const SystemSettings = () => {
                     <h5 className="mb-0">
                       <FaServer className="me-2" /> API Settings
                     </h5>
-                    <Button 
-                      variant="outline-primary" 
+                    <Button
+                      variant="outline-primary"
                       size="sm"
                       onClick={() => document.getElementById('generate-api-key').scrollIntoView()}
                     >
@@ -1077,7 +1194,9 @@ const SystemSettings = () => {
                           <Form.Control
                             type="text"
                             value={settings.api.apiVersion}
-                            onChange={(e) => handleSettingChange('api', 'apiVersion', e.target.value)}
+                            onChange={(e) =>
+                              handleSettingChange('api', 'apiVersion', e.target.value)
+                            }
                           />
                         </Form.Group>
                       </Col>
@@ -1089,7 +1208,9 @@ const SystemSettings = () => {
                             min="10"
                             max="10000"
                             value={settings.api.apiRateLimit}
-                            onChange={(e) => handleSettingChange('api', 'apiRateLimit', parseInt(e.target.value))}
+                            onChange={(e) =>
+                              handleSettingChange('api', 'apiRateLimit', parseInt(e.target.value))
+                            }
                           />
                         </Form.Group>
                       </Col>
@@ -1099,7 +1220,9 @@ const SystemSettings = () => {
                           id="enable-api"
                           label="Enable API"
                           checked={settings.api.enableAPI}
-                          onChange={(e) => handleSettingChange('api', 'enableAPI', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange('api', 'enableAPI', e.target.checked)
+                          }
                           className="mb-3"
                         />
                         <Form.Check
@@ -1107,7 +1230,9 @@ const SystemSettings = () => {
                           id="require-api-key"
                           label="Require API Key"
                           checked={settings.api.requireApiKey}
-                          onChange={(e) => handleSettingChange('api', 'requireApiKey', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange('api', 'requireApiKey', e.target.checked)
+                          }
                           className="mb-3"
                         />
                         <Form.Check
@@ -1115,7 +1240,9 @@ const SystemSettings = () => {
                           id="enable-swagger"
                           label="Enable Swagger Documentation"
                           checked={settings.api.enableSwagger}
-                          onChange={(e) => handleSettingChange('api', 'enableSwagger', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange('api', 'enableSwagger', e.target.checked)
+                          }
                           className="mb-3"
                         />
                         <Form.Check
@@ -1123,7 +1250,9 @@ const SystemSettings = () => {
                           id="enable-webhooks"
                           label="Enable Webhooks"
                           checked={settings.api.enableWebhooks}
-                          onChange={(e) => handleSettingChange('api', 'enableWebhooks', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange('api', 'enableWebhooks', e.target.checked)
+                          }
                         />
                       </Col>
                     </Row>
@@ -1141,7 +1270,9 @@ const SystemSettings = () => {
                               <Form.Control
                                 type="text"
                                 value={newApiKey.name}
-                                onChange={(e) => setNewApiKey({...newApiKey, name: e.target.value})}
+                                onChange={(e) =>
+                                  setNewApiKey({ ...newApiKey, name: e.target.value })
+                                }
                                 placeholder="e.g., Production API Key"
                               />
                             </Form.Group>
@@ -1158,8 +1289,8 @@ const SystemSettings = () => {
                                   onChange={(e) => {
                                     const perms = e.target.checked
                                       ? [...newApiKey.permissions, 'read']
-                                      : newApiKey.permissions.filter(p => p !== 'read');
-                                    setNewApiKey({...newApiKey, permissions: perms});
+                                      : newApiKey.permissions.filter((p) => p !== 'read');
+                                    setNewApiKey({ ...newApiKey, permissions: perms });
                                   }}
                                   className="me-3 d-inline-block"
                                 />
@@ -1171,8 +1302,8 @@ const SystemSettings = () => {
                                   onChange={(e) => {
                                     const perms = e.target.checked
                                       ? [...newApiKey.permissions, 'write']
-                                      : newApiKey.permissions.filter(p => p !== 'write');
-                                    setNewApiKey({...newApiKey, permissions: perms});
+                                      : newApiKey.permissions.filter((p) => p !== 'write');
+                                    setNewApiKey({ ...newApiKey, permissions: perms });
                                   }}
                                   className="me-3 d-inline-block"
                                 />
@@ -1184,8 +1315,8 @@ const SystemSettings = () => {
                                   onChange={(e) => {
                                     const perms = e.target.checked
                                       ? [...newApiKey.permissions, 'admin']
-                                      : newApiKey.permissions.filter(p => p !== 'admin');
-                                    setNewApiKey({...newApiKey, permissions: perms});
+                                      : newApiKey.permissions.filter((p) => p !== 'admin');
+                                    setNewApiKey({ ...newApiKey, permissions: perms });
                                   }}
                                   className="d-inline-block"
                                 />
@@ -1193,8 +1324,8 @@ const SystemSettings = () => {
                             </Form.Group>
                           </Col>
                           <Col md={12}>
-                            <Button 
-                              variant="primary" 
+                            <Button
+                              variant="primary"
                               onClick={generateApiKey}
                               disabled={!newApiKey.name.trim()}
                             >
@@ -1233,12 +1364,15 @@ const SystemSettings = () => {
                                   <tr key={apiKey.id}>
                                     <td>{apiKey.name}</td>
                                     <td>
-                                      <code className="text-truncate d-block" style={{ maxWidth: '200px' }}>
+                                      <code
+                                        className="text-truncate d-block"
+                                        style={{ maxWidth: '200px' }}
+                                      >
                                         {apiKey.key}
                                       </code>
                                     </td>
                                     <td>
-                                      {apiKey.permissions.map(perm => (
+                                      {apiKey.permissions.map((perm) => (
                                         <Badge key={perm} bg="info" className="me-1">
                                           {perm}
                                         </Badge>
@@ -1298,7 +1432,9 @@ const SystemSettings = () => {
                           <Form.Label>Analytics Provider</Form.Label>
                           <Form.Select
                             value={settings.analytics.analyticsProvider}
-                            onChange={(e) => handleSettingChange('analytics', 'analyticsProvider', e.target.value)}
+                            onChange={(e) =>
+                              handleSettingChange('analytics', 'analyticsProvider', e.target.value)
+                            }
                           >
                             <option value="firebase">Firebase Analytics</option>
                             <option value="google">Google Analytics</option>
@@ -1314,7 +1450,13 @@ const SystemSettings = () => {
                             min="1"
                             max="730"
                             value={settings.analytics.dataRetention}
-                            onChange={(e) => handleSettingChange('analytics', 'dataRetention', parseInt(e.target.value))}
+                            onChange={(e) =>
+                              handleSettingChange(
+                                'analytics',
+                                'dataRetention',
+                                parseInt(e.target.value)
+                              )
+                            }
                           />
                         </Form.Group>
                       </Col>
@@ -1324,7 +1466,9 @@ const SystemSettings = () => {
                           id="enable-analytics"
                           label="Enable Analytics"
                           checked={settings.analytics.enableAnalytics}
-                          onChange={(e) => handleSettingChange('analytics', 'enableAnalytics', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange('analytics', 'enableAnalytics', e.target.checked)
+                          }
                           className="mb-3"
                         />
                         <Form.Check
@@ -1332,7 +1476,9 @@ const SystemSettings = () => {
                           id="track-user-behavior"
                           label="Track User Behavior"
                           checked={settings.analytics.trackUserBehavior}
-                          onChange={(e) => handleSettingChange('analytics', 'trackUserBehavior', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange('analytics', 'trackUserBehavior', e.target.checked)
+                          }
                           className="mb-3"
                         />
                         <Form.Check
@@ -1340,7 +1486,9 @@ const SystemSettings = () => {
                           id="track-page-views"
                           label="Track Page Views"
                           checked={settings.analytics.trackPageViews}
-                          onChange={(e) => handleSettingChange('analytics', 'trackPageViews', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange('analytics', 'trackPageViews', e.target.checked)
+                          }
                           className="mb-3"
                         />
                         <Form.Check
@@ -1348,7 +1496,9 @@ const SystemSettings = () => {
                           id="track-events"
                           label="Track Events"
                           checked={settings.analytics.trackEvents}
-                          onChange={(e) => handleSettingChange('analytics', 'trackEvents', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange('analytics', 'trackEvents', e.target.checked)
+                          }
                           className="mb-3"
                         />
                         <Form.Check
@@ -1356,7 +1506,13 @@ const SystemSettings = () => {
                           id="enable-gdpr"
                           label="GDPR Compliance"
                           checked={settings.analytics.enableGDPRCompliance}
-                          onChange={(e) => handleSettingChange('analytics', 'enableGDPRCompliance', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange(
+                              'analytics',
+                              'enableGDPRCompliance',
+                              e.target.checked
+                            )
+                          }
                           className="mb-3"
                         />
                         <Form.Check
@@ -1364,7 +1520,9 @@ const SystemSettings = () => {
                           id="anonymize-ip"
                           label="Anonymize IP Addresses"
                           checked={settings.analytics.anonymizeIP}
-                          onChange={(e) => handleSettingChange('analytics', 'anonymizeIP', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange('analytics', 'anonymizeIP', e.target.checked)
+                          }
                         />
                       </Col>
                     </Row>
@@ -1388,7 +1546,13 @@ const SystemSettings = () => {
                           id="enable-push-notifications"
                           label="Enable Push Notifications"
                           checked={settings.notifications.enablePushNotifications}
-                          onChange={(e) => handleSettingChange('notifications', 'enablePushNotifications', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange(
+                              'notifications',
+                              'enablePushNotifications',
+                              e.target.checked
+                            )
+                          }
                           className="mb-3"
                         />
                         <Form.Check
@@ -1396,7 +1560,13 @@ const SystemSettings = () => {
                           id="enable-email-notifications"
                           label="Enable Email Notifications"
                           checked={settings.notifications.enableEmailNotifications}
-                          onChange={(e) => handleSettingChange('notifications', 'enableEmailNotifications', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange(
+                              'notifications',
+                              'enableEmailNotifications',
+                              e.target.checked
+                            )
+                          }
                           className="mb-3"
                         />
                         <Form.Check
@@ -1404,7 +1574,13 @@ const SystemSettings = () => {
                           id="enable-sms-notifications"
                           label="Enable SMS Notifications"
                           checked={settings.notifications.enableSMSNotifications}
-                          onChange={(e) => handleSettingChange('notifications', 'enableSMSNotifications', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange(
+                              'notifications',
+                              'enableSMSNotifications',
+                              e.target.checked
+                            )
+                          }
                           className="mb-3"
                         />
                         <Form.Check
@@ -1412,7 +1588,13 @@ const SystemSettings = () => {
                           id="notify-new-registrations"
                           label="Notify on New Registrations"
                           checked={settings.notifications.notifyNewRegistrations}
-                          onChange={(e) => handleSettingChange('notifications', 'notifyNewRegistrations', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange(
+                              'notifications',
+                              'notifyNewRegistrations',
+                              e.target.checked
+                            )
+                          }
                           className="mb-3"
                         />
                         <Form.Check
@@ -1420,7 +1602,13 @@ const SystemSettings = () => {
                           id="notify-failed-logins"
                           label="Notify on Failed Login Attempts"
                           checked={settings.notifications.notifyFailedLogins}
-                          onChange={(e) => handleSettingChange('notifications', 'notifyFailedLogins', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange(
+                              'notifications',
+                              'notifyFailedLogins',
+                              e.target.checked
+                            )
+                          }
                           className="mb-3"
                         />
                         <Form.Check
@@ -1428,7 +1616,13 @@ const SystemSettings = () => {
                           id="notify-system-errors"
                           label="Notify on System Errors"
                           checked={settings.notifications.notifySystemErrors}
-                          onChange={(e) => handleSettingChange('notifications', 'notifySystemErrors', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange(
+                              'notifications',
+                              'notifySystemErrors',
+                              e.target.checked
+                            )
+                          }
                           className="mb-3"
                         />
                         <Form.Check
@@ -1436,7 +1630,13 @@ const SystemSettings = () => {
                           id="notification-sound"
                           label="Enable Notification Sound"
                           checked={settings.notifications.notificationSound}
-                          onChange={(e) => handleSettingChange('notifications', 'notificationSound', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange(
+                              'notifications',
+                              'notificationSound',
+                              e.target.checked
+                            )
+                          }
                           className="mb-3"
                         />
                         <Form.Check
@@ -1444,7 +1644,13 @@ const SystemSettings = () => {
                           id="desktop-notifications"
                           label="Enable Desktop Notifications"
                           checked={settings.notifications.desktopNotifications}
-                          onChange={(e) => handleSettingChange('notifications', 'desktopNotifications', e.target.checked)}
+                          onChange={(e) =>
+                            handleSettingChange(
+                              'notifications',
+                              'desktopNotifications',
+                              e.target.checked
+                            )
+                          }
                         />
                       </Col>
                     </Row>
@@ -1520,8 +1726,8 @@ const SystemSettings = () => {
                       Select a previously created backup file (.json)
                     </Form.Text>
                   </Form.Group>
-                  <Button 
-                    variant="success" 
+                  <Button
+                    variant="success"
                     onClick={handleRestore}
                     disabled={!backupFile}
                     className="w-100"

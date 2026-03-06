@@ -1,10 +1,6 @@
 ﻿/* eslint-disable no-empty-pattern */
 import React, { useState, useEffect } from 'react';
-import { 
-  Button, 
-  Badge,
-  Image
-} from 'react-bootstrap';
+import { Button, Badge, Image } from 'react-bootstrap';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, db } from '../../config/firebase';
@@ -19,7 +15,7 @@ const Layout = ({ children }) => {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState({});
-  
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -28,10 +24,10 @@ const Layout = ({ children }) => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-    
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    
+
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
@@ -97,11 +93,15 @@ const Layout = ({ children }) => {
 
   // Helper function to get user-specific dashboard path
   const getUserDashboardPath = (userType) => {
-    switch(userType) {
-      case 'student': return '/student/dashboard';
-      case 'company': return '/company/dashboard';
-      case 'admin': return '/admin/dashboard';
-      default: return '/dashboard';
+    switch (userType) {
+      case 'student':
+        return '/student/dashboard';
+      case 'company':
+        return '/company/dashboard';
+      case 'admin':
+        return '/admin/dashboard';
+      default:
+        return '/dashboard';
     }
   };
 
@@ -110,7 +110,7 @@ const Layout = ({ children }) => {
     const avatars = {
       student: 'bi-person-badge',
       company: 'bi-building',
-      admin: 'bi-shield-check'
+      admin: 'bi-shield-check',
     };
     return avatars[getUserType()] || 'bi-person-circle';
   };
@@ -120,14 +120,14 @@ const Layout = ({ children }) => {
     const roleColors = {
       student: 'success',
       company: 'primary',
-      admin: 'warning'
+      admin: 'warning',
     };
     const roleLabels = {
       student: 'Student',
       company: 'Company',
-      admin: 'Admin'
+      admin: 'Admin',
     };
-    
+
     const userType = getUserType();
     return (
       <Badge bg={roleColors[userType]} className="ms-2 role-badge">
@@ -143,103 +143,103 @@ const Layout = ({ children }) => {
 
   // Toggle desktop dropdown
   const toggleDesktopDropdown = (label) => {
-    setDropdownOpen(prev => ({
+    setDropdownOpen((prev) => ({
       ...prev,
-      [label]: !prev[label]
+      [label]: !prev[label],
     }));
   };
 
   // Get optimized navigation structure - FIXED ROUTING PATHS
   const getOptimizedNavigation = () => {
     const userType = getUserType();
-    
+
     // Define user-specific dashboard path
     const userDashboardPath = getUserDashboardPath(userType);
-    
+
     // Base navigation structure for all users
     const baseNavigation = [
-      { 
-        icon: 'bi-house-door', 
-        label: 'Dashboard', 
+      {
+        icon: 'bi-house-door',
+        label: 'Dashboard',
         path: userDashboardPath,
-        exact: true 
+        exact: true,
       },
-      { 
-        icon: 'bi-search', 
-        label: 'Search', 
+      {
+        icon: 'bi-search',
+        label: 'Search',
         path: '#',
-        items: [] // Will be populated based on user type
+        items: [], // Will be populated based on user type
       },
-      { 
-        icon: 'bi-bell', 
-        label: 'Notifications', 
+      {
+        icon: 'bi-bell',
+        label: 'Notifications',
         path: '/notifications',
-        badge: 0 
+        badge: 0,
       },
-      { 
-        icon: 'bi-person', 
-        label: 'Profile', 
+      {
+        icon: 'bi-person',
+        label: 'Profile',
         path: '#',
-        items: [] // Will be populated based on user type
-      }
+        items: [], // Will be populated based on user type
+      },
     ];
 
     // Define dropdown items for each main nav item based on user type
     // FIXED: Correct routing paths based on your file structure
     // In your Layout.jsx, update the searchItems and profileItems sections:
 
-const searchItems = {
-  student: [
-    { icon: 'bi-search', label: 'Find Jobs', path: '/student/jobs' },
-    { icon: 'bi-briefcase', label: 'Internships', path: '/student/search/internships' }
-  ],
-  company: [
-    { icon: 'bi-search', label: 'Find Candidates', path: '/company/search/students' },
-    { icon: 'bi-briefcase', label: 'Market Research', path: '/company/search/market' },
-    { icon: 'bi-handshake', label: 'Find Partners', path: '/company/search/partners' },
-    { icon: 'bi-people', label: 'Browse Candidates', path: '/company/browse-candidates' }
-  ],
-  admin: [
-    { icon: 'bi-search', label: 'Search Users', path: '/admin/search/users' },
-    { icon: 'bi-building', label: 'Search Companies', path: '/admin/search/companies' },
-    { icon: 'bi-file-text', label: 'Search Applications', path: '/admin/search/applications' }
-  ]
-};
+    const searchItems = {
+      student: [
+        { icon: 'bi-search', label: 'Find Jobs', path: '/student/jobs' },
+        { icon: 'bi-briefcase', label: 'Internships', path: '/student/search/internships' },
+      ],
+      company: [
+        { icon: 'bi-search', label: 'Find Candidates', path: '/company/search/students' },
+        { icon: 'bi-briefcase', label: 'Market Research', path: '/company/search/market' },
+        { icon: 'bi-handshake', label: 'Find Partners', path: '/company/search/partners' },
+        { icon: 'bi-people', label: 'Browse Candidates', path: '/company/browse-candidates' },
+      ],
+      admin: [
+        { icon: 'bi-search', label: 'Search Users', path: '/admin/search/users' },
+        { icon: 'bi-building', label: 'Search Companies', path: '/admin/search/companies' },
+        { icon: 'bi-file-text', label: 'Search Applications', path: '/admin/search/applications' },
+      ],
+    };
 
-const profileItems = {
-  student: [
-    { icon: 'bi-person-circle', label: 'My Profile', path: '/student/profile' },
-    { icon: 'bi-file-text', label: 'My Applications', path: '/student/applications' },
-    { icon: 'bi-folder', label: 'My Documents', path: '/student/documents' },
-    { icon: 'bi-gear', label: 'Settings', path: '/settings' },
-    { icon: 'bi-box-arrow-right', label: 'Logout', action: handleLogout }
-  ],
-  company: [
-    { icon: 'bi-building', label: 'Company Profile', path: '/company/profile' },
-    { icon: 'bi-file-text', label: 'Job Postings', path: '/company/jobs' },
-    { icon: 'bi-people', label: 'Candidates', path: '/company/candidates' },
-    { icon: 'bi-gear', label: 'Settings', path: '/settings' },
-    { icon: 'bi-box-arrow-right', label: 'Logout', action: handleLogout }
-  ],
-  admin: [
-    { icon: 'bi-shield-check', label: 'Admin Profile', path: '/admin/profile' },
-    { icon: 'bi-people', label: 'User Management', path: '/admin/users' },
-    { icon: 'bi-building', label: 'Company Management', path: '/admin/companies' },
-    { icon: 'bi-gear', label: 'System Settings', path: '/admin/settings' },
-    { icon: 'bi-box-arrow-right', label: 'Logout', action: handleLogout }
-  ]
-};
+    const profileItems = {
+      student: [
+        { icon: 'bi-person-circle', label: 'My Profile', path: '/student/profile' },
+        { icon: 'bi-file-text', label: 'My Applications', path: '/student/applications' },
+        { icon: 'bi-folder', label: 'My Documents', path: '/student/documents' },
+        { icon: 'bi-gear', label: 'Settings', path: '/settings' },
+        { icon: 'bi-box-arrow-right', label: 'Logout', action: handleLogout },
+      ],
+      company: [
+        { icon: 'bi-building', label: 'Company Profile', path: '/company/profile' },
+        { icon: 'bi-file-text', label: 'Job Postings', path: '/company/jobs' },
+        { icon: 'bi-people', label: 'Candidates', path: '/company/candidates' },
+        { icon: 'bi-gear', label: 'Settings', path: '/settings' },
+        { icon: 'bi-box-arrow-right', label: 'Logout', action: handleLogout },
+      ],
+      admin: [
+        { icon: 'bi-shield-check', label: 'Admin Profile', path: '/admin/profile' },
+        { icon: 'bi-people', label: 'User Management', path: '/admin/users' },
+        { icon: 'bi-building', label: 'Company Management', path: '/admin/companies' },
+        { icon: 'bi-gear', label: 'System Settings', path: '/admin/settings' },
+        { icon: 'bi-box-arrow-right', label: 'Logout', action: handleLogout },
+      ],
+    };
     // Update navigation with user-specific dropdown items
     const updatedNavigation = [...baseNavigation];
-    
+
     // Add search dropdown items
-    const searchItem = updatedNavigation.find(item => item.label === 'Search');
+    const searchItem = updatedNavigation.find((item) => item.label === 'Search');
     if (searchItem) {
       searchItem.items = searchItems[userType] || searchItems.student;
     }
-    
+
     // Add profile dropdown items
-    const profileItem = updatedNavigation.find(item => item.label === 'Profile');
+    const profileItem = updatedNavigation.find((item) => item.label === 'Profile');
     if (profileItem) {
       profileItem.items = profileItems[userType] || profileItems.student;
     }
@@ -279,10 +279,10 @@ const profileItems = {
         <div className="profile-card p-3">
           <div className="d-flex align-items-center mb-3">
             {userData?.photoURL ? (
-              <Image 
-                src={userData.photoURL} 
-                roundedCircle 
-                width={60} 
+              <Image
+                src={userData.photoURL}
+                roundedCircle
+                width={60}
                 height={60}
                 className="me-3 profile-img"
                 alt="Profile"
@@ -294,13 +294,15 @@ const profileItems = {
             )}
             <div className="flex-grow-1">
               <div className="fw-bold user-name">{userData?.name || 'Loading...'}</div>
-              <div className="small text-muted user-email">{userData?.email || 'user@example.com'}</div>
+              <div className="small text-muted user-email">
+                {userData?.email || 'user@example.com'}
+              </div>
             </div>
           </div>
           <div className="d-flex justify-content-between align-items-center">
             {getUserRoleBadge()}
-            <Button 
-              variant="outline-primary" 
+            <Button
+              variant="outline-primary"
               size="sm"
               onClick={handleLogout}
               className="logout-btn"
@@ -318,18 +320,18 @@ const profileItems = {
           {navigation.map((item, index) => {
             if (item.items && item.items.length > 0) {
               const isDropdownOpen = dropdownOpen[item.label];
-              
+
               return (
                 <div key={index} className="mb-1">
-                  <div 
+                  <div
                     className={`sidebar-dropdown-toggle w-100 text-start d-flex align-items-center justify-content-between p-3 ${isDropdownOpen ? 'active' : ''}`}
                     onClick={() => toggleDesktopDropdown(item.label)}
-                    style={{ 
+                    style={{
                       cursor: 'pointer',
                       background: 'transparent',
                       border: '1px solid transparent',
                       borderRadius: '8px',
-                      transition: 'all 0.3s ease'
+                      transition: 'all 0.3s ease',
                     }}
                   >
                     <div className="d-flex align-items-center">
@@ -338,9 +340,11 @@ const profileItems = {
                       </div>
                       <span className="nav-label">{item.label}</span>
                     </div>
-                    <i className={`bi ${isDropdownOpen ? 'bi-chevron-up' : 'bi-chevron-down'} dropdown-arrow`}></i>
+                    <i
+                      className={`bi ${isDropdownOpen ? 'bi-chevron-up' : 'bi-chevron-down'} dropdown-arrow`}
+                    ></i>
                   </div>
-                  
+
                   {isDropdownOpen && (
                     <div className="dropdown-menu-static">
                       {item.items.map((subItem, subIndex) => (
@@ -356,7 +360,7 @@ const profileItems = {
                             color: 'inherit',
                             margin: '2px 4px',
                             borderRadius: '6px',
-                            transition: 'all 0.3s ease'
+                            transition: 'all 0.3s ease',
                           }}
                         >
                           <i className={`bi ${subItem.icon} me-3`}></i>
@@ -410,11 +414,11 @@ const profileItems = {
   const renderMobileSidebar = () => (
     <>
       {/* Mobile Sidebar Overlay */}
-      <div 
+      <div
         className={`mobile-sidebar-overlay ${isMobileSidebarOpen ? 'show' : ''}`}
         onClick={closeMobileSidebar}
       />
-      
+
       {/* Mobile Sidebar */}
       <aside className={`mobile-sidebar ${isMobileSidebarOpen ? 'open' : ''}`}>
         <div className="mobile-sidebar-header">
@@ -431,25 +435,21 @@ const profileItems = {
                 </div>
               </div>
             </div>
-            <Button 
-              variant="link" 
-              className="text-dark p-0"
-              onClick={toggleMobileSidebar}
-            >
+            <Button variant="link" className="text-dark p-0" onClick={toggleMobileSidebar}>
               <i className="bi bi-x-lg fs-4"></i>
             </Button>
           </div>
         </div>
-        
+
         <div className="mobile-sidebar-content">
           {/* Mobile User Info */}
           <div className="user-info p-3 mb-3">
             <div className="d-flex align-items-center mb-3">
               {userData?.photoURL ? (
-                <Image 
-                  src={userData.photoURL} 
-                  roundedCircle 
-                  width={50} 
+                <Image
+                  src={userData.photoURL}
+                  roundedCircle
+                  width={50}
                   height={50}
                   className="me-3 profile-img"
                   alt="Profile"
@@ -461,7 +461,9 @@ const profileItems = {
               )}
               <div className="flex-grow-1">
                 <div className="fw-bold user-name-sm">{userData?.name || 'Loading...'}</div>
-                <div className="text-muted small user-email">{userData?.email || 'user@example.com'}</div>
+                <div className="text-muted small user-email">
+                  {userData?.email || 'user@example.com'}
+                </div>
                 {getUserRoleBadge()}
               </div>
             </div>
@@ -473,7 +475,7 @@ const profileItems = {
               <div key={index} className="mb-1">
                 {item.items && item.items.length > 0 ? (
                   <div className="mobile-dropdown-section">
-                    <div 
+                    <div
                       className={`nav-link d-flex align-items-center justify-content-between p-3 rounded ${openDropdown === item.label ? 'active' : ''}`}
                       onClick={() => toggleMobileDropdown(item.label)}
                       style={{ cursor: 'pointer' }}
@@ -484,9 +486,11 @@ const profileItems = {
                         </div>
                         <span className="nav-label">{item.label}</span>
                       </div>
-                      <i className={`bi ${openDropdown === item.label ? 'bi-chevron-up' : 'bi-chevron-down'}`}></i>
+                      <i
+                        className={`bi ${openDropdown === item.label ? 'bi-chevron-up' : 'bi-chevron-down'}`}
+                      ></i>
                     </div>
-                    
+
                     {openDropdown === item.label && (
                       <div className="mobile-dropdown-content slide-in">
                         {item.items.map((subItem, subIndex) => (
@@ -531,11 +535,11 @@ const profileItems = {
                 )}
               </div>
             ))}
-            
+
             {/* Logout Button */}
             <div className="mt-4 px-2">
-              <Button 
-                variant="outline-primary" 
+              <Button
+                variant="outline-primary"
                 className="w-100 logout-btn"
                 onClick={() => {
                   handleLogout();
@@ -566,27 +570,23 @@ const profileItems = {
   const renderMobileHeader = () => (
     <header className="mobile-header d-md-none">
       <div className="d-flex align-items-center justify-content-between p-3">
-        <Button 
-          variant="link" 
-          className="text-dark p-0"
-          onClick={toggleMobileSidebar}
-        >
+        <Button variant="link" className="text-dark p-0" onClick={toggleMobileSidebar}>
           <i className="bi bi-list fs-3"></i>
         </Button>
-        
+
         <div className="d-flex align-items-center">
           <div className="mobile-logo-circle me-2">
             <i className="bi bi-link-45deg logo-icon"></i>
           </div>
           <span className="fw-bold logo-text-sm">CareerConnectLS</span>
         </div>
-        
+
         <div className="user-avatar-mobile">
           {userData?.photoURL ? (
-            <Image 
-              src={userData.photoURL} 
-              roundedCircle 
-              width={40} 
+            <Image
+              src={userData.photoURL}
+              roundedCircle
+              width={40}
               height={40}
               className="profile-img-sm"
               alt="Profile"
@@ -605,7 +605,7 @@ const profileItems = {
     <div className="layout-container">
       {/* Mobile Header */}
       {isMobile && renderMobileHeader()}
-      
+
       {/* Main Layout */}
       <div className="layout-main-container">
         {/* Desktop Sidebar */}
@@ -615,10 +615,10 @@ const profileItems = {
         {isMobile && renderMobileSidebar()}
 
         {/* Main Content Area */}
-        <main className={`layout-content-area ${isMobile ? 'mobile' : ''} ${isMobileSidebarOpen ? 'shifted' : ''}`}>
-          <div className="content-wrapper">
-            {children}
-          </div>
+        <main
+          className={`layout-content-area ${isMobile ? 'mobile' : ''} ${isMobileSidebarOpen ? 'shifted' : ''}`}
+        >
+          <div className="content-wrapper">{children}</div>
         </main>
       </div>
     </div>

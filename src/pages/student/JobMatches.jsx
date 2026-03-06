@@ -56,7 +56,7 @@ const JobMatches = () => {
         companyName: job.companyName,
         companyId: job.companyId,
         appliedAt: new Date(),
-        status: 'pending'
+        status: 'pending',
       };
 
       const result = await applyForJob(applicationData);
@@ -64,22 +64,22 @@ const JobMatches = () => {
       if (result.success) {
         setMessage({
           type: 'success',
-          text: `Application submitted successfully for ${job.title}!`
+          text: `Application submitted successfully for ${job.title}!`,
         });
 
         // Remove the job from matches after successful application
-        setJobMatches(prev => prev.filter(match => match.id !== job.id));
+        setJobMatches((prev) => prev.filter((match) => match.id !== job.id));
       } else {
         setMessage({
           type: 'error',
-          text: result.error || 'Failed to submit application'
+          text: result.error || 'Failed to submit application',
         });
       }
     } catch (error) {
       console.error('Error applying for job:', error);
       setMessage({
         type: 'error',
-        text: 'An error occurred while submitting your application'
+        text: 'An error occurred while submitting your application',
       });
     } finally {
       setApplyingJobId(null);
@@ -134,11 +134,7 @@ const JobMatches = () => {
         </div>
       </div>
 
-      {message.text && (
-        <div className={`message ${message.type}`}>
-          {message.text}
-        </div>
-      )}
+      {message.text && <div className={`message ${message.type}`}>{message.text}</div>}
 
       {jobMatches.length === 0 ? (
         <div className="no-matches">
@@ -146,8 +142,8 @@ const JobMatches = () => {
             <div className="empty-icon">💼</div>
             <h3>No Job Matches Yet</h3>
             <p>
-              We&apos;ll show you jobs here that match your qualifications and preferences.
-              Make sure your profile is complete and check back later for new opportunities.
+              We&apos;ll show you jobs here that match your qualifications and preferences. Make
+              sure your profile is complete and check back later for new opportunities.
             </p>
           </div>
         </div>
@@ -156,9 +152,7 @@ const JobMatches = () => {
           {jobMatches.map((job) => (
             <div key={job.id} className="job-match-card">
               <div className="match-header">
-                <div className="match-badge">
-                  {calculateMatchPercentage(job)}% Match
-                </div>
+                <div className="match-badge">{calculateMatchPercentage(job)}% Match</div>
                 <div className="job-type">{job.jobType}</div>
               </div>
 

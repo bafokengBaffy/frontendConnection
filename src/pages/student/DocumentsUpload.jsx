@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import { Container, Row, Col, Card, Button, Badge, ProgressBar, Form, Alert } from 'react-bootstrap';
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Badge,
+  ProgressBar,
+  Form,
+  Alert,
+} from 'react-bootstrap';
 
 const DocumentsUpload = () => {
   const [uploading, setUploading] = useState(false);
@@ -13,7 +23,7 @@ const DocumentsUpload = () => {
       size: '2.4 MB',
       uploaded: '2024-01-10',
       status: 'verified',
-      required: true
+      required: true,
     },
     {
       id: 2,
@@ -22,7 +32,7 @@ const DocumentsUpload = () => {
       size: '1.8 MB',
       uploaded: '2024-01-05',
       status: 'verified',
-      required: true
+      required: true,
     },
     {
       id: 3,
@@ -31,7 +41,7 @@ const DocumentsUpload = () => {
       size: '1.2 MB',
       uploaded: '2024-01-03',
       status: 'pending',
-      required: true
+      required: true,
     },
     {
       id: 4,
@@ -40,7 +50,7 @@ const DocumentsUpload = () => {
       size: '0.8 MB',
       uploaded: '2024-01-12',
       status: 'verified',
-      required: false
+      required: false,
     },
     {
       id: 5,
@@ -49,23 +59,31 @@ const DocumentsUpload = () => {
       size: '1.5 MB',
       uploaded: '2024-01-08',
       status: 'verified',
-      required: false
-    }
+      required: false,
+    },
   ];
 
   const requiredDocuments = [
     { id: 1, name: 'Resume/CV', description: 'Updated resume with latest experience' },
     { id: 2, name: 'Academic Transcript', description: 'Official transcript from institution' },
     { id: 3, name: 'Identification Document', description: 'National ID or Passport' },
-    { id: 4, name: 'Passport Photo', description: 'Recent passport-sized photograph' }
+    { id: 4, name: 'Passport Photo', description: 'Recent passport-sized photograph' },
   ];
 
   const getStatusBadge = (status) => {
-    switch(status) {
-      case 'verified': return <Badge bg="success">Verified</Badge>;
-      case 'pending': return <Badge bg="warning" text="dark">Pending Review</Badge>;
-      case 'rejected': return <Badge bg="danger">Rejected</Badge>;
-      default: return <Badge bg="secondary">Not Uploaded</Badge>;
+    switch (status) {
+      case 'verified':
+        return <Badge bg="success">Verified</Badge>;
+      case 'pending':
+        return (
+          <Badge bg="warning" text="dark">
+            Pending Review
+          </Badge>
+        );
+      case 'rejected':
+        return <Badge bg="danger">Rejected</Badge>;
+      default:
+        return <Badge bg="secondary">Not Uploaded</Badge>;
     }
   };
 
@@ -76,7 +94,7 @@ const DocumentsUpload = () => {
     const interval = setInterval(() => {
       progress += 10;
       setUploadProgress(progress);
-      
+
       if (progress >= 100) {
         clearInterval(interval);
         setTimeout(() => {
@@ -91,12 +109,13 @@ const DocumentsUpload = () => {
   return (
     <Container className="py-4">
       <h2 className="mb-4">Documents Hub</h2>
-      
+
       <Alert variant="info" className="mb-4">
         <i className="bi bi-info-circle me-2"></i>
-        Keep your documents updated to increase your application success rate. Required documents are marked with a red asterisk (*).
+        Keep your documents updated to increase your application success rate. Required documents
+        are marked with a red asterisk (*).
       </Alert>
-      
+
       <Row className="mb-4">
         <Col md={8}>
           <Card className="shadow-sm">
@@ -105,7 +124,7 @@ const DocumentsUpload = () => {
                 <span>📁 Your Documents</span>
                 <Badge bg="primary">{documents.length} files</Badge>
               </Card.Title>
-              
+
               <div className="table-responsive">
                 <table className="table table-hover">
                   <thead>
@@ -151,12 +170,12 @@ const DocumentsUpload = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col md={4}>
           <Card className="shadow-sm mb-4">
             <Card.Body>
               <Card.Title>📤 Upload New Document</Card.Title>
-              
+
               <Form>
                 <Form.Group className="mb-3">
                   <Form.Label>Document Type</Form.Label>
@@ -171,7 +190,7 @@ const DocumentsUpload = () => {
                     <option value="other">Other</option>
                   </Form.Select>
                 </Form.Group>
-                
+
                 <Form.Group className="mb-3">
                   <Form.Label>Select File</Form.Label>
                   <Form.Control type="file" />
@@ -179,12 +198,12 @@ const DocumentsUpload = () => {
                     Max file size: 10MB. Supported formats: PDF, DOC, JPG, PNG
                   </Form.Text>
                 </Form.Group>
-                
+
                 <Form.Group className="mb-3">
                   <Form.Label>Description (Optional)</Form.Label>
                   <Form.Control as="textarea" rows={2} />
                 </Form.Group>
-                
+
                 {uploading ? (
                   <div className="mb-3">
                     <div className="d-flex justify-content-between mb-1">
@@ -194,9 +213,9 @@ const DocumentsUpload = () => {
                     <ProgressBar now={uploadProgress} animated />
                   </div>
                 ) : null}
-                
-                <Button 
-                  variant="primary" 
+
+                <Button
+                  variant="primary"
                   className="w-100"
                   onClick={handleFileUpload}
                   disabled={uploading}
@@ -216,16 +235,18 @@ const DocumentsUpload = () => {
               </Form>
             </Card.Body>
           </Card>
-          
+
           <Card className="shadow-sm">
             <Card.Body>
               <Card.Title>📋 Required Documents</Card.Title>
               <div className="list-group">
                 {requiredDocuments.map((doc) => {
-                  const isUploaded = documents.some(d => 
-                    d.type.toLowerCase().includes(doc.name.toLowerCase()) && d.status === 'verified'
+                  const isUploaded = documents.some(
+                    (d) =>
+                      d.type.toLowerCase().includes(doc.name.toLowerCase()) &&
+                      d.status === 'verified'
                   );
-                  
+
                   return (
                     <div key={doc.id} className="list-group-item">
                       <div className="d-flex justify-content-between align-items-center">
@@ -236,15 +257,15 @@ const DocumentsUpload = () => {
                           </h6>
                           <p className="text-muted small mb-0">{doc.description}</p>
                         </div>
-                        <Badge bg={isUploaded ? "success" : "danger"}>
-                          {isUploaded ? "✓" : "!"}
+                        <Badge bg={isUploaded ? 'success' : 'danger'}>
+                          {isUploaded ? '✓' : '!'}
                         </Badge>
                       </div>
                     </div>
                   );
                 })}
               </div>
-              
+
               <div className="mt-4">
                 <div className="d-flex justify-content-between mb-1">
                   <span>Document Completion</span>
@@ -259,7 +280,7 @@ const DocumentsUpload = () => {
           </Card>
         </Col>
       </Row>
-      
+
       <Card className="shadow-sm">
         <Card.Body>
           <Card.Title>💡 Tips for Document Management</Card.Title>
@@ -267,27 +288,27 @@ const DocumentsUpload = () => {
             <Col md={4}>
               <div className="text-center p-3">
                 <div className="bg-primary-subtle p-3 rounded-circle d-inline-flex mb-3">
-                  <i className="bi bi-file-pdf text-primary" style={{fontSize: '1.5rem'}}></i>
+                  <i className="bi bi-file-pdf text-primary" style={{ fontSize: '1.5rem' }}></i>
                 </div>
                 <h6>Use PDF Format</h6>
                 <p className="text-muted small">Save documents as PDF for better compatibility</p>
               </div>
             </Col>
-            
+
             <Col md={4}>
               <div className="text-center p-3">
                 <div className="bg-success-subtle p-3 rounded-circle d-inline-flex mb-3">
-                  <i className="bi bi-check-circle text-success" style={{fontSize: '1.5rem'}}></i>
+                  <i className="bi bi-check-circle text-success" style={{ fontSize: '1.5rem' }}></i>
                 </div>
                 <h6>Keep Updated</h6>
                 <p className="text-muted small">Update your resume every 3-6 months</p>
               </div>
             </Col>
-            
+
             <Col md={4}>
               <div className="text-center p-3">
                 <div className="bg-warning-subtle p-3 rounded-circle d-inline-flex mb-3">
-                  <i className="bi bi-shield-check text-warning" style={{fontSize: '1.5rem'}}></i>
+                  <i className="bi bi-shield-check text-warning" style={{ fontSize: '1.5rem' }}></i>
                 </div>
                 <h6>Privacy First</h6>
                 <p className="text-muted small">Remove sensitive information before sharing</p>
@@ -296,7 +317,7 @@ const DocumentsUpload = () => {
           </Row>
         </Card.Body>
       </Card>
-      
+
       <div className="text-center mt-4">
         <Button variant="primary" size="lg" className="me-3">
           <i className="bi bi-cloud-arrow-down me-2"></i>

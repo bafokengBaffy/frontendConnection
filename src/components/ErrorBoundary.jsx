@@ -8,12 +8,10 @@ class ErrorBoundary extends React.Component {
     this.state = { hasError: false, error: null, errorInfo: null };
   }
 
-  
-
   componentDidCatch(error, errorInfo) {
     this.setState({
       error: error,
-      errorInfo: errorInfo
+      errorInfo: errorInfo,
     });
     console.error('Error caught by boundary:', error, errorInfo);
   }
@@ -24,14 +22,9 @@ class ErrorBoundary extends React.Component {
         <Container className="py-5">
           <Alert variant="danger">
             <Alert.Heading>Something went wrong!</Alert.Heading>
-            <p>
-              An error occurred while loading this page. Please try refreshing.
-            </p>
+            <p>An error occurred while loading this page. Please try refreshing.</p>
             <div className="d-flex justify-content-end">
-              <Button 
-                variant="outline-danger" 
-                onClick={() => window.location.reload()}
-              >
+              <Button variant="outline-danger" onClick={() => window.location.reload()}>
                 Refresh Page
               </Button>
             </div>

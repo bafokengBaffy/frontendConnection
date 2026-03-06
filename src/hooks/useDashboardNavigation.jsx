@@ -6,16 +6,19 @@ export const useDashboardNavigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleNavigation = useCallback((path, options = {}) => {
-    const { replace = false, forceRefresh = false } = options;
+  const handleNavigation = useCallback(
+    (path, options = {}) => {
+      const { replace = false, forceRefresh = false } = options;
 
-    if (location.pathname === path && forceRefresh) {
-      // Navigate to same path to trigger component remount
-      navigate(path, { replace: true });
-    } else {
-      navigate(path, { replace });
-    }
-  }, [navigate, location.pathname]);
+      if (location.pathname === path && forceRefresh) {
+        // Navigate to same path to trigger component remount
+        navigate(path, { replace: true });
+      } else {
+        navigate(path, { replace });
+      }
+    },
+    [navigate, location.pathname]
+  );
 
   const handleRefresh = useCallback(() => {
     navigate(location.pathname, { replace: true });
@@ -24,6 +27,6 @@ export const useDashboardNavigation = () => {
   return {
     handleNavigation,
     handleRefresh,
-    currentPath: location.pathname
+    currentPath: location.pathname,
   };
 };

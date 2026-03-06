@@ -17,7 +17,7 @@ import {
   Tabs,
   Tab,
   OverlayTrigger,
-  Tooltip
+  Tooltip,
 } from 'react-bootstrap';
 import {
   FaUsers,
@@ -43,7 +43,7 @@ import {
   FaInfoCircle,
   FaSort,
   FaSortUp,
-  FaSortDown
+  FaSortDown,
 } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import { useNotification } from '../../context/NotificationContext';
@@ -53,7 +53,7 @@ import { userService } from '../../services/userService';
 const UserManagement = () => {
   const { isAdmin } = useAuth();
   const { addSuccessNotification, addErrorNotification } = useNotification();
-  
+
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -75,7 +75,7 @@ const UserManagement = () => {
     active: 0,
     pending: 0,
     suspended: 0,
-    rejected: 0
+    rejected: 0,
   });
   const [newUser, setNewUser] = useState({
     email: '',
@@ -83,13 +83,13 @@ const UserManagement = () => {
     displayName: '',
     userType: 'student',
     phoneNumber: '',
-    status: 'active'
+    status: 'active',
   });
   const [editUser, setEditUser] = useState({});
   const [suspendReason, setSuspendReason] = useState('');
   const [deleteReason, setDeleteReason] = useState('');
   const [activeTab, setActiveTab] = useState('all');
-  
+
   const itemsPerPage = 15;
 
   useEffect(() => {
@@ -102,38 +102,39 @@ const UserManagement = () => {
   const loadUsers = async () => {
     try {
       setLoading(true);
-      
+
       // Build filters based on active tab
       let filters = { status: filterStatus, userType: filterType };
-      
+
       if (activeTab !== 'all') {
         filters.status = activeTab;
       }
-      
+
       const result = await adminService.users.getAllUsers(currentPage, itemsPerPage, filters);
-      
+
       // Apply sorting
       let sortedUsers = [...result.users];
       sortedUsers.sort((a, b) => {
         const aValue = a[sortField];
         const bValue = b[sortField];
-        
+
         if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
         if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
         return 0;
       });
-      
+
       // Apply search filter
       if (searchTerm) {
         const term = searchTerm.toLowerCase();
-        sortedUsers = sortedUsers.filter(user => 
-          user.email?.toLowerCase().includes(term) ||
-          user.displayName?.toLowerCase().includes(term) ||
-          user.phoneNumber?.includes(term) ||
-          user.userType?.toLowerCase().includes(term)
+        sortedUsers = sortedUsers.filter(
+          (user) =>
+            user.email?.toLowerCase().includes(term) ||
+            user.displayName?.toLowerCase().includes(term) ||
+            user.phoneNumber?.includes(term) ||
+            user.userType?.toLowerCase().includes(term)
         );
       }
-      
+
       setUsers(sortedUsers);
       setTotalPages(result.totalPages);
     } catch (error) {
@@ -253,7 +254,7 @@ const UserManagement = () => {
         displayName: '',
         userType: 'student',
         phoneNumber: '',
-        status: 'active'
+        status: 'active',
       });
       loadUsers();
       loadStats();
@@ -278,7 +279,7 @@ const UserManagement = () => {
   const handleReject = async (userId) => {
     const reason = prompt('Enter rejection reason:');
     if (!reason) return;
-    
+
     try {
       await adminService.users.rejectUser(userId, reason);
       addSuccessNotification('Success', 'User rejected successfully');
@@ -298,9 +299,9 @@ const UserManagement = () => {
       entrepreneur: { label: 'Entrepreneur', variant: 'success' },
       youth: { label: 'Youth', variant: 'primary' },
       student: { label: 'Student', variant: 'secondary' },
-      employer: { label: 'Employer', variant: 'dark' }
+      employer: { label: 'Employer', variant: 'dark' },
     };
-    
+
     const type = types[userType] || { label: userType, variant: 'secondary' };
     return <Badge bg={type.variant}>{type.label}</Badge>;
   };
@@ -311,10 +312,14 @@ const UserManagement = () => {
       pending: { label: 'Pending', variant: 'warning', icon: <FaExclamationTriangle /> },
       suspended: { label: 'Suspended', variant: 'danger', icon: <FaBan /> },
       rejected: { label: 'Rejected', variant: 'secondary', icon: <FaTimes /> },
-      deleted: { label: 'Deleted', variant: 'dark', icon: <FaTrash /> }
+      deleted: { label: 'Deleted', variant: 'dark', icon: <FaTrash /> },
     };
-    
-    const statusInfo = statuses[status] || { label: status, variant: 'secondary', icon: <FaInfoCircle /> };
+
+    const statusInfo = statuses[status] || {
+      label: status,
+      variant: 'secondary',
+      icon: <FaInfoCircle />,
+    };
     return (
       <Badge bg={statusInfo.variant} className="d-flex align-items-center gap-1">
         {statusInfo.icon}
@@ -330,27 +335,24 @@ const UserManagement = () => {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   };
 
   const exportToCSV = () => {
     const headers = ['Name', 'Email', 'User Type', 'Status', 'Phone', 'Registered', 'Last Updated'];
-    const csvData = users.map(user => [
+    const csvData = users.map((user) => [
       user.displayName,
       user.email,
       user.userType,
       user.status,
       user.phoneNumber || 'N/A',
       formatDate(user.createdAt),
-      formatDate(user.updatedAt)
+      formatDate(user.updatedAt),
     ]);
-    
-    const csvContent = [
-      headers.join(','),
-      ...csvData.map(row => row.join(','))
-    ].join('\n');
-    
+
+    const csvContent = [headers.join(','), ...csvData.map((row) => row.join(','))].join('\n');
+
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -383,8 +385,8 @@ const UserManagement = () => {
           <p className="text-muted mb-0">Manage all users in the system</p>
         </Col>
         <Col className="text-end">
-          <Button 
-            variant="outline-primary" 
+          <Button
+            variant="outline-primary"
             onClick={handleRefresh}
             disabled={refreshing}
             className="me-2"
@@ -392,18 +394,11 @@ const UserManagement = () => {
             <FaSync className={refreshing ? 'spin' : ''} />
             {refreshing ? ' Refreshing...' : ' Refresh'}
           </Button>
-          <Button 
-            variant="outline-secondary" 
-            onClick={exportToCSV}
-            className="me-2"
-          >
+          <Button variant="outline-secondary" onClick={exportToCSV} className="me-2">
             <FaDownload className="me-1" />
             Export CSV
           </Button>
-          <Button 
-            variant="primary"
-            onClick={() => setShowCreateModal(true)}
-          >
+          <Button variant="primary" onClick={() => setShowCreateModal(true)}>
             <FaUserPlus className="me-1" />
             Add User
           </Button>
@@ -420,9 +415,7 @@ const UserManagement = () => {
                   <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
                     Total Users
                   </div>
-                  <div className="h5 mb-0 font-weight-bold text-gray-800">
-                    {stats.total}
-                  </div>
+                  <div className="h5 mb-0 font-weight-bold text-gray-800">{stats.total}</div>
                 </div>
                 <div className="stat-icon">
                   <FaUsers className="text-primary" size="2em" />
@@ -440,9 +433,7 @@ const UserManagement = () => {
                   <div className="text-xs font-weight-bold text-success text-uppercase mb-1">
                     Active Users
                   </div>
-                  <div className="h5 mb-0 font-weight-bold text-gray-800">
-                    {stats.active}
-                  </div>
+                  <div className="h5 mb-0 font-weight-bold text-gray-800">{stats.active}</div>
                 </div>
                 <div className="stat-icon">
                   <FaCheckCircle className="text-success" size="2em" />
@@ -460,9 +451,7 @@ const UserManagement = () => {
                   <div className="text-xs font-weight-bold text-warning text-uppercase mb-1">
                     Pending Approval
                   </div>
-                  <div className="h5 mb-0 font-weight-bold text-gray-800">
-                    {stats.pending}
-                  </div>
+                  <div className="h5 mb-0 font-weight-bold text-gray-800">{stats.pending}</div>
                 </div>
                 <div className="stat-icon">
                   <FaExclamationTriangle className="text-warning" size="2em" />
@@ -480,9 +469,7 @@ const UserManagement = () => {
                   <div className="text-xs font-weight-bold text-danger text-uppercase mb-1">
                     Suspended Users
                   </div>
-                  <div className="h5 mb-0 font-weight-bold text-gray-800">
-                    {stats.suspended}
-                  </div>
+                  <div className="h5 mb-0 font-weight-bold text-gray-800">{stats.suspended}</div>
                 </div>
                 <div className="stat-icon">
                   <FaBan className="text-danger" size="2em" />
@@ -496,11 +483,7 @@ const UserManagement = () => {
       {/* Tabs */}
       <Card className="mb-4">
         <Card.Body className="p-0">
-          <Tabs
-            activeKey={activeTab}
-            onSelect={(k) => setActiveTab(k)}
-            className="mb-3"
-          >
+          <Tabs activeKey={activeTab} onSelect={(k) => setActiveTab(k)} className="mb-3">
             <Tab eventKey="all" title="All Users" />
             <Tab eventKey="active" title="Active" />
             <Tab eventKey="pending" title="Pending" />
@@ -527,10 +510,7 @@ const UserManagement = () => {
               </InputGroup>
             </Col>
             <Col md={3} className="mb-3 mb-md-0">
-              <Form.Select
-                value={filterType}
-                onChange={(e) => setFilterType(e.target.value)}
-              >
+              <Form.Select value={filterType} onChange={(e) => setFilterType(e.target.value)}>
                 <option value="all">All Types</option>
                 <option value="admin">Admin</option>
                 <option value="company">Company</option>
@@ -555,8 +535,8 @@ const UserManagement = () => {
               </Form.Select>
             </Col>
             <Col md={2} className="text-end">
-              <Button 
-                variant="outline-secondary" 
+              <Button
+                variant="outline-secondary"
                 onClick={() => {
                   setSearchTerm('');
                   setFilterType('all');
@@ -628,12 +608,8 @@ const UserManagement = () => {
                           </div>
                         </div>
                       </td>
-                      <td>
-                        {getUserTypeBadge(user.userType)}
-                      </td>
-                      <td>
-                        {getUserStatusBadge(user.status)}
-                      </td>
+                      <td>{getUserTypeBadge(user.userType)}</td>
+                      <td>{getUserStatusBadge(user.status)}</td>
                       <td>
                         <div className="mb-1">
                           <FaEnvelope className="me-2 text-muted" size="12" />
@@ -653,16 +629,15 @@ const UserManagement = () => {
                         </div>
                         {user.updatedAt && user.updatedAt !== user.createdAt && (
                           <div>
-                            <small className="text-muted">Updated: {formatDate(user.updatedAt)}</small>
+                            <small className="text-muted">
+                              Updated: {formatDate(user.updatedAt)}
+                            </small>
                           </div>
                         )}
                       </td>
                       <td>
                         <div className="d-flex gap-2">
-                          <OverlayTrigger
-                            placement="top"
-                            overlay={<Tooltip>View Details</Tooltip>}
-                          >
+                          <OverlayTrigger placement="top" overlay={<Tooltip>View Details</Tooltip>}>
                             <Button
                               variant="outline-primary"
                               size="sm"
@@ -671,11 +646,8 @@ const UserManagement = () => {
                               <FaEye />
                             </Button>
                           </OverlayTrigger>
-                          
-                          <OverlayTrigger
-                            placement="top"
-                            overlay={<Tooltip>Edit User</Tooltip>}
-                          >
+
+                          <OverlayTrigger placement="top" overlay={<Tooltip>Edit User</Tooltip>}>
                             <Button
                               variant="outline-info"
                               size="sm"
@@ -684,13 +656,10 @@ const UserManagement = () => {
                               <FaEdit />
                             </Button>
                           </OverlayTrigger>
-                          
+
                           {user.status === 'pending' && (
                             <>
-                              <OverlayTrigger
-                                placement="top"
-                                overlay={<Tooltip>Approve</Tooltip>}
-                              >
+                              <OverlayTrigger placement="top" overlay={<Tooltip>Approve</Tooltip>}>
                                 <Button
                                   variant="outline-success"
                                   size="sm"
@@ -699,11 +668,8 @@ const UserManagement = () => {
                                   <FaCheck />
                                 </Button>
                               </OverlayTrigger>
-                              
-                              <OverlayTrigger
-                                placement="top"
-                                overlay={<Tooltip>Reject</Tooltip>}
-                              >
+
+                              <OverlayTrigger placement="top" overlay={<Tooltip>Reject</Tooltip>}>
                                 <Button
                                   variant="outline-danger"
                                   size="sm"
@@ -714,7 +680,7 @@ const UserManagement = () => {
                               </OverlayTrigger>
                             </>
                           )}
-                          
+
                           {user.status === 'active' && (
                             <OverlayTrigger
                               placement="top"
@@ -732,7 +698,7 @@ const UserManagement = () => {
                               </Button>
                             </OverlayTrigger>
                           )}
-                          
+
                           {user.status === 'suspended' && (
                             <OverlayTrigger
                               placement="top"
@@ -747,11 +713,8 @@ const UserManagement = () => {
                               </Button>
                             </OverlayTrigger>
                           )}
-                          
-                          <OverlayTrigger
-                            placement="top"
-                            overlay={<Tooltip>Delete User</Tooltip>}
-                          >
+
+                          <OverlayTrigger placement="top" overlay={<Tooltip>Delete User</Tooltip>}>
                             <Button
                               variant="outline-danger"
                               size="sm"
@@ -772,22 +735,23 @@ const UserManagement = () => {
             </div>
           )}
         </Card.Body>
-        
+
         {/* Pagination */}
         {totalPages > 1 && (
           <Card.Footer>
             <div className="d-flex justify-content-between align-items-center">
               <div>
                 <small className="text-muted">
-                  Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, users.length)} of users
+                  Showing {(currentPage - 1) * itemsPerPage + 1} to{' '}
+                  {Math.min(currentPage * itemsPerPage, users.length)} of users
                 </small>
               </div>
               <Pagination className="mb-0">
-                <Pagination.Prev 
-                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                <Pagination.Prev
+                  onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                   disabled={currentPage === 1}
                 />
-                
+
                 {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                   let pageNum;
                   if (totalPages <= 5) {
@@ -799,7 +763,7 @@ const UserManagement = () => {
                   } else {
                     pageNum = currentPage - 2 + i;
                   }
-                  
+
                   return (
                     <Pagination.Item
                       key={pageNum}
@@ -810,9 +774,9 @@ const UserManagement = () => {
                     </Pagination.Item>
                   );
                 })}
-                
-                <Pagination.Next 
-                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+
+                <Pagination.Next
+                  onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                   disabled={currentPage === totalPages}
                 />
               </Pagination>
@@ -823,11 +787,7 @@ const UserManagement = () => {
 
       {/* Modals */}
       {/* User Details Modal */}
-      <Modal
-        show={showDetailsModal}
-        onHide={() => setShowDetailsModal(false)}
-        size="lg"
-      >
+      <Modal show={showDetailsModal} onHide={() => setShowDetailsModal(false)} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>User Details</Modal.Title>
         </Modal.Header>
@@ -847,10 +807,7 @@ const UserManagement = () => {
       </Modal>
 
       {/* Create User Modal */}
-      <Modal
-        show={showCreateModal}
-        onHide={() => setShowCreateModal(false)}
-      >
+      <Modal show={showCreateModal} onHide={() => setShowCreateModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Create New User</Modal.Title>
         </Modal.Header>
@@ -861,40 +818,40 @@ const UserManagement = () => {
               <Form.Control
                 type="email"
                 value={newUser.email}
-                onChange={(e) => setNewUser({...newUser, email: e.target.value})}
+                onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
                 placeholder="user@example.com"
                 required
               />
             </Form.Group>
-            
+
             <Form.Group className="mb-3">
               <Form.Label>Password *</Form.Label>
               <Form.Control
                 type="password"
                 value={newUser.password}
-                onChange={(e) => setNewUser({...newUser, password: e.target.value})}
+                onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
                 placeholder="Minimum 6 characters"
                 required
               />
             </Form.Group>
-            
+
             <Form.Group className="mb-3">
               <Form.Label>Display Name</Form.Label>
               <Form.Control
                 type="text"
                 value={newUser.displayName}
-                onChange={(e) => setNewUser({...newUser, displayName: e.target.value})}
+                onChange={(e) => setNewUser({ ...newUser, displayName: e.target.value })}
                 placeholder="User's name"
               />
             </Form.Group>
-            
+
             <Row>
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>User Type *</Form.Label>
                   <Form.Select
                     value={newUser.userType}
-                    onChange={(e) => setNewUser({...newUser, userType: e.target.value})}
+                    onChange={(e) => setNewUser({ ...newUser, userType: e.target.value })}
                   >
                     <option value="student">Student</option>
                     <option value="admin">Admin</option>
@@ -911,7 +868,7 @@ const UserManagement = () => {
                   <Form.Label>Status *</Form.Label>
                   <Form.Select
                     value={newUser.status}
-                    onChange={(e) => setNewUser({...newUser, status: e.target.value})}
+                    onChange={(e) => setNewUser({ ...newUser, status: e.target.value })}
                   >
                     <option value="active">Active</option>
                     <option value="pending">Pending</option>
@@ -920,13 +877,13 @@ const UserManagement = () => {
                 </Form.Group>
               </Col>
             </Row>
-            
+
             <Form.Group className="mb-3">
               <Form.Label>Phone Number</Form.Label>
               <Form.Control
                 type="tel"
                 value={newUser.phoneNumber}
-                onChange={(e) => setNewUser({...newUser, phoneNumber: e.target.value})}
+                onChange={(e) => setNewUser({ ...newUser, phoneNumber: e.target.value })}
                 placeholder="+266 1234 5678"
               />
             </Form.Group>
@@ -936,7 +893,7 @@ const UserManagement = () => {
           <Button variant="secondary" onClick={() => setShowCreateModal(false)}>
             Cancel
           </Button>
-          <Button 
+          <Button
             variant="primary"
             onClick={handleCreateUser}
             disabled={!newUser.email || !newUser.password}
@@ -947,10 +904,7 @@ const UserManagement = () => {
       </Modal>
 
       {/* Edit User Modal */}
-      <Modal
-        show={showEditModal}
-        onHide={() => setShowEditModal(false)}
-      >
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Edit User</Modal.Title>
         </Modal.Header>
@@ -961,15 +915,15 @@ const UserManagement = () => {
               <Form.Control
                 type="text"
                 value={editUser.displayName || ''}
-                onChange={(e) => setEditUser({...editUser, displayName: e.target.value})}
+                onChange={(e) => setEditUser({ ...editUser, displayName: e.target.value })}
               />
             </Form.Group>
-            
+
             <Form.Group className="mb-3">
               <Form.Label>User Type</Form.Label>
               <Form.Select
                 value={editUser.userType || 'student'}
-                onChange={(e) => setEditUser({...editUser, userType: e.target.value})}
+                onChange={(e) => setEditUser({ ...editUser, userType: e.target.value })}
               >
                 <option value="student">Student</option>
                 <option value="admin">Admin</option>
@@ -980,12 +934,12 @@ const UserManagement = () => {
                 <option value="employer">Employer</option>
               </Form.Select>
             </Form.Group>
-            
+
             <Form.Group className="mb-3">
               <Form.Label>Status</Form.Label>
               <Form.Select
                 value={editUser.status || 'active'}
-                onChange={(e) => setEditUser({...editUser, status: e.target.value})}
+                onChange={(e) => setEditUser({ ...editUser, status: e.target.value })}
               >
                 <option value="active">Active</option>
                 <option value="pending">Pending</option>
@@ -993,23 +947,23 @@ const UserManagement = () => {
                 <option value="rejected">Rejected</option>
               </Form.Select>
             </Form.Group>
-            
+
             <Form.Group className="mb-3">
               <Form.Label>Phone Number</Form.Label>
               <Form.Control
                 type="tel"
                 value={editUser.phoneNumber || ''}
-                onChange={(e) => setEditUser({...editUser, phoneNumber: e.target.value})}
+                onChange={(e) => setEditUser({ ...editUser, phoneNumber: e.target.value })}
                 placeholder="+266 1234 5678"
               />
             </Form.Group>
-            
+
             <Form.Group className="mb-3">
               <Form.Check
                 type="checkbox"
                 label="Email Verified"
                 checked={editUser.emailVerified || false}
-                onChange={(e) => setEditUser({...editUser, emailVerified: e.target.checked})}
+                onChange={(e) => setEditUser({ ...editUser, emailVerified: e.target.checked })}
               />
             </Form.Group>
           </Form>
@@ -1025,10 +979,7 @@ const UserManagement = () => {
       </Modal>
 
       {/* Suspend User Modal */}
-      <Modal
-        show={showSuspendModal}
-        onHide={() => setShowSuspendModal(false)}
-      >
+      <Modal show={showSuspendModal} onHide={() => setShowSuspendModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Suspend User</Modal.Title>
         </Modal.Header>
@@ -1046,36 +997,28 @@ const UserManagement = () => {
               placeholder="Provide a reason for suspension..."
               required
             />
-            <Form.Text className="text-muted">
-              This reason will be shared with the user.
-            </Form.Text>
+            <Form.Text className="text-muted">This reason will be shared with the user.</Form.Text>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowSuspendModal(false)}>
             Cancel
           </Button>
-          <Button 
-            variant="warning"
-            onClick={handleSuspend}
-            disabled={!suspendReason.trim()}
-          >
+          <Button variant="warning" onClick={handleSuspend} disabled={!suspendReason.trim()}>
             Suspend User
           </Button>
         </Modal.Footer>
       </Modal>
 
       {/* Delete User Modal */}
-      <Modal
-        show={showDeleteModal}
-        onHide={() => setShowDeleteModal(false)}
-      >
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Delete User</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Alert variant="danger">
-            <strong>Warning:</strong> This action cannot be undone. The user will be marked as deleted.
+            <strong>Warning:</strong> This action cannot be undone. The user will be marked as
+            deleted.
           </Alert>
           <p>
             Are you sure you want to delete <strong>{selectedUser?.displayName}</strong>?

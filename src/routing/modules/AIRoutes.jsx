@@ -15,39 +15,63 @@ const RecommendationEngineJSX = lazy(() => import('../../pages/AI/Recommendation
  * Contains all AI-related routes (accessible to all authenticated users)
  */
 export const getAIRoutes = () => [
-  <Route key="ai-dashboard" path="/ai/dashboard" element={
-    <ProtectedRoute>
-      <AIDashboard />
-    </ProtectedRoute>
-  } />,
-  
-  <Route key="ai-business-insights" path="/ai/business-insights" element={
-    <ProtectedRoute>
-      <BusinessInsights />
-    </ProtectedRoute>
-  } />,
-  
-  <Route key="ai-business-insights-advanced" path="/ai/business-insights-advanced" element={
-    <ProtectedRoute>
-      <BusinessInsightsJSX />
-    </ProtectedRoute>
-  } />,
-  
-  <Route key="ai-analytics" path="/ai/analytics" element={
-    <ProtectedRoute>
-      <PredictiveAnalytics />
-    </ProtectedRoute>
-  } />,
-  
-  <Route key="ai-recommendations" path="/ai/recommendations" element={
-    <ProtectedRoute>
-      <RecommendationEngine />
-    </ProtectedRoute>
-  } />,
-  
-  <Route key="ai-recommendations-advanced" path="/ai/recommendations-advanced" element={
-    <ProtectedRoute>
-      <RecommendationEngineJSX />
-    </ProtectedRoute>
-  } />
+  <Route
+    key="ai-dashboard"
+    path="/ai/dashboard"
+    element={
+      <ProtectedRoute>
+        <AIDashboard />
+      </ProtectedRoute>
+    }
+  />,
+
+  <Route
+    key="ai-business-insights"
+    path="/ai/business-insights"
+    element={
+      <ProtectedRoute>
+        <BusinessInsights />
+      </ProtectedRoute>
+    }
+  />,
+
+  <Route
+    key="ai-business-insights-advanced"
+    path="/ai/business-insights-advanced"
+    element={
+      <ProtectedRoute>
+        <BusinessInsightsJSX />
+      </ProtectedRoute>
+    }
+  />,
+
+  <Route
+    key="ai-analytics"
+    path="/ai/analytics"
+    element={
+      <ProtectedRoute>
+        <PredictiveAnalytics />
+      </ProtectedRoute>
+    }
+  />,
+
+  <Route
+    key="ai-recommendations"
+    path="/ai/recommendations"
+    element={
+      <ProtectedRoute>
+        <RecommendationEngine />
+      </ProtectedRoute>
+    }
+  />,
+
+  <Route
+    key="ai-recommendations-advanced"
+    path="/ai/recommendations-advanced"
+    element={
+      <ProtectedRoute>
+        <RecommendationEngineJSX />
+      </ProtectedRoute>
+    }
+  />,
 ];

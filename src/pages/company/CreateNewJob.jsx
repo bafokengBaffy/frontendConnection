@@ -2,20 +2,47 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { 
-  Container, Row, Col, Card, Form, Button, 
-  Alert, Spinner, Badge, ProgressBar,
-  Accordion, Modal, OverlayTrigger, Tooltip,
-  InputGroup, FormControl
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Form,
+  Button,
+  Alert,
+  Spinner,
+  Badge,
+  ProgressBar,
+  Accordion,
+  Modal,
+  OverlayTrigger,
+  Tooltip,
+  InputGroup,
+  FormControl,
 } from 'react-bootstrap';
 import {
-  FaArrowLeft, FaSave, FaEye, FaCalendarAlt,
-  FaMoneyBillWave, FaMapMarkerAlt, FaBriefcase,
-  FaUsers, FaGraduationCap, FaFileAlt,
-  FaTags, FaDollarSign, FaClock, FaCheckCircle,
-  FaLightbulb, FaRocket, FaCloudUploadAlt,
-  FaInfoCircle, FaTimes, FaPlus, FaTrash,
-  FaMagic
+  FaArrowLeft,
+  FaSave,
+  FaEye,
+  FaCalendarAlt,
+  FaMoneyBillWave,
+  FaMapMarkerAlt,
+  FaBriefcase,
+  FaUsers,
+  FaGraduationCap,
+  FaFileAlt,
+  FaTags,
+  FaDollarSign,
+  FaClock,
+  FaCheckCircle,
+  FaLightbulb,
+  FaRocket,
+  FaCloudUploadAlt,
+  FaInfoCircle,
+  FaTimes,
+  FaPlus,
+  FaTrash,
+  FaMagic,
 } from 'react-icons/fa';
 import { jobService, cloudinaryService } from '../../services/companyServices';
 import './CreateNewJob.css';
@@ -29,7 +56,7 @@ const CreateNewJob = () => {
   const [formStep, setFormStep] = useState(1);
   const [autoSaveTimer, setAutoSaveTimer] = useState(null);
   const [draftSaved, setDraftSaved] = useState(false);
-  
+
   // Initialize form data with prefill from dashboard or saved draft
   const [formData, setFormData] = useState({
     // Basic Information
@@ -38,17 +65,17 @@ const CreateNewJob = () => {
     location: '',
     remote: false,
     hybrid: false,
-    
+
     // Job Details
     type: 'full-time',
     experience: 'entry',
-    
+
     // Salary as separate fields (not as an object)
     salary: '',
     salaryType: 'monthly',
     currency: 'M',
     salaryNegotiable: false,
-    
+
     // Requirements & Skills
     description: '',
     responsibilities: '',
@@ -58,37 +85,37 @@ const CreateNewJob = () => {
     newSkill: '',
     techStack: [],
     newTech: '',
-    
+
     // Benefits & Perks
     benefits: [],
     newBenefit: '',
-    
+
     // Application Details
     applicationDeadline: '',
     applicationInstructions: '',
     applicationQuestions: [],
     newQuestion: '',
-    
+
     // Company Details (auto-filled)
     companyName: '',
     companyLogo: '',
     companyIndustry: '',
-    
+
     // Job Settings
     status: 'draft',
     urgency: 'normal',
     visibility: 'public',
     autoClose: false,
     maxApplications: 0,
-    
+
     // AI Enhancement
     aiEnhancedDescription: '',
     aiEnhancedSkills: [],
-    
+
     // Metadata
     draftId: null,
     lastSaved: null,
-    version: 1
+    version: 1,
   });
 
   const [validationErrors, setValidationErrors] = useState({});
@@ -100,9 +127,9 @@ const CreateNewJob = () => {
         // Check for prefill data from dashboard
         const prefillData = location.state?.prefill;
         const savedDraft = localStorage.getItem('jobDraft');
-        
+
         let initialData = { ...formData };
-        
+
         if (savedDraft) {
           const draft = JSON.parse(savedDraft);
           // Handle both old and new salary format
@@ -114,7 +141,7 @@ const CreateNewJob = () => {
               salary: draft.salary.amount || '',
               salaryType: draft.salary.type || 'monthly',
               currency: draft.salary.currency || 'M',
-              salaryNegotiable: draft.salary.negotiable || false
+              salaryNegotiable: draft.salary.negotiable || false,
             };
             // Remove the old salary object
             delete initialData.salary;
@@ -123,7 +150,7 @@ const CreateNewJob = () => {
           }
           setDraftSaved(true);
         }
-        
+
         if (prefillData) {
           initialData = {
             ...initialData,
@@ -132,61 +159,61 @@ const CreateNewJob = () => {
             location: prefillData.location || '',
             type: prefillData.type || 'full-time',
             experience: prefillData.experience || 'entry',
-            salary: prefillData.salary || ''
+            salary: prefillData.salary || '',
           };
         }
-        
+
         // Get company info
-        const companyProfile = await import('../../services/companyServices').then(
-          module => module.companyService.getCompanyProfile()
-        ).catch(() => null);
-        
+        const companyProfile = await import('../../services/companyServices')
+          .then((module) => module.companyService.getCompanyProfile())
+          .catch(() => null);
+
         if (companyProfile) {
           initialData.companyName = companyProfile.name || '';
           initialData.companyLogo = companyProfile.logo || '';
           initialData.companyIndustry = companyProfile.industry || '';
         }
-        
+
         setFormData(initialData);
-        
+
         // Setup auto-save
         const timer = setInterval(() => {
           if (initialData.title || initialData.description) {
             handleAutoSave();
           }
         }, 30000); // Auto-save every 30 seconds
-        
+
         setAutoSaveTimer(timer);
-        
+
         return () => clearInterval(timer);
       } catch (error) {
         console.error('Error loading initial data:', error);
       }
     };
-    
+
     loadInitialData();
   }, []);
 
   // Auto-save function
   const handleAutoSave = () => {
     if (!formData.title && !formData.description) return;
-    
+
     const draft = {
       ...formData,
       lastSaved: new Date().toISOString(),
-      status: 'draft'
+      status: 'draft',
     };
-    
+
     localStorage.setItem('jobDraft', JSON.stringify(draft));
     setDraftSaved(true);
-    
+
     // Show auto-save notification
     setSaveStatus({
       type: 'info',
       message: 'Auto-saved as draft',
-      show: true
+      show: true,
     });
-    
+
     setTimeout(() => {
       setSaveStatus(null);
     }, 2000);
@@ -195,19 +222,19 @@ const CreateNewJob = () => {
   // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : value,
     }));
-    
+
     // Clear validation error for this field
     if (validationErrors[name]) {
-      setValidationErrors(prev => ({
+      setValidationErrors((prev) => ({
         ...prev,
-        [name]: null
+        [name]: null,
       }));
     }
-    
+
     // Trigger auto-save on important fields
     if (['title', 'description', 'responsibilities', 'requirements'].includes(name)) {
       clearTimeout(autoSaveTimer);
@@ -219,19 +246,19 @@ const CreateNewJob = () => {
   // Handle array field additions
   const handleAddItem = (field, valueField, item) => {
     if (!item.trim()) return;
-    
-    setFormData(prev => ({
+
+    setFormData((prev) => ({
       ...prev,
       [field]: [...prev[field], item.trim()],
-      [valueField]: ''
+      [valueField]: '',
     }));
   };
 
   // Handle array field removals
   const handleRemoveItem = (field, index) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: prev[field].filter((_, i) => i !== index)
+      [field]: prev[field].filter((_, i) => i !== index),
     }));
   };
 
@@ -243,62 +270,63 @@ const CreateNewJob = () => {
       setValidationErrors(errors);
       return;
     }
-    
-    setFormStep(prev => Math.min(prev + 1, 5));
+
+    setFormStep((prev) => Math.min(prev + 1, 5));
     window.scrollTo(0, 0);
   };
 
   // Move to previous step
   const prevStep = () => {
-    setFormStep(prev => Math.max(prev - 1, 1));
+    setFormStep((prev) => Math.max(prev - 1, 1));
     window.scrollTo(0, 0);
   };
 
   // Validate current step
   const validateStep = (step) => {
     const errors = {};
-    
+
     switch (step) {
-      case 1: { // Basic Information
+      case 1: {
+        // Basic Information
         if (!formData.title.trim()) errors.title = 'Job title is required';
         if (!formData.location.trim()) errors.location = 'Location is required';
         break;
       }
-        
-      case 2: { // Job Details
+
+      case 2: {
+        // Job Details
         if (!formData.description.trim()) errors.description = 'Job description is required';
-        if (!formData.responsibilities.trim()) errors.responsibilities = 'Responsibilities are required';
+        if (!formData.responsibilities.trim())
+          errors.responsibilities = 'Responsibilities are required';
         break;
       }
-        
-      case 3: { // Requirements
+
+      case 3: {
+        // Requirements
         if (formData.skills.length === 0) errors.skills = 'At least one skill is required';
         break;
       }
-        
-      case 4: { // Benefits & Application
-        if (!formData.applicationDeadline) errors.applicationDeadline = 'Application deadline is required';
+
+      case 4: {
+        // Benefits & Application
+        if (!formData.applicationDeadline)
+          errors.applicationDeadline = 'Application deadline is required';
         const deadline = new Date(formData.applicationDeadline);
         if (deadline < new Date()) errors.applicationDeadline = 'Deadline must be in the future';
         break;
       }
     }
-    
+
     return errors;
   };
 
   // Validate entire form
   const validateForm = () => {
-    const stepErrors = [
-      validateStep(1),
-      validateStep(2),
-      validateStep(3),
-      validateStep(4)
-    ];
-    
+    const stepErrors = [validateStep(1), validateStep(2), validateStep(3), validateStep(4)];
+
     const allErrors = stepErrors.reduce((acc, errors) => ({ ...acc, ...errors }), {});
     setValidationErrors(allErrors);
-    
+
     return Object.keys(allErrors).length === 0;
   };
 
@@ -309,13 +337,13 @@ const CreateNewJob = () => {
         setSaveStatus({
           type: 'danger',
           message: 'Please fix the errors in the form before submitting',
-          show: true
+          show: true,
         });
         return;
       }
-      
+
       setLoading(true);
-      
+
       // Prepare job data for Firebase
       const jobData = {
         // Basic Information
@@ -324,17 +352,17 @@ const CreateNewJob = () => {
         location: formData.location,
         remote: formData.remote,
         hybrid: formData.hybrid,
-        
+
         // Job Details
         type: formData.type,
         experience: formData.experience,
-        
+
         // Salary as separate fields
         salary: formData.salary,
         salaryType: formData.salaryType,
         currency: formData.currency,
         salaryNegotiable: formData.salaryNegotiable,
-        
+
         // Requirements & Skills
         description: formData.description,
         responsibilities: formData.responsibilities,
@@ -342,50 +370,50 @@ const CreateNewJob = () => {
         qualifications: formData.qualifications,
         skills: formData.skills,
         techStack: formData.techStack,
-        
+
         // Benefits & Perks
         benefits: formData.benefits,
-        
+
         // Application Details
         applicationDeadline: formData.applicationDeadline,
         applicationInstructions: formData.applicationInstructions,
         applicationQuestions: formData.applicationQuestions,
-        
+
         // Job Settings
         status: publish ? 'active' : 'draft',
         urgency: formData.urgency,
         visibility: formData.visibility,
         autoClose: formData.autoClose,
         maxApplications: formData.maxApplications || 0,
-        
+
         // Metadata
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         applicantsCount: 0,
         views: 0,
         isActive: publish,
-        
+
         // Company info
         companyName: formData.companyName,
         companyLogo: formData.companyLogo,
-        companyIndustry: formData.companyIndustry
+        companyIndustry: formData.companyIndustry,
       };
-      
+
       // Save to Firebase
       const jobId = await jobService.createJob(jobData);
-      
+
       // Clear draft from localStorage
       localStorage.removeItem('jobDraft');
-      
+
       setSaveStatus({
         type: 'success',
-        message: publish 
-          ? `Job "${formData.title}" published successfully!` 
+        message: publish
+          ? `Job "${formData.title}" published successfully!`
           : `Job "${formData.title}" saved as draft.`,
         show: true,
-        jobId
+        jobId,
       });
-      
+
       setTimeout(() => {
         if (publish) {
           navigate(`/company/jobs/${jobId}`);
@@ -393,13 +421,12 @@ const CreateNewJob = () => {
           navigate('/company/jobs');
         }
       }, 2000);
-      
     } catch (error) {
       console.error('Error saving job:', error);
       setSaveStatus({
         type: 'danger',
         message: `Failed to save job: ${error.message}`,
-        show: true
+        show: true,
       });
     } finally {
       setLoading(false);
@@ -412,25 +439,25 @@ const CreateNewJob = () => {
       // This would call your AI service
       // For now, mock the response
       setLoading(true);
-      
+
       setTimeout(() => {
         if (field === 'description') {
-          setFormData(prev => ({
+          setFormData((prev) => ({
             ...prev,
-            aiEnhancedDescription: `We are seeking a talented ${formData.title} to join our dynamic team. As a key member of our ${formData.department} department, you will be responsible for ${formData.responsibilities.slice(0, 100)}...`
+            aiEnhancedDescription: `We are seeking a talented ${formData.title} to join our dynamic team. As a key member of our ${formData.department} department, you will be responsible for ${formData.responsibilities.slice(0, 100)}...`,
           }));
         } else if (field === 'skills') {
-          setFormData(prev => ({
+          setFormData((prev) => ({
             ...prev,
-            aiEnhancedSkills: ['Teamwork', 'Communication', 'Problem Solving', 'Time Management']
+            aiEnhancedSkills: ['Teamwork', 'Communication', 'Problem Solving', 'Time Management'],
           }));
         }
-        
+
         setLoading(false);
         setSaveStatus({
           type: 'success',
           message: 'AI enhancement applied!',
-          show: true
+          show: true,
         });
       }, 1500);
     } catch (error) {
@@ -442,52 +469,56 @@ const CreateNewJob = () => {
   // Apply AI enhancements
   const applyAIEnhancements = () => {
     if (formData.aiEnhancedDescription) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        description: prev.aiEnhancedDescription
+        description: prev.aiEnhancedDescription,
       }));
     }
-    
+
     if (formData.aiEnhancedSkills.length > 0) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        skills: [...new Set([...prev.skills, ...prev.aiEnhancedSkills])]
+        skills: [...new Set([...prev.skills, ...prev.aiEnhancedSkills])],
       }));
     }
-    
+
     setSaveStatus({
       type: 'info',
       message: 'AI enhancements applied to form',
-      show: true
+      show: true,
     });
   };
 
   // Progress calculation
   const calculateProgress = () => {
     const fields = [
-      'title', 'location', 'description', 'responsibilities',
-      'skills', 'applicationDeadline'
+      'title',
+      'location',
+      'description',
+      'responsibilities',
+      'skills',
+      'applicationDeadline',
     ];
-    
-    const filledFields = fields.filter(field => {
+
+    const filledFields = fields.filter((field) => {
       const value = formData[field];
       if (Array.isArray(value)) return value.length > 0;
       return value && value.toString().trim().length > 0;
     });
-    
+
     return Math.round((filledFields.length / fields.length) * 100);
   };
 
   // Format salary display for preview
   const formatSalary = () => {
     if (!formData.salary) return 'Not specified';
-    
+
     const typeMap = {
-      'monthly': 'per month',
-      'yearly': 'per year',
-      'hourly': 'per hour'
+      monthly: 'per month',
+      yearly: 'per year',
+      hourly: 'per hour',
     };
-    
+
     return `${formData.currency}${formData.salary} ${typeMap[formData.salaryType] || formData.salaryType}`;
   };
 
@@ -522,12 +553,10 @@ const CreateNewJob = () => {
                 isInvalid={!!validationErrors.title}
                 className="py-2"
               />
-              <Form.Control.Feedback type="invalid">
-                {validationErrors.title}
-              </Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">{validationErrors.title}</Form.Control.Feedback>
             </Form.Group>
           </Col>
-          
+
           <Col md={4}>
             <Form.Group className="mb-3">
               <Form.Label className="fw-semibold">Department</Form.Label>
@@ -542,7 +571,7 @@ const CreateNewJob = () => {
             </Form.Group>
           </Col>
         </Row>
-        
+
         <Row>
           <Col md={6}>
             <Form.Group className="mb-3">
@@ -569,7 +598,7 @@ const CreateNewJob = () => {
               </Form.Control.Feedback>
             </Form.Group>
           </Col>
-          
+
           <Col md={6}>
             <Form.Group className="mb-3">
               <Form.Label className="fw-semibold">Work Arrangement</Form.Label>
@@ -583,7 +612,7 @@ const CreateNewJob = () => {
                     </span>
                   }
                   checked={formData.remote}
-                  onChange={(e) => setFormData(prev => ({ ...prev, remote: e.target.checked }))}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, remote: e.target.checked }))}
                 />
                 <Form.Check
                   type="checkbox"
@@ -594,13 +623,13 @@ const CreateNewJob = () => {
                     </span>
                   }
                   checked={formData.hybrid}
-                  onChange={(e) => setFormData(prev => ({ ...prev, hybrid: e.target.checked }))}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, hybrid: e.target.checked }))}
                 />
               </div>
             </Form.Group>
           </Col>
         </Row>
-        
+
         <Row>
           <Col md={6}>
             <Form.Group className="mb-3">
@@ -620,7 +649,7 @@ const CreateNewJob = () => {
               </Form.Select>
             </Form.Group>
           </Col>
-          
+
           <Col md={6}>
             <Form.Group className="mb-3">
               <Form.Label className="fw-semibold">Experience Level</Form.Label>
@@ -691,7 +720,9 @@ const CreateNewJob = () => {
                 <Button
                   variant="outline-success"
                   size="sm"
-                  onClick={() => setFormData(prev => ({ ...prev, description: prev.aiEnhancedDescription }))}
+                  onClick={() =>
+                    setFormData((prev) => ({ ...prev, description: prev.aiEnhancedDescription }))
+                  }
                 >
                   Use This
                 </Button>
@@ -699,7 +730,7 @@ const CreateNewJob = () => {
             </Alert>
           )}
         </Form.Group>
-        
+
         <Form.Group className="mb-3">
           <Form.Label className="fw-semibold">
             Key Responsibilities <span className="text-danger">*</span>
@@ -718,7 +749,7 @@ const CreateNewJob = () => {
             {validationErrors.responsibilities}
           </Form.Control.Feedback>
         </Form.Group>
-        
+
         <Row>
           <Col md={6}>
             <Form.Group className="mb-3">
@@ -734,7 +765,7 @@ const CreateNewJob = () => {
               />
             </Form.Group>
           </Col>
-          
+
           <Col md={6}>
             <Form.Group className="mb-3">
               <Form.Label className="fw-semibold">Qualifications</Form.Label>
@@ -750,7 +781,7 @@ const CreateNewJob = () => {
             </Form.Group>
           </Col>
         </Row>
-        
+
         <Row>
           <Col md={6}>
             <Form.Group className="mb-3">
@@ -782,7 +813,9 @@ const CreateNewJob = () => {
                 id="salaryNegotiable"
                 label="Salary is negotiable"
                 checked={formData.salaryNegotiable}
-                onChange={(e) => setFormData(prev => ({ ...prev, salaryNegotiable: e.target.checked }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, salaryNegotiable: e.target.checked }))
+                }
                 className="mt-2"
               />
             </Form.Group>
@@ -822,7 +855,7 @@ const CreateNewJob = () => {
               <FormControl
                 type="text"
                 value={formData.newSkill}
-                onChange={(e) => setFormData(prev => ({ ...prev, newSkill: e.target.value }))}
+                onChange={(e) => setFormData((prev) => ({ ...prev, newSkill: e.target.value }))}
                 placeholder="e.g., JavaScript, React, Project Management"
                 className="py-2"
                 onKeyPress={(e) => {
@@ -843,7 +876,7 @@ const CreateNewJob = () => {
               <div className="text-danger small mt-1">{validationErrors.skills}</div>
             )}
           </div>
-          
+
           {formData.skills.length > 0 ? (
             <div className="d-flex flex-wrap gap-2 mb-3">
               {formData.skills.map((skill, index) => (
@@ -861,11 +894,9 @@ const CreateNewJob = () => {
               ))}
             </div>
           ) : (
-            <Alert variant="warning">
-              Add at least one required skill for this position
-            </Alert>
+            <Alert variant="warning">Add at least one required skill for this position</Alert>
           )}
-          
+
           {formData.aiEnhancedSkills.length > 0 && (
             <Alert variant="info">
               <div className="d-flex justify-content-between align-items-start">
@@ -883,9 +914,9 @@ const CreateNewJob = () => {
                   variant="outline-success"
                   size="sm"
                   onClick={() => {
-                    setFormData(prev => ({
+                    setFormData((prev) => ({
                       ...prev,
-                      skills: [...new Set([...prev.skills, ...prev.aiEnhancedSkills])]
+                      skills: [...new Set([...prev.skills, ...prev.aiEnhancedSkills])],
                     }));
                   }}
                 >
@@ -895,7 +926,7 @@ const CreateNewJob = () => {
             </Alert>
           )}
         </Form.Group>
-        
+
         <Form.Group className="mb-4">
           <Form.Label className="fw-semibold">Technology Stack</Form.Label>
           <div className="mb-3">
@@ -903,7 +934,7 @@ const CreateNewJob = () => {
               <FormControl
                 type="text"
                 value={formData.newTech}
-                onChange={(e) => setFormData(prev => ({ ...prev, newTech: e.target.value }))}
+                onChange={(e) => setFormData((prev) => ({ ...prev, newTech: e.target.value }))}
                 placeholder="e.g., Node.js, MongoDB, AWS"
                 className="py-2"
                 onKeyPress={(e) => {
@@ -921,7 +952,7 @@ const CreateNewJob = () => {
               </Button>
             </InputGroup>
           </div>
-          
+
           {formData.techStack.length > 0 && (
             <div className="d-flex flex-wrap gap-2">
               {formData.techStack.map((tech, index) => (
@@ -961,7 +992,7 @@ const CreateNewJob = () => {
               <FormControl
                 type="text"
                 value={formData.newBenefit}
-                onChange={(e) => setFormData(prev => ({ ...prev, newBenefit: e.target.value }))}
+                onChange={(e) => setFormData((prev) => ({ ...prev, newBenefit: e.target.value }))}
                 placeholder="e.g., Health insurance, Remote work, Professional development"
                 className="py-2"
                 onKeyPress={(e) => {
@@ -979,7 +1010,7 @@ const CreateNewJob = () => {
               </Button>
             </InputGroup>
           </div>
-          
+
           {formData.benefits.length > 0 && (
             <div className="d-flex flex-wrap gap-2">
               {formData.benefits.map((benefit, index) => (
@@ -999,7 +1030,7 @@ const CreateNewJob = () => {
             </div>
           )}
         </Form.Group>
-        
+
         <Row>
           <Col md={6}>
             <Form.Group className="mb-3">
@@ -1019,7 +1050,7 @@ const CreateNewJob = () => {
               </Form.Control.Feedback>
             </Form.Group>
           </Col>
-          
+
           <Col md={6}>
             <Form.Group className="mb-3">
               <Form.Label className="fw-semibold">Max Applications (Optional)</Form.Label>
@@ -1037,13 +1068,13 @@ const CreateNewJob = () => {
                 id="autoClose"
                 label="Auto-close when max applications reached"
                 checked={formData.autoClose}
-                onChange={(e) => setFormData(prev => ({ ...prev, autoClose: e.target.checked }))}
+                onChange={(e) => setFormData((prev) => ({ ...prev, autoClose: e.target.checked }))}
                 className="mt-2"
               />
             </Form.Group>
           </Col>
         </Row>
-        
+
         <Form.Group className="mb-3">
           <Form.Label className="fw-semibold">Application Instructions</Form.Label>
           <Form.Control
@@ -1056,7 +1087,7 @@ const CreateNewJob = () => {
             className="py-2"
           />
         </Form.Group>
-        
+
         <Form.Group className="mb-3">
           <Form.Label className="fw-semibold">Application Questions</Form.Label>
           <div className="mb-3">
@@ -1064,7 +1095,7 @@ const CreateNewJob = () => {
               <FormControl
                 type="text"
                 value={formData.newQuestion}
-                onChange={(e) => setFormData(prev => ({ ...prev, newQuestion: e.target.value }))}
+                onChange={(e) => setFormData((prev) => ({ ...prev, newQuestion: e.target.value }))}
                 placeholder="e.g., Why are you interested in this role?"
                 className="py-2"
                 onKeyPress={(e) => {
@@ -1076,18 +1107,23 @@ const CreateNewJob = () => {
               />
               <Button
                 variant="outline-secondary"
-                onClick={() => handleAddItem('applicationQuestions', 'newQuestion', formData.newQuestion)}
+                onClick={() =>
+                  handleAddItem('applicationQuestions', 'newQuestion', formData.newQuestion)
+                }
               >
                 <FaPlus />
               </Button>
             </InputGroup>
           </div>
-          
+
           {formData.applicationQuestions.length > 0 && (
             <div className="border rounded p-3">
               <h6 className="mb-3">Questions for Applicants:</h6>
               {formData.applicationQuestions.map((question, index) => (
-                <div key={index} className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
+                <div
+                  key={index}
+                  className="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded"
+                >
                   <span>{question}</span>
                   <Button
                     variant="link"
@@ -1136,27 +1172,37 @@ const CreateNewJob = () => {
                   </p>
                 </div>
               </div>
-              
+
               <div className="mb-4">
                 <h5 className="mb-2">Job Details</h5>
                 <Row>
                   <Col md={6}>
-                    <p><strong>Type:</strong> {formData.type}</p>
-                    <p><strong>Experience:</strong> {formData.experience}</p>
-                    <p><strong>Department:</strong> {formData.department}</p>
+                    <p>
+                      <strong>Type:</strong> {formData.type}
+                    </p>
+                    <p>
+                      <strong>Experience:</strong> {formData.experience}
+                    </p>
+                    <p>
+                      <strong>Department:</strong> {formData.department}
+                    </p>
                   </Col>
                   <Col md={6}>
-                    <p><strong>Salary:</strong> {formatSalary()}</p>
-                    <p><strong>Deadline:</strong> {formData.applicationDeadline || 'Not set'}</p>
+                    <p>
+                      <strong>Salary:</strong> {formatSalary()}
+                    </p>
+                    <p>
+                      <strong>Deadline:</strong> {formData.applicationDeadline || 'Not set'}
+                    </p>
                   </Col>
                 </Row>
               </div>
-              
+
               <div className="mb-4">
                 <h5 className="mb-2">Description</h5>
                 <p style={{ whiteSpace: 'pre-wrap' }}>{formData.description}</p>
               </div>
-              
+
               {formData.skills.length > 0 && (
                 <div className="mb-4">
                   <h5 className="mb-2">Required Skills</h5>
@@ -1169,7 +1215,7 @@ const CreateNewJob = () => {
                   </div>
                 </div>
               )}
-              
+
               {formData.benefits.length > 0 && (
                 <div className="mb-4">
                   <h5 className="mb-2">Benefits</h5>
@@ -1185,12 +1231,12 @@ const CreateNewJob = () => {
               )}
             </div>
           </Col>
-          
+
           <Col md={4}>
             <Card className="border-0 shadow-sm">
               <Card.Body>
                 <h6 className="mb-3">Publish Settings</h6>
-                
+
                 <Form.Group className="mb-3">
                   <Form.Label className="fw-semibold">Job Status</Form.Label>
                   <Form.Select
@@ -1204,7 +1250,7 @@ const CreateNewJob = () => {
                     <option value="paused">Pause (Don&apos;t Accept Applications)</option>
                   </Form.Select>
                 </Form.Group>
-                
+
                 <Form.Group className="mb-3">
                   <Form.Label className="fw-semibold">Urgency Level</Form.Label>
                   <Form.Select
@@ -1218,7 +1264,7 @@ const CreateNewJob = () => {
                     <option value="urgent">Urgent</option>
                   </Form.Select>
                 </Form.Group>
-                
+
                 <Form.Group className="mb-3">
                   <Form.Label className="fw-semibold">Visibility</Form.Label>
                   <Form.Select
@@ -1232,7 +1278,7 @@ const CreateNewJob = () => {
                     <option value="unlisted">Unlisted (Link Only)</option>
                   </Form.Select>
                 </Form.Group>
-                
+
                 <div className="border-top pt-3 mt-3">
                   <h6 className="mb-2">Job Summary</h6>
                   <div className="small text-muted">
@@ -1275,38 +1321,38 @@ const CreateNewJob = () => {
               Step {formStep} of 5 • {calculateProgress()}% complete
             </p>
           </div>
-          <Button
-            variant="outline-secondary"
-            size="sm"
-            onClick={() => navigate('/company/jobs')}
-          >
+          <Button variant="outline-secondary" size="sm" onClick={() => navigate('/company/jobs')}>
             <FaArrowLeft className="me-2" />
             Back to Jobs
           </Button>
         </div>
-        
+
         <ProgressBar
           now={calculateProgress()}
           variant="primary"
           className="mb-3"
           style={{ height: '8px' }}
         />
-        
+
         <div className="d-flex justify-content-between">
-          {['Basic Info', 'Job Details', 'Requirements', 'Benefits', 'Review'].map((step, index) => (
-            <div
-              key={index}
-              className={`text-center ${index + 1 <= formStep ? 'text-primary fw-semibold' : 'text-muted'}`}
-              style={{ cursor: 'pointer' }}
-              onClick={() => setFormStep(index + 1)}
-            >
-              <div className={`rounded-circle mb-1 ${index + 1 <= formStep ? 'bg-primary text-white' : 'bg-light'} d-inline-flex align-items-center justify-content-center`}
-                   style={{ width: '30px', height: '30px' }}>
-                {index + 1}
+          {['Basic Info', 'Job Details', 'Requirements', 'Benefits', 'Review'].map(
+            (step, index) => (
+              <div
+                key={index}
+                className={`text-center ${index + 1 <= formStep ? 'text-primary fw-semibold' : 'text-muted'}`}
+                style={{ cursor: 'pointer' }}
+                onClick={() => setFormStep(index + 1)}
+              >
+                <div
+                  className={`rounded-circle mb-1 ${index + 1 <= formStep ? 'bg-primary text-white' : 'bg-light'} d-inline-flex align-items-center justify-content-center`}
+                  style={{ width: '30px', height: '30px' }}
+                >
+                  {index + 1}
+                </div>
+                <div className="small">{step}</div>
               </div>
-              <div className="small">{step}</div>
-            </div>
-          ))}
+            )
+          )}
         </div>
       </Card.Body>
     </Card>
@@ -1328,18 +1374,12 @@ const CreateNewJob = () => {
               </p>
             </div>
             <div className="d-flex gap-2">
-              <Button
-                variant="outline-primary"
-                onClick={() => setShowPreview(true)}
-              >
+              <Button variant="outline-primary" onClick={() => setShowPreview(true)}>
                 <FaEye className="me-2" />
                 Preview
               </Button>
               {formData.aiEnhancedDescription && (
-                <Button
-                  variant="success"
-                  onClick={applyAIEnhancements}
-                >
+                <Button variant="success" onClick={applyAIEnhancements}>
                   <FaMagic className="me-2" />
                   Apply AI Enhancements
                 </Button>
@@ -1353,9 +1393,9 @@ const CreateNewJob = () => {
       {saveStatus?.show && (
         <Row className="mb-3">
           <Col>
-            <Alert 
-              variant={saveStatus.type} 
-              onClose={() => setSaveStatus(null)} 
+            <Alert
+              variant={saveStatus.type}
+              onClose={() => setSaveStatus(null)}
               dismissible
               className="mb-0"
             >
@@ -1393,13 +1433,9 @@ const CreateNewJob = () => {
                     </Button>
                   )}
                 </div>
-                
+
                 <div className="d-flex gap-3">
-                  <Button
-                    variant="light"
-                    onClick={() => handleSubmit(false)}
-                    disabled={loading}
-                  >
+                  <Button variant="light" onClick={() => handleSubmit(false)} disabled={loading}>
                     {loading ? (
                       <>
                         <Spinner animation="border" size="sm" className="me-2" />
@@ -1412,18 +1448,14 @@ const CreateNewJob = () => {
                       </>
                     )}
                   </Button>
-                  
+
                   {formStep < 5 ? (
                     <Button variant="primary" onClick={nextStep}>
                       Continue
                       <FaArrowLeft className="ms-2" style={{ transform: 'rotate(180deg)' }} />
                     </Button>
                   ) : (
-                    <Button
-                      variant="success"
-                      onClick={() => handleSubmit(true)}
-                      disabled={loading}
-                    >
+                    <Button variant="success" onClick={() => handleSubmit(true)} disabled={loading}>
                       {loading ? (
                         <>
                           <Spinner animation="border" size="sm" className="me-2" />
@@ -1445,12 +1477,7 @@ const CreateNewJob = () => {
       </Row>
 
       {/* Preview Modal */}
-      <Modal
-        show={showPreview}
-        onHide={() => setShowPreview(false)}
-        size="xl"
-        centered
-      >
+      <Modal show={showPreview} onHide={() => setShowPreview(false)} size="xl" centered>
         <Modal.Header closeButton>
           <Modal.Title>Job Preview</Modal.Title>
         </Modal.Header>
@@ -1460,7 +1487,7 @@ const CreateNewJob = () => {
               <h2>Preview: {formData.title}</h2>
               <p className="text-muted">This is how candidates will see your job posting</p>
             </div>
-            
+
             <Card className="border-0 shadow">
               <Card.Body className="p-4">
                 {/* Preview content similar to renderStep5 */}

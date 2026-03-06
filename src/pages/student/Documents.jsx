@@ -1,15 +1,15 @@
 ﻿/* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useCallback } from 'react';
-import { 
-  Container, 
-  Row, 
-  Col, 
-  Card, 
-  Table, 
-  Button, 
-  Modal, 
-  Form, 
-  Spinner, 
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Table,
+  Button,
+  Modal,
+  Form,
+  Spinner,
   Alert,
   Badge,
   InputGroup,
@@ -18,37 +18,37 @@ import {
   Pagination,
   OverlayTrigger,
   Tooltip,
-  ProgressBar
+  ProgressBar,
 } from 'react-bootstrap';
-import { 
-  ref, 
-  uploadBytesResumable, 
-  getDownloadURL, 
+import {
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
   deleteObject,
   listAll,
-  getMetadata 
+  getMetadata,
 } from 'firebase/storage';
-import { 
-  collection, 
-  doc, 
-  setDoc, 
-  getDocs, 
-  query, 
-  where, 
+import {
+  collection,
+  doc,
+  setDoc,
+  getDocs,
+  query,
+  where,
   orderBy,
   deleteDoc,
   updateDoc,
   serverTimestamp,
-  Timestamp 
+  Timestamp,
 } from 'firebase/firestore';
 import { useAuth } from '../../context/AuthContext';
 import { db, storage } from '../../config/firebase';
-import { 
-  FaUpload, 
-  FaDownload, 
-  FaTrash, 
-  FaEye, 
-  FaEdit, 
+import {
+  FaUpload,
+  FaDownload,
+  FaTrash,
+  FaEye,
+  FaEdit,
   FaFilter,
   FaSearch,
   FaSort,
@@ -62,7 +62,7 @@ import {
   FaClock,
   FaFolderPlus,
   FaSortAmountDown,
-  FaSortAmountUp
+  FaSortAmountUp,
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import './Documents.css';
@@ -88,7 +88,7 @@ const Documents = () => {
     description: '',
     category: 'academic',
     file: null,
-    tags: []
+    tags: [],
   });
   const [newTag, setNewTag] = useState('');
   const [categories] = useState([
@@ -97,7 +97,7 @@ const Documents = () => {
     { value: 'resume', label: 'Resume/CV', icon: '📄' },
     { value: 'identification', label: 'Identification', icon: '🆔' },
     { value: 'portfolio', label: 'Portfolio', icon: '💼' },
-    { value: 'other', label: 'Other', icon: '📎' }
+    { value: 'other', label: 'Other', icon: '📎' },
   ]);
 
   // Fetch documents on component mount and when filters change
@@ -127,12 +127,12 @@ const Documents = () => {
 
       const querySnapshot = await getDocs(q);
       const docsList = [];
-      
+
       querySnapshot.forEach((doc) => {
         docsList.push({
           id: doc.id,
           ...doc.data(),
-          uploadDate: doc.data().uploadDate?.toDate() || new Date()
+          uploadDate: doc.data().uploadDate?.toDate() || new Date(),
         });
       });
 
@@ -158,7 +158,7 @@ const Documents = () => {
       const fileExtension = file.name.split('.').pop().toLowerCase();
       const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
       const storageRef = ref(storage, `student-documents/${currentUser.uid}/${fileName}`);
-      
+
       // Start upload with progress tracking
       const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -177,7 +177,7 @@ const Documents = () => {
           try {
             // Get download URL
             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            
+
             // Create document record in Firestore
             const docRef = doc(collection(db, 'studentDocuments'));
             const documentData = {
@@ -200,25 +200,25 @@ const Documents = () => {
               lastUpdated: serverTimestamp(),
               verifiedBy: null,
               verifiedDate: null,
-              version: 1
+              version: 1,
             };
 
             await setDoc(docRef, documentData);
-            
+
             // Reset form and close modal
             setUploadForm({
               title: '',
               description: '',
               category: 'academic',
               file: null,
-              tags: []
+              tags: [],
             });
             setUploadProgress(0);
             setShowUploadModal(false);
-            
+
             // Refresh documents list
             await fetchDocuments();
-            
+
             toast.success('Document uploaded successfully');
           } catch (error) {
             console.error('Error saving document metadata:', error);
@@ -244,16 +244,16 @@ const Documents = () => {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      
+
       // Log download activity
       await setDoc(doc(collection(db, 'documentActivities')), {
         documentId: document.id,
         studentId: currentUser.uid,
         action: 'download',
         timestamp: serverTimestamp(),
-        userAgent: navigator.userAgent
+        userAgent: navigator.userAgent,
       });
-      
+
       toast.success('Download started');
     } catch (error) {
       console.error('Download error:', error);
@@ -276,7 +276,7 @@ const Documents = () => {
       await fetchDocuments();
       setShowDeleteModal(false);
       setSelectedDocument(null);
-      
+
       toast.success('Document deleted successfully');
     } catch (error) {
       console.error('Delete error:', error);
@@ -288,9 +288,9 @@ const Documents = () => {
     try {
       await updateDoc(doc(db, 'studentDocuments', documentId), {
         status: newStatus,
-        lastUpdated: serverTimestamp()
+        lastUpdated: serverTimestamp(),
       });
-      
+
       await fetchDocuments();
       toast.success('Document status updated');
     } catch (error) {
@@ -303,7 +303,7 @@ const Documents = () => {
     if (newTag.trim() && !uploadForm.tags.includes(newTag.trim())) {
       setUploadForm({
         ...uploadForm,
-        tags: [...uploadForm.tags, newTag.trim()]
+        tags: [...uploadForm.tags, newTag.trim()],
       });
       setNewTag('');
     }
@@ -312,29 +312,42 @@ const Documents = () => {
   const handleRemoveTag = (tagToRemove) => {
     setUploadForm({
       ...uploadForm,
-      tags: uploadForm.tags.filter(tag => tag !== tagToRemove)
+      tags: uploadForm.tags.filter((tag) => tag !== tagToRemove),
     });
   };
 
   const getFileIcon = (fileType, extension) => {
     if (fileType.includes('pdf')) return <FaFilePdf className="text-danger" />;
-    if (fileType.includes('word') || extension === 'doc' || extension === 'docx') 
+    if (fileType.includes('word') || extension === 'doc' || extension === 'docx')
       return <FaFileWord className="text-primary" />;
-    if (fileType.includes('excel') || extension === 'xls' || extension === 'xlsx') 
+    if (fileType.includes('excel') || extension === 'xls' || extension === 'xlsx')
       return <FaFileExcel className="text-success" />;
     if (fileType.includes('image')) return <FaFileImage className="text-warning" />;
-    if (['zip', 'rar', '7z'].includes(extension)) return <FaFileArchive className="text-secondary" />;
+    if (['zip', 'rar', '7z'].includes(extension))
+      return <FaFileArchive className="text-secondary" />;
     return <FaFilePdf className="text-muted" />;
   };
 
   const getStatusBadge = (status) => {
     switch (status) {
       case 'verified':
-        return <Badge bg="success"><FaCheckCircle /> Verified</Badge>;
+        return (
+          <Badge bg="success">
+            <FaCheckCircle /> Verified
+          </Badge>
+        );
       case 'pending':
-        return <Badge bg="warning"><FaClock /> Pending</Badge>;
+        return (
+          <Badge bg="warning">
+            <FaClock /> Pending
+          </Badge>
+        );
       case 'rejected':
-        return <Badge bg="danger"><FaTimesCircle /> Rejected</Badge>;
+        return (
+          <Badge bg="danger">
+            <FaTimesCircle /> Rejected
+          </Badge>
+        );
       default:
         return <Badge bg="secondary">Unknown</Badge>;
     }
@@ -355,15 +368,16 @@ const Documents = () => {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   };
 
   // Filter documents based on search term
-  const filteredDocuments = documents.filter(doc =>
-    doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    doc.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    doc.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredDocuments = documents.filter(
+    (doc) =>
+      doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      doc.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      doc.tags.some((tag) => tag.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   // Pagination
@@ -382,7 +396,7 @@ const Documents = () => {
   };
 
   const getCategoryLabel = (categoryValue) => {
-    const category = categories.find(c => c.value === categoryValue);
+    const category = categories.find((c) => c.value === categoryValue);
     return category ? `${category.icon} ${category.label}` : categoryValue;
   };
 
@@ -392,7 +406,7 @@ const Documents = () => {
     return {
       used: totalSize,
       total: maxSize,
-      percentage: (totalSize / maxSize) * 100
+      percentage: (totalSize / maxSize) * 100,
     };
   };
 
@@ -415,11 +429,13 @@ const Documents = () => {
       <Row className="mb-4">
         <Col>
           <h2 className="mb-3">📄 My Documents</h2>
-          <p className="text-muted">Manage and organize all your academic and professional documents</p>
+          <p className="text-muted">
+            Manage and organize all your academic and professional documents
+          </p>
         </Col>
         <Col xs="auto">
-          <Button 
-            variant="primary" 
+          <Button
+            variant="primary"
             onClick={() => setShowUploadModal(true)}
             className="d-flex align-items-center"
           >
@@ -439,13 +455,20 @@ const Documents = () => {
                   {formatFileSize(storageUsage.used)} / {formatFileSize(storageUsage.total)}
                 </span>
               </div>
-              <ProgressBar 
-                now={storageUsage.percentage} 
-                variant={storageUsage.percentage > 90 ? 'danger' : storageUsage.percentage > 70 ? 'warning' : 'success'}
+              <ProgressBar
+                now={storageUsage.percentage}
+                variant={
+                  storageUsage.percentage > 90
+                    ? 'danger'
+                    : storageUsage.percentage > 70
+                      ? 'warning'
+                      : 'success'
+                }
                 className="mb-2"
               />
               <small className="text-muted">
-                {storageUsage.percentage.toFixed(1)}% used • {formatFileSize(storageUsage.total - storageUsage.used)} remaining
+                {storageUsage.percentage.toFixed(1)}% used •{' '}
+                {formatFileSize(storageUsage.total - storageUsage.used)} remaining
               </small>
             </Card.Body>
           </Card>
@@ -474,7 +497,7 @@ const Documents = () => {
                 onChange={(e) => setFilterCategory(e.target.value)}
               >
                 <option value="all">All Categories</option>
-                {categories.map(cat => (
+                {categories.map((cat) => (
                   <option key={cat.value} value={cat.value}>
                     {cat.icon} {cat.label}
                   </option>
@@ -482,10 +505,7 @@ const Documents = () => {
               </Form.Select>
             </Col>
             <Col md={3}>
-              <Form.Select
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
-              >
+              <Form.Select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
                 <option value="all">All Status</option>
                 <option value="pending">Pending</option>
                 <option value="verified">Verified</option>
@@ -496,11 +516,14 @@ const Documents = () => {
               <span className="text-muted me-2">Sort:</span>
               <Dropdown>
                 <Dropdown.Toggle variant="outline-secondary" size="sm">
-                  {sortOrder === 'desc' ? <FaSortAmountDown /> : <FaSortAmountUp />}
-                  {' '}
-                  {sortField === 'uploadDate' ? 'Date' : 
-                   sortField === 'title' ? 'Title' : 
-                   sortField === 'fileSize' ? 'Size' : 'Category'}
+                  {sortOrder === 'desc' ? <FaSortAmountDown /> : <FaSortAmountUp />}{' '}
+                  {sortField === 'uploadDate'
+                    ? 'Date'
+                    : sortField === 'title'
+                      ? 'Title'
+                      : sortField === 'fileSize'
+                        ? 'Size'
+                        : 'Category'}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <Dropdown.Item onClick={() => handleSort('uploadDate')}>
@@ -534,10 +557,7 @@ const Documents = () => {
                   ? 'Try changing your search or filters'
                   : 'Upload your first document to get started'}
               </p>
-              <Button 
-                variant="outline-primary" 
-                onClick={() => setShowUploadModal(true)}
-              >
+              <Button variant="outline-primary" onClick={() => setShowUploadModal(true)}>
                 <FaUpload className="me-2" /> Upload Document
               </Button>
             </div>
@@ -565,10 +585,12 @@ const Documents = () => {
                             </div>
                             <div>
                               <strong className="d-block">{doc.title}</strong>
-                              <small className="text-muted">{doc.description || 'No description'}</small>
+                              <small className="text-muted">
+                                {doc.description || 'No description'}
+                              </small>
                               {doc.tags.length > 0 && (
                                 <div className="mt-1">
-                                  {doc.tags.slice(0, 3).map(tag => (
+                                  {doc.tags.slice(0, 3).map((tag) => (
                                     <Badge key={tag} bg="light" text="dark" className="me-1">
                                       {tag}
                                     </Badge>
@@ -591,9 +613,7 @@ const Documents = () => {
                             placement="top"
                             overlay={<Tooltip>{formatDate(doc.uploadDate)}</Tooltip>}
                           >
-                            <span>
-                              {new Date(doc.uploadDate).toLocaleDateString()}
-                            </span>
+                            <span>{new Date(doc.uploadDate).toLocaleDateString()}</span>
                           </OverlayTrigger>
                         </td>
                         <td className="text-end">
@@ -619,7 +639,10 @@ const Documents = () => {
                               </Button>
                             </OverlayTrigger>
                             {doc.status === 'pending' && (
-                              <OverlayTrigger placement="top" overlay={<Tooltip>Mark as Verified</Tooltip>}>
+                              <OverlayTrigger
+                                placement="top"
+                                overlay={<Tooltip>Mark as Verified</Tooltip>}
+                              >
                                 <Button
                                   variant="outline-success"
                                   size="sm"
@@ -654,8 +677,8 @@ const Documents = () => {
               {totalPages > 1 && (
                 <div className="d-flex justify-content-center mt-4">
                   <Pagination>
-                    <Pagination.Prev 
-                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                    <Pagination.Prev
+                      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                       disabled={currentPage === 1}
                     />
                     {[...Array(totalPages)].map((_, i) => (
@@ -668,7 +691,7 @@ const Documents = () => {
                       </Pagination.Item>
                     ))}
                     <Pagination.Next
-                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                       disabled={currentPage === totalPages}
                     />
                   </Pagination>
@@ -680,7 +703,11 @@ const Documents = () => {
       </Card>
 
       {/* Upload Modal */}
-      <Modal show={showUploadModal} onHide={() => !uploading && setShowUploadModal(false)} size="lg">
+      <Modal
+        show={showUploadModal}
+        onHide={() => !uploading && setShowUploadModal(false)}
+        size="lg"
+      >
         <Modal.Header closeButton disabled={uploading}>
           <Modal.Title>Upload New Document</Modal.Title>
         </Modal.Header>
@@ -693,7 +720,7 @@ const Documents = () => {
                   <Form.Control
                     type="text"
                     value={uploadForm.title}
-                    onChange={(e) => setUploadForm({...uploadForm, title: e.target.value})}
+                    onChange={(e) => setUploadForm({ ...uploadForm, title: e.target.value })}
                     placeholder="e.g., University Transcript"
                     required
                     disabled={uploading}
@@ -705,10 +732,10 @@ const Documents = () => {
                   <Form.Label>Category *</Form.Label>
                   <Form.Select
                     value={uploadForm.category}
-                    onChange={(e) => setUploadForm({...uploadForm, category: e.target.value})}
+                    onChange={(e) => setUploadForm({ ...uploadForm, category: e.target.value })}
                     disabled={uploading}
                   >
-                    {categories.map(cat => (
+                    {categories.map((cat) => (
                       <option key={cat.value} value={cat.value}>
                         {cat.icon} {cat.label}
                       </option>
@@ -723,7 +750,7 @@ const Documents = () => {
                     as="textarea"
                     rows={3}
                     value={uploadForm.description}
-                    onChange={(e) => setUploadForm({...uploadForm, description: e.target.value})}
+                    onChange={(e) => setUploadForm({ ...uploadForm, description: e.target.value })}
                     placeholder="Brief description of the document..."
                     disabled={uploading}
                   />
@@ -740,8 +767,8 @@ const Documents = () => {
                       onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
                       disabled={uploading}
                     />
-                    <Button 
-                      variant="outline-secondary" 
+                    <Button
+                      variant="outline-secondary"
                       onClick={handleAddTag}
                       disabled={uploading || !newTag.trim()}
                     >
@@ -770,7 +797,7 @@ const Documents = () => {
                   <Form.Label>Select File *</Form.Label>
                   <Form.Control
                     type="file"
-                    onChange={(e) => setUploadForm({...uploadForm, file: e.target.files[0]})}
+                    onChange={(e) => setUploadForm({ ...uploadForm, file: e.target.files[0] })}
                     accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.zip"
                     required
                     disabled={uploading}
@@ -798,16 +825,16 @@ const Documents = () => {
             </Row>
           </Modal.Body>
           <Modal.Footer>
-            <Button 
-              variant="secondary" 
+            <Button
+              variant="secondary"
               onClick={() => setShowUploadModal(false)}
               disabled={uploading}
             >
               Cancel
             </Button>
-            <Button 
-              variant="primary" 
-              type="submit" 
+            <Button
+              variant="primary"
+              type="submit"
               disabled={uploading || !uploadForm.file || !uploadForm.title.trim()}
             >
               {uploading ? (

@@ -34,7 +34,7 @@ const DashboardRedirect = () => {
 
   // **CRITICAL FIX: Use userProfile.userType for redirect**
   const userType = userProfile?.userType || 'student';
-  
+
   console.log(`🎯 DashboardRedirect: Redirecting ${userType} user`);
 
   switch (userType) {

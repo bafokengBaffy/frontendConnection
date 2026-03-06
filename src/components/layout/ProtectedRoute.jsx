@@ -36,15 +36,18 @@ const ProtectedRoute = ({ children, allowedUserTypes = [] }) => {
     // Normalize userType
     const rawUserType = userProfile?.userType || 'student';
     const userType = rawUserType === 'institute' ? 'institution' : rawUserType;
-    
+
     // Also normalize allowed types
-    const normalizedAllowedTypes = allowedUserTypes.map(type => 
+    const normalizedAllowedTypes = allowedUserTypes.map((type) =>
       type === 'institute' ? 'institution' : type
     );
-    
+
     if (!normalizedAllowedTypes.includes(userType)) {
-      console.log(`🚫 Access denied: User type ${userType} not in allowed types:`, normalizedAllowedTypes);
-      
+      console.log(
+        `🚫 Access denied: User type ${userType} not in allowed types:`,
+        normalizedAllowedTypes
+      );
+
       // Redirect to appropriate dashboard based on user type
       let redirectPath = '/dashboard';
       switch (userType) {
@@ -69,7 +72,7 @@ const ProtectedRoute = ({ children, allowedUserTypes = [] }) => {
         default:
           redirectPath = '/dashboard';
       }
-      
+
       return <Navigate to={redirectPath} replace />;
     }
   }

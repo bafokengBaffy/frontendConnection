@@ -1,0 +1,50 @@
+language: node_js
+node_js:
+  - 18
+  - 20
+
+cache:
+  npm: true
+  directories:
+    - frontend/node_modules
+
+env:
+  global:
+    - NODE_ENV=test
+    - FRONTEND_DIR=frontend
+
+before_install:
+  - cd $FRONTEND_DIR
+
+install:
+  - npm ci --legacy-peer-deps
+
+script:
+  - npm run lint
+  - npm run format:check
+  - npm run test:ci
+  - npm run build
+
+after_success:
+  - npm run coverage
+
+deploy:
+  provider: firebase
+  token: $FIREBASE_TOKEN
+  project: career-connect-lesotho
+  edge: true
+  on:
+    branch: main
+    node_js: 18
+
+notifications:
+  email:
+    recipients:
+      - devops@careerconnect.co.ls
+    on_success: always
+    on_failure: always
+  slack:
+    rooms:
+      - careerconnect:deployments
+    on_success: always
+    on_failure: always

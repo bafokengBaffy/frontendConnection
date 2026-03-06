@@ -1,15 +1,31 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
-import { 
-  Card, Table, Button, Form, Row, Col, 
-  Badge, Spinner, Alert, Modal, InputGroup,
-  Pagination
+import {
+  Card,
+  Table,
+  Button,
+  Form,
+  Row,
+  Col,
+  Badge,
+  Spinner,
+  Alert,
+  Modal,
+  InputGroup,
+  Pagination,
 } from 'react-bootstrap';
 import { useAuth } from '../../context/AuthContext';
 import adminService from '../../services/adminService';
-import { 
-  FaSearch, FaBriefcase, FaCheck, FaTimes,
-  FaEye, FaFilter, FaClock, FaCheckCircle, FaTimesCircle
+import {
+  FaSearch,
+  FaBriefcase,
+  FaCheck,
+  FaTimes,
+  FaEye,
+  FaFilter,
+  FaClock,
+  FaCheckCircle,
+  FaTimesCircle,
 } from 'react-icons/fa';
 
 const JobManagement = () => {
@@ -21,13 +37,13 @@ const JobManagement = () => {
   const [filters, setFilters] = useState({
     status: 'all',
     jobType: 'all',
-    approved: 'all'
+    approved: 'all',
   });
   const [pagination, setPagination] = useState({
     page: 1,
     total: 0,
     totalPages: 1,
-    limit: 10
+    limit: 10,
   });
   const [selectedJob, setSelectedJob] = useState(null);
   const [showApproveModal, setShowApproveModal] = useState(false);
@@ -40,23 +56,23 @@ const JobManagement = () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await adminService.jobs.getAllJobs(
         {
           ...filters,
-          search: searchTerm
+          search: searchTerm,
         },
         page,
         pagination.limit
       );
-      
+
       if (response.success) {
         setJobs(response.data.jobs);
         setPagination({
           page: response.data.page,
           total: response.data.total,
           totalPages: response.data.totalPages,
-          limit: response.data.limit
+          limit: response.data.limit,
         });
       } else {
         setError(response.error);
@@ -78,21 +94,17 @@ const JobManagement = () => {
   };
 
   const handleFilterChange = (key, value) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
-      [key]: value
+      [key]: value,
     }));
-    setPagination(prev => ({ ...prev, page: 1 }));
+    setPagination((prev) => ({ ...prev, page: 1 }));
   };
 
   const handleApproveJob = async () => {
     try {
       setActionLoading(true);
-      const response = await adminService.jobs.approveJob(
-        selectedJob.id,
-        currentUser,
-        userProfile
-      );
+      const response = await adminService.jobs.approveJob(selectedJob.id, currentUser, userProfile);
       if (response.success) {
         fetchJobs(pagination.page);
         setShowApproveModal(false);
@@ -110,11 +122,7 @@ const JobManagement = () => {
   const handleRejectJob = async () => {
     try {
       setActionLoading(true);
-      const response = await adminService.jobs.rejectJob(
-        selectedJob.id,
-        currentUser,
-        userProfile
-      );
+      const response = await adminService.jobs.rejectJob(selectedJob.id, currentUser, userProfile);
       if (response.success) {
         fetchJobs(pagination.page);
         setShowRejectModal(false);
@@ -137,12 +145,16 @@ const JobManagement = () => {
   const getStatusBadge = (status, approved) => {
     if (approved === false) return <Badge bg="danger">Rejected</Badge>;
     if (approved === true) return <Badge bg="success">Approved</Badge>;
-    
+
     switch (status) {
-      case 'active': return <Badge bg="success">Active</Badge>;
-      case 'pending': return <Badge bg="warning">Pending</Badge>;
-      case 'closed': return <Badge bg="secondary">Closed</Badge>;
-      default: return <Badge bg="secondary">{status}</Badge>;
+      case 'active':
+        return <Badge bg="success">Active</Badge>;
+      case 'pending':
+        return <Badge bg="warning">Pending</Badge>;
+      case 'closed':
+        return <Badge bg="secondary">Closed</Badge>;
+      default:
+        return <Badge bg="secondary">{status}</Badge>;
     }
   };
 
@@ -150,12 +162,12 @@ const JobManagement = () => {
     const types = {
       'full-time': 'primary',
       'part-time': 'info',
-      'internship': 'success',
-      'freelance': 'warning',
-      'volunteer': 'secondary',
-      'remote': 'dark'
+      internship: 'success',
+      freelance: 'warning',
+      volunteer: 'secondary',
+      remote: 'dark',
     };
-    
+
     const variant = types[jobType] || 'secondary';
     return <Badge bg={variant}>{jobType || 'N/A'}</Badge>;
   };
@@ -168,7 +180,7 @@ const JobManagement = () => {
     if (!date) return 'N/A';
     return new Date(date).toLocaleDateString('en-US', {
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
@@ -278,26 +290,16 @@ const JobManagement = () => {
                         <td>
                           <div>
                             <strong>{job.title}</strong>
-                            <div className="text-muted small">
-                              {job.location || 'Remote'}
-                            </div>
+                            <div className="text-muted small">{job.location || 'Remote'}</div>
                           </div>
                         </td>
                         <td>
-                          <div className="small">
-                            {job.companyName || 'Unknown Company'}
-                          </div>
+                          <div className="small">{job.companyName || 'Unknown Company'}</div>
                         </td>
+                        <td>{getJobTypeBadge(job.jobType)}</td>
+                        <td>{getStatusBadge(job.status, job.approved)}</td>
                         <td>
-                          {getJobTypeBadge(job.jobType)}
-                        </td>
-                        <td>
-                          {getStatusBadge(job.status, job.approved)}
-                        </td>
-                        <td>
-                          <div className="small">
-                            {formatDate(job.createdAt)}
-                          </div>
+                          <div className="small">{formatDate(job.createdAt)}</div>
                         </td>
                         <td>
                           <div className="btn-group btn-group-sm">
@@ -309,7 +311,7 @@ const JobManagement = () => {
                             >
                               <FaEye />
                             </Button>
-                            {(!job.approved && job.status !== 'rejected') && (
+                            {!job.approved && job.status !== 'rejected' && (
                               <>
                                 <Button
                                   variant="outline-success"
@@ -390,9 +392,7 @@ const JobManagement = () => {
         <Modal.Body>
           Are you sure you want to approve job: <strong>{selectedJob?.title}</strong>?
           <br />
-          <small className="text-muted">
-            This job will become visible to all users.
-          </small>
+          <small className="text-muted">This job will become visible to all users.</small>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowApproveModal(false)}>
@@ -439,19 +439,21 @@ const JobManagement = () => {
                 <dl className="row">
                   <dt className="col-sm-4">Title</dt>
                   <dd className="col-sm-8">{jobDetails.title}</dd>
-                  
+
                   <dt className="col-sm-4">Company</dt>
                   <dd className="col-sm-8">{jobDetails.companyName}</dd>
-                  
+
                   <dt className="col-sm-4">Type</dt>
                   <dd className="col-sm-8">{getJobTypeBadge(jobDetails.jobType)}</dd>
-                  
+
                   <dt className="col-sm-4">Status</dt>
-                  <dd className="col-sm-8">{getStatusBadge(jobDetails.status, jobDetails.approved)}</dd>
-                  
+                  <dd className="col-sm-8">
+                    {getStatusBadge(jobDetails.status, jobDetails.approved)}
+                  </dd>
+
                   <dt className="col-sm-4">Location</dt>
                   <dd className="col-sm-8">{jobDetails.location || 'Remote'}</dd>
-                  
+
                   <dt className="col-sm-4">Salary</dt>
                   <dd className="col-sm-8">{jobDetails.salary || 'Not specified'}</dd>
                 </dl>
@@ -461,19 +463,20 @@ const JobManagement = () => {
                 <dl className="row">
                   <dt className="col-sm-4">Created</dt>
                   <dd className="col-sm-8">{formatDate(jobDetails.createdAt)}</dd>
-                  
+
                   <dt className="col-sm-4">Deadline</dt>
                   <dd className="col-sm-8">{formatDate(jobDetails.deadline) || 'No deadline'}</dd>
-                  
+
                   <dt className="col-sm-4">Approval</dt>
                   <dd className="col-sm-8">
-                    {jobDetails.approved ? 
-                      <Badge bg="success">Approved</Badge> : 
+                    {jobDetails.approved ? (
+                      <Badge bg="success">Approved</Badge>
+                    ) : (
                       <Badge bg="warning">Pending Approval</Badge>
-                    }
+                    )}
                   </dd>
                 </dl>
-                
+
                 {jobDetails.description && (
                   <>
                     <h6 className="mt-3">Description</h6>

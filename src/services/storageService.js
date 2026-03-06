@@ -4,9 +4,9 @@ class StorageService {
     this.cloudinaryConfig = {
       cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
       uploadPreset: import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET,
-      apiKey: import.meta.env.VITE_CLOUDINARY_API_KEY
+      apiKey: import.meta.env.VITE_CLOUDINARY_API_KEY,
     };
-    
+
     this.fallbackStorage = new FallbackStorage();
     this.baseUrl = import.meta.env.VITA_API_BASE_URL || 'http://localhost:5001/api';
   }
@@ -27,7 +27,6 @@ class StorageService {
       // Fallback to SQLite
       console.log('🔄 Falling back to SQLite storage...');
       return await this.fallbackStorage.uploadFile(file, path, metadata);
-
     } catch (error) {
       console.error('❌ Cloudinary upload failed, using SQLite fallback:', error);
       return await this.fallbackStorage.uploadFile(file, path, metadata);
@@ -44,7 +43,7 @@ class StorageService {
       formData.append('file', file);
       formData.append('upload_preset', this.cloudinaryConfig.uploadPreset);
       formData.append('folder', 'career_connect');
-      
+
       // Add metadata
       if (metadata.tags) {
         formData.append('tags', metadata.tags.join(','));
@@ -59,7 +58,7 @@ class StorageService {
         body: formData,
         headers: {
           // Authorization header will be added by the backend if needed
-        }
+        },
       });
 
       if (!response.ok) {
@@ -83,8 +82,8 @@ class StorageService {
           width: result.width,
           height: result.height,
           bytes: result.bytes,
-          created_at: result.created_at
-        }
+          created_at: result.created_at,
+        },
       };
     } catch (error) {
       console.error('❌ Cloudinary upload failed:', error);
@@ -131,10 +130,10 @@ class StorageService {
         try {
           // Build Cloudinary URL with transformations
           const cloudinaryUrl = this.buildCloudinaryUrl(path, transformations);
-          return { 
-            success: true, 
-            url: cloudinaryUrl, 
-            storageType: 'cloudinary' 
+          return {
+            success: true,
+            url: cloudinaryUrl,
+            storageType: 'cloudinary',
           };
         } catch (cloudinaryError) {
           if (storageType === 'cloudinary') throw cloudinaryError;
@@ -154,17 +153,17 @@ class StorageService {
    */
   buildCloudinaryUrl(publicId, transformations = {}) {
     const baseUrl = `https://res.cloudinary.com/${this.cloudinaryConfig.cloudName}/image/upload`;
-    
+
     let transformationString = '';
-    
+
     if (transformations.width || transformations.height) {
       transformationString += `w_${transformations.width || 'auto'},h_${transformations.height || 'auto'},c_${transformations.crop || 'fit'}/`;
     }
-    
+
     if (transformations.quality) {
       transformationString += `q_${transformations.quality}/`;
     }
-    
+
     if (transformations.format) {
       transformationString += `f_${transformations.format}/`;
     }
@@ -211,8 +210,8 @@ class StorageService {
       tags: ['profile', 'photo', `user_${userId}`],
       context: {
         alt: `Profile photo for user ${userId}`,
-        caption: 'User profile photo'
-      }
+        caption: 'User profile photo',
+      },
     };
 
     return this.uploadFile(file, path, metadata);
@@ -229,8 +228,8 @@ class StorageService {
       context: {
         type: documentType,
         userId: userId,
-        uploadedAt: new Date().toISOString()
-      }
+        uploadedAt: new Date().toISOString(),
+      },
     };
 
     return this.uploadFile(file, path, metadata);
@@ -246,7 +245,7 @@ class StorageService {
       crop: 'fill',
       gravity: 'face',
       quality: 'auto',
-      format: 'webp'
+      format: 'webp',
     };
 
     const transformations = { ...defaultOptions, ...options };
@@ -337,14 +336,7 @@ class FallbackStorage {
       this.db.run(
         `INSERT OR REPLACE INTO files (path, filename, data, mime_type, size, metadata)
          VALUES (?, ?, ?, ?, ?, ?)`,
-        [
-          path,
-          file.name,
-          uint8Array,
-          file.type,
-          file.size,
-          JSON.stringify(metadata)
-        ]
+        [path, file.name, uint8Array, file.type, file.size, JSON.stringify(metadata)]
       );
 
       const url = this.createBlobURL(arrayBuffer, file.type);
@@ -358,8 +350,8 @@ class FallbackStorage {
           size: file.size,
           type: file.type,
           name: file.name,
-          lastModified: file.lastModified
-        }
+          lastModified: file.lastModified,
+        },
       });
     } catch (error) {
       reject(error);
@@ -372,10 +364,7 @@ class FallbackStorage {
   storeInLocalStorage(path, file, arrayBuffer, metadata, resolve, reject) {
     try {
       const base64Data = btoa(
-        new Uint8Array(arrayBuffer).reduce(
-          (data, byte) => data + String.fromCharCode(byte),
-          ''
-        )
+        new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
       );
 
       const fileData = {
@@ -384,7 +373,7 @@ class FallbackStorage {
         mime_type: file.type,
         size: file.size,
         metadata: metadata,
-        uploaded_at: new Date().toISOString()
+        uploaded_at: new Date().toISOString(),
       };
 
       localStorage.setItem(`file_${path}`, JSON.stringify(fileData));
@@ -400,8 +389,8 @@ class FallbackStorage {
           size: file.size,
           type: file.type,
           name: file.name,
-          lastModified: file.lastModified
-        }
+          lastModified: file.lastModified,
+        },
       });
     } catch (error) {
       reject(new Error('All storage methods failed'));
@@ -434,7 +423,7 @@ class FallbackStorage {
             resolve({
               success: true,
               url: url,
-              storageType: 'sqlite'
+              storageType: 'sqlite',
             });
           } else {
             reject(new Error('File not found'));
@@ -458,7 +447,7 @@ class FallbackStorage {
             resolve({
               success: true,
               url: url,
-              storageType: 'localStorage'
+              storageType: 'localStorage',
             });
           } else {
             reject(new Error('File not found'));
@@ -499,7 +488,9 @@ class FallbackStorage {
         const files = [];
 
         if (this.db) {
-          const stmt = this.db.prepare('SELECT path, filename, mime_type, size, uploaded_at FROM files');
+          const stmt = this.db.prepare(
+            'SELECT path, filename, mime_type, size, uploaded_at FROM files'
+          );
           while (stmt.step()) {
             files.push(stmt.getAsObject());
           }
@@ -517,7 +508,7 @@ class FallbackStorage {
               mime_type: fileData.mime_type,
               size: fileData.size,
               uploaded_at: fileData.uploaded_at,
-              storage: 'localStorage'
+              storage: 'localStorage',
             });
           }
         }

@@ -21,5 +21,5 @@ export {
   getCommonRoutes,
   LoadingFallback,
   ScrollToTop,
-  FirebaseLoader
+  FirebaseLoader,
 };

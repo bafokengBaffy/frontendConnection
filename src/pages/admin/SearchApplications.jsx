@@ -6,7 +6,7 @@ const SearchApplications = () => {
   const currentDate = new Date().toLocaleDateString('en-US', {
     month: 'long',
     day: 'numeric',
-    year: 'numeric'
+    year: 'numeric',
   });
 
   return (
@@ -16,15 +16,13 @@ const SearchApplications = () => {
           <div className="d-flex justify-content-between align-items-center">
             <div>
               <h1 className="mb-1">Search Applications</h1>
-              <p className="text-muted">
-                {currentDate} | Admin View
-              </p>
+              <p className="text-muted">{currentDate} | Admin View</p>
             </div>
             <Button variant="primary">Refresh</Button>
           </div>
         </Col>
       </Row>
-      
+
       <Row>
         <Col lg={8}>
           <Card className="mb-4">
@@ -33,8 +31,8 @@ const SearchApplications = () => {
             </Card.Header>
             <Card.Body>
               <p>
-                Welcome to the Search Applications page. This is where Admin users can 
-                access and manage internship applications.
+                Welcome to the Search Applications page. This is where Admin users can access and
+                manage internship applications.
               </p>
               <ul>
                 <li>View detailed application information</li>
@@ -45,7 +43,7 @@ const SearchApplications = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col lg={4}>
           <Card className="mb-4">
             <Card.Header>
@@ -61,7 +59,7 @@ const SearchApplications = () => {
               </div>
             </Card.Body>
           </Card>
-          
+
           <Card>
             <Card.Header>
               <Card.Title as="h5">Recent Activity</Card.Title>

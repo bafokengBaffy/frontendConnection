@@ -10,7 +10,7 @@ const Mentorship = () => {
       company: 'Google',
       expertise: ['JavaScript', 'React', 'Cloud Computing'],
       availability: '2 slots this week',
-      match: 95
+      match: 95,
     },
     {
       id: 2,
@@ -19,7 +19,7 @@ const Mentorship = () => {
       company: 'Microsoft',
       expertise: ['Product Strategy', 'UX Design', 'Agile'],
       availability: '1 slot this week',
-      match: 88
+      match: 88,
     },
     {
       id: 3,
@@ -28,8 +28,8 @@ const Mentorship = () => {
       company: 'Tech Startup Lesotho',
       expertise: ['Startups', 'Funding', 'Business Strategy'],
       availability: 'Available now',
-      match: 82
-    }
+      match: 82,
+    },
   ];
 
   const sessions = [
@@ -39,7 +39,7 @@ const Mentorship = () => {
       date: '2024-01-18',
       time: '2:00 PM',
       topic: 'Career Path in Software Engineering',
-      status: 'scheduled'
+      status: 'scheduled',
     },
     {
       id: 2,
@@ -47,7 +47,7 @@ const Mentorship = () => {
       date: '2024-01-10',
       time: '11:00 AM',
       topic: 'Product Management Interview Prep',
-      status: 'completed'
+      status: 'completed',
     },
     {
       id: 3,
@@ -55,14 +55,14 @@ const Mentorship = () => {
       date: '2024-01-05',
       time: '3:00 PM',
       topic: 'Startup Funding Strategies',
-      status: 'completed'
-    }
+      status: 'completed',
+    },
   ];
 
   return (
     <Container className="py-4">
       <h2 className="mb-4">Mentorship Program</h2>
-      
+
       <Row className="mb-4">
         <Col md={4}>
           <Card className="shadow-sm text-center h-100">
@@ -73,7 +73,7 @@ const Mentorship = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col md={4}>
           <Card className="shadow-sm text-center h-100">
             <Card.Body>
@@ -83,7 +83,7 @@ const Mentorship = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col md={4}>
           <Card className="shadow-sm text-center h-100">
             <Card.Body>
@@ -94,7 +94,7 @@ const Mentorship = () => {
           </Card>
         </Col>
       </Row>
-      
+
       <Row className="mb-4">
         <Col md={8}>
           <Card className="shadow-sm h-100">
@@ -103,17 +103,17 @@ const Mentorship = () => {
                 <span>👥 Recommended Mentors</span>
                 <Badge bg="primary">{mentors.length} available</Badge>
               </Card.Title>
-              
+
               {mentors.map((mentor) => (
                 <Card key={mentor.id} className="mb-3 border">
                   <Card.Body>
                     <Row>
                       <Col md={3} className="text-center">
                         <div className="bg-primary-subtle p-3 rounded-circle d-inline-flex">
-                          <i className="bi bi-person text-primary" style={{fontSize: '2rem'}}></i>
+                          <i className="bi bi-person text-primary" style={{ fontSize: '2rem' }}></i>
                         </div>
                       </Col>
-                      
+
                       <Col md={6}>
                         <h5 className="mb-1">{mentor.name}</h5>
                         <p className="text-muted mb-2">
@@ -131,12 +131,10 @@ const Mentorship = () => {
                           {mentor.availability}
                         </p>
                       </Col>
-                      
+
                       <Col md={3} className="text-end">
                         <div className="mb-3">
-                          <Badge bg="success">
-                            {mentor.match}% Match
-                          </Badge>
+                          <Badge bg="success">{mentor.match}% Match</Badge>
                         </div>
                         <Button variant="primary" className="mb-2">
                           Request Session
@@ -152,12 +150,12 @@ const Mentorship = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col md={4}>
           <Card className="shadow-sm h-100">
             <Card.Body>
               <Card.Title>📅 Upcoming Sessions</Card.Title>
-              
+
               {sessions.map((session) => (
                 <div key={session.id} className="mb-3 pb-3 border-bottom">
                   <div className="d-flex justify-content-between align-items-start">
@@ -172,7 +170,7 @@ const Mentorship = () => {
                       {session.status}
                     </Badge>
                   </div>
-                  
+
                   {session.status === 'scheduled' && (
                     <div className="mt-2">
                       <Button variant="outline-primary" size="sm" className="me-2">
@@ -185,7 +183,7 @@ const Mentorship = () => {
                   )}
                 </div>
               ))}
-              
+
               <div className="mt-4">
                 <h6>Mentorship Progress</h6>
                 <div className="mb-2">
@@ -195,7 +193,7 @@ const Mentorship = () => {
                   </div>
                   <ProgressBar now={75} className="mb-3" />
                 </div>
-                
+
                 <div className="mb-2">
                   <div className="d-flex justify-content-between">
                     <small>Skill Development</small>
@@ -203,7 +201,7 @@ const Mentorship = () => {
                   </div>
                   <ProgressBar now={60} variant="success" className="mb-3" />
                 </div>
-                
+
                 <div className="mb-2">
                   <div className="d-flex justify-content-between">
                     <small>Network Building</small>
@@ -216,7 +214,7 @@ const Mentorship = () => {
           </Card>
         </Col>
       </Row>
-      
+
       <Card className="shadow-sm">
         <Card.Body>
           <Card.Title>🎯 Mentorship Goals</Card.Title>
@@ -231,7 +229,7 @@ const Mentorship = () => {
                 </ul>
               </div>
             </Col>
-            
+
             <Col md={4}>
               <div className="p-3 text-center">
                 <h4 className="text-success">Medium-term</h4>
@@ -242,7 +240,7 @@ const Mentorship = () => {
                 </ul>
               </div>
             </Col>
-            
+
             <Col md={4}>
               <div className="p-3 text-center">
                 <h4 className="text-warning">Long-term</h4>
@@ -254,7 +252,7 @@ const Mentorship = () => {
               </div>
             </Col>
           </Row>
-          
+
           <div className="text-center mt-4">
             <Button variant="primary" size="lg" className="me-3">
               <i className="bi bi-search me-2"></i>

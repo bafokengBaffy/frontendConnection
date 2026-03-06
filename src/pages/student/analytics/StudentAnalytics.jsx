@@ -5,7 +5,7 @@ const StudentAnalytics = () => {
   return (
     <Container className="py-4">
       <h2 className="mb-4">Student Analytics Dashboard</h2>
-      
+
       <Row className="mb-4">
         <Col md={3}>
           <Card className="shadow-sm">
@@ -16,7 +16,7 @@ const StudentAnalytics = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col md={3}>
           <Card className="shadow-sm">
             <Card.Body>
@@ -26,7 +26,7 @@ const StudentAnalytics = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col md={3}>
           <Card className="shadow-sm">
             <Card.Body>
@@ -36,7 +36,7 @@ const StudentAnalytics = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col md={3}>
           <Card className="shadow-sm">
             <Card.Body>
@@ -47,7 +47,7 @@ const StudentAnalytics = () => {
           </Card>
         </Col>
       </Row>
-      
+
       <Row>
         <Col md={8}>
           <Card className="shadow-sm mb-4">
@@ -60,7 +60,7 @@ const StudentAnalytics = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col md={4}>
           <Card className="shadow-sm">
             <Card.Body>
@@ -103,7 +103,7 @@ const StudentAnalytics = () => {
           </Card>
         </Col>
       </Row>
-      
+
       <Row>
         <Col md={12}>
           <Card className="shadow-sm">

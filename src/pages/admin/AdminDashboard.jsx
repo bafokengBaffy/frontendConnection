@@ -1,19 +1,37 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Card, Row, Col, Button, Spinner, Alert, Badge, 
-  ProgressBar, Table, Container 
+import {
+  Card,
+  Row,
+  Col,
+  Button,
+  Spinner,
+  Alert,
+  Badge,
+  ProgressBar,
+  Table,
+  Container,
 } from 'react-bootstrap';
 import { useAuth } from '../../context/AuthContext';
 import adminService from '../../services/adminService';
 import './AdminDashboard.css';
 
 // Icons
-import { 
-  FaUsers, FaBuilding, FaBriefcase, FaChartLine, 
-  FaUserCheck, FaUserClock, FaExclamationTriangle, FaArrowUp, 
-  FaArrowDown, FaSync, FaEye, FaCheckCircle, FaTimesCircle
+import {
+  FaUsers,
+  FaBuilding,
+  FaBriefcase,
+  FaChartLine,
+  FaUserCheck,
+  FaUserClock,
+  FaExclamationTriangle,
+  FaArrowUp,
+  FaArrowDown,
+  FaSync,
+  FaEye,
+  FaCheckCircle,
+  FaTimesCircle,
 } from 'react-icons/fa';
 
 const AdminDashboard = () => {
@@ -27,26 +45,26 @@ const AdminDashboard = () => {
     totalUsers: 0,
     activeJobs: 0,
     pendingApprovals: 0,
-    newRegistrations: 0
+    newRegistrations: 0,
   });
 
   const fetchDashboardData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       console.log('[AdminDashboard] Fetching dashboard data...');
-      
+
       const response = await adminService.getDashboardStats(currentUser, userProfile);
-      
+
       if (response.success) {
         setStats(response.data);
-        
+
         setQuickStats({
           totalUsers: response.data.userStats?.total || 0,
           activeJobs: response.data.summary?.activeJobs || 0,
           pendingApprovals: response.data.userStats?.pending || 0,
-          newRegistrations: response.data.recentRegistrations || 0
+          newRegistrations: response.data.recentRegistrations || 0,
         });
       } else {
         setError(response.error || 'Failed to load dashboard stats');
@@ -105,16 +123,20 @@ const AdminDashboard = () => {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   };
 
   const getStatusBadge = (status) => {
     switch (status) {
-      case 'active': return <Badge bg="success">Active</Badge>;
-      case 'pending': return <Badge bg="warning">Pending</Badge>;
-      case 'suspended': return <Badge bg="danger">Suspended</Badge>;
-      default: return <Badge bg="secondary">{status}</Badge>;
+      case 'active':
+        return <Badge bg="success">Active</Badge>;
+      case 'pending':
+        return <Badge bg="warning">Pending</Badge>;
+      case 'suspended':
+        return <Badge bg="danger">Suspended</Badge>;
+      default:
+        return <Badge bg="secondary">{status}</Badge>;
     }
   };
 
@@ -141,11 +163,7 @@ const AdminDashboard = () => {
               Welcome back, {userProfile?.displayName || 'Administrator'}
             </p>
           </div>
-          <Button 
-            variant="outline-primary" 
-            onClick={handleRefresh}
-            disabled={refreshing}
-          >
+          <Button variant="outline-primary" onClick={handleRefresh} disabled={refreshing}>
             <FaSync className={refreshing ? 'fa-spin' : ''} />
             <span className="ms-2">Refresh</span>
           </Button>
@@ -178,9 +196,9 @@ const AdminDashboard = () => {
                   <FaUsers />
                 </div>
               </div>
-              <Button 
-                variant="outline-primary" 
-                size="sm" 
+              <Button
+                variant="outline-primary"
+                size="sm"
                 className="mt-3 w-100"
                 onClick={handleViewAllUsers}
               >
@@ -206,9 +224,9 @@ const AdminDashboard = () => {
                   <FaBuilding />
                 </div>
               </div>
-              <Button 
-                variant="outline-info" 
-                size="sm" 
+              <Button
+                variant="outline-info"
+                size="sm"
                 className="mt-3 w-100"
                 onClick={handleViewAllCompanies}
               >
@@ -234,9 +252,9 @@ const AdminDashboard = () => {
                   <FaBriefcase />
                 </div>
               </div>
-              <Button 
-                variant="outline-warning" 
-                size="sm" 
+              <Button
+                variant="outline-warning"
+                size="sm"
                 className="mt-3 w-100"
                 onClick={handleViewAllJobs}
               >
@@ -263,9 +281,9 @@ const AdminDashboard = () => {
                   <FaUserClock />
                 </div>
               </div>
-              <Button 
-                variant="outline-danger" 
-                size="sm" 
+              <Button
+                variant="outline-danger"
+                size="sm"
                 className="mt-3 w-100"
                 onClick={handleViewAllPending}
               >
@@ -287,7 +305,9 @@ const AdminDashboard = () => {
                 <FaUserClock className="me-2 text-warning" />
                 Pending Approvals
               </h5>
-              <Badge bg="warning" pill>{stats?.pendingApprovals?.length || 0}</Badge>
+              <Badge bg="warning" pill>
+                {stats?.pendingApprovals?.length || 0}
+              </Badge>
             </Card.Header>
             <Card.Body>
               {stats?.pendingApprovals?.length > 0 ? (
@@ -320,16 +340,16 @@ const AdminDashboard = () => {
                           </td>
                           <td>
                             <div className="btn-group btn-group-sm">
-                              <Button 
-                                variant="outline-success" 
+                              <Button
+                                variant="outline-success"
                                 size="sm"
                                 onClick={() => handleApproveUser(user.id)}
                               >
                                 <FaCheckCircle className="me-1" />
                                 Approve
                               </Button>
-                              <Button 
-                                variant="outline-danger" 
+                              <Button
+                                variant="outline-danger"
                                 size="sm"
                                 onClick={() => navigate(`/admin/users/${user.id}`)}
                               >
@@ -350,10 +370,7 @@ const AdminDashboard = () => {
                 </Alert>
               )}
               <div className="text-center mt-3">
-                <Button 
-                  variant="outline-primary" 
-                  onClick={handleViewAllPending}
-                >
+                <Button variant="outline-primary" onClick={handleViewAllPending}>
                   View All Pending Approvals
                 </Button>
               </div>
@@ -377,9 +394,7 @@ const AdminDashboard = () => {
                         <FaChartLine className="text-primary" />
                       </div>
                       <div className="activity-content">
-                        <div className="activity-title">
-                          {activity.description || 'Activity'}
-                        </div>
+                        <div className="activity-title">{activity.description || 'Activity'}</div>
                         <div className="activity-meta">
                           <span className="text-muted">{formatDate(activity.timestamp)}</span>
                         </div>
@@ -410,17 +425,16 @@ const AdminDashboard = () => {
               {stats?.userStats?.byType && Object.keys(stats.userStats.byType).length > 0 ? (
                 <>
                   {Object.entries(stats.userStats.byType).map(([type, count]) => {
-                    const percentage = stats.userStats.total > 0 
-                      ? (count / stats.userStats.total) * 100 
-                      : 0;
+                    const percentage =
+                      stats.userStats.total > 0 ? (count / stats.userStats.total) * 100 : 0;
                     return (
                       <div key={type} className="user-type-item mb-3">
                         <div className="d-flex justify-content-between mb-1">
                           <span className="text-capitalize">{type}</span>
                           <span className="fw-bold">{count}</span>
                         </div>
-                        <ProgressBar 
-                          now={percentage} 
+                        <ProgressBar
+                          now={percentage}
                           variant="primary"
                           className="user-progress"
                           label={`${Math.round(percentage)}%`}
@@ -429,9 +443,7 @@ const AdminDashboard = () => {
                     );
                   })}
                   <div className="text-center mt-3">
-                    <small className="text-muted">
-                      Total Users: {stats.userStats.total}
-                    </small>
+                    <small className="text-muted">Total Users: {stats.userStats.total}</small>
                   </div>
                 </>
               ) : (
@@ -452,44 +464,44 @@ const AdminDashboard = () => {
             </Card.Header>
             <Card.Body>
               <div className="quick-actions-grid">
-                <Button 
-                  variant="outline-primary" 
+                <Button
+                  variant="outline-primary"
                   className="action-btn"
                   onClick={() => navigate('/admin/users')}
                 >
                   <FaUsers className="me-2" />
                   Manage Users
                 </Button>
-                
-                <Button 
-                  variant="outline-info" 
+
+                <Button
+                  variant="outline-info"
                   className="action-btn"
                   onClick={() => navigate('/admin/companies')}
                 >
                   <FaBuilding className="me-2" />
                   Manage Companies
                 </Button>
-                
-                <Button 
-                  variant="outline-warning" 
+
+                <Button
+                  variant="outline-warning"
                   className="action-btn"
                   onClick={() => navigate('/admin/jobs')}
                 >
                   <FaBriefcase className="me-2" />
                   Review Jobs
                 </Button>
-                
-                <Button 
-                  variant="outline-danger" 
+
+                <Button
+                  variant="outline-danger"
                   className="action-btn"
                   onClick={() => navigate('/admin/pending-approvals')}
                 >
                   <FaUserClock className="me-2" />
                   Pending Approvals
                 </Button>
-                
-                <Button 
-                  variant="outline-success" 
+
+                <Button
+                  variant="outline-success"
                   className="action-btn"
                   onClick={() => navigate('/admin/settings')}
                 >

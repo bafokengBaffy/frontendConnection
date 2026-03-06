@@ -17,7 +17,7 @@ import {
   Alert,
   Modal,
   ProgressBar,
-  Dropdown
+  Dropdown,
 } from 'react-bootstrap';
 import {
   Search,
@@ -34,7 +34,7 @@ import {
   Phone,
   CheckCircle,
   XCircle,
-  Clock
+  Clock,
 } from 'react-bootstrap-icons';
 import { db } from '../../config/firebase';
 import { collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
@@ -50,7 +50,7 @@ const CompanyCandidates = () => {
     status: '',
     job: '',
     rating: '',
-    dateApplied: ''
+    dateApplied: '',
   });
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
@@ -63,7 +63,7 @@ const CompanyCandidates = () => {
   const formattedDate = currentDate.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
   });
 
   // Fetch candidates from Firestore
@@ -86,7 +86,7 @@ const CompanyCandidates = () => {
           phone: '+266 1234 5678',
           lastContact: '2024-01-12',
           interviewDate: '2024-01-20',
-          notes: 'Strong portfolio, good communication skills'
+          notes: 'Strong portfolio, good communication skills',
         },
         {
           id: '2',
@@ -102,7 +102,7 @@ const CompanyCandidates = () => {
           phone: '+266 2345 6789',
           lastContact: '2024-01-15',
           interviewDate: '2024-01-18',
-          notes: 'Excellent technical skills, passed coding test'
+          notes: 'Excellent technical skills, passed coding test',
         },
         {
           id: '3',
@@ -118,7 +118,7 @@ const CompanyCandidates = () => {
           phone: '+266 3456 7890',
           lastContact: null,
           interviewDate: null,
-          notes: 'Creative portfolio, needs more experience'
+          notes: 'Creative portfolio, needs more experience',
         },
         {
           id: '4',
@@ -134,7 +134,7 @@ const CompanyCandidates = () => {
           phone: '+266 4567 8901',
           lastContact: '2024-01-09',
           interviewDate: null,
-          notes: 'Lacked specific industry experience'
+          notes: 'Lacked specific industry experience',
         },
         {
           id: '5',
@@ -150,7 +150,7 @@ const CompanyCandidates = () => {
           phone: '+266 5678 9012',
           lastContact: '2024-01-03',
           interviewDate: '2023-12-28',
-          notes: 'Excellent leadership skills, hired for senior position'
+          notes: 'Excellent leadership skills, hired for senior position',
         },
         {
           id: '6',
@@ -166,7 +166,7 @@ const CompanyCandidates = () => {
           phone: '+266 6789 0123',
           lastContact: '2024-01-16',
           interviewDate: '2024-01-19',
-          notes: 'Creative campaign ideas, good cultural fit'
+          notes: 'Creative campaign ideas, good cultural fit',
         },
         {
           id: '7',
@@ -182,7 +182,7 @@ const CompanyCandidates = () => {
           phone: '+266 7890 1234',
           lastContact: '2024-01-13',
           interviewDate: '2024-01-22',
-          notes: 'Strong infrastructure skills, recommended by team'
+          notes: 'Strong infrastructure skills, recommended by team',
         },
         {
           id: '8',
@@ -198,7 +198,7 @@ const CompanyCandidates = () => {
           phone: '+266 8901 2345',
           lastContact: null,
           interviewDate: null,
-          notes: 'Good academic background, needs practical experience'
+          notes: 'Good academic background, needs practical experience',
         },
         {
           id: '9',
@@ -214,7 +214,7 @@ const CompanyCandidates = () => {
           phone: '+266 9012 3456',
           lastContact: '2024-01-14',
           interviewDate: '2024-01-17',
-          notes: 'Impressive sales record, strong communicator'
+          notes: 'Impressive sales record, strong communicator',
         },
         {
           id: '10',
@@ -230,8 +230,8 @@ const CompanyCandidates = () => {
           phone: '+266 0123 4567',
           lastContact: '2024-01-14',
           interviewDate: '2024-01-21',
-          notes: 'Strong analytical skills, good attention to detail'
-        }
+          notes: 'Strong analytical skills, good attention to detail',
+        },
       ];
 
       setCandidates(sampleCandidates);
@@ -252,54 +252,55 @@ const CompanyCandidates = () => {
   // Apply filters and search
   useEffect(() => {
     let result = [...candidates];
-    
+
     // Apply search term
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      result = result.filter(candidate => 
-        candidate.name.toLowerCase().includes(term) ||
-        candidate.email.toLowerCase().includes(term) ||
-        candidate.jobTitle.toLowerCase().includes(term) ||
-        candidate.skills.some(skill => skill.toLowerCase().includes(term))
+      result = result.filter(
+        (candidate) =>
+          candidate.name.toLowerCase().includes(term) ||
+          candidate.email.toLowerCase().includes(term) ||
+          candidate.jobTitle.toLowerCase().includes(term) ||
+          candidate.skills.some((skill) => skill.toLowerCase().includes(term))
       );
     }
-    
+
     // Apply filters
     if (filters.status) {
-      result = result.filter(candidate => candidate.status === filters.status);
+      result = result.filter((candidate) => candidate.status === filters.status);
     }
-    
+
     if (filters.job) {
-      result = result.filter(candidate => candidate.jobTitle === filters.job);
+      result = result.filter((candidate) => candidate.jobTitle === filters.job);
     }
-    
+
     if (filters.rating) {
       const rating = parseInt(filters.rating);
-      result = result.filter(candidate => candidate.rating >= rating);
+      result = result.filter((candidate) => candidate.rating >= rating);
     }
-    
+
     if (filters.dateApplied) {
       const days = parseInt(filters.dateApplied);
       const cutoffDate = new Date();
       cutoffDate.setDate(cutoffDate.getDate() - days);
-      result = result.filter(candidate => {
+      result = result.filter((candidate) => {
         const appliedDate = new Date(candidate.dateApplied);
         return appliedDate >= cutoffDate;
       });
     }
-    
+
     setFilteredCandidates(result);
     setCurrentPage(1);
   }, [searchTerm, filters, candidates]);
 
   // Get unique values for filter dropdowns
   const statuses = useMemo(() => {
-    const uniqueStatuses = [...new Set(candidates.map(c => c.status))];
+    const uniqueStatuses = [...new Set(candidates.map((c) => c.status))];
     return uniqueStatuses.sort();
   }, [candidates]);
 
   const jobTitles = useMemo(() => {
-    const uniqueJobs = [...new Set(candidates.map(c => c.jobTitle))];
+    const uniqueJobs = [...new Set(candidates.map((c) => c.jobTitle))];
     return uniqueJobs.sort();
   }, [candidates]);
 
@@ -315,9 +316,9 @@ const CompanyCandidates = () => {
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -327,7 +328,7 @@ const CompanyCandidates = () => {
       status: '',
       job: '',
       rating: '',
-      dateApplied: ''
+      dateApplied: '',
     });
   };
 
@@ -342,12 +343,16 @@ const CompanyCandidates = () => {
   };
 
   const updateStatus = (candidateId, newStatus) => {
-    setCandidates(prev => prev.map(candidate => 
-      candidate.id === candidateId ? { ...candidate, status: newStatus } : candidate
-    ));
-    setFilteredCandidates(prev => prev.map(candidate => 
-      candidate.id === candidateId ? { ...candidate, status: newStatus } : candidate
-    ));
+    setCandidates((prev) =>
+      prev.map((candidate) =>
+        candidate.id === candidateId ? { ...candidate, status: newStatus } : candidate
+      )
+    );
+    setFilteredCandidates((prev) =>
+      prev.map((candidate) =>
+        candidate.id === candidateId ? { ...candidate, status: newStatus } : candidate
+      )
+    );
   };
 
   const sendMessage = (candidateId) => {
@@ -362,23 +367,35 @@ const CompanyCandidates = () => {
 
   const getStatusBadge = (status) => {
     switch (status) {
-      case 'new': return <Badge bg="primary">New</Badge>;
-      case 'shortlisted': return <Badge bg="info">Shortlisted</Badge>;
-      case 'interviewed': return <Badge bg="warning">Interviewed</Badge>;
-      case 'hired': return <Badge bg="success">Hired</Badge>;
-      case 'rejected': return <Badge bg="danger">Rejected</Badge>;
-      default: return <Badge bg="secondary">{status}</Badge>;
+      case 'new':
+        return <Badge bg="primary">New</Badge>;
+      case 'shortlisted':
+        return <Badge bg="info">Shortlisted</Badge>;
+      case 'interviewed':
+        return <Badge bg="warning">Interviewed</Badge>;
+      case 'hired':
+        return <Badge bg="success">Hired</Badge>;
+      case 'rejected':
+        return <Badge bg="danger">Rejected</Badge>;
+      default:
+        return <Badge bg="secondary">{status}</Badge>;
     }
   };
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'new': return <Clock className="me-1" />;
-      case 'shortlisted': return <Star className="me-1" />;
-      case 'interviewed': return <Calendar className="me-1" />;
-      case 'hired': return <CheckCircle className="me-1" />;
-      case 'rejected': return <XCircle className="me-1" />;
-      default: return null;
+      case 'new':
+        return <Clock className="me-1" />;
+      case 'shortlisted':
+        return <Star className="me-1" />;
+      case 'interviewed':
+        return <Calendar className="me-1" />;
+      case 'hired':
+        return <CheckCircle className="me-1" />;
+      case 'rejected':
+        return <XCircle className="me-1" />;
+      default:
+        return null;
     }
   };
 
@@ -386,11 +403,11 @@ const CompanyCandidates = () => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
       stars.push(
-        <Star 
-          key={i} 
-          size={14} 
-          className={i <= rating ? "text-warning" : "text-muted"}
-          fill={i <= rating ? "currentColor" : "none"}
+        <Star
+          key={i}
+          size={14}
+          className={i <= rating ? 'text-warning' : 'text-muted'}
+          fill={i <= rating ? 'currentColor' : 'none'}
         />
       );
     }
@@ -404,9 +421,7 @@ const CompanyCandidates = () => {
           <div className="d-flex justify-content-between align-items-center">
             <div>
               <h1 className="mb-1">Candidates Management</h1>
-              <p className="text-muted">
-                {formattedDate} | Company View
-              </p>
+              <p className="text-muted">{formattedDate} | Company View</p>
             </div>
             <div>
               <Button variant="outline-secondary" onClick={clearFilters} className="me-2">
@@ -436,21 +451,21 @@ const CompanyCandidates = () => {
                 <Col md={3} className="text-center">
                   <div className="p-3">
                     <Star size={32} className="text-warning mb-2" />
-                    <h3>{candidates.filter(c => c.status === 'new').length}</h3>
+                    <h3>{candidates.filter((c) => c.status === 'new').length}</h3>
                     <p className="text-muted mb-0">New Applications</p>
                   </div>
                 </Col>
                 <Col md={3} className="text-center">
                   <div className="p-3">
                     <Calendar size={32} className="text-info mb-2" />
-                    <h3>{candidates.filter(c => c.status === 'interviewed').length}</h3>
+                    <h3>{candidates.filter((c) => c.status === 'interviewed').length}</h3>
                     <p className="text-muted mb-0">Interviewed</p>
                   </div>
                 </Col>
                 <Col md={3} className="text-center">
                   <div className="p-3">
                     <CheckCircle size={32} className="text-success mb-2" />
-                    <h3>{candidates.filter(c => c.status === 'hired').length}</h3>
+                    <h3>{candidates.filter((c) => c.status === 'hired').length}</h3>
                     <p className="text-muted mb-0">Hired</p>
                   </div>
                 </Col>
@@ -474,9 +489,7 @@ const CompanyCandidates = () => {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
-                <Button variant="primary">
-                  Search Candidates
-                </Button>
+                <Button variant="primary">Search Candidates</Button>
               </InputGroup>
             </Card.Body>
           </Card>
@@ -495,14 +508,12 @@ const CompanyCandidates = () => {
                 <Col md={3}>
                   <Form.Group>
                     <Form.Label>Status</Form.Label>
-                    <Form.Select
-                      name="status"
-                      value={filters.status}
-                      onChange={handleFilterChange}
-                    >
+                    <Form.Select name="status" value={filters.status} onChange={handleFilterChange}>
                       <option value="">All Statuses</option>
-                      {statuses.map(status => (
-                        <option key={status} value={status}>{status.charAt(0).toUpperCase() + status.slice(1)}</option>
+                      {statuses.map((status) => (
+                        <option key={status} value={status}>
+                          {status.charAt(0).toUpperCase() + status.slice(1)}
+                        </option>
                       ))}
                     </Form.Select>
                   </Form.Group>
@@ -510,14 +521,12 @@ const CompanyCandidates = () => {
                 <Col md={3}>
                   <Form.Group>
                     <Form.Label>Job Title</Form.Label>
-                    <Form.Select
-                      name="job"
-                      value={filters.job}
-                      onChange={handleFilterChange}
-                    >
+                    <Form.Select name="job" value={filters.job} onChange={handleFilterChange}>
                       <option value="">All Jobs</option>
-                      {jobTitles.map(job => (
-                        <option key={job} value={job}>{job}</option>
+                      {jobTitles.map((job) => (
+                        <option key={job} value={job}>
+                          {job}
+                        </option>
                       ))}
                     </Form.Select>
                   </Form.Group>
@@ -525,11 +534,7 @@ const CompanyCandidates = () => {
                 <Col md={3}>
                   <Form.Group>
                     <Form.Label>Minimum Rating</Form.Label>
-                    <Form.Select
-                      name="rating"
-                      value={filters.rating}
-                      onChange={handleFilterChange}
-                    >
+                    <Form.Select name="rating" value={filters.rating} onChange={handleFilterChange}>
                       <option value="">Any Rating</option>
                       <option value="5">5 Stars</option>
                       <option value="4">4+ Stars</option>
@@ -598,13 +603,15 @@ const CompanyCandidates = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {currentCandidates.map(candidate => (
+                      {currentCandidates.map((candidate) => (
                         <tr key={candidate.id}>
                           <td>
                             <div className="d-flex align-items-center">
                               <div className="candidate-avatar me-3">
-                                <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
-                                  style={{ width: '40px', height: '40px' }}>
+                                <div
+                                  className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                                  style={{ width: '40px', height: '40px' }}
+                                >
                                   <Person size={20} />
                                 </div>
                               </div>
@@ -620,18 +627,14 @@ const CompanyCandidates = () => {
                               {candidate.jobTitle}
                             </div>
                           </td>
-                          <td>
-                            {getStatusBadge(candidate.status)}
-                          </td>
+                          <td>{getStatusBadge(candidate.status)}</td>
                           <td>
                             <div className="d-flex align-items-center">
                               {renderStars(candidate.rating)}
                               <span className="ms-2 small">{candidate.rating}/5</span>
                             </div>
                           </td>
-                          <td>
-                            {candidate.experience}
-                          </td>
+                          <td>{candidate.experience}</td>
                           <td>
                             <div className="d-flex flex-wrap gap-1">
                               {candidate.skills.slice(0, 3).map((skill, index) => (
@@ -651,7 +654,11 @@ const CompanyCandidates = () => {
                           </td>
                           <td>
                             <Dropdown>
-                              <Dropdown.Toggle variant="outline-primary" size="sm" id={`dropdown-${candidate.id}`}>
+                              <Dropdown.Toggle
+                                variant="outline-primary"
+                                size="sm"
+                                id={`dropdown-${candidate.id}`}
+                              >
                                 Actions
                               </Dropdown.Toggle>
                               <Dropdown.Menu>
@@ -661,24 +668,30 @@ const CompanyCandidates = () => {
                                 <Dropdown.Item onClick={() => scheduleInterview(candidate)}>
                                   <Calendar className="me-2" /> Schedule Interview
                                 </Dropdown.Item>
-                                <Dropdown.Item onClick={() => sendMessage(candidate.id)}>
-                             
-                                </Dropdown.Item>
+                                <Dropdown.Item
+                                  onClick={() => sendMessage(candidate.id)}
+                                ></Dropdown.Item>
                                 <Dropdown.Item onClick={() => downloadResume(candidate.id)}>
                                   <Download className="me-2" /> Download Resume
                                 </Dropdown.Item>
                                 <Dropdown.Divider />
                                 <Dropdown.Header>Update Status</Dropdown.Header>
-                                <Dropdown.Item onClick={() => updateStatus(candidate.id, 'shortlisted')}>
+                                <Dropdown.Item
+                                  onClick={() => updateStatus(candidate.id, 'shortlisted')}
+                                >
                                   <Star className="me-2" /> Shortlist
                                 </Dropdown.Item>
-                                <Dropdown.Item onClick={() => updateStatus(candidate.id, 'interviewed')}>
+                                <Dropdown.Item
+                                  onClick={() => updateStatus(candidate.id, 'interviewed')}
+                                >
                                   <Calendar className="me-2" /> Mark as Interviewed
                                 </Dropdown.Item>
                                 <Dropdown.Item onClick={() => updateStatus(candidate.id, 'hired')}>
                                   <CheckCircle className="me-2" /> Hire
                                 </Dropdown.Item>
-                                <Dropdown.Item onClick={() => updateStatus(candidate.id, 'rejected')}>
+                                <Dropdown.Item
+                                  onClick={() => updateStatus(candidate.id, 'rejected')}
+                                >
                                   <XCircle className="me-2" /> Reject
                                 </Dropdown.Item>
                               </Dropdown.Menu>
@@ -693,15 +706,15 @@ const CompanyCandidates = () => {
                   {totalPages > 1 && (
                     <div className="d-flex justify-content-center mt-4">
                       <Pagination>
-                        <Pagination.First 
-                          onClick={() => handlePageChange(1)} 
+                        <Pagination.First
+                          onClick={() => handlePageChange(1)}
                           disabled={currentPage === 1}
                         />
-                        <Pagination.Prev 
-                          onClick={() => handlePageChange(currentPage - 1)} 
+                        <Pagination.Prev
+                          onClick={() => handlePageChange(currentPage - 1)}
                           disabled={currentPage === 1}
                         />
-                        
+
                         {[...Array(totalPages)].map((_, index) => {
                           const pageNumber = index + 1;
                           if (
@@ -726,13 +739,13 @@ const CompanyCandidates = () => {
                           }
                           return null;
                         })}
-                        
-                        <Pagination.Next 
-                          onClick={() => handlePageChange(currentPage + 1)} 
+
+                        <Pagination.Next
+                          onClick={() => handlePageChange(currentPage + 1)}
                           disabled={currentPage === totalPages}
                         />
-                        <Pagination.Last 
-                          onClick={() => handlePageChange(totalPages)} 
+                        <Pagination.Last
+                          onClick={() => handlePageChange(totalPages)}
                           disabled={currentPage === totalPages}
                         />
                       </Pagination>
@@ -755,25 +768,23 @@ const CompanyCandidates = () => {
             <Row>
               <Col md={4} className="text-center">
                 <div className="candidate-photo mb-3">
-                  <div className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto"
-                    style={{ width: '120px', height: '120px' }}>
+                  <div
+                    className="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto"
+                    style={{ width: '120px', height: '120px' }}
+                  >
                     <Person size={48} />
                   </div>
                 </div>
                 <h4>{selectedCandidate.name}</h4>
                 <p className="text-muted">{selectedCandidate.email}</p>
-                <div className="mb-3">
-                  {getStatusBadge(selectedCandidate.status)}
-                </div>
+                <div className="mb-3">{getStatusBadge(selectedCandidate.status)}</div>
                 <div className="mb-3">
                   <div className="d-flex justify-content-center mb-2">
                     {renderStars(selectedCandidate.rating)}
                   </div>
                   <small className="text-muted">Candidate Rating</small>
                 </div>
-                <Button variant="primary" className="me-2 mb-2">
-             
-                </Button>
+                <Button variant="primary" className="me-2 mb-2"></Button>
                 <Button variant="outline-primary" className="mb-2">
                   <Phone className="me-1" /> Call
                 </Button>
@@ -798,16 +809,17 @@ const CompanyCandidates = () => {
                 </Row>
                 <Row className="mb-3">
                   <Col>
-                    <strong>Applied:</strong> {new Date(selectedCandidate.dateApplied).toLocaleDateString()}
+                    <strong>Applied:</strong>{' '}
+                    {new Date(selectedCandidate.dateApplied).toLocaleDateString()}
                   </Col>
                   <Col>
-                    <strong>Last Contact:</strong> 
-                    {selectedCandidate.lastContact 
+                    <strong>Last Contact:</strong>
+                    {selectedCandidate.lastContact
                       ? new Date(selectedCandidate.lastContact).toLocaleDateString()
                       : ' Not contacted'}
                   </Col>
                 </Row>
-                
+
                 <h5 className="mt-4">Skills</h5>
                 <div className="mb-4">
                   <div className="d-flex flex-wrap gap-2">
@@ -818,16 +830,17 @@ const CompanyCandidates = () => {
                     ))}
                   </div>
                 </div>
-                
+
                 <h5>Notes</h5>
                 <p className="text-muted">{selectedCandidate.notes}</p>
-                
+
                 {selectedCandidate.interviewDate && (
                   <>
                     <h5 className="mt-4">Interview Schedule</h5>
                     <Alert variant="info">
                       <Calendar className="me-2" />
-                      Interview scheduled for: {new Date(selectedCandidate.interviewDate).toLocaleDateString()}
+                      Interview scheduled for:{' '}
+                      {new Date(selectedCandidate.interviewDate).toLocaleDateString()}
                     </Alert>
                   </>
                 )}
@@ -856,19 +869,22 @@ const CompanyCandidates = () => {
         <Modal.Body>
           {selectedCandidate && (
             <div>
-              <p>Schedule an interview with <strong>{selectedCandidate.name}</strong> for the position of <strong>{selectedCandidate.jobTitle}</strong>.</p>
-              
+              <p>
+                Schedule an interview with <strong>{selectedCandidate.name}</strong> for the
+                position of <strong>{selectedCandidate.jobTitle}</strong>.
+              </p>
+
               <Form>
                 <Form.Group className="mb-3">
                   <Form.Label>Interview Date</Form.Label>
                   <Form.Control type="date" />
                 </Form.Group>
-                
+
                 <Form.Group className="mb-3">
                   <Form.Label>Interview Time</Form.Label>
                   <Form.Control type="time" />
                 </Form.Group>
-                
+
                 <Form.Group className="mb-3">
                   <Form.Label>Interview Type</Form.Label>
                   <Form.Select>
@@ -877,15 +893,19 @@ const CompanyCandidates = () => {
                     <option value="in-person">In-person Interview</option>
                   </Form.Select>
                 </Form.Group>
-                
+
                 <Form.Group className="mb-3">
                   <Form.Label>Interviewers</Form.Label>
                   <Form.Control type="text" placeholder="Enter interviewer names" />
                 </Form.Group>
-                
+
                 <Form.Group className="mb-3">
                   <Form.Label>Additional Notes</Form.Label>
-                  <Form.Control as="textarea" rows={3} placeholder="Any specific topics to cover..." />
+                  <Form.Control
+                    as="textarea"
+                    rows={3}
+                    placeholder="Any specific topics to cover..."
+                  />
                 </Form.Group>
               </Form>
             </div>
@@ -895,10 +915,13 @@ const CompanyCandidates = () => {
           <Button variant="secondary" onClick={() => setShowInterviewModal(false)}>
             Cancel
           </Button>
-          <Button variant="primary" onClick={() => {
-            console.log('Interview scheduled for:', selectedCandidate?.name);
-            setShowInterviewModal(false);
-          }}>
+          <Button
+            variant="primary"
+            onClick={() => {
+              console.log('Interview scheduled for:', selectedCandidate?.name);
+              setShowInterviewModal(false);
+            }}
+          >
             Schedule Interview
           </Button>
         </Modal.Footer>

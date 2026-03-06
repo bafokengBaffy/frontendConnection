@@ -1,11 +1,5 @@
 // src/services/realtimeService.js
-import { 
-  onSnapshot,
-  query,
-  collection,
-  where,
-  orderBy,
-  doc} from 'firebase/firestore';
+import { onSnapshot, query, collection, where, orderBy, doc } from 'firebase/firestore';
 import { auth, db } from '../config/firebase';
 
 export const realtimeService = {
@@ -30,16 +24,16 @@ export const realtimeService = {
         (snapshot) => {
           const updates = snapshot.docChanges();
           console.log('Realtime updates received:', updates.length);
-          
+
           if (updates.length > 0) {
             const newApplications = updates
-              .filter(change => change.type === 'added' && change.doc.data().status === 'applied')
-              .map(change => ({
+              .filter((change) => change.type === 'added' && change.doc.data().status === 'applied')
+              .map((change) => ({
                 id: change.doc.id,
                 ...change.doc.data(),
-                appliedAt: change.doc.data().appliedAt?.toDate() || new Date()
+                appliedAt: change.doc.data().appliedAt?.toDate() || new Date(),
               }));
-            
+
             if (newApplications.length > 0) {
               console.log('New applications detected:', newApplications.length);
               callback(newApplications);
@@ -84,15 +78,15 @@ export const realtimeService = {
         (snapshot) => {
           const updates = snapshot.docChanges();
           console.log('Job updates received:', updates.length);
-          
+
           if (updates.length > 0) {
-            const updatedJobs = updates.map(change => ({
+            const updatedJobs = updates.map((change) => ({
               type: change.type,
               id: change.doc.id,
               data: change.doc.data(),
-              createdAt: change.doc.data().createdAt?.toDate() || new Date()
+              createdAt: change.doc.data().createdAt?.toDate() || new Date(),
             }));
-            
+
             callback(updatedJobs);
           }
         },
@@ -118,7 +112,7 @@ export const realtimeService = {
 
     try {
       const companyRef = doc(db, 'companies', user.uid);
-      
+
       const unsubscribe = onSnapshot(
         companyRef,
         (docSnapshot) => {
@@ -138,7 +132,7 @@ export const realtimeService = {
       console.error('Error setting up profile view updates:', error);
       return () => {};
     }
-  }
+  },
 };
 
 // Utility function for safe date conversion
@@ -161,7 +155,7 @@ export const setupSSEConnection = (companyId) => {
   if (typeof EventSource !== 'undefined') {
     try {
       const eventSource = new EventSource(`/api/company/${companyId}/updates`);
-      
+
       eventSource.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
@@ -175,14 +169,14 @@ export const setupSSEConnection = (companyId) => {
           console.error('Error parsing SSE data:', error);
         }
       };
-      
+
       eventSource.onerror = (error) => {
         console.error('SSE connection error:', error);
         eventSource.close();
         // Attempt reconnection after delay
         setTimeout(() => setupSSEConnection(companyId), 5000);
       };
-      
+
       return () => eventSource.close();
     } catch (error) {
       console.error('Error setting up SSE:', error);
@@ -194,7 +188,7 @@ export const setupSSEConnection = (companyId) => {
 // Polling fallback for environments without realtime support
 export const startPolling = (callback, interval = 30000) => {
   let pollingInterval;
-  
+
   const poll = async () => {
     try {
       const updates = await checkForUpdates();
@@ -205,12 +199,12 @@ export const startPolling = (callback, interval = 30000) => {
       console.error('Polling error:', error);
     }
   };
-  
+
   pollingInterval = setInterval(poll, interval);
-  
+
   // Initial poll
   poll();
-  
+
   return () => {
     if (pollingInterval) {
       clearInterval(pollingInterval);
@@ -223,7 +217,7 @@ const checkForUpdates = async () => {
   try {
     const user = auth.currentUser;
     if (!user) return [];
-    
+
     // This would be replaced with actual API call to your backend
     const response = await fetch(`/api/company/${user.uid}/updates`);
     if (response.ok) {

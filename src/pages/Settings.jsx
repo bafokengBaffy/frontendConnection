@@ -11,14 +11,19 @@ const Settings = () => {
             <div>
               <h1 className="mb-1">Settings</h1>
               <p className="text-muted">
-                {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: '2-digit' })} | All View
+                {new Date().toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: '2-digit',
+                })}{' '}
+                | All View
               </p>
             </div>
             <Button variant="primary">Refresh</Button>
           </div>
         </Col>
       </Row>
-      
+
       <Row>
         <Col lg={8}>
           <Card className="mb-4">
@@ -27,8 +32,8 @@ const Settings = () => {
             </Card.Header>
             <Card.Body>
               <p>
-                Welcome to the Settings page. This is where All users can 
-                access and manage their Settings-related content.
+                Welcome to the Settings page. This is where All users can access and manage their
+                Settings-related content.
               </p>
               <ul>
                 <li>View detailed information</li>
@@ -39,7 +44,7 @@ const Settings = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col lg={4}>
           <Card className="mb-4">
             <Card.Header>
@@ -55,7 +60,7 @@ const Settings = () => {
               </div>
             </Card.Body>
           </Card>
-          
+
           <Card>
             <Card.Header>
               <Card.Title as="h5">Recent Activity</Card.Title>

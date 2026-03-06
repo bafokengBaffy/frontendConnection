@@ -1,0 +1,110 @@
+name: Performance Monitoring
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 */6 * * *'  # Every 6 hours
+
+jobs:
+  lighthouse:
+    name: Lighthouse Performance
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+      
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci --legacy-peer-deps
+      
+      - name: Build application
+        run: |
+          cd frontend
+          npm run build
+      
+      - name: Run Lighthouse CI
+        run: |
+          cd frontend
+          npm install -g @lhci/cli@0.11.x
+          lhci autorun --upload.target=temporary-public-storage || echo "LHCI failed!"
+      
+      - name: Upload Lighthouse results
+        uses: actions/upload-artifact@v3
+        with:
+          name: lighthouse-results
+          path: frontend/.lighthouseci/
+          retention-days: 30
+
+  bundle-size:
+    name: Bundle Size Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+      
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci --legacy-peer-deps
+      
+      - name: Build application
+        run: |
+          cd frontend
+          npm run build
+      
+      - name: Analyze bundle size
+        run: |
+          cd frontend
+          npx source-map-explorer dist/assets/*.js --html bundle-analysis.html
+      
+      - name: Upload bundle analysis
+        uses: actions/upload-artifact@v3
+        with:
+          name: bundle-analysis
+          path: frontend/bundle-analysis.html
+      
+      - name: Check bundle size
+        run: |
+          cd frontend
+          TOTAL_SIZE=$(du -sb dist | cut -f1)
+          MAX_SIZE=5000000 # 5MB
+          if [ $TOTAL_SIZE -gt $MAX_SIZE ]; then
+            echo "Bundle size $TOTAL_SIZE exceeds limit $MAX_SIZE"
+            exit 1
+          fi
+
+  web-vitals:
+    name: Core Web Vitals
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Run Web Vitals extraction
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.GOOGLE_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{"origin": "https://career-connect-lesotho.web.app"}' \
+            "https://chromeuxreport.googleapis.com/v1/records:queryRecord?key=${{ secrets.GOOGLE_API_KEY }}" \
+            > web-vitals.json
+      
+      - name: Upload Web Vitals
+        uses: actions/upload-artifact@v3
+        with:
+          name: web-vitals
+          path: web-vitals.json

@@ -1,7 +1,30 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Form, Button, ProgressBar, Badge, Spinner, Alert, Tabs, Tab } from 'react-bootstrap';
-import { FaRobot, FaUserCheck, FaChartLine, FaFilter, FaSync, FaStar, FaGraduationCap, FaBriefcase, FaLightbulb } from 'react-icons/fa';
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Form,
+  Button,
+  ProgressBar,
+  Badge,
+  Spinner,
+  Alert,
+  Tabs,
+  Tab,
+} from 'react-bootstrap';
+import {
+  FaRobot,
+  FaUserCheck,
+  FaChartLine,
+  FaFilter,
+  FaSync,
+  FaStar,
+  FaGraduationCap,
+  FaBriefcase,
+  FaLightbulb,
+} from 'react-icons/fa';
 import './AIMatching.css';
 
 const AIMatching = () => {
@@ -11,7 +34,7 @@ const AIMatching = () => {
     department: '',
     experience: '',
     location: '',
-    remote: false
+    remote: false,
   });
   const [aiInsights, setAiInsights] = useState(null);
 
@@ -26,7 +49,16 @@ const AIMatching = () => {
         id: i + 1,
         name: `Candidate ${i + 1}`,
         matchScore: Math.floor(Math.random() * 30) + 70,
-        skills: ['React', 'JavaScript', 'Node.js', 'Python', 'AWS', 'Docker', 'TypeScript', 'MongoDB'].slice(0, Math.floor(Math.random() * 5) + 3),
+        skills: [
+          'React',
+          'JavaScript',
+          'Node.js',
+          'Python',
+          'AWS',
+          'Docker',
+          'TypeScript',
+          'MongoDB',
+        ].slice(0, Math.floor(Math.random() * 5) + 3),
         experience: `${Math.floor(Math.random() * 10) + 1} years`,
         location: ['Maseru', 'Remote', 'South Africa', 'International'][i % 4],
         education: ['BSc Computer Science', 'MSc Data Science', 'Diploma IT', 'Self-Taught'][i % 4],
@@ -36,19 +68,19 @@ const AIMatching = () => {
           'Strong React experience with modern hooks',
           'Excellent problem-solving skills',
           'Good cultural fit based on personality assessment',
-          'Previous experience in similar industries'
+          'Previous experience in similar industries',
         ][i % 4],
         strengths: [
           { skill: 'React', score: 95 },
           { skill: 'JavaScript', score: 92 },
-          { skill: 'Problem Solving', score: 88 }
+          { skill: 'Problem Solving', score: 88 },
         ],
-        risks: [
-          'Limited experience with TypeScript',
-          'No prior remote work experience'
-        ].slice(0, i % 2 + 1)
+        risks: ['Limited experience with TypeScript', 'No prior remote work experience'].slice(
+          0,
+          (i % 2) + 1
+        ),
       }));
-      
+
       setCandidates(mockCandidates);
       setLoading(false);
     }, 2000);
@@ -67,8 +99,8 @@ const AIMatching = () => {
         recommendations: [
           'Consider remote candidates to expand talent pool',
           'Offer competitive salary for top 10% candidates',
-          'Focus on candidates with cloud experience'
-        ]
+          'Focus on candidates with cloud experience',
+        ],
       });
     }, 1500);
   };
@@ -121,7 +153,9 @@ const AIMatching = () => {
                   <h6>AI Recommendations:</h6>
                   <ul className="mb-0">
                     {aiInsights.recommendations.map((rec, idx) => (
-                      <li key={idx} className="small">{rec}</li>
+                      <li key={idx} className="small">
+                        {rec}
+                      </li>
                     ))}
                   </ul>
                 </div>
@@ -147,7 +181,10 @@ const AIMatching = () => {
           <h5 className="mb-3">Filter Candidates</h5>
           <Row className="g-3">
             <Col md={3}>
-              <Form.Select value={jobFilters.department} onChange={(e) => setJobFilters({...jobFilters, department: e.target.value})}>
+              <Form.Select
+                value={jobFilters.department}
+                onChange={(e) => setJobFilters({ ...jobFilters, department: e.target.value })}
+              >
                 <option value="">All Departments</option>
                 <option value="engineering">Engineering</option>
                 <option value="marketing">Marketing</option>
@@ -156,7 +193,10 @@ const AIMatching = () => {
               </Form.Select>
             </Col>
             <Col md={3}>
-              <Form.Select value={jobFilters.experience} onChange={(e) => setJobFilters({...jobFilters, experience: e.target.value})}>
+              <Form.Select
+                value={jobFilters.experience}
+                onChange={(e) => setJobFilters({ ...jobFilters, experience: e.target.value })}
+              >
                 <option value="">All Experience Levels</option>
                 <option value="entry">Entry Level (0-2 years)</option>
                 <option value="mid">Mid Level (3-5 years)</option>
@@ -164,7 +204,10 @@ const AIMatching = () => {
               </Form.Select>
             </Col>
             <Col md={3}>
-              <Form.Select value={jobFilters.location} onChange={(e) => setJobFilters({...jobFilters, location: e.target.value})}>
+              <Form.Select
+                value={jobFilters.location}
+                onChange={(e) => setJobFilters({ ...jobFilters, location: e.target.value })}
+              >
                 <option value="">All Locations</option>
                 <option value="maseru">Maseru</option>
                 <option value="remote">Remote</option>
@@ -189,7 +232,7 @@ const AIMatching = () => {
         </div>
       ) : (
         <Row className="g-4">
-          {candidates.map(candidate => (
+          {candidates.map((candidate) => (
             <Col key={candidate.id} xl={6} lg={6} md={12}>
               <Card className="border-0 shadow-sm h-100 hover-lift">
                 <Card.Body>
@@ -208,7 +251,9 @@ const AIMatching = () => {
                       </div>
                     </div>
                     <div className="text-end">
-                      <div className={`match-score display-6 text-${getMatchColor(candidate.matchScore)}`}>
+                      <div
+                        className={`match-score display-6 text-${getMatchColor(candidate.matchScore)}`}
+                      >
                         {candidate.matchScore}%
                       </div>
                       <div className="small text-muted">AI Match Score</div>
@@ -241,7 +286,11 @@ const AIMatching = () => {
                       {candidate.strengths.map((strength, idx) => (
                         <div key={idx} className="d-flex align-items-center">
                           <span className="me-2">{strength.skill}</span>
-                          <ProgressBar now={strength.score} variant="success" style={{ width: '60px', height: '8px' }} />
+                          <ProgressBar
+                            now={strength.score}
+                            variant="success"
+                            style={{ width: '60px', height: '8px' }}
+                          />
                         </div>
                       ))}
                     </div>
@@ -274,9 +323,7 @@ const AIMatching = () => {
                       <FaUserCheck className="me-2" />
                       Shortlist
                     </Button>
-                    <Button variant="outline-primary">
-                      View Profile
-                    </Button>
+                    <Button variant="outline-primary">View Profile</Button>
                   </div>
                 </Card.Body>
               </Card>

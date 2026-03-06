@@ -4,7 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export const showAlert = (message, type = 'success') => {
   const options = {
-    position: "top-right",
+    position: 'top-right',
     autoClose: 5000,
     hideProgressBar: false,
     closeOnClick: true,

@@ -1,21 +1,21 @@
 // src/services/applicationService.jsx
 import { db } from '../config/firebase';
-import { 
-  collection, 
-  doc, 
-  getDoc, 
-  getDocs, 
-  addDoc, 
-  updateDoc, 
-  deleteDoc, 
-  query, 
-  where, 
-  orderBy, 
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  query,
+  where,
+  orderBy,
   limit,
   startAfter,
   serverTimestamp,
   increment,
-  Timestamp
+  Timestamp,
 } from 'firebase/firestore';
 
 /**
@@ -46,7 +46,7 @@ export const getStudentApplications = async (studentId, options = {}) => {
       limitCount = 20,
       lastDoc = null,
       sortBy = 'appliedDate',
-      sortOrder = 'desc'
+      sortOrder = 'desc',
     } = options;
 
     // Build the query
@@ -69,7 +69,7 @@ export const getStudentApplications = async (studentId, options = {}) => {
 
     // Execute query
     const querySnapshot = await getDocs(applicationsQuery);
-    
+
     const applications = [];
     const lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
 
@@ -80,8 +80,12 @@ export const getStudentApplications = async (studentId, options = {}) => {
         id: docSnap.id,
         ...applicationData,
         // Convert Firestore Timestamps to Date objects
-        appliedDate: applicationData.appliedDate?.toDate ? applicationData.appliedDate.toDate() : applicationData.appliedDate,
-        updatedAt: applicationData.updatedAt?.toDate ? applicationData.updatedAt.toDate() : applicationData.updatedAt
+        appliedDate: applicationData.appliedDate?.toDate
+          ? applicationData.appliedDate.toDate()
+          : applicationData.appliedDate,
+        updatedAt: applicationData.updatedAt?.toDate
+          ? applicationData.updatedAt.toDate()
+          : applicationData.updatedAt,
       };
 
       // Fetch job details for each application
@@ -95,16 +99,18 @@ export const getStudentApplications = async (studentId, options = {}) => {
               ...jobData,
               // Convert Timestamps
               createdAt: jobData.createdAt?.toDate ? jobData.createdAt.toDate() : jobData.createdAt,
-              deadline: jobData.deadline?.toDate ? jobData.deadline.toDate() : jobData.deadline
+              deadline: jobData.deadline?.toDate ? jobData.deadline.toDate() : jobData.deadline,
             };
 
             // Fetch company details for the job
             if (application.job.companyId) {
-              const companyDoc = await getDoc(doc(db, COMPANIES_COLLECTION, application.job.companyId));
+              const companyDoc = await getDoc(
+                doc(db, COMPANIES_COLLECTION, application.job.companyId)
+              );
               if (companyDoc.exists()) {
                 application.company = {
                   id: companyDoc.id,
-                  ...companyDoc.data()
+                  ...companyDoc.data(),
                 };
               }
             }
@@ -122,9 +128,8 @@ export const getStudentApplications = async (studentId, options = {}) => {
       success: true,
       data: applications,
       lastDoc: lastVisible,
-      hasMore: applications.length === limitCount
+      hasMore: applications.length === limitCount,
     };
-
   } catch (error) {
     console.error('Error fetching student applications:', error);
     return {
@@ -132,7 +137,7 @@ export const getStudentApplications = async (studentId, options = {}) => {
       error: error.message,
       data: [],
       lastDoc: null,
-      hasMore: false
+      hasMore: false,
     };
   }
 };
@@ -149,7 +154,7 @@ export const getApplicationById = async (applicationId) => {
     }
 
     const applicationDoc = await getDoc(doc(db, APPLICATIONS_COLLECTION, applicationId));
-    
+
     if (!applicationDoc.exists()) {
       throw new Error('Application not found');
     }
@@ -158,8 +163,12 @@ export const getApplicationById = async (applicationId) => {
     const application = {
       id: applicationDoc.id,
       ...applicationData,
-      appliedDate: applicationData.appliedDate?.toDate ? applicationData.appliedDate.toDate() : applicationData.appliedDate,
-      updatedAt: applicationData.updatedAt?.toDate ? applicationData.updatedAt.toDate() : applicationData.updatedAt
+      appliedDate: applicationData.appliedDate?.toDate
+        ? applicationData.appliedDate.toDate()
+        : applicationData.appliedDate,
+      updatedAt: applicationData.updatedAt?.toDate
+        ? applicationData.updatedAt.toDate()
+        : applicationData.updatedAt,
     };
 
     // Fetch job details
@@ -171,7 +180,7 @@ export const getApplicationById = async (applicationId) => {
           id: jobDoc.id,
           ...jobData,
           createdAt: jobData.createdAt?.toDate ? jobData.createdAt.toDate() : jobData.createdAt,
-          deadline: jobData.deadline?.toDate ? jobData.deadline.toDate() : jobData.deadline
+          deadline: jobData.deadline?.toDate ? jobData.deadline.toDate() : jobData.deadline,
         };
 
         // Fetch company details
@@ -180,7 +189,7 @@ export const getApplicationById = async (applicationId) => {
           if (companyDoc.exists()) {
             application.company = {
               id: companyDoc.id,
-              ...companyDoc.data()
+              ...companyDoc.data(),
             };
           }
         }
@@ -189,15 +198,14 @@ export const getApplicationById = async (applicationId) => {
 
     return {
       success: true,
-      data: application
+      data: application,
     };
-
   } catch (error) {
     console.error('Error fetching application by ID:', error);
     return {
       success: false,
       error: error.message,
-      data: null
+      data: null,
     };
   }
 };
@@ -220,7 +228,7 @@ export const submitApplication = async (applicationData) => {
       resumeData,
       coverLetter = '',
       documents = [],
-      customQuestions = []
+      customQuestions = [],
     } = applicationData;
 
     // Validate required fields
@@ -234,7 +242,7 @@ export const submitApplication = async (applicationData) => {
       where('studentId', '==', studentId),
       where('jobId', '==', jobId)
     );
-    
+
     const existingApps = await getDocs(existingAppsQuery);
     if (!existingApps.empty) {
       throw new Error('You have already applied for this job');
@@ -252,38 +260,39 @@ export const submitApplication = async (applicationData) => {
       documents,
       customQuestions,
       notes: [],
-      history: [{
-        status: 'pending',
-        date: serverTimestamp(),
-        notes: 'Application submitted'
-      }]
+      history: [
+        {
+          status: 'pending',
+          date: serverTimestamp(),
+          notes: 'Application submitted',
+        },
+      ],
     };
 
     // Save to Firestore
     const docRef = await addDoc(collection(db, APPLICATIONS_COLLECTION), application);
-    
+
     // Update job application count
     const jobRef = doc(db, JOBS_COLLECTION, jobId);
     await updateDoc(jobRef, {
       applicationCount: increment(1),
-      updatedAt: serverTimestamp()
+      updatedAt: serverTimestamp(),
     });
 
     return {
       success: true,
       data: {
         id: docRef.id,
-        ...application
+        ...application,
       },
-      message: 'Application submitted successfully'
+      message: 'Application submitted successfully',
     };
-
   } catch (error) {
     console.error('Error creating application:', error);
     return {
       success: false,
       error: error.message,
-      data: null
+      data: null,
     };
   }
 };
@@ -309,7 +318,7 @@ export const updateApplicationStatus = async (applicationId, status, notes = '',
 
     const applicationRef = doc(db, APPLICATIONS_COLLECTION, applicationId);
     const applicationDoc = await getDoc(applicationRef);
-    
+
     if (!applicationDoc.exists()) {
       throw new Error('Application not found');
     }
@@ -319,13 +328,13 @@ export const updateApplicationStatus = async (applicationId, status, notes = '',
       status,
       date: serverTimestamp(),
       notes: notes || `Status changed to ${status}`,
-      updatedBy
+      updatedBy,
     };
 
     await updateDoc(applicationRef, {
       status,
       updatedAt: serverTimestamp(),
-      history: [...(currentData.history || []), historyEntry]
+      history: [...(currentData.history || []), historyEntry],
     });
 
     return {
@@ -333,17 +342,16 @@ export const updateApplicationStatus = async (applicationId, status, notes = '',
       data: {
         id: applicationId,
         status,
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       },
-      message: 'Application status updated successfully'
+      message: 'Application status updated successfully',
     };
-
   } catch (error) {
     console.error('Error updating application status:', error);
     return {
       success: false,
       error: error.message,
-      data: null
+      data: null,
     };
   }
 };
@@ -363,13 +371,13 @@ export const withdrawApplication = async (applicationId, studentId, reason = '')
 
     const applicationRef = doc(db, APPLICATIONS_COLLECTION, applicationId);
     const applicationDoc = await getDoc(applicationRef);
-    
+
     if (!applicationDoc.exists()) {
       throw new Error('Application not found');
     }
 
     const applicationData = applicationDoc.data();
-    
+
     // Verify ownership
     if (applicationData.studentId !== studentId) {
       throw new Error('You are not authorized to withdraw this application');
@@ -388,26 +396,25 @@ export const withdrawApplication = async (applicationId, studentId, reason = '')
       status: 'withdrawn',
       date: serverTimestamp(),
       notes: reason || 'Application withdrawn by student',
-      updatedBy: studentId
+      updatedBy: studentId,
     };
 
     await updateDoc(applicationRef, {
       status: 'withdrawn',
       updatedAt: serverTimestamp(),
       history: [...(applicationData.history || []), historyEntry],
-      withdrawalReason: reason
+      withdrawalReason: reason,
     });
 
     return {
       success: true,
-      message: 'Application withdrawn successfully'
+      message: 'Application withdrawn successfully',
     };
-
   } catch (error) {
     console.error('Error withdrawing application:', error);
     return {
       success: false,
-      error: error.message
+      error: error.message,
     };
   }
 };
@@ -429,7 +436,7 @@ export const getApplicationStats = async (studentId) => {
     );
 
     const querySnapshot = await getDocs(applicationsQuery);
-    
+
     let total = 0;
     let pending = 0;
     let reviewed = 0;
@@ -442,12 +449,24 @@ export const getApplicationStats = async (studentId) => {
       total++;
       const status = doc.data().status;
       switch (status) {
-        case 'pending': pending++; break;
-        case 'reviewed': reviewed++; break;
-        case 'shortlisted': shortlisted++; break;
-        case 'rejected': rejected++; break;
-        case 'hired': hired++; break;
-        case 'withdrawn': withdrawn++; break;
+        case 'pending':
+          pending++;
+          break;
+        case 'reviewed':
+          reviewed++;
+          break;
+        case 'shortlisted':
+          shortlisted++;
+          break;
+        case 'rejected':
+          rejected++;
+          break;
+        case 'hired':
+          hired++;
+          break;
+        case 'withdrawn':
+          withdrawn++;
+          break;
       }
     });
 
@@ -461,16 +480,15 @@ export const getApplicationStats = async (studentId) => {
         rejected,
         hired,
         withdrawn,
-        successRate: total > 0 ? ((shortlisted + hired) / total * 100).toFixed(2) : 0
-      }
+        successRate: total > 0 ? (((shortlisted + hired) / total) * 100).toFixed(2) : 0,
+      },
     };
-
   } catch (error) {
     console.error('Error fetching application stats:', error);
     return {
       success: false,
       error: error.message,
-      data: null
+      data: null,
     };
   }
 };
@@ -490,7 +508,7 @@ export const searchApplications = async (filters = {}) => {
       dateFrom,
       dateTo,
       limitCount = 20,
-      lastDoc = null
+      lastDoc = null,
     } = filters;
 
     let applicationsQuery = collection(db, APPLICATIONS_COLLECTION);
@@ -501,7 +519,7 @@ export const searchApplications = async (filters = {}) => {
     if (studentId) constraints.push(where('studentId', '==', studentId));
     if (jobId) constraints.push(where('jobId', '==', jobId));
     if (status) constraints.push(where('status', '==', status));
-    
+
     // Date range filtering
     if (dateFrom) constraints.push(where('appliedDate', '>=', new Date(dateFrom)));
     if (dateTo) constraints.push(where('appliedDate', '<=', new Date(dateTo)));
@@ -525,8 +543,12 @@ export const searchApplications = async (filters = {}) => {
       const application = {
         id: docSnap.id,
         ...applicationData,
-        appliedDate: applicationData.appliedDate?.toDate ? applicationData.appliedDate.toDate() : applicationData.appliedDate,
-        updatedAt: applicationData.updatedAt?.toDate ? applicationData.updatedAt.toDate() : applicationData.updatedAt
+        appliedDate: applicationData.appliedDate?.toDate
+          ? applicationData.appliedDate.toDate()
+          : applicationData.appliedDate,
+        updatedAt: applicationData.updatedAt?.toDate
+          ? applicationData.updatedAt.toDate()
+          : applicationData.updatedAt,
       };
 
       // Additional data fetching if needed
@@ -547,15 +569,14 @@ export const searchApplications = async (filters = {}) => {
       success: true,
       data: applications,
       lastDoc: lastVisible,
-      hasMore: applications.length === limitCount
+      hasMore: applications.length === limitCount,
     };
-
   } catch (error) {
     console.error('Error searching applications:', error);
     return {
       success: false,
       error: error.message,
-      data: []
+      data: [],
     };
   }
 };
@@ -573,14 +594,14 @@ export const addApplicationNote = async (applicationId, noteData) => {
     }
 
     const { content, authorId, authorName, authorType } = noteData;
-    
+
     if (!content || !authorId) {
       throw new Error('Note content and author ID are required');
     }
 
     const applicationRef = doc(db, APPLICATIONS_COLLECTION, applicationId);
     const applicationDoc = await getDoc(applicationRef);
-    
+
     if (!applicationDoc.exists()) {
       throw new Error('Application not found');
     }
@@ -593,28 +614,27 @@ export const addApplicationNote = async (applicationId, noteData) => {
       authorName: authorName || 'Anonymous',
       authorType: authorType || 'system',
       createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
+      updatedAt: serverTimestamp(),
     };
 
     const updatedNotes = [...(currentData.notes || []), newNote];
 
     await updateDoc(applicationRef, {
       notes: updatedNotes,
-      updatedAt: serverTimestamp()
+      updatedAt: serverTimestamp(),
     });
 
     return {
       success: true,
       data: newNote,
-      message: 'Note added successfully'
+      message: 'Note added successfully',
     };
-
   } catch (error) {
     console.error('Error adding application note:', error);
     return {
       success: false,
       error: error.message,
-      data: null
+      data: null,
     };
   }
 };
@@ -628,7 +648,7 @@ export const applicationService = {
   withdrawApplication,
   getApplicationStats,
   searchApplications,
-  addApplicationNote
+  addApplicationNote,
 };
 
 export default applicationService;

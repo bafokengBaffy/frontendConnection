@@ -1,5 +1,5 @@
 // API Base URL from environment variables
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // Test server connection
 export const testConnection = async () => {
@@ -8,13 +8,13 @@ export const testConnection = async () => {
     const data = await response.json();
     return {
       success: response.ok,
-      message: data.status || "Server is connected",
+      message: data.status || 'Server is connected',
       url: API_BASE_URL,
     };
   } catch (error) {
     return {
       success: false,
-      message: "Cannot connect to server: " + error.message,
+      message: 'Cannot connect to server: ' + error.message,
       url: API_BASE_URL,
     };
   }
@@ -25,9 +25,9 @@ export const authAPI = {
   register: async (userData) => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(userData),
       });
@@ -35,7 +35,7 @@ export const authAPI = {
     } catch (error) {
       return {
         success: false,
-        message: "Network error: " + error.message,
+        message: 'Network error: ' + error.message,
       };
     }
   },
@@ -43,9 +43,9 @@ export const authAPI = {
   login: async (credentials) => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(credentials),
       });
@@ -53,7 +53,7 @@ export const authAPI = {
     } catch (error) {
       return {
         success: false,
-        message: "Network error: " + error.message,
+        message: 'Network error: ' + error.message,
       };
     }
   },
@@ -61,17 +61,17 @@ export const authAPI = {
   getProfile: async (token) => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/auth/profile`, {
-        method: "GET",
+        method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       });
       return await response.json();
     } catch (error) {
       return {
         success: false,
-        message: "Network error: " + error.message,
+        message: 'Network error: ' + error.message,
       };
     }
   },
@@ -83,7 +83,7 @@ export const authAPI = {
     } catch (error) {
       return {
         success: false,
-        message: "Network error: " + error.message,
+        message: 'Network error: ' + error.message,
       };
     }
   },
@@ -98,7 +98,7 @@ export const institutionsAPI = {
     } catch (error) {
       return {
         success: false,
-        message: "Network error: " + error.message,
+        message: 'Network error: ' + error.message,
       };
     }
   },
@@ -110,7 +110,7 @@ export const institutionsAPI = {
     } catch (error) {
       return {
         success: false,
-        message: "Network error: " + error.message,
+        message: 'Network error: ' + error.message,
       };
     }
   },
@@ -125,21 +125,19 @@ export const coursesAPI = {
     } catch (error) {
       return {
         success: false,
-        message: "Network error: " + error.message,
+        message: 'Network error: ' + error.message,
       };
     }
   },
 
   getByInstitution: async (institutionId) => {
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/courses/institution/${institutionId}`
-      );
+      const response = await fetch(`${API_BASE_URL}/api/courses/institution/${institutionId}`);
       return await response.json();
     } catch (error) {
       return {
         success: false,
-        message: "Network error: " + error.message,
+        message: 'Network error: ' + error.message,
       };
     }
   },
@@ -154,7 +152,7 @@ export const companiesAPI = {
     } catch (error) {
       return {
         success: false,
-        message: "Network error: " + error.message,
+        message: 'Network error: ' + error.message,
       };
     }
   },
@@ -166,7 +164,7 @@ export const companiesAPI = {
     } catch (error) {
       return {
         success: false,
-        message: "Network error: " + error.message,
+        message: 'Network error: ' + error.message,
       };
     }
   },

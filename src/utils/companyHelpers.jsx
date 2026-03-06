@@ -3,7 +3,7 @@
 
 export const formatNumber = (num) => {
   if (!num && num !== 0) return '0';
-  
+
   if (num >= 1000000) {
     return (num / 1000000).toFixed(1) + 'M';
   }
@@ -14,14 +14,12 @@ export const formatNumber = (num) => {
 };
 
 export const calculateTimeToHire = (applications) => {
-  const hiredApplications = applications.filter(app => 
-    app.status === 'hired' && 
-    app.appliedAt && 
-    app.hiredAt
+  const hiredApplications = applications.filter(
+    (app) => app.status === 'hired' && app.appliedAt && app.hiredAt
   );
-  
+
   if (hiredApplications.length === 0) return 0;
-  
+
   const totalDays = hiredApplications.reduce((sum, app) => {
     const applied = new Date(app.appliedAt);
     const hired = new Date(app.hiredAt);
@@ -29,7 +27,7 @@ export const calculateTimeToHire = (applications) => {
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return sum + diffDays;
   }, 0);
-  
+
   return Math.round(totalDays / hiredApplications.length);
 };
 
@@ -40,10 +38,11 @@ export const calculateMatchScore = (application, job, candidate) => {
   // Skills match (40 points)
   const jobSkills = job?.skills || [];
   const candidateSkills = candidate?.skills || [];
-  const matchedSkills = jobSkills.filter(skill => 
-    candidateSkills.some(candidateSkill => 
-      candidateSkill.toLowerCase().includes(skill.toLowerCase()) ||
-      skill.toLowerCase().includes(candidateSkill.toLowerCase())
+  const matchedSkills = jobSkills.filter((skill) =>
+    candidateSkills.some(
+      (candidateSkill) =>
+        candidateSkill.toLowerCase().includes(skill.toLowerCase()) ||
+        skill.toLowerCase().includes(candidateSkill.toLowerCase())
     )
   );
 
@@ -52,10 +51,10 @@ export const calculateMatchScore = (application, job, candidate) => {
   }
 
   // Experience level match (30 points)
-  const experienceLevels = { 'entry': 1, 'mid': 2, 'senior': 3, 'executive': 4 };
+  const experienceLevels = { entry: 1, mid: 2, senior: 3, executive: 4 };
   const jobExp = experienceLevels[job?.experience || 'entry'];
   const candidateExp = experienceLevels[candidate?.experienceLevel || 'entry'];
-  
+
   if (candidateExp >= jobExp) {
     score += 30;
   } else {
@@ -66,7 +65,7 @@ export const calculateMatchScore = (application, job, candidate) => {
   if (job?.location && candidate?.location) {
     const jobLoc = job.location.toLowerCase();
     const candidateLoc = candidate.location.toLowerCase();
-    
+
     if (jobLoc.includes('remote') || candidateLoc.includes('remote')) {
       score += 15;
     } else if (jobLoc === candidateLoc) {
@@ -77,15 +76,16 @@ export const calculateMatchScore = (application, job, candidate) => {
   // Education match (15 points)
   const requiredEducation = job?.education || [];
   const candidateEducation = candidate?.education || [];
-  
+
   if (requiredEducation.length > 0) {
-    const hasRequiredEducation = requiredEducation.some(reqEdu =>
-      candidateEducation.some(candidateEdu =>
-        candidateEdu.degree?.toLowerCase().includes(reqEdu.toLowerCase()) ||
-        candidateEdu.field?.toLowerCase().includes(reqEdu.toLowerCase())
+    const hasRequiredEducation = requiredEducation.some((reqEdu) =>
+      candidateEducation.some(
+        (candidateEdu) =>
+          candidateEdu.degree?.toLowerCase().includes(reqEdu.toLowerCase()) ||
+          candidateEdu.field?.toLowerCase().includes(reqEdu.toLowerCase())
       )
     );
-    
+
     if (hasRequiredEducation) {
       score += 15;
     }
@@ -98,7 +98,7 @@ export const calculateMatchScore = (application, job, candidate) => {
 
 export const getTimeAgo = (date) => {
   if (!date) return 'Just now';
-  
+
   const now = new Date();
   const past = new Date(date);
   const diffMs = now - past;
@@ -108,7 +108,7 @@ export const getTimeAgo = (date) => {
   const diffWeeks = Math.floor(diffDays / 7);
   const diffMonths = Math.floor(diffDays / 30);
   const diffYears = Math.floor(diffDays / 365);
-  
+
   if (diffMins < 1) return 'Just now';
   if (diffMins < 60) return `${diffMins}m ago`;
   if (diffHours < 24) return `${diffHours}h ago`;
@@ -120,14 +120,14 @@ export const getTimeAgo = (date) => {
 
 export const formatCurrency = (amount, currency = 'LSL') => {
   if (!amount) return 'Negotiable';
-  
+
   const formatter = new Intl.NumberFormat('en-LS', {
     style: 'currency',
     currency: currency,
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0
+    maximumFractionDigits: 0,
   });
-  
+
   return formatter.format(amount);
 };
 
@@ -135,22 +135,22 @@ export const getJobTypeBadge = (type) => {
   const types = {
     'full-time': { variant: 'success', label: 'Full-time' },
     'part-time': { variant: 'info', label: 'Part-time' },
-    'contract': { variant: 'warning', label: 'Contract' },
-    'internship': { variant: 'primary', label: 'Internship' },
-    'remote': { variant: 'dark', label: 'Remote' }
+    contract: { variant: 'warning', label: 'Contract' },
+    internship: { variant: 'primary', label: 'Internship' },
+    remote: { variant: 'dark', label: 'Remote' },
   };
-  
+
   return types[type] || { variant: 'secondary', label: type };
 };
 
 export const getExperienceLevel = (level) => {
   const levels = {
-    'entry': 'Entry Level',
-    'mid': 'Mid Level',
-    'senior': 'Senior Level',
-    'executive': 'Executive'
+    entry: 'Entry Level',
+    mid: 'Mid Level',
+    senior: 'Senior Level',
+    executive: 'Executive',
   };
-  
+
   return levels[level] || level;
 };
 
@@ -198,7 +198,7 @@ export const getInitials = (name) => {
   if (!name) return '?';
   return name
     .split(' ')
-    .map(word => word.charAt(0))
+    .map((word) => word.charAt(0))
     .join('')
     .toUpperCase()
     .substring(0, 2);
@@ -208,15 +208,15 @@ export const sortByProperty = (array, property, order = 'asc') => {
   return [...array].sort((a, b) => {
     let aValue = a[property];
     let bValue = b[property];
-    
+
     // Handle dates
     if (aValue instanceof Date) aValue = aValue.getTime();
     if (bValue instanceof Date) bValue = bValue.getTime();
-    
+
     // Handle strings
     if (typeof aValue === 'string') aValue = aValue.toLowerCase();
     if (typeof bValue === 'string') bValue = bValue.toLowerCase();
-    
+
     if (order === 'asc') {
       return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
     } else {
@@ -226,7 +226,7 @@ export const sortByProperty = (array, property, order = 'asc') => {
 };
 
 export const filterArray = (array, filters) => {
-  return array.filter(item => {
+  return array.filter((item) => {
     return Object.entries(filters).every(([key, value]) => {
       if (!value) return true;
       if (Array.isArray(value)) {
@@ -271,48 +271,48 @@ export const getStatusColor = (status) => {
     processing: '#17a2b8',
     draft: '#6c757d',
     published: '#28a745',
-    archived: '#6c757d'
+    archived: '#6c757d',
   };
   return colors[status] || '#6c757d';
 };
 
 export const formatDate = (date, format = 'medium') => {
   if (!date) return 'N/A';
-  
+
   const dateObj = date instanceof Date ? date : new Date(date);
-  
+
   if (format === 'short') {
     return dateObj.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
-      year: 'numeric'
+      year: 'numeric',
     });
   } else if (format === 'long') {
     return dateObj.toLocaleDateString('en-US', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     });
   } else {
     return dateObj.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   }
 };
 
 export const formatDateTime = (date) => {
   if (!date) return 'N/A';
-  
+
   const dateObj = date instanceof Date ? date : new Date(date);
   return dateObj.toLocaleString('en-US', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
   });
 };
 
@@ -380,7 +380,7 @@ export const capitalizeWords = (string) => {
   if (!string) return '';
   return string
     .split(' ')
-    .map(word => capitalize(word))
+    .map((word) => capitalize(word))
     .join(' ');
 };
 
@@ -411,21 +411,22 @@ export const validatePassword = (password) => {
   const hasLowerCase = /[a-z]/.test(password);
   const hasNumbers = /\d/.test(password);
   const hasSpecialChar = /[!@#$%^&*]/.test(password);
-  
+
   return {
-    isValid: password.length >= minLength && hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChar,
+    isValid:
+      password.length >= minLength && hasUpperCase && hasLowerCase && hasNumbers && hasSpecialChar,
     errors: {
       length: password.length >= minLength,
       upperCase: hasUpperCase,
       lowerCase: hasLowerCase,
       numbers: hasNumbers,
-      specialChar: hasSpecialChar
-    }
+      specialChar: hasSpecialChar,
+    },
   };
 };
 
 export const delay = (ms) => {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
 export const retry = async (fn, retries = 3, delayMs = 1000) => {
@@ -453,13 +454,13 @@ export const memoize = (fn) => {
 
 export const throttle = (func, limit) => {
   let inThrottle;
-  return function() {
+  return function () {
     const args = arguments;
     const context = this;
     if (!inThrottle) {
       func.apply(context, args);
       inThrottle = true;
-      setTimeout(() => inThrottle = false, limit);
+      setTimeout(() => (inThrottle = false), limit);
     }
   };
 };
@@ -503,5 +504,5 @@ export default {
   delay,
   retry,
   memoize,
-  throttle
+  throttle,
 };

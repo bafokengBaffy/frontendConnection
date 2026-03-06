@@ -11,8 +11,8 @@ import {
   BarElement,
   Title,
   Filler,
-  RadialLinearScale
-} from "chart.jsx";
+  RadialLinearScale,
+} from 'chart.jsx';
 
 // Register ChartJS components globally
 ChartJS.register(

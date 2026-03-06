@@ -1,21 +1,21 @@
-import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { authAPI, testConnection } from "../../services/api";
-import "./Auth.css";
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { authAPI, testConnection } from '../../services/api';
+import './Auth.css';
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    userType: "student",
-    fullName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+    userType: 'student',
+    fullName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
   });
 
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-  const [serverStatus, setServerStatus] = useState("checking");
+  const [successMessage, setSuccessMessage] = useState('');
+  const [serverStatus, setServerStatus] = useState('checking');
   const navigate = useNavigate();
 
   // Check server connection on component mount
@@ -26,7 +26,7 @@ const Register = () => {
   const checkServerConnection = async () => {
     try {
       const result = await testConnection();
-      setServerStatus(result.connected ? "connected" : "disconnected");
+      setServerStatus(result.connected ? 'connected' : 'disconnected');
 
       if (!result.connected) {
         setErrors({ server: result.message });
@@ -38,10 +38,9 @@ const Register = () => {
         });
       }
     } catch (error) {
-      setServerStatus("disconnected");
+      setServerStatus('disconnected');
       setErrors({
-        server:
-          "Failed to check server connection. Make sure backend is running on port 5000.",
+        server: 'Failed to check server connection. Make sure backend is running on port 5000.',
       });
     }
   };
@@ -57,7 +56,7 @@ const Register = () => {
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
-        [name]: "",
+        [name]: '',
       }));
     }
   };
@@ -67,31 +66,31 @@ const Register = () => {
 
     // Full Name validation
     if (!formData.fullName.trim()) {
-      newErrors.fullName = "Full name is required";
+      newErrors.fullName = 'Full name is required';
     } else if (formData.fullName.trim().length < 2) {
-      newErrors.fullName = "Full name must be at least 2 characters";
+      newErrors.fullName = 'Full name must be at least 2 characters';
     }
 
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.email) {
-      newErrors.email = "Email is required";
+      newErrors.email = 'Email is required';
     } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
+      newErrors.email = 'Please enter a valid email address';
     }
 
     // Password validation
     if (!formData.password) {
-      newErrors.password = "Password is required";
+      newErrors.password = 'Password is required';
     } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
+      newErrors.password = 'Password must be at least 6 characters';
     }
 
     // Confirm Password validation
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = "Please confirm your password";
+      newErrors.confirmPassword = 'Please confirm your password';
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
+      newErrors.confirmPassword = 'Passwords do not match';
     }
 
     return newErrors;
@@ -118,55 +117,53 @@ const Register = () => {
       });
 
       if (result.success) {
-        setSuccessMessage(result.message || "Registration successful!");
+        setSuccessMessage(result.message || 'Registration successful!');
 
         // Store token in localStorage
         if (result.data?.token) {
-          localStorage.setItem("authToken", result.data.token);
-          localStorage.setItem("user", JSON.stringify(result.data.user));
+          localStorage.setItem('authToken', result.data.token);
+          localStorage.setItem('user', JSON.stringify(result.data.user));
         }
 
         // Reset form
         setFormData({
-          userType: "student",
-          fullName: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
+          userType: 'student',
+          fullName: '',
+          email: '',
+          password: '',
+          confirmPassword: '',
         });
 
         // Redirect to appropriate dashboard after 2 seconds
         setTimeout(() => {
           const dashboardPath =
-            result.data.user.userType === "student"
-              ? "/student"
-              : result.data.user.userType === "employer"
-                ? "/company"
-                : "/";
+            result.data.user.userType === 'student'
+              ? '/student'
+              : result.data.user.userType === 'employer'
+                ? '/company'
+                : '/';
           navigate(dashboardPath);
         }, 2000);
       } else {
-        throw new Error(result.message || "Registration failed");
+        throw new Error(result.message || 'Registration failed');
       }
     } catch (error) {
-      console.error("Registration error:", error);
+      console.error('Registration error:', error);
 
       // Enhanced error handling
-      let errorMessage =
-        error.message || "Registration failed. Please try again.";
+      let errorMessage = error.message || 'Registration failed. Please try again.';
 
-      if (errorMessage.includes("HTML instead of JSON")) {
+      if (errorMessage.includes('HTML instead of JSON')) {
         errorMessage =
-          "Backend server error. Please ensure the backend is running correctly on port 5000.";
+          'Backend server error. Please ensure the backend is running correctly on port 5000.';
       } else if (
-        errorMessage.includes("NetworkError") ||
-        errorMessage.includes("Failed to fetch")
+        errorMessage.includes('NetworkError') ||
+        errorMessage.includes('Failed to fetch')
       ) {
         errorMessage =
-          "Cannot connect to server. Please ensure the backend is running on http://localhost:5000";
-      } else if (errorMessage.includes("ECONNREFUSED")) {
-        errorMessage =
-          "Connection refused. Please start the backend server on port 5000.";
+          'Cannot connect to server. Please ensure the backend is running on http://localhost:5000';
+      } else if (errorMessage.includes('ECONNREFUSED')) {
+        errorMessage = 'Connection refused. Please start the backend server on port 5000.';
       }
 
       setErrors({ submit: errorMessage });
@@ -185,15 +182,13 @@ const Register = () => {
 
           {/* Server Status Indicator */}
           <div className={`server-status ${serverStatus}`}>
-            {serverStatus === "connected" && "✅ Server Connected"}
-            {serverStatus === "checking" && "⏳ Checking Server..."}
-            {serverStatus === "disconnected" && "❌ Server Disconnected"}
+            {serverStatus === 'connected' && '✅ Server Connected'}
+            {serverStatus === 'checking' && '⏳ Checking Server...'}
+            {serverStatus === 'disconnected' && '❌ Server Disconnected'}
           </div>
         </div>
 
-        {successMessage && (
-          <div className="success-message">{successMessage}</div>
-        )}
+        {successMessage && <div className="success-message">{successMessage}</div>}
 
         {errors.server && (
           <div className="error-message server-error">
@@ -211,21 +206,15 @@ const Register = () => {
             <div className="user-type-selector">
               <button
                 type="button"
-                className={`user-type-btn ${formData.userType === "student" ? "active" : ""
-                  }`}
-                onClick={() =>
-                  setFormData((prev) => ({ ...prev, userType: "student" }))
-                }
+                className={`user-type-btn ${formData.userType === 'student' ? 'active' : ''}`}
+                onClick={() => setFormData((prev) => ({ ...prev, userType: 'student' }))}
               >
                 Student
               </button>
               <button
                 type="button"
-                className={`user-type-btn ${formData.userType === "employer" ? "active" : ""
-                  }`}
-                onClick={() =>
-                  setFormData((prev) => ({ ...prev, userType: "employer" }))
-                }
+                className={`user-type-btn ${formData.userType === 'employer' ? 'active' : ''}`}
+                onClick={() => setFormData((prev) => ({ ...prev, userType: 'employer' }))}
               >
                 Employer
               </button>
@@ -243,13 +232,11 @@ const Register = () => {
               name="fullName"
               value={formData.fullName}
               onChange={handleChange}
-              className={`form-input ${errors.fullName ? "error" : ""}`}
+              className={`form-input ${errors.fullName ? 'error' : ''}`}
               placeholder="Enter your full name"
               disabled={isLoading}
             />
-            {errors.fullName && (
-              <span className="error-message">{errors.fullName}</span>
-            )}
+            {errors.fullName && <span className="error-message">{errors.fullName}</span>}
           </div>
 
           {/* Email */}
@@ -263,13 +250,11 @@ const Register = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className={`form-input ${errors.email ? "error" : ""}`}
+              className={`form-input ${errors.email ? 'error' : ''}`}
               placeholder="Enter your email address"
               disabled={isLoading}
             />
-            {errors.email && (
-              <span className="error-message">{errors.email}</span>
-            )}
+            {errors.email && <span className="error-message">{errors.email}</span>}
           </div>
 
           {/* Password */}
@@ -283,13 +268,11 @@ const Register = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className={`form-input ${errors.password ? "error" : ""}`}
+              className={`form-input ${errors.password ? 'error' : ''}`}
               placeholder="Create a password (min. 6 characters)"
               disabled={isLoading}
             />
-            {errors.password && (
-              <span className="error-message">{errors.password}</span>
-            )}
+            {errors.password && <span className="error-message">{errors.password}</span>}
           </div>
 
           {/* Confirm Password */}
@@ -303,7 +286,7 @@ const Register = () => {
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className={`form-input ${errors.confirmPassword ? "error" : ""}`}
+              className={`form-input ${errors.confirmPassword ? 'error' : ''}`}
               placeholder="Confirm your password"
               disabled={isLoading}
             />
@@ -313,15 +296,13 @@ const Register = () => {
           </div>
 
           {/* Submit Error */}
-          {errors.submit && (
-            <div className="error-message submit-error">{errors.submit}</div>
-          )}
+          {errors.submit && <div className="error-message submit-error">{errors.submit}</div>}
 
           {/* Submit Button */}
           <button
             type="submit"
             className="submit-btn"
-            disabled={isLoading || serverStatus !== "connected"}
+            disabled={isLoading || serverStatus !== 'connected'}
           >
             {isLoading ? (
               <>
@@ -329,7 +310,7 @@ const Register = () => {
                 Creating Account...
               </>
             ) : (
-              "Create Account"
+              'Create Account'
             )}
           </button>
         </form>
@@ -341,14 +322,11 @@ const Register = () => {
         </div>
 
         {/* Debug Info - Remove in production */}
-        {process.env.NODE_ENV === "development" && (
+        {process.env.NODE_ENV === 'development' && (
           <div className="debug-info">
             <details>
               <summary>Debug Info</summary>
-              <p>
-                API Base URL:{" "}
-                {process.env.REACT_APP_API_URL || "http://localhost:5000/api"}
-              </p>
+              <p>API Base URL: {process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}</p>
               <p>Server Status: {serverStatus}</p>
               <p>Backend URL: http://localhost:5000</p>
             </details>

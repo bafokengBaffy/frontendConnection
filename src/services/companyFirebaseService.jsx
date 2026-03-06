@@ -1,16 +1,16 @@
 // src/services/companyServices/companyFirebaseService.js
 
-import { db } from '../../config/firebase';
-import { 
-  collection, 
-  query, 
-  where, 
-  onSnapshot, 
+import { db } from '../config/firebase';
+import {
+  collection,
+  query,
+  where,
+  onSnapshot,
   orderBy,
   Timestamp,
   doc,
   getDoc,
-  updateDoc
+  updateDoc,
 } from 'firebase/firestore';
 
 const companyFirebaseService = {
@@ -29,25 +29,29 @@ const companyFirebaseService = {
         orderBy('appliedAt', 'desc')
       );
 
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        const applications = [];
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          applications.push({
-            id: doc.id,
-            ...data,
-            // Convert Firestore timestamps to Date objects
-            appliedAt: data.appliedAt?.toDate()?.toISOString() || new Date().toISOString(),
-            updatedAt: data.updatedAt?.toDate()?.toISOString() || new Date().toISOString(),
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          const applications = [];
+          snapshot.forEach((doc) => {
+            const data = doc.data();
+            applications.push({
+              id: doc.id,
+              ...data,
+              // Convert Firestore timestamps to Date objects
+              appliedAt: data.appliedAt?.toDate()?.toISOString() || new Date().toISOString(),
+              updatedAt: data.updatedAt?.toDate()?.toISOString() || new Date().toISOString(),
+            });
           });
-        });
-        
-        if (typeof callback === 'function') {
-          callback(applications);
+
+          if (typeof callback === 'function') {
+            callback(applications);
+          }
+        },
+        (error) => {
+          console.error('Error subscribing to applications:', error);
         }
-      }, (error) => {
-        console.error('Error subscribing to applications:', error);
-      });
+      );
 
       return unsubscribe;
     } catch (error) {
@@ -72,24 +76,28 @@ const companyFirebaseService = {
         orderBy('scheduledTime', 'asc')
       );
 
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        const interviews = [];
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          interviews.push({
-            id: doc.id,
-            ...data,
-            scheduledTime: data.scheduledTime?.toDate()?.toISOString(),
-            createdAt: data.createdAt?.toDate()?.toISOString(),
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          const interviews = [];
+          snapshot.forEach((doc) => {
+            const data = doc.data();
+            interviews.push({
+              id: doc.id,
+              ...data,
+              scheduledTime: data.scheduledTime?.toDate()?.toISOString(),
+              createdAt: data.createdAt?.toDate()?.toISOString(),
+            });
           });
-        });
-        
-        if (typeof callback === 'function') {
-          callback(interviews);
+
+          if (typeof callback === 'function') {
+            callback(interviews);
+          }
+        },
+        (error) => {
+          console.error('Error subscribing to interviews:', error);
         }
-      }, (error) => {
-        console.error('Error subscribing to interviews:', error);
-      });
+      );
 
       return unsubscribe;
     } catch (error) {
@@ -107,21 +115,25 @@ const companyFirebaseService = {
   subscribeToCompanyProfile: (companyId, callback) => {
     try {
       const companyRef = doc(db, 'companies', companyId);
-      
-      const unsubscribe = onSnapshot(companyRef, (docSnapshot) => {
-        if (docSnapshot.exists()) {
-          const data = docSnapshot.data();
-          callback({
-            id: docSnapshot.id,
-            ...data,
-            // Handle timestamp conversions
-            createdAt: data.createdAt?.toDate()?.toISOString(),
-            updatedAt: data.updatedAt?.toDate()?.toISOString(),
-          });
+
+      const unsubscribe = onSnapshot(
+        companyRef,
+        (docSnapshot) => {
+          if (docSnapshot.exists()) {
+            const data = docSnapshot.data();
+            callback({
+              id: docSnapshot.id,
+              ...data,
+              // Handle timestamp conversions
+              createdAt: data.createdAt?.toDate()?.toISOString(),
+              updatedAt: data.updatedAt?.toDate()?.toISOString(),
+            });
+          }
+        },
+        (error) => {
+          console.error('Error subscribing to company profile:', error);
         }
-      }, (error) => {
-        console.error('Error subscribing to company profile:', error);
-      });
+      );
 
       return unsubscribe;
     } catch (error) {
@@ -139,31 +151,31 @@ const companyFirebaseService = {
   subscribeToJobs: (companyId, callback) => {
     try {
       const jobsRef = collection(db, 'jobs');
-      const q = query(
-        jobsRef,
-        where('companyId', '==', companyId),
-        orderBy('createdAt', 'desc')
-      );
+      const q = query(jobsRef, where('companyId', '==', companyId), orderBy('createdAt', 'desc'));
 
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        const jobs = [];
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          jobs.push({
-            id: doc.id,
-            ...data,
-            createdAt: data.createdAt?.toDate()?.toISOString(),
-            updatedAt: data.updatedAt?.toDate()?.toISOString(),
-            deadline: data.deadline?.toDate()?.toISOString(),
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          const jobs = [];
+          snapshot.forEach((doc) => {
+            const data = doc.data();
+            jobs.push({
+              id: doc.id,
+              ...data,
+              createdAt: data.createdAt?.toDate()?.toISOString(),
+              updatedAt: data.updatedAt?.toDate()?.toISOString(),
+              deadline: data.deadline?.toDate()?.toISOString(),
+            });
           });
-        });
-        
-        if (typeof callback === 'function') {
-          callback(jobs);
+
+          if (typeof callback === 'function') {
+            callback(jobs);
+          }
+        },
+        (error) => {
+          console.error('Error subscribing to jobs:', error);
         }
-      }, (error) => {
-        console.error('Error subscribing to jobs:', error);
-      });
+      );
 
       return unsubscribe;
     } catch (error) {
@@ -189,23 +201,27 @@ const companyFirebaseService = {
         orderBy('createdAt', 'desc')
       );
 
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        const notifications = [];
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          notifications.push({
-            id: doc.id,
-            ...data,
-            createdAt: data.createdAt?.toDate()?.toISOString(),
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          const notifications = [];
+          snapshot.forEach((doc) => {
+            const data = doc.data();
+            notifications.push({
+              id: doc.id,
+              ...data,
+              createdAt: data.createdAt?.toDate()?.toISOString(),
+            });
           });
-        });
-        
-        if (typeof callback === 'function') {
-          callback(notifications);
+
+          if (typeof callback === 'function') {
+            callback(notifications);
+          }
+        },
+        (error) => {
+          console.error('Error subscribing to notifications:', error);
         }
-      }, (error) => {
-        console.error('Error subscribing to notifications:', error);
-      });
+      );
 
       return unsubscribe;
     } catch (error) {
@@ -241,19 +257,23 @@ const companyFirebaseService = {
   subscribeToAnalytics: (companyId, callback) => {
     try {
       const analyticsRef = doc(db, 'analytics', companyId);
-      
-      const unsubscribe = onSnapshot(analyticsRef, (docSnapshot) => {
-        if (docSnapshot.exists()) {
-          const data = docSnapshot.data();
-          callback({
-            id: docSnapshot.id,
-            ...data,
-            lastUpdated: data.lastUpdated?.toDate()?.toISOString(),
-          });
+
+      const unsubscribe = onSnapshot(
+        analyticsRef,
+        (docSnapshot) => {
+          if (docSnapshot.exists()) {
+            const data = docSnapshot.data();
+            callback({
+              id: docSnapshot.id,
+              ...data,
+              lastUpdated: data.lastUpdated?.toDate()?.toISOString(),
+            });
+          }
+        },
+        (error) => {
+          console.error('Error subscribing to analytics:', error);
         }
-      }, (error) => {
-        console.error('Error subscribing to analytics:', error);
-      });
+      );
 
       return unsubscribe;
     } catch (error) {
@@ -277,23 +297,27 @@ const companyFirebaseService = {
         orderBy('followedAt', 'desc')
       );
 
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        const followers = [];
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          followers.push({
-            id: doc.id,
-            ...data,
-            followedAt: data.followedAt?.toDate()?.toISOString(),
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          const followers = [];
+          snapshot.forEach((doc) => {
+            const data = doc.data();
+            followers.push({
+              id: doc.id,
+              ...data,
+              followedAt: data.followedAt?.toDate()?.toISOString(),
+            });
           });
-        });
-        
-        if (typeof callback === 'function') {
-          callback(followers);
+
+          if (typeof callback === 'function') {
+            callback(followers);
+          }
+        },
+        (error) => {
+          console.error('Error subscribing to followers:', error);
         }
-      }, (error) => {
-        console.error('Error subscribing to followers:', error);
-      });
+      );
 
       return unsubscribe;
     } catch (error) {
@@ -311,31 +335,35 @@ const companyFirebaseService = {
   subscribeToStats: (companyId, callback) => {
     try {
       const statsRef = doc(db, 'companyStats', companyId);
-      
-      const unsubscribe = onSnapshot(statsRef, async (docSnapshot) => {
-        if (docSnapshot.exists()) {
-          const data = docSnapshot.data();
-          const stats = {
-            id: docSnapshot.id,
-            ...data,
-            updatedAt: data.updatedAt?.toDate()?.toISOString(),
-          };
 
-          // Get additional real-time data
-          const applicationsCount = await getApplicationsCount(companyId);
-          const jobsCount = await getJobsCount(companyId);
-          const followersCount = await getFollowersCount(companyId);
+      const unsubscribe = onSnapshot(
+        statsRef,
+        async (docSnapshot) => {
+          if (docSnapshot.exists()) {
+            const data = docSnapshot.data();
+            const stats = {
+              id: docSnapshot.id,
+              ...data,
+              updatedAt: data.updatedAt?.toDate()?.toISOString(),
+            };
 
-          callback({
-            ...stats,
-            applicationsCount,
-            jobsCount,
-            followersCount,
-          });
+            // Get additional real-time data
+            const applicationsCount = await getApplicationsCount(companyId);
+            const jobsCount = await getJobsCount(companyId);
+            const followersCount = await getFollowersCount(companyId);
+
+            callback({
+              ...stats,
+              applicationsCount,
+              jobsCount,
+              followersCount,
+            });
+          }
+        },
+        (error) => {
+          console.error('Error subscribing to stats:', error);
         }
-      }, (error) => {
-        console.error('Error subscribing to stats:', error);
-      });
+      );
 
       return unsubscribe;
     } catch (error) {
@@ -350,7 +378,7 @@ const companyFirebaseService = {
    */
   cleanupSubscriptions: (listeners) => {
     if (Array.isArray(listeners)) {
-      listeners.forEach(unsubscribe => {
+      listeners.forEach((unsubscribe) => {
         if (unsubscribe && typeof unsubscribe === 'function') {
           try {
             unsubscribe();

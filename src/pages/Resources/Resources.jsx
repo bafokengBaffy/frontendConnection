@@ -1,26 +1,53 @@
 ﻿/* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
 import React, { useState, useEffect } from 'react';
-import { 
-  Container, Row, Col, Card, Button, Badge, 
-  ListGroup, Form, InputGroup, Alert, Spinner, Modal,
-  FormControl
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Badge,
+  ListGroup,
+  Form,
+  InputGroup,
+  Alert,
+  Spinner,
+  Modal,
+  FormControl,
 } from 'react-bootstrap';
-import { 
-  FaBook, FaGraduationCap, FaFilePdf, FaVideo,
-  FaDownload, FaBookmark, FaSearch,
-  FaFilter, FaRegStar, FaRegEye,
-  FaRegClock, FaUserGraduate, FaLightbulb, FaChartLine,
-  FaMoneyBillWave, FaUsers, FaRocket,
-  FaBullhorn, FaRegFileAlt, FaRegBookmark,
-  FaBuilding, FaCogs, FaLaptopCode, FaBalanceScale,
-  FaGlobeAmericas
+import {
+  FaBook,
+  FaGraduationCap,
+  FaFilePdf,
+  FaVideo,
+  FaDownload,
+  FaBookmark,
+  FaSearch,
+  FaFilter,
+  FaRegStar,
+  FaRegEye,
+  FaRegClock,
+  FaUserGraduate,
+  FaLightbulb,
+  FaChartLine,
+  FaMoneyBillWave,
+  FaUsers,
+  FaRocket,
+  FaBullhorn,
+  FaRegFileAlt,
+  FaRegBookmark,
+  FaBuilding,
+  FaCogs,
+  FaLaptopCode,
+  FaBalanceScale,
+  FaGlobeAmericas,
 } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import './Resources.css';
 
 // Import resource service with correct function names
-import { 
+import {
   getResources,
   getResourceCategoriesWithCounts,
   getResourceStats,
@@ -32,7 +59,7 @@ import {
   getRecentResources,
   RESOURCE_CATEGORIES,
   RESOURCE_TYPES,
-  DIFFICULTY_LEVELS
+  DIFFICULTY_LEVELS,
 } from '../../services/resourceService';
 import { useAuth } from '../../context/AuthContext';
 
@@ -52,13 +79,13 @@ const Resources = () => {
     page: 1,
     pageSize: 10,
     total: 0,
-    totalPages: 1
+    totalPages: 1,
   });
   const [filters, setFilters] = useState({
     type: 'all',
     difficulty: 'all',
     sortBy: 'downloads',
-    sortOrder: 'desc'
+    sortOrder: 'desc',
   });
 
   // Resource types matching your service constants
@@ -70,7 +97,7 @@ const Resources = () => {
     { id: RESOURCE_TYPES.TOOL, name: 'Tools', icon: FaBullhorn },
     { id: RESOURCE_TYPES.EBOOK, name: 'eBooks', icon: FaFilePdf },
     { id: RESOURCE_TYPES.CHECKLIST, name: 'Checklists', icon: FaRegFileAlt },
-    { id: RESOURCE_TYPES.PRESENTATION, name: 'Presentations', icon: FaFilePdf }
+    { id: RESOURCE_TYPES.PRESENTATION, name: 'Presentations', icon: FaFilePdf },
   ];
 
   // Default categories matching your service constants
@@ -79,20 +106,25 @@ const Resources = () => {
     { id: RESOURCE_CATEGORIES.BUSINESS, name: 'Business', icon: FaBuilding, count: 0 },
     { id: RESOURCE_CATEGORIES.CAREER, name: 'Career', icon: FaUserGraduate, count: 0 },
     { id: RESOURCE_CATEGORIES.FUNDING, name: 'Funding', icon: FaMoneyBillWave, count: 0 },
-    { id: RESOURCE_CATEGORIES.ENTREPRENEURSHIP, name: 'Entrepreneurship', icon: FaRocket, count: 0 },
+    {
+      id: RESOURCE_CATEGORIES.ENTREPRENEURSHIP,
+      name: 'Entrepreneurship',
+      icon: FaRocket,
+      count: 0,
+    },
     { id: RESOURCE_CATEGORIES.SKILLS, name: 'Skills', icon: FaLightbulb, count: 0 },
     { id: RESOURCE_CATEGORIES.MARKETING, name: 'Marketing', icon: FaGlobeAmericas, count: 0 },
     { id: RESOURCE_CATEGORIES.FINANCE, name: 'Finance', icon: FaChartLine, count: 0 },
     { id: RESOURCE_CATEGORIES.TECHNOLOGY, name: 'Technology', icon: FaLaptopCode, count: 0 },
     { id: RESOURCE_CATEGORIES.LEGAL, name: 'Legal', icon: FaBalanceScale, count: 0 },
-    { id: RESOURCE_CATEGORIES.OTHER, name: 'Other', icon: FaCogs, count: 0 }
+    { id: RESOURCE_CATEGORIES.OTHER, name: 'Other', icon: FaCogs, count: 0 },
   ];
 
   // Difficulty levels matching your service constants
   const difficultyLevels = [
     { id: DIFFICULTY_LEVELS.BEGINNER, name: 'Beginner', variant: 'success' },
     { id: DIFFICULTY_LEVELS.INTERMEDIATE, name: 'Intermediate', variant: 'warning' },
-    { id: DIFFICULTY_LEVELS.ADVANCED, name: 'Advanced', variant: 'danger' }
+    { id: DIFFICULTY_LEVELS.ADVANCED, name: 'Advanced', variant: 'danger' },
   ];
 
   useEffect(() => {
@@ -113,16 +145,16 @@ const Resources = () => {
         page: pagination.page,
         pageSize: pagination.pageSize,
         sortBy: filters.sortBy,
-        sortOrder: filters.sortOrder
+        sortOrder: filters.sortOrder,
       };
-      
+
       const data = await getResources(params);
       setResources(data.resources || []);
       setPagination({
         page: data.page,
         pageSize: data.pageSize,
         total: data.total,
-        totalPages: data.totalPages
+        totalPages: data.totalPages,
       });
     } catch (error) {
       console.error('Error loading resources:', error);
@@ -135,7 +167,7 @@ const Resources = () => {
   const loadCategories = async () => {
     try {
       const categoryCounts = await getResourceCategoriesWithCounts();
-      const updatedCategories = defaultCategories.map(category => {
+      const updatedCategories = defaultCategories.map((category) => {
         if (category.id === 'all') {
           return { ...category, count: Object.values(categoryCounts).reduce((a, b) => a + b, 0) };
         }
@@ -159,7 +191,7 @@ const Resources = () => {
         free: 0,
         premium: 0,
         totalDownloads: 0,
-        totalBookmarks: 0
+        totalBookmarks: 0,
       });
     }
   };
@@ -169,10 +201,10 @@ const Resources = () => {
       setBookmarked([]);
       return;
     }
-    
+
     try {
       const bookmarkedResources = await getBookmarkedResources(currentUser.uid);
-      setBookmarked(bookmarkedResources.map(r => r.id));
+      setBookmarked(bookmarkedResources.map((r) => r.id));
     } catch (error) {
       console.error('Error loading bookmarks:', error);
       setBookmarked([]);
@@ -192,15 +224,15 @@ const Resources = () => {
 
     try {
       setDownloading(true);
-      
+
       // Increment download count in database
       await incrementResourceDownloads(resourceId);
-      
+
       // Update local state
-      setResources(prev => prev.map(r => 
-        r.id === resourceId ? { ...r, downloads: (r.downloads || 0) + 1 } : r
-      ));
-      
+      setResources((prev) =>
+        prev.map((r) => (r.id === resourceId ? { ...r, downloads: (r.downloads || 0) + 1 } : r))
+      );
+
       // Show success message
       alert(`Downloaded ${resourceName} successfully!`);
     } catch (error) {
@@ -219,11 +251,11 @@ const Resources = () => {
 
     try {
       const result = await toggleResourceBookmark(currentUser.uid, resourceId);
-      
+
       if (result.bookmarked) {
-        setBookmarked(prev => [...prev, resourceId]);
+        setBookmarked((prev) => [...prev, resourceId]);
       } else {
-        setBookmarked(prev => prev.filter(id => id !== resourceId));
+        setBookmarked((prev) => prev.filter((id) => id !== resourceId));
       }
     } catch (error) {
       console.error('Bookmark error:', error);
@@ -236,19 +268,19 @@ const Resources = () => {
   };
 
   const getDifficultyBadge = (difficulty) => {
-    const level = difficultyLevels.find(l => l.id === difficulty);
+    const level = difficultyLevels.find((l) => l.id === difficulty);
     if (!level) return <Badge bg="secondary">All Levels</Badge>;
-    
+
     return <Badge bg={level.variant}>{level.name}</Badge>;
   };
 
   const getTypeIcon = (type) => {
-    const typeConfig = resourceTypes.find(t => t.id === type);
+    const typeConfig = resourceTypes.find((t) => t.id === type);
     if (!typeConfig) {
       const Icon = FaBook;
       return <Icon style={{ color: '#6c757d' }} />;
     }
-    
+
     const Icon = typeConfig.icon;
     const colors = {
       [RESOURCE_TYPES.GUIDE]: '#0d6efd',
@@ -258,9 +290,9 @@ const Resources = () => {
       [RESOURCE_TYPES.TOOL]: '#fd7e14',
       [RESOURCE_TYPES.EBOOK]: '#e83e8c',
       [RESOURCE_TYPES.CHECKLIST]: '#20c997',
-      [RESOURCE_TYPES.PRESENTATION]: '#6610f2'
+      [RESOURCE_TYPES.PRESENTATION]: '#6610f2',
     };
-    
+
     return <Icon style={{ color: colors[type] || '#6c757d' }} />;
   };
 
@@ -269,12 +301,12 @@ const Resources = () => {
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
   const handlePageChange = (newPage) => {
-    setPagination(prev => ({ ...prev, page: newPage }));
+    setPagination((prev) => ({ ...prev, page: newPage }));
   };
 
   if (loading && resources.length === 0) {
@@ -297,7 +329,9 @@ const Resources = () => {
       {/* Header */}
       <div className="resources-header mb-4">
         <h1>Resources & Guides</h1>
-        <p className="lead">Educational resources, guides, and tools for career and business success</p>
+        <p className="lead">
+          Educational resources, guides, and tools for career and business success
+        </p>
       </div>
 
       {/* Search Bar */}
@@ -316,7 +350,7 @@ const Resources = () => {
               <Button variant="primary" type="submit">
                 Search
               </Button>
-              <Button 
+              <Button
                 variant="outline-secondary"
                 onClick={() => {
                   setSearchQuery('');
@@ -325,7 +359,7 @@ const Resources = () => {
                     type: 'all',
                     difficulty: 'all',
                     sortBy: 'downloads',
-                    sortOrder: 'desc'
+                    sortOrder: 'desc',
                   });
                 }}
               >
@@ -338,7 +372,7 @@ const Resources = () => {
           {/* Categories */}
           <div className="categories-scroll mb-3">
             <div className="d-flex flex-wrap gap-2">
-              {categories.map(category => {
+              {categories.map((category) => {
                 const Icon = category.icon;
                 return (
                   <Button
@@ -372,70 +406,72 @@ const Resources = () => {
           </h3>
           <Row>
             {resources
-              .filter(r => r.featured)
+              .filter((r) => r.featured)
               .slice(0, 3)
-              .map(resource => (
-              <Col md={6} lg={4} key={resource.id} className="mb-4">
-                <Card className="featured-resource-card h-100">
-                  <div className="featured-badge">FEATURED</div>
-                  <Card.Body>
-                    <div className="d-flex align-items-center mb-3">
-                      {getTypeIcon(resource.type)}
-                      <div className="ms-2">
-                        <h5 className="mb-0">{resource.title}</h5>
-                        <small className="text-muted">by {resource.author || 'CareerConnect'}</small>
+              .map((resource) => (
+                <Col md={6} lg={4} key={resource.id} className="mb-4">
+                  <Card className="featured-resource-card h-100">
+                    <div className="featured-badge">FEATURED</div>
+                    <Card.Body>
+                      <div className="d-flex align-items-center mb-3">
+                        {getTypeIcon(resource.type)}
+                        <div className="ms-2">
+                          <h5 className="mb-0">{resource.title}</h5>
+                          <small className="text-muted">
+                            by {resource.author || 'CareerConnect'}
+                          </small>
+                        </div>
                       </div>
-                    </div>
-                    <p className="resource-description">{resource.description}</p>
-                    <div className="d-flex justify-content-between align-items-center mb-3">
-                      {getDifficultyBadge(resource.difficulty)}
-                      <div className="text-muted small">
-                        <FaRegClock className="me-1" />
-                        {formatDate(resource.createdAt)}
+                      <p className="resource-description">{resource.description}</p>
+                      <div className="d-flex justify-content-between align-items-center mb-3">
+                        {getDifficultyBadge(resource.difficulty)}
+                        <div className="text-muted small">
+                          <FaRegClock className="me-1" />
+                          {formatDate(resource.createdAt)}
+                        </div>
                       </div>
-                    </div>
-                    <div className="tags mb-3">
-                      {resource.tags?.slice(0, 3).map(tag => (
-                        <Badge key={tag} bg="light" text="dark" className="me-1">
-                          {tag}
-                        </Badge>
-                      )) || []}
-                    </div>
-                    <div className="d-flex justify-content-between align-items-center">
-                      <div className="resource-stats">
-                        <span className="text-muted small me-3">
-                          <FaDownload className="me-1" />
-                          {resource.downloads?.toLocaleString() || '0'}
-                        </span>
-                        <span className="text-warning small">
-                          <FaRegStar className="me-1" />
-                          {resource.rating?.toFixed(1) || '0.0'}
-                        </span>
+                      <div className="tags mb-3">
+                        {resource.tags?.slice(0, 3).map((tag) => (
+                          <Badge key={tag} bg="light" text="dark" className="me-1">
+                            {tag}
+                          </Badge>
+                        )) || []}
                       </div>
-                      <div>
-                        <Button 
-                          variant="outline-primary" 
-                          size="sm" 
-                          className="me-2"
-                          onClick={() => previewResource(resource)}
-                        >
-                          Preview
-                        </Button>
-                        <Button 
-                          variant="primary" 
-                          size="sm"
-                          onClick={() => handleDownload(resource.id, resource.title)}
-                          disabled={downloading}
-                        >
-                          <FaDownload className="me-1" />
-                          {downloading ? 'Downloading...' : 'Download'}
-                        </Button>
+                      <div className="d-flex justify-content-between align-items-center">
+                        <div className="resource-stats">
+                          <span className="text-muted small me-3">
+                            <FaDownload className="me-1" />
+                            {resource.downloads?.toLocaleString() || '0'}
+                          </span>
+                          <span className="text-warning small">
+                            <FaRegStar className="me-1" />
+                            {resource.rating?.toFixed(1) || '0.0'}
+                          </span>
+                        </div>
+                        <div>
+                          <Button
+                            variant="outline-primary"
+                            size="sm"
+                            className="me-2"
+                            onClick={() => previewResource(resource)}
+                          >
+                            Preview
+                          </Button>
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            onClick={() => handleDownload(resource.id, resource.title)}
+                            disabled={downloading}
+                          >
+                            <FaDownload className="me-1" />
+                            {downloading ? 'Downloading...' : 'Download'}
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
+                    </Card.Body>
+                  </Card>
+                </Col>
+              ))}
           </Row>
         </div>
       )}
@@ -444,30 +480,31 @@ const Resources = () => {
       <div className="all-resources-section">
         <div className="section-header d-flex justify-content-between align-items-center mb-4">
           <h3 className="mb-0">
-            {activeTab === 'all' ? 'All Resources' : 
-             categories.find(c => c.id === activeTab)?.name || 'Resources'}
+            {activeTab === 'all'
+              ? 'All Resources'
+              : categories.find((c) => c.id === activeTab)?.name || 'Resources'}
             <Badge bg="light" text="dark" className="ms-2">
               {pagination.total}
             </Badge>
           </h3>
           <div className="d-flex align-items-center gap-2">
             <span className="text-muted">Sort by:</span>
-            <Form.Select 
-              size="sm" 
+            <Form.Select
+              size="sm"
               style={{ width: 'auto' }}
               value={filters.sortBy}
-              onChange={(e) => setFilters({...filters, sortBy: e.target.value})}
+              onChange={(e) => setFilters({ ...filters, sortBy: e.target.value })}
             >
               <option value="downloads">Most Downloads</option>
               <option value="createdAt">Newest</option>
               <option value="rating">Highest Rating</option>
               <option value="title">Title A-Z</option>
             </Form.Select>
-            <Form.Select 
-              size="sm" 
+            <Form.Select
+              size="sm"
               style={{ width: 'auto' }}
               value={filters.sortOrder}
-              onChange={(e) => setFilters({...filters, sortOrder: e.target.value})}
+              onChange={(e) => setFilters({ ...filters, sortOrder: e.target.value })}
             >
               <option value="desc">Descending</option>
               <option value="asc">Ascending</option>
@@ -485,12 +522,12 @@ const Resources = () => {
                 <Form>
                   <Form.Group className="mb-3">
                     <Form.Label>Resource Type</Form.Label>
-                    <Form.Select 
+                    <Form.Select
                       value={filters.type}
-                      onChange={(e) => setFilters({...filters, type: e.target.value})}
+                      onChange={(e) => setFilters({ ...filters, type: e.target.value })}
                     >
                       <option value="all">All Types</option>
-                      {resourceTypes.map(type => (
+                      {resourceTypes.map((type) => (
                         <option key={type.id} value={type.id}>
                           {type.name}
                         </option>
@@ -500,12 +537,12 @@ const Resources = () => {
 
                   <Form.Group className="mb-3">
                     <Form.Label>Difficulty Level</Form.Label>
-                    <Form.Select 
+                    <Form.Select
                       value={filters.difficulty}
-                      onChange={(e) => setFilters({...filters, difficulty: e.target.value})}
+                      onChange={(e) => setFilters({ ...filters, difficulty: e.target.value })}
                     >
                       <option value="all">All Levels</option>
-                      {difficultyLevels.map(level => (
+                      {difficultyLevels.map((level) => (
                         <option key={level.id} value={level.id}>
                           {level.name}
                         </option>
@@ -546,15 +583,15 @@ const Resources = () => {
                     </ListGroup>
                   </div>
 
-                  <Button 
-                    variant="outline-primary" 
+                  <Button
+                    variant="outline-primary"
                     className="w-100"
                     onClick={() => {
                       setFilters({
                         type: 'all',
                         difficulty: 'all',
                         sortBy: 'downloads',
-                        sortOrder: 'desc'
+                        sortOrder: 'desc',
                       });
                       setActiveTab('all');
                       setSearchQuery('');
@@ -572,21 +609,23 @@ const Resources = () => {
               </Card.Header>
               <Card.Body>
                 <ListGroup variant="flush">
-                  {resourceTypes.map(type => {
+                  {resourceTypes.map((type) => {
                     const Icon = type.icon;
-                    const count = resources.filter(r => r.type === type.id).length;
+                    const count = resources.filter((r) => r.type === type.id).length;
                     return (
-                      <ListGroup.Item 
+                      <ListGroup.Item
                         key={type.id}
-                        action 
+                        action
                         className="d-flex justify-content-between align-items-center"
-                        onClick={() => setFilters({...filters, type: type.id})}
+                        onClick={() => setFilters({ ...filters, type: type.id })}
                       >
                         <span>
                           <Icon className="me-2" />
                           {type.name}
                         </span>
-                        <Badge bg="light" text="dark">{count}</Badge>
+                        <Badge bg="light" text="dark">
+                          {count}
+                        </Badge>
                       </ListGroup.Item>
                     );
                   })}
@@ -607,7 +646,7 @@ const Resources = () => {
             ) : (
               <>
                 <Row>
-                  {resources.map(resource => (
+                  {resources.map((resource) => (
                     <Col md={6} className="mb-4" key={resource.id}>
                       <Card className="resource-card h-100">
                         <Card.Body>
@@ -625,7 +664,9 @@ const Resources = () => {
                                 )}
                               </div>
                               <h5 className="mb-1">{resource.title}</h5>
-                              <p className="text-muted small mb-2">by {resource.author || 'CareerConnect'}</p>
+                              <p className="text-muted small mb-2">
+                                by {resource.author || 'CareerConnect'}
+                              </p>
                             </div>
                             <Button
                               variant="link"
@@ -639,9 +680,9 @@ const Resources = () => {
                               )}
                             </Button>
                           </div>
-                          
+
                           <p className="resource-description-small">{resource.description}</p>
-                          
+
                           <div className="d-flex justify-content-between align-items-center mb-3">
                             {getDifficultyBadge(resource.difficulty)}
                             <div className="text-muted small">
@@ -649,15 +690,15 @@ const Resources = () => {
                               {formatDate(resource.createdAt)}
                             </div>
                           </div>
-                          
+
                           <div className="tags mb-3">
-                            {resource.tags?.slice(0, 3).map(tag => (
+                            {resource.tags?.slice(0, 3).map((tag) => (
                               <Badge key={tag} bg="light" text="dark" className="me-1 mb-1">
                                 {tag}
                               </Badge>
                             )) || []}
                           </div>
-                          
+
                           <div className="d-flex justify-content-between align-items-center">
                             <div className="resource-stats">
                               <span className="text-muted small me-3">
@@ -670,17 +711,17 @@ const Resources = () => {
                               </span>
                             </div>
                             <div>
-                              <Button 
-                                variant="outline-primary" 
-                                size="sm" 
+                              <Button
+                                variant="outline-primary"
+                                size="sm"
                                 className="me-2"
                                 onClick={() => previewResource(resource)}
                               >
                                 <FaRegEye className="me-1" />
                                 Preview
                               </Button>
-                              <Button 
-                                variant="primary" 
+                              <Button
+                                variant="primary"
                                 size="sm"
                                 onClick={() => handleDownload(resource.id, resource.title)}
                                 disabled={downloading}
@@ -702,32 +743,31 @@ const Resources = () => {
                     <nav>
                       <ul className="pagination">
                         <li className={`page-item ${pagination.page === 1 ? 'disabled' : ''}`}>
-                          <button 
-                            className="page-link" 
+                          <button
+                            className="page-link"
                             onClick={() => handlePageChange(pagination.page - 1)}
                             disabled={pagination.page === 1}
                           >
                             Previous
                           </button>
                         </li>
-                        
-                        {[...Array(pagination.totalPages).keys()].map(num => (
-                          <li 
-                            key={num + 1} 
+
+                        {[...Array(pagination.totalPages).keys()].map((num) => (
+                          <li
+                            key={num + 1}
                             className={`page-item ${pagination.page === num + 1 ? 'active' : ''}`}
                           >
-                            <button 
-                              className="page-link" 
-                              onClick={() => handlePageChange(num + 1)}
-                            >
+                            <button className="page-link" onClick={() => handlePageChange(num + 1)}>
                               {num + 1}
                             </button>
                           </li>
                         ))}
-                        
-                        <li className={`page-item ${pagination.page === pagination.totalPages ? 'disabled' : ''}`}>
-                          <button 
-                            className="page-link" 
+
+                        <li
+                          className={`page-item ${pagination.page === pagination.totalPages ? 'disabled' : ''}`}
+                        >
+                          <button
+                            className="page-link"
                             onClick={() => handlePageChange(pagination.page + 1)}
                             disabled={pagination.page === pagination.totalPages}
                           >
@@ -753,17 +793,21 @@ const Resources = () => {
                     <p className="text-muted mb-0">Total Resources</p>
                   </Col>
                   <Col md={3} className="text-center">
-                    <h2 className="text-success">{stats?.free || resources.filter(r => !r.premium).length}</h2>
+                    <h2 className="text-success">
+                      {stats?.free || resources.filter((r) => !r.premium).length}
+                    </h2>
                     <p className="text-muted mb-0">Free Resources</p>
                   </Col>
                   <Col md={3} className="text-center">
-                    <h2 className="text-warning">{stats?.premium || resources.filter(r => r.premium).length}</h2>
+                    <h2 className="text-warning">
+                      {stats?.premium || resources.filter((r) => r.premium).length}
+                    </h2>
                     <p className="text-muted mb-0">Premium Resources</p>
                   </Col>
                   <Col md={3} className="text-center">
                     <h2 className="text-info">
-                      {stats?.totalDownloads?.toLocaleString() || 
-                       resources.reduce((sum, r) => sum + (r.downloads || 0), 0).toLocaleString()}
+                      {stats?.totalDownloads?.toLocaleString() ||
+                        resources.reduce((sum, r) => sum + (r.downloads || 0), 0).toLocaleString()}
                     </h2>
                     <p className="text-muted mb-0">Total Downloads</p>
                   </Col>
@@ -789,7 +833,7 @@ const Resources = () => {
                   <p className="text-muted mb-0">by {selectedResource.author || 'CareerConnect'}</p>
                 </div>
               </div>
-              
+
               <div className="d-flex align-items-center mb-3">
                 {getDifficultyBadge(selectedResource.difficulty)}
                 <span className="ms-3 text-muted">
@@ -805,9 +849,9 @@ const Resources = () => {
                   {selectedResource.downloads?.toLocaleString() || '0'} downloads
                 </span>
               </div>
-              
+
               <p className="mb-3">{selectedResource.description}</p>
-              
+
               {selectedResource.content && (
                 <div className="mb-3">
                   <strong>Content Preview:</strong>
@@ -816,20 +860,21 @@ const Resources = () => {
                   </div>
                 </div>
               )}
-              
+
               <div className="mb-3">
                 <strong>Tags:</strong>
                 <div className="mt-2">
-                  {selectedResource.tags?.map(tag => (
+                  {selectedResource.tags?.map((tag) => (
                     <Badge key={tag} bg="light" text="dark" className="me-1">
                       {tag}
                     </Badge>
                   )) || []}
                 </div>
               </div>
-              
+
               <Alert variant="info">
-                <strong>Preview Note:</strong> This is a preview of the resource. Download the full version for complete access.
+                <strong>Preview Note:</strong> This is a preview of the resource. Download the full
+                version for complete access.
               </Alert>
             </div>
           )}
@@ -838,7 +883,7 @@ const Resources = () => {
           <Button variant="secondary" onClick={() => setShowPreview(false)}>
             Close
           </Button>
-          <Button 
+          <Button
             variant="primary"
             onClick={() => {
               if (selectedResource) {

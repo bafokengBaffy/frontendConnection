@@ -2,8 +2,29 @@
 /* eslint-disable react/jsx-no-undef */
 /* eslint-disable react/no-unescaped-entities */
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Badge, Table, Form, Modal, Spinner, Alert } from 'react-bootstrap';
-import { FaVideo, FaCalendar, FaClock, FaUser, FaCheckCircle, FaTimesCircle, FaCalendarPlus, FaChartBar } from 'react-icons/fa';
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Badge,
+  Table,
+  Form,
+  Modal,
+  Spinner,
+  Alert,
+} from 'react-bootstrap';
+import {
+  FaVideo,
+  FaCalendar,
+  FaClock,
+  FaUser,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaCalendarPlus,
+  FaChartBar,
+} from 'react-icons/fa';
 import './VideoInterviews.css';
 
 const VideoInterviews = () => {
@@ -31,7 +52,7 @@ const VideoInterviews = () => {
           meetingLink: 'https://meet.careerconnect.ls/john-doe-123',
           interviewers: ['Sarah Johnson', 'Mike Chen'],
           preparation: ['Review portfolio', 'Technical questions'],
-          aiAnalysis: { readiness: 85, confidence: 78 }
+          aiAnalysis: { readiness: 85, confidence: 78 },
         },
         {
           id: 2,
@@ -44,7 +65,7 @@ const VideoInterviews = () => {
           interviewers: ['Alex Wilson'],
           preparation: ['Campaign analysis', 'Strategy questions'],
           aiAnalysis: { readiness: 92, confidence: 85 },
-          feedback: { rating: 4.5, notes: 'Excellent strategic thinking' }
+          feedback: { rating: 4.5, notes: 'Excellent strategic thinking' },
         },
         {
           id: 3,
@@ -56,7 +77,7 @@ const VideoInterviews = () => {
           meetingLink: 'https://meet.careerconnect.ls/michael-brown-456',
           interviewers: ['Lisa Wong', 'Tom Harris'],
           preparation: ['Design portfolio review', 'UI challenges'],
-          aiAnalysis: { readiness: 76, confidence: 82 }
+          aiAnalysis: { readiness: 76, confidence: 82 },
         },
         {
           id: 4,
@@ -69,7 +90,7 @@ const VideoInterviews = () => {
           interviewers: ['David Miller'],
           preparation: ['SQL test', 'Case study'],
           aiAnalysis: { readiness: 88, confidence: 79 },
-          feedback: { rating: 4.0, notes: 'Strong technical skills' }
+          feedback: { rating: 4.0, notes: 'Strong technical skills' },
         },
         {
           id: 5,
@@ -82,10 +103,10 @@ const VideoInterviews = () => {
           interviewers: ['Emma Davis'],
           preparation: ['Product strategy', 'Roadmap exercise'],
           aiAnalysis: { readiness: 65, confidence: 70 },
-          cancellationReason: 'Candidate unavailable'
-        }
+          cancellationReason: 'Candidate unavailable',
+        },
       ];
-      
+
       setInterviews(mockInterviews);
       setLoading(false);
     }, 1500);
@@ -101,12 +122,21 @@ const VideoInterviews = () => {
   };
 
   const getStatusBadge = (status) => {
-    switch(status) {
-      case 'scheduled': return <Badge bg="primary">Scheduled</Badge>;
-      case 'completed': return <Badge bg="success">Completed</Badge>;
-      case 'in-progress': return <Badge bg="warning">In Progress</Badge>;
-      case 'cancelled': return <Badge bg="secondary">Cancelled</Badge>;
-      default: return <Badge bg="light" text="dark">Pending</Badge>;
+    switch (status) {
+      case 'scheduled':
+        return <Badge bg="primary">Scheduled</Badge>;
+      case 'completed':
+        return <Badge bg="success">Completed</Badge>;
+      case 'in-progress':
+        return <Badge bg="warning">In Progress</Badge>;
+      case 'cancelled':
+        return <Badge bg="secondary">Cancelled</Badge>;
+      default:
+        return (
+          <Badge bg="light" text="dark">
+            Pending
+          </Badge>
+        );
     }
   };
 
@@ -116,7 +146,7 @@ const VideoInterviews = () => {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   };
 
@@ -125,14 +155,14 @@ const VideoInterviews = () => {
     const interviewTime = new Date(date);
     const diffMs = interviewTime - now;
     const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    
+
     if (diffHours < 0) return 'Past';
     if (diffHours < 1) return 'Starting soon';
     if (diffHours < 24) return `In ${diffHours} hours`;
     return `In ${Math.floor(diffHours / 24)} days`;
   };
 
-  const filteredInterviews = interviews.filter(interview => {
+  const filteredInterviews = interviews.filter((interview) => {
     if (activeTab === 'upcoming') return interview.status === 'scheduled';
     if (activeTab === 'completed') return interview.status === 'completed';
     if (activeTab === 'cancelled') return interview.status === 'cancelled';
@@ -158,7 +188,7 @@ const VideoInterviews = () => {
           <Card className="border-0 shadow-sm">
             <Card.Body className="text-center py-3">
               <FaVideo className="text-primary mb-2" size={24} />
-              <h4>{interviews.filter(i => i.status === 'scheduled').length}</h4>
+              <h4>{interviews.filter((i) => i.status === 'scheduled').length}</h4>
               <p className="text-muted mb-0">Upcoming</p>
             </Card.Body>
           </Card>
@@ -167,7 +197,7 @@ const VideoInterviews = () => {
           <Card className="border-0 shadow-sm">
             <Card.Body className="text-center py-3">
               <FaCheckCircle className="text-success mb-2" size={24} />
-              <h4>{interviews.filter(i => i.status === 'completed').length}</h4>
+              <h4>{interviews.filter((i) => i.status === 'completed').length}</h4>
               <p className="text-muted mb-0">Completed</p>
             </Card.Body>
           </Card>
@@ -176,7 +206,15 @@ const VideoInterviews = () => {
           <Card className="border-0 shadow-sm">
             <Card.Body className="text-center py-3">
               <FaChartBar className="text-info mb-2" size={24} />
-              <h4>{Math.round(interviews.filter(i => i.status === 'completed').reduce((acc, i) => acc + (i.aiAnalysis?.readiness || 0), 0) / interviews.filter(i => i.status === 'completed').length) || 0}%</h4>
+              <h4>
+                {Math.round(
+                  interviews
+                    .filter((i) => i.status === 'completed')
+                    .reduce((acc, i) => acc + (i.aiAnalysis?.readiness || 0), 0) /
+                    interviews.filter((i) => i.status === 'completed').length
+                ) || 0}
+                %
+              </h4>
               <p className="text-muted mb-0">Avg. Readiness</p>
             </Card.Body>
           </Card>
@@ -185,7 +223,12 @@ const VideoInterviews = () => {
           <Card className="border-0 shadow-sm">
             <Card.Body className="text-center py-3">
               <FaUser className="text-warning mb-2" size={24} />
-              <h4>{interviews.filter(i => i.status === 'completed').reduce((acc, i) => acc + (i.feedback?.rating || 0), 0) / interviews.filter(i => i.status === 'completed').length || 0}</h4>
+              <h4>
+                {interviews
+                  .filter((i) => i.status === 'completed')
+                  .reduce((acc, i) => acc + (i.feedback?.rating || 0), 0) /
+                  interviews.filter((i) => i.status === 'completed').length || 0}
+              </h4>
               <p className="text-muted mb-0">Avg. Rating</p>
             </Card.Body>
           </Card>
@@ -197,16 +240,31 @@ const VideoInterviews = () => {
         <Card.Header className="bg-white border-0">
           <div className="d-flex justify-content-between align-items-center">
             <div>
-              <Button variant={activeTab === 'all' ? 'primary' : 'light'} className="me-2" onClick={() => setActiveTab('all')}>
+              <Button
+                variant={activeTab === 'all' ? 'primary' : 'light'}
+                className="me-2"
+                onClick={() => setActiveTab('all')}
+              >
                 All Interviews
               </Button>
-              <Button variant={activeTab === 'upcoming' ? 'primary' : 'light'} className="me-2" onClick={() => setActiveTab('upcoming')}>
+              <Button
+                variant={activeTab === 'upcoming' ? 'primary' : 'light'}
+                className="me-2"
+                onClick={() => setActiveTab('upcoming')}
+              >
                 Upcoming
               </Button>
-              <Button variant={activeTab === 'completed' ? 'primary' : 'light'} className="me-2" onClick={() => setActiveTab('completed')}>
+              <Button
+                variant={activeTab === 'completed' ? 'primary' : 'light'}
+                className="me-2"
+                onClick={() => setActiveTab('completed')}
+              >
                 Completed
               </Button>
-              <Button variant={activeTab === 'cancelled' ? 'primary' : 'light'} onClick={() => setActiveTab('cancelled')}>
+              <Button
+                variant={activeTab === 'cancelled' ? 'primary' : 'light'}
+                onClick={() => setActiveTab('cancelled')}
+              >
                 Cancelled
               </Button>
             </div>
@@ -240,13 +298,15 @@ const VideoInterviews = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredInterviews.map(interview => (
+                {filteredInterviews.map((interview) => (
                   <tr key={interview.id}>
                     <td>
                       <div className="d-flex align-items-center">
                         <div className="me-3">
-                          <div className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
-                               style={{ width: '40px', height: '40px' }}>
+                          <div
+                            className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                            style={{ width: '40px', height: '40px' }}
+                          >
                             {interview.candidateName.charAt(0)}
                           </div>
                         </div>
@@ -263,7 +323,9 @@ const VideoInterviews = () => {
                     <td>
                       <div>
                         <div>{formatDateTime(interview.scheduledTime)}</div>
-                        <div className="small text-muted">{getTimeUntil(interview.scheduledTime)}</div>
+                        <div className="small text-muted">
+                          {getTimeUntil(interview.scheduledTime)}
+                        </div>
                       </div>
                     </td>
                     <td>
@@ -275,7 +337,10 @@ const VideoInterviews = () => {
                     <td>
                       <div className="d-flex align-items-center">
                         <div className="progress flex-grow-1 me-2" style={{ height: '8px' }}>
-                          <div className="progress-bar bg-success" style={{ width: `${interview.aiAnalysis.readiness}%` }}></div>
+                          <div
+                            className="progress-bar bg-success"
+                            style={{ width: `${interview.aiAnalysis.readiness}%` }}
+                          ></div>
                         </div>
                         <span>{interview.aiAnalysis.readiness}%</span>
                       </div>
@@ -285,13 +350,15 @@ const VideoInterviews = () => {
                         </div>
                       )}
                     </td>
-                    <td>
-                      {getStatusBadge(interview.status)}
-                    </td>
+                    <td>{getStatusBadge(interview.status)}</td>
                     <td>
                       <div className="d-flex gap-1">
                         {interview.status === 'scheduled' && (
-                          <Button variant="primary" size="sm" onClick={() => handleJoinInterview(interview)}>
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            onClick={() => handleJoinInterview(interview)}
+                          >
                             <FaVideo className="me-1" />
                             Join
                           </Button>
@@ -378,13 +445,17 @@ const VideoInterviews = () => {
           {selectedInterview && (
             <div>
               <Alert variant="info">
-                <strong>Interview Details:</strong><br />
-                Candidate: {selectedInterview.candidateName}<br />
-                Role: {selectedInterview.candidateRole}<br />
-                Time: {formatDateTime(selectedInterview.scheduledTime)}<br />
+                <strong>Interview Details:</strong>
+                <br />
+                Candidate: {selectedInterview.candidateName}
+                <br />
+                Role: {selectedInterview.candidateRole}
+                <br />
+                Time: {formatDateTime(selectedInterview.scheduledTime)}
+                <br />
                 Duration: {selectedInterview.duration} minutes
               </Alert>
-              
+
               <div className="mb-3">
                 <h6>Preparation Checklist</h6>
                 <ul>
@@ -400,20 +471,34 @@ const VideoInterviews = () => {
                   <Col md={6}>
                     <div className="mb-2">
                       <div className="small">Candidate Readiness</div>
-                      <ProgressBar now={selectedInterview.aiAnalysis.readiness} variant="success" className="mt-1" />
+                      <ProgressBar
+                        now={selectedInterview.aiAnalysis.readiness}
+                        variant="success"
+                        className="mt-1"
+                      />
                     </div>
                   </Col>
                   <Col md={6}>
                     <div className="mb-2">
                       <div className="small">Confidence Level</div>
-                      <ProgressBar now={selectedInterview.aiAnalysis.confidence} variant="info" className="mt-1" />
+                      <ProgressBar
+                        now={selectedInterview.aiAnalysis.confidence}
+                        variant="info"
+                        className="mt-1"
+                      />
                     </div>
                   </Col>
                 </Row>
               </div>
 
               <div className="text-center my-4">
-                <Button variant="primary" size="lg" className="px-5" href={selectedInterview.meetingLink} target="_blank">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  className="px-5"
+                  href={selectedInterview.meetingLink}
+                  target="_blank"
+                >
                   <FaVideo className="me-2" />
                   Join Interview Room
                 </Button>
@@ -500,7 +585,11 @@ const VideoInterviews = () => {
 
             <Form.Group className="mt-3">
               <Form.Label>Meeting Agenda</Form.Label>
-              <Form.Control as="textarea" rows={3} placeholder="Enter interview agenda and topics..." />
+              <Form.Control
+                as="textarea"
+                rows={3}
+                placeholder="Enter interview agenda and topics..."
+              />
             </Form.Group>
 
             <Form.Group className="mt-3">
@@ -512,20 +601,13 @@ const VideoInterviews = () => {
             </Form.Group>
 
             <div className="mt-4">
-              <Form.Check
-                type="checkbox"
-                label="Enable AI Interview Assistant"
-                defaultChecked
-              />
+              <Form.Check type="checkbox" label="Enable AI Interview Assistant" defaultChecked />
               <Form.Check
                 type="checkbox"
                 label="Send calendar invites to all participants"
                 defaultChecked
               />
-              <Form.Check
-                type="checkbox"
-                label="Record interview (with consent)"
-              />
+              <Form.Check type="checkbox" label="Record interview (with consent)" />
             </div>
           </Form>
         </Modal.Body>
@@ -533,9 +615,7 @@ const VideoInterviews = () => {
           <Button variant="light" onClick={() => setShowScheduleModal(false)}>
             Cancel
           </Button>
-          <Button variant="primary">
-            Schedule Interview
-          </Button>
+          <Button variant="primary">Schedule Interview</Button>
         </Modal.Footer>
       </Modal>
     </Container>

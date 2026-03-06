@@ -1,20 +1,20 @@
 // components/CloudinaryImage.jsx
 import React from 'react';
 
-const CloudinaryImage = ({ 
-  publicId, 
-  alt, 
-  width = 'auto', 
-  height = 'auto', 
+const CloudinaryImage = ({
+  publicId,
+  alt,
+  width = 'auto',
+  height = 'auto',
   crop = 'fit',
   quality = 'auto',
   format = 'auto',
   className = '',
   style = {},
-  ...props 
+  ...props
 }) => {
   const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
-  
+
   if (!publicId || !cloudName) {
     return <div>Image not available</div>;
   }
@@ -24,19 +24,15 @@ const CloudinaryImage = ({
     width !== 'auto' && `w_${width}`,
     height !== 'auto' && `h_${height}`,
     quality !== 'auto' && `q_${quality}`,
-    format !== 'auto' && `f_${format}`
-  ].filter(Boolean).join(',');
+    format !== 'auto' && `f_${format}`,
+  ]
+    .filter(Boolean)
+    .join(',');
 
   const url = `https://res.cloudinary.com/${cloudName}/image/upload/${transformationString}/${publicId}`;
 
   return (
-    <img 
-      src={url} 
-      alt={alt || 'Cloudinary image'} 
-      className={className}
-      style={style}
-      {...props}
-    />
+    <img src={url} alt={alt || 'Cloudinary image'} className={className} style={style} {...props} />
   );
 };
 

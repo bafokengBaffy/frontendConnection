@@ -1,21 +1,62 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Container, Row, Col, Card, Button, Form, 
-  ListGroup, Badge, Alert, Spinner, Modal,
-  Dropdown, OverlayTrigger, Tooltip, InputGroup,
-  Tab, Tabs
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Form,
+  ListGroup,
+  Badge,
+  Alert,
+  Spinner,
+  Modal,
+  Dropdown,
+  OverlayTrigger,
+  Tooltip,
+  InputGroup,
+  Tab,
+  Tabs,
 } from 'react-bootstrap';
-import { 
-  FaCommentDots, FaPaperPlane, FaSearch, FaFilter,
-  FaUser, FaBuilding, FaEnvelope, FaPhone,
-  FaCalendarAlt, FaFileAlt, FaVideo, FaPaperclip,
-  FaTimes, FaCheck, FaClock, FaRegStar, FaStar,
-  FaTrash, FaReply, FaForward, FaArchive, FaBell,
-  FaRegBell, FaUsers, FaUserPlus, FaCog,
-  FaRegSmile, FaImage, FaFile, FaMicrophone,
-  FaEllipsisV, FaExternalLinkAlt, FaWhatsapp,
-  FaLinkedin, FaTwitter, FaRegCopy, FaRegEnvelope
+import {
+  FaCommentDots,
+  FaPaperPlane,
+  FaSearch,
+  FaFilter,
+  FaUser,
+  FaBuilding,
+  FaEnvelope,
+  FaPhone,
+  FaCalendarAlt,
+  FaFileAlt,
+  FaVideo,
+  FaPaperclip,
+  FaTimes,
+  FaCheck,
+  FaClock,
+  FaRegStar,
+  FaStar,
+  FaTrash,
+  FaReply,
+  FaForward,
+  FaArchive,
+  FaBell,
+  FaRegBell,
+  FaUsers,
+  FaUserPlus,
+  FaCog,
+  FaRegSmile,
+  FaImage,
+  FaFile,
+  FaMicrophone,
+  FaEllipsisV,
+  FaExternalLinkAlt,
+  FaWhatsapp,
+  FaLinkedin,
+  FaTwitter,
+  FaRegCopy,
+  FaRegEnvelope,
 } from 'react-icons/fa';
 import { companyFirebaseService } from '../../services/companyServices';
 
@@ -33,7 +74,7 @@ const Communication = () => {
     type: 'candidate',
     recipientId: '',
     recipientName: '',
-    recipientEmail: ''
+    recipientEmail: '',
   });
   const [replyTo, setReplyTo] = useState(null);
   const [success, setSuccess] = useState('');
@@ -50,12 +91,12 @@ const Communication = () => {
         name: 'John Doe',
         email: 'john@example.com',
         avatar: '',
-        role: 'Software Developer Applicant'
+        role: 'Software Developer Applicant',
       },
       lastMessage: 'Thank you for the interview opportunity!',
       lastMessageTime: '2024-01-15T10:30:00',
       unreadCount: 2,
-      status: 'active'
+      status: 'active',
     },
     {
       id: '2',
@@ -65,12 +106,12 @@ const Communication = () => {
         name: 'CareerConnect Admin',
         email: 'admin@careerconnect.ls',
         avatar: '',
-        role: 'Platform Administrator'
+        role: 'Platform Administrator',
       },
       lastMessage: 'Your company profile has been verified.',
       lastMessageTime: '2024-01-14T14:20:00',
       unreadCount: 0,
-      status: 'read'
+      status: 'read',
     },
     {
       id: '3',
@@ -80,13 +121,13 @@ const Communication = () => {
         name: 'Tech Solutions Ltd',
         email: 'info@techsolutions.ls',
         avatar: '',
-        role: 'Partner Company'
+        role: 'Partner Company',
       },
       lastMessage: 'Looking forward to our partnership meeting.',
       lastMessageTime: '2024-01-13T09:15:00',
       unreadCount: 1,
-      status: 'active'
-    }
+      status: 'active',
+    },
   ];
 
   const sampleMessages = [
@@ -95,41 +136,43 @@ const Communication = () => {
       conversationId: '1',
       senderId: 'c1',
       senderName: 'John Doe',
-      content: 'Hello, I wanted to follow up on my application for the Software Developer position.',
+      content:
+        'Hello, I wanted to follow up on my application for the Software Developer position.',
       timestamp: '2024-01-15T09:30:00',
       type: 'text',
       status: 'delivered',
-      isRead: true
+      isRead: true,
     },
     {
       id: 'm2',
       conversationId: '1',
       senderId: 'company',
       senderName: 'Your Company',
-      content: 'Thank you for your application. We have scheduled an interview for tomorrow at 2 PM.',
+      content:
+        'Thank you for your application. We have scheduled an interview for tomorrow at 2 PM.',
       timestamp: '2024-01-15T10:00:00',
       type: 'text',
       status: 'read',
-      isRead: true
+      isRead: true,
     },
     {
       id: 'm3',
       conversationId: '1',
       senderId: 'c1',
       senderName: 'John Doe',
-      content: 'Thank you for the interview opportunity! I\'m looking forward to it.',
+      content: "Thank you for the interview opportunity! I'm looking forward to it.",
       timestamp: '2024-01-15T10:30:00',
       type: 'text',
       status: 'delivered',
-      isRead: false
-    }
+      isRead: false,
+    },
   ];
 
   useEffect(() => {
     // Load initial data
     setMessages(sampleMessages);
     setLoading(false);
-    
+
     // Scroll to bottom of messages
     scrollToBottom();
   }, []);
@@ -149,21 +192,21 @@ const Communication = () => {
     const diffMins = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
-    
+
     if (diffMins < 1) return 'Just now';
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffHours < 24) return `${diffHours}h ago`;
     if (diffDays < 7) return `${diffDays}d ago`;
-    return date.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric', 
-      year: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
     });
   };
 
   const handleSendMessage = async () => {
     if (!newMessage.trim() && attachments.length === 0) return;
-    
+
     try {
       const newMsg = {
         id: `m${Date.now()}`,
@@ -175,13 +218,13 @@ const Communication = () => {
         type: attachments.length > 0 ? 'file' : 'text',
         attachments: attachments.length > 0 ? attachments : undefined,
         status: 'sent',
-        isRead: false
+        isRead: false,
       };
-      
-      setMessages(prev => [...prev, newMsg]);
+
+      setMessages((prev) => [...prev, newMsg]);
       setNewMessage('');
       setAttachments([]);
-      
+
       // In real app, save to Firebase
       if (messageTo.recipientId) {
         try {
@@ -190,16 +233,15 @@ const Communication = () => {
             toName: messageTo.recipientName,
             subject: `Message from your company`,
             content: newMessage,
-            type: 'candidate'
+            type: 'candidate',
           });
         } catch (error) {
           console.log('Note: Firebase service not fully implemented');
         }
       }
-      
+
       setSuccess('Message sent successfully!');
       setTimeout(() => setSuccess(''), 3000);
-      
     } catch (error) {
       console.error('Error sending message:', error);
     }
@@ -207,19 +249,19 @@ const Communication = () => {
 
   const handleFileSelect = (e) => {
     const files = Array.from(e.target.files);
-    const newAttachments = files.map(file => ({
+    const newAttachments = files.map((file) => ({
       id: `file-${Date.now()}-${Math.random()}`,
       name: file.name,
       type: file.type,
       size: file.size,
-      url: URL.createObjectURL(file)
+      url: URL.createObjectURL(file),
     }));
-    
-    setAttachments(prev => [...prev, ...newAttachments]);
+
+    setAttachments((prev) => [...prev, ...newAttachments]);
   };
 
   const removeAttachment = (id) => {
-    setAttachments(prev => prev.filter(att => att.id !== id));
+    setAttachments((prev) => prev.filter((att) => att.id !== id));
   };
 
   const getConversationBadge = (conversation) => {
@@ -235,14 +277,18 @@ const Communication = () => {
 
   const getParticipantIcon = (type) => {
     switch (type) {
-      case 'candidate': return <FaUser className="text-primary" />;
-      case 'admin': return <FaBuilding className="text-warning" />;
-      case 'company': return <FaBuilding className="text-info" />;
-      default: return <FaUser className="text-secondary" />;
+      case 'candidate':
+        return <FaUser className="text-primary" />;
+      case 'admin':
+        return <FaBuilding className="text-warning" />;
+      case 'company':
+        return <FaBuilding className="text-info" />;
+      default:
+        return <FaUser className="text-secondary" />;
     }
   };
 
-  const filteredConversations = conversations.filter(conv => {
+  const filteredConversations = conversations.filter((conv) => {
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       return (
@@ -251,15 +297,15 @@ const Communication = () => {
         conv.lastMessage.toLowerCase().includes(term)
       );
     }
-    
+
     if (activeTab === 'unread') {
       return conv.unreadCount > 0;
     }
-    
+
     if (activeTab === 'starred') {
       return conv.status === 'starred';
     }
-    
+
     return true;
   });
 
@@ -268,7 +314,7 @@ const Communication = () => {
       type: 'candidate',
       recipientId: '',
       recipientName: '',
-      recipientEmail: ''
+      recipientEmail: '',
     });
     setShowNewMessageModal(true);
   };
@@ -304,15 +350,15 @@ const Communication = () => {
               </p>
             </div>
             <div className="d-flex gap-2">
-              <Button 
-                variant="outline-primary" 
+              <Button
+                variant="outline-primary"
                 onClick={() => setShowGroupModal(true)}
                 className="d-flex align-items-center gap-2"
               >
                 <FaUsers /> Create Group
               </Button>
-              <Button 
-                variant="primary" 
+              <Button
+                variant="primary"
                 onClick={handleStartNewConversation}
                 className="d-flex align-items-center gap-2"
               >
@@ -341,7 +387,9 @@ const Communication = () => {
             <Card.Header className="bg-white border-0 py-3">
               <div className="d-flex justify-content-between align-items-center">
                 <h5 className="mb-0">Conversations</h5>
-                <Badge bg="primary" pill>{filteredConversations.length}</Badge>
+                <Badge bg="primary" pill>
+                  {filteredConversations.length}
+                </Badge>
               </div>
             </Card.Header>
             <Card.Body className="p-0">
@@ -363,11 +411,7 @@ const Communication = () => {
 
               {/* Tabs */}
               <div className="px-3 pt-3">
-                <Tabs
-                  activeKey={activeTab}
-                  onSelect={(k) => setActiveTab(k)}
-                  className="mb-3"
-                >
+                <Tabs activeKey={activeTab} onSelect={(k) => setActiveTab(k)} className="mb-3">
                   <Tab eventKey="inbox" title="Inbox" />
                   <Tab eventKey="unread" title="Unread" />
                   <Tab eventKey="starred" title="Starred" />
@@ -377,7 +421,7 @@ const Communication = () => {
               {/* Conversations List */}
               <div className="conversations-list" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
                 <ListGroup variant="flush">
-                  {filteredConversations.map(conversation => (
+                  {filteredConversations.map((conversation) => (
                     <ListGroup.Item
                       key={conversation.id}
                       action
@@ -387,12 +431,15 @@ const Communication = () => {
                     >
                       <div className="d-flex align-items-start">
                         <div className="me-3">
-                          <div className="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center"
-                               style={{ 
-                                 width: '45px', 
-                                 height: '45px',
-                                 background: selectedConversation?.id === conversation.id ? 'white' : '#f8f9fa'
-                               }}>
+                          <div
+                            className="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center"
+                            style={{
+                              width: '45px',
+                              height: '45px',
+                              background:
+                                selectedConversation?.id === conversation.id ? 'white' : '#f8f9fa',
+                            }}
+                          >
                             {getParticipantIcon(conversation.type)}
                           </div>
                         </div>
@@ -410,9 +457,7 @@ const Communication = () => {
                             {conversation.lastMessage}
                           </p>
                           <div className="d-flex align-items-center justify-content-between">
-                            <small className="text-muted">
-                              {conversation.participant.role}
-                            </small>
+                            <small className="text-muted">{conversation.participant.role}</small>
                             {conversation.type === 'candidate' && (
                               <Badge bg="light" text="dark" className="small">
                                 Candidate
@@ -439,8 +484,10 @@ const Communication = () => {
                   <div className="d-flex justify-content-between align-items-center">
                     <div className="d-flex align-items-center">
                       <div className="me-3">
-                        <div className="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center bg-primary text-white"
-                             style={{ width: '50px', height: '50px' }}>
+                        <div
+                          className="avatar-placeholder rounded-circle d-flex align-items-center justify-content-center bg-primary text-white"
+                          style={{ width: '50px', height: '50px' }}
+                        >
                           {getParticipantIcon(selectedConversation.type)}
                         </div>
                       </div>
@@ -451,9 +498,14 @@ const Communication = () => {
                             <FaEnvelope className="me-1" />
                             {selectedConversation.participant.email}
                           </small>
-                          <Badge bg={selectedConversation.type === 'candidate' ? 'info' : 'warning'}>
-                            {selectedConversation.type === 'candidate' ? 'Candidate' : 
-                             selectedConversation.type === 'admin' ? 'Admin' : 'Company'}
+                          <Badge
+                            bg={selectedConversation.type === 'candidate' ? 'info' : 'warning'}
+                          >
+                            {selectedConversation.type === 'candidate'
+                              ? 'Candidate'
+                              : selectedConversation.type === 'admin'
+                                ? 'Admin'
+                                : 'Company'}
                           </Badge>
                         </div>
                       </div>
@@ -470,8 +522,8 @@ const Communication = () => {
                         </Button>
                       </OverlayTrigger>
                       <OverlayTrigger overlay={<Tooltip>View Profile</Tooltip>}>
-                        <Button 
-                          variant="outline-info" 
+                        <Button
+                          variant="outline-info"
                           size="sm"
                           onClick={() => {
                             if (selectedConversation.type === 'candidate') {
@@ -511,34 +563,40 @@ const Communication = () => {
                 </Card.Header>
 
                 {/* Chat Messages */}
-                <Card.Body className="chat-messages p-0" style={{ 
-                  height: 'calc(100vh - 300px)', 
-                  overflowY: 'auto',
-                  background: '#f8f9fa'
-                }}>
+                <Card.Body
+                  className="chat-messages p-0"
+                  style={{
+                    height: 'calc(100vh - 300px)',
+                    overflowY: 'auto',
+                    background: '#f8f9fa',
+                  }}
+                >
                   <div className="p-4">
                     {messages
-                      .filter(msg => msg.conversationId === selectedConversation.id)
-                      .map(message => (
-                        <div 
-                          key={message.id} 
+                      .filter((msg) => msg.conversationId === selectedConversation.id)
+                      .map((message) => (
+                        <div
+                          key={message.id}
                           className={`message-bubble mb-3 ${message.senderId === 'company' ? 'sent' : 'received'}`}
                         >
                           <div className="d-flex align-items-start mb-1">
-                            <small className="fw-medium">
-                              {message.senderName}
-                            </small>
+                            <small className="fw-medium">{message.senderName}</small>
                             <small className="text-muted ms-2">
                               {formatMessageTime(message.timestamp)}
                             </small>
                           </div>
-                          <div className={`message-content p-3 rounded ${message.senderId === 'company' ? 'bg-primary text-white' : 'bg-white'}`}>
+                          <div
+                            className={`message-content p-3 rounded ${message.senderId === 'company' ? 'bg-primary text-white' : 'bg-white'}`}
+                          >
                             {message.content}
-                            
+
                             {message.attachments && message.attachments.length > 0 && (
                               <div className="mt-2">
-                                {message.attachments.map(att => (
-                                  <div key={att.id} className="attachment-item p-2 rounded bg-light mb-1">
+                                {message.attachments.map((att) => (
+                                  <div
+                                    key={att.id}
+                                    className="attachment-item p-2 rounded bg-light mb-1"
+                                  >
                                     <div className="d-flex align-items-center">
                                       <FaFileAlt className="me-2" />
                                       <span>{att.name}</span>
@@ -549,19 +607,15 @@ const Communication = () => {
                             )}
                           </div>
                           <div className="d-flex gap-2 mt-1">
-                            <Button 
-                              variant="link" 
-                              size="sm" 
+                            <Button
+                              variant="link"
+                              size="sm"
                               className="p-0 text-decoration-none"
                               onClick={() => handleReply(message)}
                             >
                               <FaReply className="me-1" /> Reply
                             </Button>
-                            <Button 
-                              variant="link" 
-                              size="sm" 
-                              className="p-0 text-decoration-none"
-                            >
+                            <Button variant="link" size="sm" className="p-0 text-decoration-none">
                               <FaForward className="me-1" /> Forward
                             </Button>
                           </div>
@@ -578,9 +632,9 @@ const Communication = () => {
                     <div className="mb-3 p-2 border rounded">
                       <div className="d-flex justify-content-between align-items-center mb-2">
                         <small className="fw-medium">Attachments ({attachments.length})</small>
-                        <Button 
-                          variant="link" 
-                          size="sm" 
+                        <Button
+                          variant="link"
+                          size="sm"
                           className="text-danger p-0"
                           onClick={() => setAttachments([])}
                         >
@@ -588,14 +642,17 @@ const Communication = () => {
                         </Button>
                       </div>
                       <div className="d-flex flex-wrap gap-2">
-                        {attachments.map(attachment => (
-                          <div key={attachment.id} className="attachment-preview p-2 border rounded">
+                        {attachments.map((attachment) => (
+                          <div
+                            key={attachment.id}
+                            className="attachment-preview p-2 border rounded"
+                          >
                             <div className="d-flex align-items-center">
                               <FaFile className="me-2" />
                               <small className="me-2">{attachment.name}</small>
-                              <Button 
-                                variant="link" 
-                                size="sm" 
+                              <Button
+                                variant="link"
+                                size="sm"
                                 className="p-0 text-danger"
                                 onClick={() => removeAttachment(attachment.id)}
                               >
@@ -628,8 +685,8 @@ const Communication = () => {
                     <div className="d-flex flex-column gap-2">
                       <div className="d-flex gap-1">
                         <OverlayTrigger overlay={<Tooltip>Attach File</Tooltip>}>
-                          <Button 
-                            variant="outline-secondary" 
+                          <Button
+                            variant="outline-secondary"
                             size="sm"
                             onClick={() => fileInputRef.current?.click()}
                           >
@@ -654,8 +711,8 @@ const Communication = () => {
                           </Button>
                         </OverlayTrigger>
                       </div>
-                      <Button 
-                        variant="primary" 
+                      <Button
+                        variant="primary"
                         onClick={handleSendMessage}
                         disabled={!newMessage.trim() && attachments.length === 0}
                         className="d-flex align-items-center justify-content-center"
@@ -669,13 +726,16 @@ const Communication = () => {
             ) : (
               /* Empty State */
               <div className="text-center py-5">
-                <FaCommentDots className="text-muted mb-3" style={{ fontSize: '3rem', opacity: 0.5 }} />
+                <FaCommentDots
+                  className="text-muted mb-3"
+                  style={{ fontSize: '3rem', opacity: 0.5 }}
+                />
                 <h4>No conversation selected</h4>
                 <p className="text-muted mb-3">
                   Select a conversation from the list or start a new one
                 </p>
-                <Button 
-                  variant="primary" 
+                <Button
+                  variant="primary"
                   onClick={handleStartNewConversation}
                   className="d-flex align-items-center gap-2 mx-auto"
                 >
@@ -698,7 +758,7 @@ const Communication = () => {
               <Form.Label>Recipient Type</Form.Label>
               <Form.Select
                 value={messageTo.type}
-                onChange={(e) => setMessageTo({...messageTo, type: e.target.value})}
+                onChange={(e) => setMessageTo({ ...messageTo, type: e.target.value })}
               >
                 <option value="candidate">Candidate</option>
                 <option value="company">Other Company</option>
@@ -718,7 +778,7 @@ const Communication = () => {
                       ...messageTo,
                       recipientId: selected,
                       recipientName: 'John Doe', // Example
-                      recipientEmail: 'john@example.com' // Example
+                      recipientEmail: 'john@example.com', // Example
                     });
                   }}
                 >
@@ -737,7 +797,7 @@ const Communication = () => {
                   type="text"
                   placeholder="Enter company name"
                   value={messageTo.recipientName}
-                  onChange={(e) => setMessageTo({...messageTo, recipientName: e.target.value})}
+                  onChange={(e) => setMessageTo({ ...messageTo, recipientName: e.target.value })}
                 />
               </Form.Group>
             )}
@@ -767,8 +827,8 @@ const Communication = () => {
               <div className="border rounded p-3">
                 <div className="d-flex align-items-center justify-content-between mb-2">
                   <span>No files selected</span>
-                  <Button 
-                    variant="outline-primary" 
+                  <Button
+                    variant="outline-primary"
                     size="sm"
                     onClick={() => fileInputRef.current?.click()}
                   >
@@ -790,8 +850,8 @@ const Communication = () => {
           <Button variant="light" onClick={() => setShowNewMessageModal(false)}>
             Cancel
           </Button>
-          <Button 
-            variant="primary" 
+          <Button
+            variant="primary"
             onClick={() => {
               handleSendMessage();
               setShowNewMessageModal(false);
@@ -812,10 +872,7 @@ const Communication = () => {
           <Form>
             <Form.Group className="mb-3">
               <Form.Label>Group Name</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter group name"
-              />
+              <Form.Control type="text" placeholder="Enter group name" />
             </Form.Group>
 
             <Form.Group className="mb-3">
@@ -833,11 +890,7 @@ const Communication = () => {
 
             <Form.Group className="mb-3">
               <Form.Label>Group Description</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={2}
-                placeholder="Brief description of the group"
-              />
+              <Form.Control as="textarea" rows={2} placeholder="Brief description of the group" />
             </Form.Group>
           </Form>
         </Modal.Body>

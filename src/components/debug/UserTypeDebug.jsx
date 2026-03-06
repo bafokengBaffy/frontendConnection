@@ -6,7 +6,15 @@ const UserTypeDebug = () => {
   const { currentUser, userProfile, updateUserType } = useAuth();
   const [updating, setUpdating] = useState(false);
 
-  const userTypes = ['admin', 'entrepreneur', 'youth', 'student', 'company', 'institution', 'employer'];
+  const userTypes = [
+    'admin',
+    'entrepreneur',
+    'youth',
+    'student',
+    'company',
+    'institution',
+    'employer',
+  ];
 
   const handleUserTypeChange = async (newUserType) => {
     setUpdating(true);
@@ -53,15 +61,18 @@ const UserTypeDebug = () => {
       </Card.Header>
       <Card.Body>
         <Alert variant="info" className="small">
-          <strong>Current User:</strong> {currentUser.email}<br />
-          <strong>Current User Type:</strong> <Badge bg="primary">{userProfile?.userType || 'unknown'}</Badge><br />
+          <strong>Current User:</strong> {currentUser.email}
+          <br />
+          <strong>Current User Type:</strong>{' '}
+          <Badge bg="primary">{userProfile?.userType || 'unknown'}</Badge>
+          <br />
           <strong>User ID:</strong> {currentUser.uid}
         </Alert>
 
         <div className="mb-3">
           <h6 className="text-dark">Switch User Type:</h6>
           <div className="d-flex flex-wrap gap-2">
-            {userTypes.map(userType => (
+            {userTypes.map((userType) => (
               <Button
                 key={userType}
                 variant={userProfile?.userType === userType ? 'success' : 'outline-secondary'}
@@ -74,20 +85,18 @@ const UserTypeDebug = () => {
               </Button>
             ))}
           </div>
-          {updating && (
-            <small className="text-muted mt-2 d-block">Updating user type...</small>
-          )}
+          {updating && <small className="text-muted mt-2 d-block">Updating user type...</small>}
         </div>
 
         <div className="border-top pt-3">
           <h6 className="text-dark">Dashboard Access:</h6>
           <div className="d-flex flex-wrap gap-2">
-            {userTypes.map(userType => (
+            {userTypes.map((userType) => (
               <Button
                 key={userType}
                 variant="outline-primary"
                 size="sm"
-                onClick={() => window.location.href = `/${userType}`}
+                onClick={() => (window.location.href = `/${userType}`)}
                 disabled={userProfile?.userType !== userType}
               >
                 Go to {userType} dashboard

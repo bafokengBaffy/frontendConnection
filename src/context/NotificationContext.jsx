@@ -1,5 +1,13 @@
 import React, { createContext, useState, useContext, useCallback, useEffect } from 'react';
-import { FaBell, FaCheckCircle, FaExclamationTriangle, FaInfoCircle, FaMoneyBillWave, FaUsers, FaCalendarAlt } from 'react-icons/fa';
+import {
+  FaBell,
+  FaCheckCircle,
+  FaExclamationTriangle,
+  FaInfoCircle,
+  FaMoneyBillWave,
+  FaUsers,
+  FaCalendarAlt,
+} from 'react-icons/fa';
 
 const NotificationContext = createContext();
 
@@ -24,7 +32,7 @@ export const NotificationProvider = ({ children }) => {
         console.error('Error loading notifications:', error);
       }
     }
-    
+
     // Add some sample notifications for demo
     if (!savedNotifications) {
       const sampleNotifications = [
@@ -36,7 +44,7 @@ export const NotificationProvider = ({ children }) => {
           time: 'Just now',
           read: false,
           icon: <FaCheckCircle />,
-          link: '/welcome'
+          link: '/welcome',
         },
         {
           id: '2',
@@ -46,7 +54,7 @@ export const NotificationProvider = ({ children }) => {
           time: '2 hours ago',
           read: false,
           icon: <FaUsers />,
-          link: '/mentorship'
+          link: '/mentorship',
         },
         {
           id: '3',
@@ -56,8 +64,8 @@ export const NotificationProvider = ({ children }) => {
           time: '1 day ago',
           read: true,
           icon: <FaMoneyBillWave />,
-          link: '/funding'
-        }
+          link: '/funding',
+        },
       ];
       setNotifications(sampleNotifications);
       localStorage.setItem('careerconnect_notifications', JSON.stringify(sampleNotifications));
@@ -78,7 +86,7 @@ export const NotificationProvider = ({ children }) => {
       funding: <FaMoneyBillWave />,
       mentorship: <FaUsers />,
       deadline: <FaCalendarAlt />,
-      default: <FaBell />
+      default: <FaBell />,
     };
 
     const newNotification = {
@@ -92,10 +100,10 @@ export const NotificationProvider = ({ children }) => {
       link: notification.link,
       duration: notification.duration || 5000,
       priority: notification.priority || 'normal',
-      ...notification
+      ...notification,
     };
 
-    setNotifications(prev => [newNotification, ...prev]);
+    setNotifications((prev) => [newNotification, ...prev]);
 
     // Auto-remove notification after duration
     if (newNotification.duration > 0) {
@@ -119,19 +127,19 @@ export const NotificationProvider = ({ children }) => {
   }, []);
 
   const removeNotification = useCallback((id) => {
-    setNotifications(prev => prev.filter(notification => notification.id !== id));
+    setNotifications((prev) => prev.filter((notification) => notification.id !== id));
   }, []);
 
   const markAsRead = useCallback((id) => {
-    setNotifications(prev => 
-      prev.map(notification => 
+    setNotifications((prev) =>
+      prev.map((notification) =>
         notification.id === id ? { ...notification, read: true } : notification
       )
     );
   }, []);
 
   const markAllAsRead = useCallback(() => {
-    setNotifications(prev => prev.map(notification => ({ ...notification, read: true })));
+    setNotifications((prev) => prev.map((notification) => ({ ...notification, read: true })));
   }, []);
 
   const clearAllNotifications = useCallback(() => {
@@ -140,39 +148,51 @@ export const NotificationProvider = ({ children }) => {
   }, []);
 
   const getUnreadCount = useCallback(() => {
-    return notifications.filter(n => !n.read).length;
+    return notifications.filter((n) => !n.read).length;
   }, [notifications]);
 
-  const getNotificationsByType = useCallback((type) => {
-    return notifications.filter(n => n.type === type);
-  }, [notifications]);
+  const getNotificationsByType = useCallback(
+    (type) => {
+      return notifications.filter((n) => n.type === type);
+    },
+    [notifications]
+  );
 
-  const addSuccessNotification = useCallback((title, message, options = {}) => {
-    return addNotification({
-      type: 'success',
-      title,
-      message,
-      ...options
-    });
-  }, [addNotification]);
+  const addSuccessNotification = useCallback(
+    (title, message, options = {}) => {
+      return addNotification({
+        type: 'success',
+        title,
+        message,
+        ...options,
+      });
+    },
+    [addNotification]
+  );
 
-  const addErrorNotification = useCallback((title, message, options = {}) => {
-    return addNotification({
-      type: 'danger',
-      title,
-      message,
-      ...options
-    });
-  }, [addNotification]);
+  const addErrorNotification = useCallback(
+    (title, message, options = {}) => {
+      return addNotification({
+        type: 'danger',
+        title,
+        message,
+        ...options,
+      });
+    },
+    [addNotification]
+  );
 
-  const addWarningNotification = useCallback((title, message, options = {}) => {
-    return addNotification({
-      type: 'warning',
-      title,
-      message,
-      ...options
-    });
-  }, [addNotification]);
+  const addWarningNotification = useCallback(
+    (title, message, options = {}) => {
+      return addNotification({
+        type: 'warning',
+        title,
+        message,
+        ...options,
+      });
+    },
+    [addNotification]
+  );
 
   const value = {
     notifications,
@@ -185,14 +205,10 @@ export const NotificationProvider = ({ children }) => {
     getNotificationsByType,
     addSuccessNotification,
     addErrorNotification,
-    addWarningNotification
+    addWarningNotification,
   };
 
-  return (
-    <NotificationContext.Provider value={value}>
-      {children}
-    </NotificationContext.Provider>
-  );
+  return <NotificationContext.Provider value={value}>{children}</NotificationContext.Provider>;
 };
 
 export default NotificationContext;

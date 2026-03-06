@@ -15,17 +15,9 @@ import {
   Pagination,
   Spinner,
   Alert,
-  ProgressBar
+  ProgressBar,
 } from 'react-bootstrap';
-import {
-  Search,
-  Filter,
-  Building,
-  BarChart,
-  Eye,
-  Bookmark,
-  Share
-} from 'react-bootstrap-icons';
+import { Search, Filter, Building, BarChart, Eye, Bookmark, Share } from 'react-bootstrap-icons';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import './SearchMarket.css';
 
@@ -39,7 +31,7 @@ const SearchMarket = () => {
     industry: '',
     location: '',
     growthRate: '',
-    marketSize: ''
+    marketSize: '',
   });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -49,7 +41,7 @@ const SearchMarket = () => {
   const formattedDate = currentDate.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
   });
 
   // Fetch market data from Firestore
@@ -68,7 +60,7 @@ const SearchMarket = () => {
           competition: 'High',
           opportunity: 'Medium',
           trends: ['AI Adoption', 'Remote Work', 'Cloud Migration'],
-          keyPlayers: ['TechSolutions LS', 'Digital Innovations']
+          keyPlayers: ['TechSolutions LS', 'Digital Innovations'],
         },
         {
           id: '2',
@@ -79,7 +71,7 @@ const SearchMarket = () => {
           competition: 'Low',
           opportunity: 'High',
           trends: ['Sustainable Farming', 'Organic Products'],
-          keyPlayers: ['GreenHarvest LS', 'AgroTech Solutions']
+          keyPlayers: ['GreenHarvest LS', 'AgroTech Solutions'],
         },
         {
           id: '3',
@@ -90,7 +82,7 @@ const SearchMarket = () => {
           competition: 'Medium',
           opportunity: 'High',
           trends: ['E-Learning', 'Skills Development'],
-          keyPlayers: ['EduConnect LS', 'LearnSmart']
+          keyPlayers: ['EduConnect LS', 'LearnSmart'],
         },
         {
           id: '4',
@@ -101,7 +93,7 @@ const SearchMarket = () => {
           competition: 'Medium',
           opportunity: 'High',
           trends: ['Telemedicine', 'Health Tech'],
-          keyPlayers: ['MediCare LS', 'HealthFirst']
+          keyPlayers: ['MediCare LS', 'HealthFirst'],
         },
         {
           id: '5',
@@ -112,7 +104,7 @@ const SearchMarket = () => {
           competition: 'Low',
           opportunity: 'High',
           trends: ['Eco-Tourism', 'Cultural Experiences'],
-          keyPlayers: ['TourLesotho', 'Mountain Adventures']
+          keyPlayers: ['TourLesotho', 'Mountain Adventures'],
         },
         {
           id: '6',
@@ -123,7 +115,7 @@ const SearchMarket = () => {
           competition: 'High',
           opportunity: 'Medium',
           trends: ['E-commerce', 'Mobile Shopping'],
-          keyPlayers: ['ShopEasy LS', 'RetailPlus']
+          keyPlayers: ['ShopEasy LS', 'RetailPlus'],
         },
         {
           id: '7',
@@ -134,7 +126,7 @@ const SearchMarket = () => {
           competition: 'Medium',
           opportunity: 'Medium',
           trends: ['Automation', 'Local Production'],
-          keyPlayers: ['MadeInLesotho', 'Industrial Works']
+          keyPlayers: ['MadeInLesotho', 'Industrial Works'],
         },
         {
           id: '8',
@@ -145,7 +137,7 @@ const SearchMarket = () => {
           competition: 'High',
           opportunity: 'High',
           trends: ['Fintech', 'Mobile Banking'],
-          keyPlayers: ['Bank of Lesotho', 'FinTech LS']
+          keyPlayers: ['Bank of Lesotho', 'FinTech LS'],
         },
         {
           id: '9',
@@ -156,7 +148,7 @@ const SearchMarket = () => {
           competition: 'High',
           opportunity: 'Medium',
           trends: ['Affordable Housing', 'Infrastructure'],
-          keyPlayers: ['BuildRight LS', 'Construction Pro']
+          keyPlayers: ['BuildRight LS', 'Construction Pro'],
         },
         {
           id: '10',
@@ -167,8 +159,8 @@ const SearchMarket = () => {
           competition: 'Low',
           opportunity: 'High',
           trends: ['Renewable Energy', 'Solar Power'],
-          keyPlayers: ['SolarLesotho', 'GreenEnergy LS']
-        }
+          keyPlayers: ['SolarLesotho', 'GreenEnergy LS'],
+        },
       ];
 
       setMarketData(sampleMarketData);
@@ -189,59 +181,60 @@ const SearchMarket = () => {
   // Apply filters and search
   useEffect(() => {
     let result = [...marketData];
-    
+
     // Apply search term
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      result = result.filter(item => 
-        item.industry.toLowerCase().includes(term) ||
-        item.location.toLowerCase().includes(term) ||
-        item.trends.some(trend => trend.toLowerCase().includes(term)) ||
-        item.keyPlayers.some(player => player.toLowerCase().includes(term))
+      result = result.filter(
+        (item) =>
+          item.industry.toLowerCase().includes(term) ||
+          item.location.toLowerCase().includes(term) ||
+          item.trends.some((trend) => trend.toLowerCase().includes(term)) ||
+          item.keyPlayers.some((player) => player.toLowerCase().includes(term))
       );
     }
-    
+
     // Apply filters
     if (filters.industry) {
-      result = result.filter(item => item.industry === filters.industry);
+      result = result.filter((item) => item.industry === filters.industry);
     }
-    
+
     if (filters.location) {
-      result = result.filter(item => item.location === filters.location);
+      result = result.filter((item) => item.location === filters.location);
     }
-    
+
     if (filters.growthRate) {
       const rate = parseInt(filters.growthRate);
       if (rate === 10) {
-        result = result.filter(item => item.growthRate >= 10);
+        result = result.filter((item) => item.growthRate >= 10);
       } else if (rate === 5) {
-        result = result.filter(item => item.growthRate >= 5 && item.growthRate < 10);
+        result = result.filter((item) => item.growthRate >= 5 && item.growthRate < 10);
       } else {
-        result = result.filter(item => item.growthRate < 5);
+        result = result.filter((item) => item.growthRate < 5);
       }
     }
-    
+
     if (filters.marketSize) {
-      result = result.filter(item => item.marketSize === filters.marketSize);
+      result = result.filter((item) => item.marketSize === filters.marketSize);
     }
-    
+
     setFilteredData(result);
     setCurrentPage(1);
   }, [searchTerm, filters, marketData]);
 
   // Get unique values for filter dropdowns
   const industries = useMemo(() => {
-    const uniqueIndustries = [...new Set(marketData.map(item => item.industry))];
+    const uniqueIndustries = [...new Set(marketData.map((item) => item.industry))];
     return uniqueIndustries.sort();
   }, [marketData]);
 
   const locations = useMemo(() => {
-    const uniqueLocations = [...new Set(marketData.map(item => item.location))];
+    const uniqueLocations = [...new Set(marketData.map((item) => item.location))];
     return uniqueLocations.sort();
   }, [marketData]);
 
   const marketSizes = useMemo(() => {
-    const uniqueSizes = [...new Set(marketData.map(item => item.marketSize))];
+    const uniqueSizes = [...new Set(marketData.map((item) => item.marketSize))];
     return uniqueSizes.sort();
   }, [marketData]);
 
@@ -257,9 +250,9 @@ const SearchMarket = () => {
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -269,25 +262,33 @@ const SearchMarket = () => {
       industry: '',
       location: '',
       growthRate: '',
-      marketSize: ''
+      marketSize: '',
     });
   };
 
   const getCompetitionColor = (level) => {
     switch (level.toLowerCase()) {
-      case 'low': return 'success';
-      case 'medium': return 'warning';
-      case 'high': return 'danger';
-      default: return 'secondary';
+      case 'low':
+        return 'success';
+      case 'medium':
+        return 'warning';
+      case 'high':
+        return 'danger';
+      default:
+        return 'secondary';
     }
   };
 
   const getOpportunityColor = (level) => {
     switch (level.toLowerCase()) {
-      case 'high': return 'success';
-      case 'medium': return 'warning';
-      case 'low': return 'danger';
-      default: return 'secondary';
+      case 'high':
+        return 'success';
+      case 'medium':
+        return 'warning';
+      case 'low':
+        return 'danger';
+      default:
+        return 'secondary';
     }
   };
 
@@ -298,9 +299,7 @@ const SearchMarket = () => {
           <div className="d-flex justify-content-between align-items-center">
             <div>
               <h1 className="mb-1">Market Research</h1>
-              <p className="text-muted">
-                {formattedDate} | Company View
-              </p>
+              <p className="text-muted">{formattedDate} | Company View</p>
             </div>
             <div>
               <Button variant="outline-secondary" onClick={clearFilters} className="me-2">
@@ -328,9 +327,7 @@ const SearchMarket = () => {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
-                <Button variant="primary">
-                  Analyze
-                </Button>
+                <Button variant="primary">Analyze</Button>
               </InputGroup>
             </Card.Body>
           </Card>
@@ -355,8 +352,10 @@ const SearchMarket = () => {
                       onChange={handleFilterChange}
                     >
                       <option value="">All Industries</option>
-                      {industries.map(industry => (
-                        <option key={industry} value={industry}>{industry}</option>
+                      {industries.map((industry) => (
+                        <option key={industry} value={industry}>
+                          {industry}
+                        </option>
                       ))}
                     </Form.Select>
                   </Form.Group>
@@ -370,8 +369,10 @@ const SearchMarket = () => {
                       onChange={handleFilterChange}
                     >
                       <option value="">All Locations</option>
-                      {locations.map(location => (
-                        <option key={location} value={location}>{location}</option>
+                      {locations.map((location) => (
+                        <option key={location} value={location}>
+                          {location}
+                        </option>
                       ))}
                     </Form.Select>
                   </Form.Group>
@@ -400,8 +401,10 @@ const SearchMarket = () => {
                       onChange={handleFilterChange}
                     >
                       <option value="">All Sizes</option>
-                      {marketSizes.map(size => (
-                        <option key={size} value={size}>{size}</option>
+                      {marketSizes.map((size) => (
+                        <option key={size} value={size}>
+                          {size}
+                        </option>
                       ))}
                     </Form.Select>
                   </Form.Group>
@@ -423,29 +426,32 @@ const SearchMarket = () => {
               <Row>
                 <Col md={3} className="text-center">
                   <div className="p-3">
-         
                     <h3>{marketData.length}</h3>
                     <p className="text-muted mb-0">Industries Analyzed</p>
                   </div>
                 </Col>
                 <Col md={3} className="text-center">
                   <div className="p-3">
-            
                     <h3>{locations.length}</h3>
                     <p className="text-muted mb-0">Regions Covered</p>
                   </div>
                 </Col>
                 <Col md={3} className="text-center">
                   <div className="p-3">
-                    
-                    <h3>{Math.round(marketData.reduce((sum, item) => sum + item.growthRate, 0) / marketData.length)}%</h3>
+                    <h3>
+                      {Math.round(
+                        marketData.reduce((sum, item) => sum + item.growthRate, 0) /
+                          marketData.length
+                      )}
+                      %
+                    </h3>
                     <p className="text-muted mb-0">Avg. Growth Rate</p>
                   </div>
                 </Col>
                 <Col md={3} className="text-center">
                   <div className="p-3">
                     <BarChart size={32} className="text-info mb-2" />
-                    <h3>{marketData.filter(item => item.opportunity === 'High').length}</h3>
+                    <h3>{marketData.filter((item) => item.opportunity === 'High').length}</h3>
                     <p className="text-muted mb-0">High Opportunity Markets</p>
                   </div>
                 </Col>
@@ -493,17 +499,25 @@ const SearchMarket = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {currentItems.map(item => (
+                      {currentItems.map((item) => (
                         <tr key={item.id}>
                           <td>
-                            <strong><Building className="me-2" />{item.industry}</strong>
+                            <strong>
+                              <Building className="me-2" />
+                              {item.industry}
+                            </strong>
                           </td>
+                          <td>{item.location}</td>
                           <td>
-                   
-                            {item.location}
-                          </td>
-                          <td>
-                            <Badge bg={item.marketSize === 'Large' ? 'primary' : item.marketSize === 'Medium' ? 'warning' : 'secondary'}>
+                            <Badge
+                              bg={
+                                item.marketSize === 'Large'
+                                  ? 'primary'
+                                  : item.marketSize === 'Medium'
+                                    ? 'warning'
+                                    : 'secondary'
+                              }
+                            >
                               {item.marketSize}
                             </Badge>
                           </td>
@@ -513,10 +527,16 @@ const SearchMarket = () => {
                                 <span>{item.growthRate}%</span>
                                 <small className="text-muted">Annual</small>
                               </div>
-                              <ProgressBar 
-                                now={item.growthRate} 
-                                max={25} 
-                                variant={item.growthRate >= 15 ? 'success' : item.growthRate >= 8 ? 'warning' : 'danger'}
+                              <ProgressBar
+                                now={item.growthRate}
+                                max={25}
+                                variant={
+                                  item.growthRate >= 15
+                                    ? 'success'
+                                    : item.growthRate >= 8
+                                      ? 'warning'
+                                      : 'danger'
+                                }
                                 className="mt-1"
                               />
                             </div>
@@ -565,15 +585,15 @@ const SearchMarket = () => {
                   {totalPages > 1 && (
                     <div className="d-flex justify-content-center mt-4">
                       <Pagination>
-                        <Pagination.First 
-                          onClick={() => handlePageChange(1)} 
+                        <Pagination.First
+                          onClick={() => handlePageChange(1)}
                           disabled={currentPage === 1}
                         />
-                        <Pagination.Prev 
-                          onClick={() => handlePageChange(currentPage - 1)} 
+                        <Pagination.Prev
+                          onClick={() => handlePageChange(currentPage - 1)}
                           disabled={currentPage === 1}
                         />
-                        
+
                         {[...Array(totalPages)].map((_, index) => {
                           const pageNumber = index + 1;
                           if (
@@ -598,13 +618,13 @@ const SearchMarket = () => {
                           }
                           return null;
                         })}
-                        
-                        <Pagination.Next 
-                          onClick={() => handlePageChange(currentPage + 1)} 
+
+                        <Pagination.Next
+                          onClick={() => handlePageChange(currentPage + 1)}
                           disabled={currentPage === totalPages}
                         />
-                        <Pagination.Last 
-                          onClick={() => handlePageChange(totalPages)} 
+                        <Pagination.Last
+                          onClick={() => handlePageChange(totalPages)}
                           disabled={currentPage === totalPages}
                         />
                       </Pagination>
@@ -629,7 +649,7 @@ const SearchMarket = () => {
                 {[...marketData]
                   .sort((a, b) => b.growthRate - a.growthRate)
                   .slice(0, 5)
-                  .map(item => (
+                  .map((item) => (
                     <div key={item.id} className="list-group-item border-0">
                       <div className="d-flex justify-content-between align-items-center">
                         <div>
@@ -652,9 +672,9 @@ const SearchMarket = () => {
             <Card.Body>
               <div className="list-group">
                 {marketData
-                  .filter(item => item.opportunity === 'High')
+                  .filter((item) => item.opportunity === 'High')
                   .slice(0, 5)
-                  .map(item => (
+                  .map((item) => (
                     <div key={item.id} className="list-group-item border-0">
                       <div className="d-flex justify-content-between align-items-center">
                         <div>

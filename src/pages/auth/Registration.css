@@ -1,1 +1,395 @@
-/* Registration.css - Empty CSS file */
+.register-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh;
+}
+
+.bg-animated {
+  pointer-events: none;
+}
+
+.bg-particle {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.register-card {
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.security-sidebar {
+  background: linear-gradient(135deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.security-sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.1"><path d="M20 20 L80 20 L50 80 Z" fill="white"/></svg>');
+  background-size: 50px 50px;
+  opacity: 0.1;
+}
+
+.security-progress {
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.security-progress .progress-bar {
+  border-radius: 4px;
+}
+
+.step-item {
+  transition: all 0.3s ease;
+}
+
+.step-item.active {
+  color: white;
+}
+
+.step-circle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.step-item.active .step-circle {
+  background: white;
+  color: #4158D0;
+}
+
+.security-badge {
+  cursor: help;
+  transition: all 0.3s ease;
+}
+
+.security-badge:hover {
+  transform: scale(1.05);
+}
+
+/* Account Type Cards */
+.account-type-card {
+  transition: all 0.3s ease;
+  border: 1px solid #e9ecef;
+  background: white;
+}
+
+.account-type-card.selected {
+  border: 2px solid;
+  color: white;
+}
+
+.account-type-card:not(.selected):hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.type-icon {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.benefit-badge {
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.benefit-badge:hover {
+  transform: scale(1.05);
+}
+
+/* Form Controls */
+.form-control-custom {
+  transition: all 0.3s ease;
+  border: 2px solid #e9ecef;
+}
+
+.form-control-custom:focus {
+  border-color: #4158D0;
+  box-shadow: 0 0 0 0.2rem rgba(65, 88, 208, 0.25);
+}
+
+.password-toggle {
+  z-index: 5;
+  color: #6c757d;
+  transition: all 0.3s ease;
+}
+
+.password-toggle:hover {
+  color: #4158D0;
+  transform: scale(1.1);
+}
+
+.password-strength-bar {
+  height: 8px;
+  border-radius: 4px;
+}
+
+/* Buttons */
+.next-btn {
+  background: linear-gradient(135deg, #4158D0 0%, #C850C0 100%);
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.next-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(65, 88, 208, 0.3);
+}
+
+.next-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.back-btn {
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  transform: translateX(-5px);
+  background-color: #f8f9fa;
+}
+
+.google-btn {
+  transition: all 0.3s ease;
+  border: 2px solid #e9ecef;
+}
+
+.google-btn:hover:not(:disabled) {
+  background-color: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.create-account-btn {
+  background: linear-gradient(135deg, #4158D0 0%, #C850C0 100%);
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.create-account-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(65, 88, 208, 0.3);
+}
+
+.login-link {
+  color: #4158D0;
+  transition: all 0.3s ease;
+}
+
+.login-link:hover {
+  color: #C850C0;
+  transform: translateX(5px);
+}
+
+/* Security Summary */
+.security-summary {
+  border-radius: 15px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+/* Trust Indicators */
+.trust-indicators .badge {
+  transition: all 0.3s ease;
+  cursor: help;
+}
+
+.trust-indicators .badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* reCAPTCHA */
+.recaptcha-container {
+  transform-origin: center;
+  transition: all 0.3s ease;
+}
+
+.recaptcha-container:hover {
+  transform: scale(1.02);
+}
+
+/* Verification Modal */
+.verification-modal .modal-content {
+  border: none;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.verification-icon-wrapper {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4158D0 0%, #C850C0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  color: white;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(65, 88, 208, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(65, 88, 208, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(65, 88, 208, 0);
+  }
+}
+
+.verification-input {
+  width: 50px;
+  height: 60px;
+  font-size: 24px;
+  text-align: center;
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.verification-input:focus {
+  border-color: #4158D0;
+  box-shadow: 0 0 0 0.2rem rgba(65, 88, 208, 0.25);
+  transform: scale(1.05);
+}
+
+.verification-input::-webkit-inner-spin-button,
+.verification-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.verification-input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.resend-btn {
+  color: #4158D0;
+  transition: all 0.3s ease;
+}
+
+.resend-btn:hover {
+  color: #C850C0;
+  transform: scale(1.05);
+}
+
+.verify-btn {
+  background: linear-gradient(135deg, #4158D0 0%, #C850C0 100%);
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.verify-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(65, 88, 208, 0.3);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .register-card {
+    margin: 1rem;
+  }
+  
+  .security-sidebar {
+    display: none;
+  }
+  
+  .verification-input {
+    width: 40px;
+    height: 50px;
+    font-size: 20px;
+  }
+}
+
+/* Loading Spinner */
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+  border-width: 0.15em;
+}
+
+/* Tooltip Customization */
+.tooltip-inner {
+  background-color: #4158D0;
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
+.tooltip.bs-tooltip-top .tooltip-arrow::before {
+  border-top-color: #4158D0;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: slideIn 0.5s ease forwards;
+}
+
+/* Error States */
+.is-invalid {
+  border-color: #dc3545 !important;
+}
+
+.invalid-feedback {
+  display: block;
+  color: #dc3545;
+  font-size: 80%;
+  margin-top: 0.25rem;
+}
+
+/* Success States */
+.is-valid {
+  border-color: #198754 !important;
+}
+
+/* Hover Effects */
+.hover-lift {
+  transition: transform 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+/* Gradient Text */
+.gradient-text {
+  background: linear-gradient(135deg, #4158D0 0%, #C850C0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

@@ -2,19 +2,19 @@
 /**
  * User Analytics Module
  */
-import { 
-  collection, 
-  doc, 
-  getDoc, 
-  getDocs, 
-  query, 
-  where, 
-  orderBy, 
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+  orderBy,
   limit,
   Timestamp,
   increment,
   updateDoc,
-  writeBatch
+  writeBatch,
 } from 'firebase/firestore';
 
 class UserAnalyticsService {
@@ -33,7 +33,7 @@ class UserAnalyticsService {
       startDate = null,
       endDate = new Date(),
       limit: resultLimit = 100,
-      eventTypes = []
+      eventTypes = [],
     } = options;
 
     try {
@@ -58,9 +58,9 @@ class UserAnalyticsService {
       }
 
       const snapshot = await getDocs(q);
-      const events = snapshot.docs.map(doc => ({
+      const events = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       }));
 
       // Calculate metrics
@@ -71,7 +71,7 @@ class UserAnalyticsService {
         userData: {
           email: userData?.email,
           userType: userData?.userType,
-          createdAt: userData?.createdAt
+          createdAt: userData?.createdAt,
         },
         events,
         metrics,
@@ -79,8 +79,8 @@ class UserAnalyticsService {
           totalEvents: events.length,
           eventsByType: this._groupEventsByType(events),
           dailyActivity: this._calculateDailyActivity(events),
-          popularActions: this._getPopularActions(events)
-        }
+          popularActions: this._getPopularActions(events),
+        },
       };
     } catch (error) {
       console.error('Error getting user analytics:', error);
@@ -101,7 +101,7 @@ class UserAnalyticsService {
       );
 
       const snapshot = await getDocs(q);
-      const events = snapshot.docs.map(doc => doc.data());
+      const events = snapshot.docs.map((doc) => doc.data());
 
       // Calculate engagement score (0-100)
       const score = this._calculateEngagementScore(events);
@@ -111,7 +111,7 @@ class UserAnalyticsService {
         score,
         level: this._getEngagementLevel(score),
         activityCount: events.length,
-        period: '7d'
+        period: '7d',
       };
     } catch (error) {
       console.error('Error calculating engagement score:', error);
@@ -120,7 +120,7 @@ class UserAnalyticsService {
         score: 0,
         level: 'inactive',
         activityCount: 0,
-        period: '7d'
+        period: '7d',
       };
     }
   }
@@ -137,9 +137,9 @@ class UserAnalyticsService {
       );
 
       const snapshot = await getDocs(q);
-      const events = snapshot.docs.map(doc => ({
+      const events = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       }));
 
       // Group by day
@@ -150,7 +150,7 @@ class UserAnalyticsService {
             date,
             events: [],
             eventCount: 0,
-            eventTypes: new Set()
+            eventTypes: new Set(),
           };
         }
         acc[date].events.push(event);
@@ -159,9 +159,9 @@ class UserAnalyticsService {
         return acc;
       }, {});
 
-      return Object.values(timeline).map(day => ({
+      return Object.values(timeline).map((day) => ({
         ...day,
-        eventTypes: Array.from(day.eventTypes)
+        eventTypes: Array.from(day.eventTypes),
       }));
     } catch (error) {
       console.error('Error getting activity timeline:', error);
@@ -174,7 +174,7 @@ class UserAnalyticsService {
       const userRef = doc(this.db, 'users', userId);
       await updateDoc(userRef, {
         'analytics.preferences': preferences,
-        'analytics.preferencesUpdatedAt': Timestamp.now()
+        'analytics.preferencesUpdatedAt': Timestamp.now(),
       });
 
       return { success: true };
@@ -187,7 +187,7 @@ class UserAnalyticsService {
   // Private methods
   _calculateUserMetrics(events, userData) {
     const now = new Date();
-    const accountAge = userData?.createdAt 
+    const accountAge = userData?.createdAt
       ? (now - userData.createdAt.toDate()) / (1000 * 60 * 60 * 24)
       : 0;
 
@@ -196,7 +196,7 @@ class UserAnalyticsService {
       sessionFrequency: 0,
       averageSessionDuration: 0,
       favoriteFeatures: [],
-      conversionRate: 0
+      conversionRate: 0,
     };
 
     if (events.length > 0) {
@@ -211,9 +211,7 @@ class UserAnalyticsService {
         }
         return sum;
       }, 0);
-      metrics.averageSessionDuration = sessions.length > 0 
-        ? totalDuration / sessions.length 
-        : 0;
+      metrics.averageSessionDuration = sessions.length > 0 ? totalDuration / sessions.length : 0;
 
       // Determine activity level
       const eventsPerDay = events.length / Math.max(accountAge, 1);
@@ -246,18 +244,18 @@ class UserAnalyticsService {
       form_submission: 3,
       job_application: 5,
       profile_update: 2,
-      search: 1
+      search: 1,
     };
 
     const now = new Date();
     const score = events.reduce((total, event) => {
       const weight = weights[event.eventName] || 1;
-      
+
       // Apply time decay (more recent events weighted higher)
       const hoursAgo = (now - event.timestamp?.toDate()) / (1000 * 60 * 60);
-      const timeDecay = Math.max(0, 1 - (hoursAgo / (7 * 24))); // Decay over 7 days
-      
-      return total + (weight * timeDecay);
+      const timeDecay = Math.max(0, 1 - hoursAgo / (7 * 24)); // Decay over 7 days
+
+      return total + weight * timeDecay;
     }, 0);
 
     // Normalize to 0-100 scale
@@ -280,18 +278,18 @@ class UserAnalyticsService {
 
     events.sort((a, b) => a.timestamp - b.timestamp);
 
-    events.forEach(event => {
+    events.forEach((event) => {
       const eventTime = event.timestamp?.toDate().getTime();
 
       if (!currentSession) {
         currentSession = {
           start: eventTime,
           end: eventTime,
-          events: [event]
+          events: [event],
         };
       } else {
         const timeSinceLastEvent = eventTime - currentSession.end;
-        
+
         if (timeSinceLastEvent <= SESSION_TIMEOUT) {
           currentSession.end = eventTime;
           currentSession.events.push(event);
@@ -300,7 +298,7 @@ class UserAnalyticsService {
           currentSession = {
             start: eventTime,
             end: eventTime,
-            events: [event]
+            events: [event],
           };
         }
       }
@@ -315,12 +313,12 @@ class UserAnalyticsService {
 
   _extractFeatureFromEvent(event) {
     const featureMap = {
-      'page_view': event.pageName || 'Unknown Page',
-      'button_click': event.buttonName || 'Unknown Button',
-      'form_submission': event.formName || 'Unknown Form',
-      'job_application': 'Job Applications',
-      'profile_update': 'Profile Management',
-      'search': 'Search'
+      page_view: event.pageName || 'Unknown Page',
+      button_click: event.buttonName || 'Unknown Button',
+      form_submission: event.formName || 'Unknown Form',
+      job_application: 'Job Applications',
+      profile_update: 'Profile Management',
+      search: 'Search',
     };
 
     return featureMap[event.eventName] || event.eventName;
@@ -336,7 +334,7 @@ class UserAnalyticsService {
   _calculateDailyActivity(events) {
     const dailyActivity = {};
 
-    events.forEach(event => {
+    events.forEach((event) => {
       const date = event.timestamp?.toDate().toDateString() || 'Unknown';
       dailyActivity[date] = (dailyActivity[date] || 0) + 1;
     });

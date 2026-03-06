@@ -6,7 +6,7 @@ const SearchCompanies = () => {
   const currentDate = new Date().toLocaleDateString('en-US', {
     month: 'long',
     day: 'numeric',
-    year: 'numeric'
+    year: 'numeric',
   });
 
   return (
@@ -16,15 +16,13 @@ const SearchCompanies = () => {
           <div className="d-flex justify-content-between align-items-center">
             <div>
               <h1 className="mb-1">Search Companies</h1>
-              <p className="text-muted">
-                {currentDate} | Admin View
-              </p>
+              <p className="text-muted">{currentDate} | Admin View</p>
             </div>
             <Button variant="primary">Refresh</Button>
           </div>
         </Col>
       </Row>
-      
+
       <Row>
         <Col lg={8}>
           <Card className="mb-4">
@@ -33,8 +31,8 @@ const SearchCompanies = () => {
             </Card.Header>
             <Card.Body>
               <p>
-                Welcome to the Search Companies page. This is where Admin users can 
-                access and manage company profiles and information.
+                Welcome to the Search Companies page. This is where Admin users can access and
+                manage company profiles and information.
               </p>
               <ul>
                 <li>View detailed company information</li>
@@ -45,7 +43,7 @@ const SearchCompanies = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col lg={4}>
           <Card className="mb-4">
             <Card.Header>
@@ -61,7 +59,7 @@ const SearchCompanies = () => {
               </div>
             </Card.Body>
           </Card>
-          
+
           <Card>
             <Card.Header>
               <Card.Title as="h5">Recent Activity</Card.Title>

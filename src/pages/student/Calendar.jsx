@@ -13,7 +13,7 @@ const Calendar = () => {
       date: '2024-01-15',
       time: '10:00 AM',
       type: 'interview',
-      status: 'scheduled'
+      status: 'scheduled',
     },
     {
       id: 2,
@@ -21,7 +21,7 @@ const Calendar = () => {
       date: '2024-01-16',
       time: '11:59 PM',
       type: 'academic',
-      status: 'pending'
+      status: 'pending',
     },
     {
       id: 3,
@@ -29,7 +29,7 @@ const Calendar = () => {
       date: '2024-01-18',
       time: '2:00 PM',
       type: 'mentorship',
-      status: 'confirmed'
+      status: 'confirmed',
     },
     {
       id: 4,
@@ -37,7 +37,7 @@ const Calendar = () => {
       date: '2024-01-20',
       time: '11:59 PM',
       type: 'deadline',
-      status: 'urgent'
+      status: 'urgent',
     },
     {
       id: 5,
@@ -45,8 +45,8 @@ const Calendar = () => {
       date: '2024-01-22',
       time: '9:00 AM',
       type: 'workshop',
-      status: 'registered'
-    }
+      status: 'registered',
+    },
   ];
 
   const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -55,31 +55,51 @@ const Calendar = () => {
   const currentYear = currentDate.getFullYear();
 
   const getEventBadge = (type) => {
-    switch(type) {
-      case 'interview': return <Badge bg="primary">Interview</Badge>;
-      case 'academic': return <Badge bg="success">Academic</Badge>;
-      case 'mentorship': return <Badge bg="info">Mentorship</Badge>;
-      case 'deadline': return <Badge bg="danger">Deadline</Badge>;
-      case 'workshop': return <Badge bg="warning" text="dark">Workshop</Badge>;
-      default: return <Badge bg="secondary">Event</Badge>;
+    switch (type) {
+      case 'interview':
+        return <Badge bg="primary">Interview</Badge>;
+      case 'academic':
+        return <Badge bg="success">Academic</Badge>;
+      case 'mentorship':
+        return <Badge bg="info">Mentorship</Badge>;
+      case 'deadline':
+        return <Badge bg="danger">Deadline</Badge>;
+      case 'workshop':
+        return (
+          <Badge bg="warning" text="dark">
+            Workshop
+          </Badge>
+        );
+      default:
+        return <Badge bg="secondary">Event</Badge>;
     }
   };
 
   const getStatusBadge = (status) => {
-    switch(status) {
-      case 'scheduled': return <Badge bg="info">Scheduled</Badge>;
-      case 'pending': return <Badge bg="warning" text="dark">Pending</Badge>;
-      case 'confirmed': return <Badge bg="success">Confirmed</Badge>;
-      case 'urgent': return <Badge bg="danger">Urgent</Badge>;
-      case 'registered': return <Badge bg="primary">Registered</Badge>;
-      default: return <Badge bg="secondary">Unknown</Badge>;
+    switch (status) {
+      case 'scheduled':
+        return <Badge bg="info">Scheduled</Badge>;
+      case 'pending':
+        return (
+          <Badge bg="warning" text="dark">
+            Pending
+          </Badge>
+        );
+      case 'confirmed':
+        return <Badge bg="success">Confirmed</Badge>;
+      case 'urgent':
+        return <Badge bg="danger">Urgent</Badge>;
+      case 'registered':
+        return <Badge bg="primary">Registered</Badge>;
+      default:
+        return <Badge bg="secondary">Unknown</Badge>;
     }
   };
 
   return (
     <Container className="py-4">
       <h2 className="mb-4">Calendar & Events</h2>
-      
+
       <Row>
         <Col md={8}>
           <Card className="shadow-sm mb-4">
@@ -100,33 +120,36 @@ const Calendar = () => {
                   </Button>
                 </div>
               </div>
-              
+
               <div className="calendar-grid mb-4">
                 <Row className="text-center border-bottom mb-2 pb-2">
-                  {daysOfWeek.map(day => (
+                  {daysOfWeek.map((day) => (
                     <Col key={day} className="fw-bold">
                       {day}
                     </Col>
                   ))}
                 </Row>
-                
+
                 <Row className="text-center">
                   {Array.from({ length: 35 }).map((_, index) => {
                     const day = index - 2 + 1; // Start from 1st
                     const isToday = day === currentDate.getDate();
-                    const hasEvent = events.some(event => 
-                      new Date(event.date).getDate() === day
-                    );
-                    
+                    const hasEvent = events.some((event) => new Date(event.date).getDate() === day);
+
                     return (
                       <Col key={index} className="p-2 border">
-                        <div className={`d-flex flex-column ${isToday ? 'bg-primary text-white rounded p-1' : ''}`}>
+                        <div
+                          className={`d-flex flex-column ${isToday ? 'bg-primary text-white rounded p-1' : ''}`}
+                        >
                           <div className={hasEvent ? 'fw-bold' : ''}>
                             {day > 0 && day <= 31 ? day : ''}
                           </div>
                           {hasEvent && (
                             <div className="mt-1">
-                              <i className="bi bi-circle-fill text-primary" style={{fontSize: '8px'}}></i>
+                              <i
+                                className="bi bi-circle-fill text-primary"
+                                style={{ fontSize: '8px' }}
+                              ></i>
                             </div>
                           )}
                         </div>
@@ -135,7 +158,7 @@ const Calendar = () => {
                   })}
                 </Row>
               </div>
-              
+
               <div className="text-center">
                 <Button variant="primary" onClick={() => setShowModal(true)}>
                   <i className="bi bi-plus-circle me-2"></i>
@@ -145,7 +168,7 @@ const Calendar = () => {
             </Card.Body>
           </Card>
         </Col>
-        
+
         <Col md={4}>
           <Card className="shadow-sm mb-4">
             <Card.Body>
@@ -154,7 +177,7 @@ const Calendar = () => {
                 {events
                   .sort((a, b) => new Date(a.date) - new Date(b.date))
                   .slice(0, 5)
-                  .map(event => (
+                  .map((event) => (
                     <ListGroup.Item key={event.id}>
                       <div className="d-flex justify-content-between align-items-start mb-2">
                         <div>
@@ -176,7 +199,7 @@ const Calendar = () => {
               </ListGroup>
             </Card.Body>
           </Card>
-          
+
           <Card className="shadow-sm">
             <Card.Body>
               <Card.Title>📊 This Month Overview</Card.Title>
@@ -185,31 +208,31 @@ const Calendar = () => {
                   <span>Interviews</span>
                   <span className="fw-bold">2</span>
                 </div>
-                <div className="progress" style={{height: '6px'}}>
-                  <div className="progress-bar bg-primary" style={{width: '40%'}}></div>
+                <div className="progress" style={{ height: '6px' }}>
+                  <div className="progress-bar bg-primary" style={{ width: '40%' }}></div>
                 </div>
               </div>
-              
+
               <div className="mb-3">
                 <div className="d-flex justify-content-between mb-1">
                   <span>Deadlines</span>
                   <span className="fw-bold">3</span>
                 </div>
-                <div className="progress" style={{height: '6px'}}>
-                  <div className="progress-bar bg-danger" style={{width: '60%'}}></div>
+                <div className="progress" style={{ height: '6px' }}>
+                  <div className="progress-bar bg-danger" style={{ width: '60%' }}></div>
                 </div>
               </div>
-              
+
               <div className="mb-3">
                 <div className="d-flex justify-content-between mb-1">
                   <span>Workshops</span>
                   <span className="fw-bold">1</span>
                 </div>
-                <div className="progress" style={{height: '6px'}}>
-                  <div className="progress-bar bg-warning" style={{width: '20%'}}></div>
+                <div className="progress" style={{ height: '6px' }}>
+                  <div className="progress-bar bg-warning" style={{ width: '20%' }}></div>
                 </div>
               </div>
-              
+
               <div className="mt-4">
                 <h6>Quick Actions:</h6>
                 <Button variant="outline-success" size="sm" className="w-100 mb-2">
@@ -225,7 +248,7 @@ const Calendar = () => {
           </Card>
         </Col>
       </Row>
-      
+
       {/* Add Event Modal */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
@@ -237,7 +260,7 @@ const Calendar = () => {
               <Form.Label>Event Title</Form.Label>
               <Form.Control type="text" placeholder="Enter event title" />
             </Form.Group>
-            
+
             <Row>
               <Col md={6}>
                 <Form.Group className="mb-3">
@@ -252,7 +275,7 @@ const Calendar = () => {
                 </Form.Group>
               </Col>
             </Row>
-            
+
             <Form.Group className="mb-3">
               <Form.Label>Event Type</Form.Label>
               <Form.Select>
@@ -263,7 +286,7 @@ const Calendar = () => {
                 <option value="mentorship">Mentorship</option>
               </Form.Select>
             </Form.Group>
-            
+
             <Form.Group className="mb-3">
               <Form.Label>Description</Form.Label>
               <Form.Control as="textarea" rows={3} />
