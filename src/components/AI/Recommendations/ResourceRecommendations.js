@@ -1,2 +1,2 @@
-﻿import ResourceRecommendations from './components/AI/Recommendations/ResourceRecommendations.jsx';
+import ResourceRecommendations from './ResourceRecommendations';
 export default ResourceRecommendations;

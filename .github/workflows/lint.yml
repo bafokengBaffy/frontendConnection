@@ -10,49 +10,49 @@ jobs:
   eslint:
     name: ESLint
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18.x
-      
+
       - name: Install dependencies
         run: |
           cd frontend
           npm ci --legacy-peer-deps
-      
+
       - name: Run ESLint
         run: |
           cd frontend
           npm run lint
-      
+
       - name: Annotate ESLint results
         uses: ataylorme/eslint-annotate-action@v2
         with:
-          repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          report-json: "frontend/eslint-report.json"
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+          report-json: 'frontend/eslint-report.json'
         if: always()
 
   prettier:
     name: Prettier
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18.x
-      
+
       - name: Install dependencies
         run: |
           cd frontend
           npm ci --legacy-peer-deps
-      
+
       - name: Check formatting
         run: |
           cd frontend
@@ -61,20 +61,20 @@ jobs:
   stylelint:
     name: Stylelint
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18.x
-      
+
       - name: Install dependencies
         run: |
           cd frontend
           npm ci --legacy-peer-deps
-      
+
       - name: Run Stylelint
         run: |
           cd frontend
@@ -83,22 +83,22 @@ jobs:
   commitlint:
     name: Commitlint
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18.x
-      
+
       - name: Install dependencies
         run: |
           cd frontend
           npm ci --legacy-peer-deps
-      
+
       - name: Validate commit messages
         run: |
           cd frontend
@@ -107,12 +107,12 @@ jobs:
   sonarqube:
     name: SonarQube
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v4
         env:

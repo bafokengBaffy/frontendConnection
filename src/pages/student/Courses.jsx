@@ -1,4 +1,3 @@
-import React from 'react';
 import { Container, Row, Col, Card, Button, Form, InputGroup } from 'react-bootstrap';
 
 const Courses = () => {

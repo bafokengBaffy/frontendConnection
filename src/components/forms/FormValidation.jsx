@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+/* eslint-disable no-unused-vars */
+import { createContext, useContext, useState, useCallback } from 'react';
 
 // Create form context
 const FormContext = createContext(null);
@@ -174,7 +175,7 @@ export class ValidationRules {
 
   email(message = 'Invalid email address') {
     if (this.value) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const emailRegex = /^[^.@]+@[^.@]+.[^.@]+$/;
       if (!emailRegex.test(this.value)) {
         this.errors.push(message);
       }

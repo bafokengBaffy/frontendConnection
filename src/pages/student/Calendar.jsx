@@ -1,5 +1,5 @@
 /* eslint-disable no-empty-pattern */
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Container, Row, Col, Card, Button, Badge, ListGroup, Modal, Form } from 'react-bootstrap';
 
 const Calendar = () => {

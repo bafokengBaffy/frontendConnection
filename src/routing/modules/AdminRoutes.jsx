@@ -1,5 +1,6 @@
-﻿import React, { lazy } from 'react';
+import { lazy } from 'react';
 import { Route } from 'react-router-dom';
+
 import ProtectedRoute from '../../components/layout/ProtectedRoute';
 
 // Lazy loaded admin components
@@ -239,3 +240,6 @@ export const getAdminRoutes = () => [
     }
   />,
 ];
+
+// Default export for backward compatibility
+export default getAdminRoutes;

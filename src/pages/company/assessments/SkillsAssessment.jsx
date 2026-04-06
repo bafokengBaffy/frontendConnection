@@ -1,4 +1,3 @@
-import React from 'react';
 import { Container, Card } from 'react-bootstrap';
 import { FaClipboardCheck } from 'react-icons/fa';
 import './SkillsAssessment.css';

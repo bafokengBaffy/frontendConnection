@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable no-unused-vars */
+import { useState } from 'react';
 import { Avatar as MuiAvatar, Badge, alpha, styled, useTheme } from '@mui/material';
 import {
   Person as PersonIcon,

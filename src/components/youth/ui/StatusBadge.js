@@ -1,2 +1,2 @@
-﻿import StatusBadge from './components/youth/ui/StatusBadge.jsx';
+import StatusBadge from './StatusBadge';
 export default StatusBadge;

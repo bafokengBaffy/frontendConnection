@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 // src/pages/company/ScheduleInterview.js
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Container,
   Row,
@@ -42,6 +42,7 @@ import {
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
+
 import 'react-datepicker/dist/react-datepicker.css';
 import { companyFirebaseService } from '../../services/companyServices';
 

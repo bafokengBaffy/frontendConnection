@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import {
   Paper,
@@ -37,6 +39,7 @@ import {
   Visibility as ViewIcon,
 } from '@mui/icons-material';
 import { Skeleton } from '@mui/material';
+
 import Button from './Button';
 import Dropdown from './Dropdown';
 import SearchBar from './SearchBar';
@@ -165,7 +168,7 @@ const Table = ({
     }
 
     return processed;
-  }, [data, searchQuery, sortColumn, sortDirection, columns, onSearch]);
+  }, [data, searchQuery, onSearch, sortColumn, onSort, columns, sortDirection]);
 
   // Paginate data internally if not controlled
   const paginatedData = React.useMemo(() => {

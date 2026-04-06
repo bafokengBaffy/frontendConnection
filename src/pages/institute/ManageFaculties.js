@@ -1,2 +1,2 @@
-﻿import ManageFaculties from './pages/institute/ManageFaculties.jsx';
+import ManageFaculties from './ManageFaculties';
 export default ManageFaculties;

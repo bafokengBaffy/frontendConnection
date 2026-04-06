@@ -1,6 +1,8 @@
-import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
+import { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
+
 import { logger } from '../utils/logger';
 import { paymentService } from '../services/paymentService';
+
 import { useAuth } from './AuthContext';
 
 // Create context
@@ -17,7 +19,8 @@ export const PAYMENT_STATUS = {
 };
 
 // Payment methods
-export const PAYMENT_METHODS = {
+export const PAYMENT_METHOD_TYPES = {
+  // RENAMED to avoid duplicate key
   CREDIT_CARD: 'credit_card',
   DEBIT_CARD: 'debit_card',
   PAYPAL: 'paypal',
@@ -59,7 +62,7 @@ const initialState = {
   subscriptions: [],
   currentSubscription: null,
   invoices: [],
-  paymentMethods: [],
+  userPaymentMethods: [], // RENAMED to avoid duplicate key
   wallet: {
     balance: 0,
     currency: 'USD',
@@ -214,7 +217,7 @@ export const PaymentProvider = ({ children }) => {
       const paymentMethods = await paymentService.getPaymentMethods();
       setState((prev) => ({
         ...prev,
-        paymentMethods,
+        userPaymentMethods: paymentMethods, // UPDATED state key
         loading: false,
       }));
     } catch (error) {
@@ -527,8 +530,8 @@ export const PaymentProvider = ({ children }) => {
 
   // Get default payment method
   const defaultPaymentMethod = useMemo(() => {
-    return state.paymentMethods.find((method) => method.isDefault);
-  }, [state.paymentMethods]);
+    return state.userPaymentMethods.find((method) => method.isDefault);
+  }, [state.userPaymentMethods]);
 
   // Get active subscription
   const activeSubscription = useMemo(() => {
@@ -579,7 +582,7 @@ export const PaymentProvider = ({ children }) => {
     subscriptions: state.subscriptions,
     currentSubscription: state.currentSubscription,
     invoices: state.invoices,
-    paymentMethods: state.paymentMethods,
+    userPaymentMethods: state.userPaymentMethods, // UPDATED export key
     wallet: state.wallet,
     analytics: state.analytics,
     loading: state.loading,
@@ -615,7 +618,7 @@ export const PaymentProvider = ({ children }) => {
 
     // Constants
     paymentStatus: PAYMENT_STATUS,
-    paymentMethods: PAYMENT_METHODS,
+    paymentMethodTypes: PAYMENT_METHOD_TYPES, // RENAMED export
     subscriptionPlans: SUBSCRIPTION_PLANS,
     transactionTypes: TRANSACTION_TYPES,
     invoiceStatus: INVOICE_STATUS,

@@ -1,101 +1,139 @@
-import React, { Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
+// frontend/src/App.jsx
+import React, { Suspense, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-// Import Bootstrap
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap-icons/font/bootstrap-icons.css';
-
-// Context Providers
-import { AuthProvider } from './context/AuthContext';
-import { NotificationProvider } from './context/NotificationContext';
-import { StudentProvider } from './context/StudentContext';
-
-// Layout Components
-import Layout from './components/layout/Layout';
-import ErrorBoundary from './components/ErrorBoundary';
-
-// Routing Modules
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { LoadingSpinner } from './components/layout/LoadingSpinner';
 import {
-  getPublicRoutes,
-  getAdminRoutes,
-  getStudentRoutes,
-  getCompanyRoutes,
-  getAIRoutes,
-  getCommonRoutes,
-  LoadingFallback,
-  ScrollToTop,
-  FirebaseLoader,
-} from './routing';
+  AuthProvider,
+  useAuth,
+  StudentProvider,
+  NotificationProvider,
+  YouthProvider,
+  AlumniProvider,
+  GovernmentProvider,
+  ParentProvider,
+  SystemProvider,
+  CollaborationProvider,
+  CompanyProvider,
+  InstituteProvider,
+  EntrepreneurProvider,
+} from './context';
+import { MentorProvider } from './context/MentorContext';
+import { AIProvider } from './context/AIContext';
+import getAdminRoutes from './routing/modules/AdminRoutes';
+import getAIRoutes from './routing/modules/AIRoutes';
+import getAlumniRoutes from './routing/modules/AlumniRoutes';
+import getCommonRoutes from './routing/modules/CommonRoutes';
+import getCompanyRoutes from './routing/modules/CompanyRoutes';
+import getEntrepreneurRoutes from './routing/modules/EntrepreneurRoutes';
+import getInstituteRoutes from './routing/modules/InstituteRoutes';
+import getMentorRoutes from './routing/modules/MentorRoutes';
+import getParentRoutes from './routing/modules/ParentRoutes';
+import getPublicRoutes from './routing/modules/PublicRoutes';
+import getStudentRoutes from './routing/modules/StudentRoutes';
+import getYouthRoutes from './routing/modules/YouthRoutes';
+import './App.css';
 
-// Import 404 Component
-const NotFound = React.lazy(() => import('./routing/components/NotFound'));
+const LoadingFallback = () => (
+  <div className="loading-container">
+    <LoadingSpinner message="Loading Career Connect..." />
+  </div>
+);
 
-/**
- * Layout Wrapper Component - Prevents double sidebar
- */
-function LayoutWrapper() {
+const ErrorFallback = ({ error, resetErrorBoundary }) => (
+  <div className="error-container">
+    <div className="error-content">
+      <h1>Something went wrong</h1>
+      <p>We're sorry, but something went wrong. Please try refreshing the page.</p>
+      {error && <pre className="error-details">{error.message}</pre>}
+      <button onClick={resetErrorBoundary} className="btn btn-primary">
+        Try Again
+      </button>
+    </div>
+  </div>
+);
+
+const AppContent = () => {
+  const { loading } = useAuth();
+
+  if (loading) {
+    return <LoadingFallback />;
+  }
+
   return (
-    <Layout>
-      <Outlet />
-    </Layout>
+    <Suspense fallback={<LoadingFallback />}>
+      <Routes>
+        {getPublicRoutes()}
+        {getCommonRoutes()}
+        {getAdminRoutes()}
+        {getStudentRoutes()}
+        {getCompanyRoutes()}
+        {getInstituteRoutes()}
+        {getMentorRoutes()}
+        {getYouthRoutes()}
+        {getEntrepreneurRoutes()}
+        {getParentRoutes()}
+        {getAlumniRoutes()}
+        {getAIRoutes()}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Suspense>
   );
-}
+};
 
-/**
- * Main App Content Component
- * Uses modular routing configuration
- */
-function AppContent() {
-  return (
-    <Router>
-      <ScrollToTop />
-      <Suspense fallback={<LoadingFallback />}>
-        <Routes>
-          {/* ==================== PUBLIC ROUTES ==================== */}
-          {getPublicRoutes()}
-
-          {/* ==================== PROTECTED ROUTES ==================== */}
-          <Route element={<FirebaseLoader />}>
-            {/* Wrap ALL protected routes with Layout */}
-            <Route element={<LayoutWrapper />}>
-              {/* Common Routes (accessible to all authenticated users) */}
-              {getCommonRoutes()}
-
-              {/* AI Routes (accessible to all authenticated users) */}
-              {getAIRoutes()}
-
-              {/* Admin Routes (admin only) */}
-              {getAdminRoutes()}
-
-              {/* Student Routes (student only) */}
-              {getStudentRoutes()}
-
-              {/* Company Routes (company only) */}
-              {getCompanyRoutes()}
-
-              {/* ============ 404 ROUTE ============ */}
-              <Route path="*" element={<NotFound />} />
-            </Route>
-          </Route>
-        </Routes>
-      </Suspense>
-    </Router>
-  );
-}
-
-/**
- * Main App Wrapper Component
- */
 function App() {
+  useEffect(() => {
+    const handleOnline = () => {
+      console.log('App is online');
+    };
+
+    const handleOffline = () => {
+      console.warn('App is offline');
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
   return (
-    <ErrorBoundary>
-      <AuthProvider>
-        <NotificationProvider>
-          <StudentProvider>
-            <AppContent />
-          </StudentProvider>
-        </NotificationProvider>
-      </AuthProvider>
+    <ErrorBoundary fallback={ErrorFallback}>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <AuthProvider>
+          <NotificationProvider>
+            <StudentProvider>
+              <CompanyProvider>
+                <InstituteProvider>
+                  <EntrepreneurProvider>
+                    <MentorProvider>
+                      <YouthProvider>
+                        <AlumniProvider>
+                          <GovernmentProvider>
+                            <ParentProvider>
+                              <SystemProvider>
+                                <CollaborationProvider>
+                                  <AIProvider>
+                                    <AppContent />
+                                  </AIProvider>
+                                </CollaborationProvider>
+                              </SystemProvider>
+                            </ParentProvider>
+                          </GovernmentProvider>
+                        </AlumniProvider>
+                      </YouthProvider>
+                    </MentorProvider>
+                  </EntrepreneurProvider>
+                </InstituteProvider>
+              </CompanyProvider>
+            </StudentProvider>
+          </NotificationProvider>
+        </AuthProvider>
+      </BrowserRouter>
     </ErrorBoundary>
   );
 }

@@ -17,8 +17,9 @@ import {
   Modal,
 } from 'react-bootstrap';
 import { Search, Filter, Building, People, Star, Eye, Phone, Globe } from 'react-bootstrap-icons';
-import { db } from '../../config/firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
+
+import { db } from '../../config/firebase';
 import './SearchPartners.css';
 
 const SearchPartners = () => {

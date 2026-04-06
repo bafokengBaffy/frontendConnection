@@ -1,5 +1,6 @@
-import React, { lazy } from 'react';
+import { lazy } from 'react';
 import { Route } from 'react-router-dom';
+
 import ProtectedRoute from '../../components/layout/ProtectedRoute';
 
 // Lazy loaded company components
@@ -474,3 +475,5 @@ export const getCompanyRoutes = () => [
     }
   />,
 ];
+
+export default getCompanyRoutes;

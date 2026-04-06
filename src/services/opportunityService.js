@@ -13,8 +13,9 @@ import {
   deleteDoc,
   Timestamp,
 } from 'firebase/firestore';
-import { db } from '../config/firebase';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
+import { db } from '../config/firebase';
 
 // Opportunity types
 export const OPPORTUNITY_TYPES = {

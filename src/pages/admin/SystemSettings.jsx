@@ -1,5 +1,5 @@
-﻿/* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from 'react';
+/* eslint-disable no-unused-vars */
+import { useState, useEffect } from 'react';
 import {
   Container,
   Row,
@@ -41,6 +41,7 @@ import {
   FaEyeSlash,
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+
 import { useAuth } from '../../context/AuthContext';
 import './SystemSettings.css';
 

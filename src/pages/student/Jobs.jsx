@@ -1,7 +1,7 @@
-﻿/* eslint-disable no-undef */
+/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import {
   Container,
   Row,
@@ -34,6 +34,7 @@ import {
   Timestamp,
   limit,
 } from 'firebase/firestore';
+
 import { db, storage, auth } from '../../config/firebase';
 import { useNotification } from '../../context/NotificationContext';
 import { uploadFile } from '../../services/cloudinaryService';
@@ -707,7 +708,7 @@ const Jobs = () => {
               <p className="text-muted mb-2">
                 <i className="bi bi-building me-1"></i>
                 {job.jobDetails?.company || job.company}
-                {job.jobDetails?.location && ` • ${job.jobDetails.location}`}
+                {job.jobDetails?.location && ` � ${job.jobDetails.location}`}
               </p>
 
               <div className="d-flex align-items-center mb-2">
@@ -870,7 +871,7 @@ const Jobs = () => {
           <h2 className="mb-1">My Jobs</h2>
           <p className="text-muted mb-0">
             Manage your saved jobs, applications, and career progress
-            {userProfile && ` • Welcome back, ${userProfile.fullName?.split(' ')[0] || 'Student'}!`}
+            {userProfile && ` � Welcome back, ${userProfile.fullName?.split(' ')[0] || 'Student'}!`}
           </p>
         </div>
         <div>

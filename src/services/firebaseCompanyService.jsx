@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
-const { db, admin } = require('../config/firebase');
 const { Timestamp, FieldValue } = require('firebase-admin/firestore');
+
+const { db, admin } = require('../config/firebase');
 
 /**
  * Backend Firebase Company Service

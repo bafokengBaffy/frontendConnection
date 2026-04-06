@@ -1,5 +1,5 @@
+/* eslint-disable no-unused-vars */
 // src/services/applicationService.jsx
-import { db } from '../config/firebase';
 import {
   collection,
   doc,
@@ -17,6 +17,8 @@ import {
   increment,
   Timestamp,
 } from 'firebase/firestore';
+
+import { db } from '../config/firebase';
 
 /**
  * Application Service

@@ -13,30 +13,30 @@ jobs:
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
         node-version: [16.x, 18.x, 20.x]
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: |
           cd frontend
           npm ci --legacy-peer-deps
-      
+
       - name: Run unit tests
         run: |
           cd frontend
           npm run test:unit -- --coverage
-      
+
       - name: Upload coverage
         uses: codecov/codecov-action@v3
         with:
@@ -46,20 +46,20 @@ jobs:
   integration-tests:
     name: Integration Tests
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-      
+
       - name: Install dependencies
         run: |
           cd frontend
           npm ci --legacy-peer-deps
-      
+
       - name: Run integration tests
         run: |
           cd frontend
@@ -70,30 +70,30 @@ jobs:
   e2e-tests:
     name: E2E Tests
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-      
+
       - name: Install dependencies
         run: |
           cd frontend
           npm ci --legacy-peer-deps
-      
+
       - name: Install Playwright browsers
         run: |
           cd frontend
           npx playwright install --with-deps chromium
-      
+
       - name: Run E2E tests
         run: |
           cd frontend
           npm run test:e2e
-      
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v3
@@ -105,30 +105,30 @@ jobs:
   visual-regression:
     name: Visual Regression Tests
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-      
+
       - name: Install dependencies
         run: |
           cd frontend
           npm ci --legacy-peer-deps
-      
+
       - name: Build application
         run: |
           cd frontend
           npm run build
-      
+
       - name: Run visual tests
         run: |
           cd frontend
           npm run test:visual
-      
+
       - name: Upload visual diff
         if: failure()
         uses: actions/upload-artifact@v3

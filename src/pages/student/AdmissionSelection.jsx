@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import { useEffect, useState } from 'react';
+
 import { useAuth } from '../../context/AuthContext';
 import './Student.css';
 

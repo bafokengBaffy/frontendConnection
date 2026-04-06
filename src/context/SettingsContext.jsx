@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
+
 import { logger } from '../utils/logger';
 import { debounce } from '../utils/helpers';
 

@@ -1,2 +1,2 @@
-﻿import MentorCard from './components/youth/MentorCard.jsx';
+import MentorCard from './MentorCard';
 export default MentorCard;

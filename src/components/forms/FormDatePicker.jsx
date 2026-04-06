@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
+/* eslint-disable no-unused-vars */
+import { useState, useRef, useEffect } from 'react';
 import {
   TextField,
   InputAdornment,
@@ -23,7 +24,6 @@ import {
   ChevronRight as ChevronRightIcon,
   Today as TodayIcon,
 } from '@mui/icons-material';
-import { useFormContext } from './FormValidation';
 import {
   format,
   parse,
@@ -37,6 +37,8 @@ import {
   eachDayOfInterval,
   getDay,
 } from 'date-fns';
+
+import { useFormContext } from './FormValidation';
 
 const StyledTextField = styled(TextField)(({ theme, error, touched, success }) => ({
   '& .MuiOutlinedInput-root': {

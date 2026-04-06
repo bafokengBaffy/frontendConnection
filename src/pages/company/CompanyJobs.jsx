@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/jsx-no-undef */
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Container,
@@ -45,6 +46,7 @@ import {
   orderBy,
   where,
 } from 'firebase/firestore';
+
 import { db } from '../../config/firebase';
 import { jobService } from '../../services/companyServices';
 import './CompanyJobs.css';

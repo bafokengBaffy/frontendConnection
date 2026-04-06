@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /**
  * User-related Type Definitions
  */
@@ -14,6 +15,8 @@ export const UserRole = {
   MENTOR: 'mentor',
   YOUTH: 'youth',
   ENTREPRENEUR: 'entrepreneur',
+  PARENT: 'parent',
+  ALUMNI: 'alumni',
   GUEST: 'guest',
 };
 

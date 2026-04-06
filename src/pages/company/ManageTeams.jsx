@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 // src/pages/company/ManageTeams.js
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Container,
   Row,
@@ -37,6 +37,7 @@ import {
   FaEllipsisV,
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+
 import { companyFirebaseService } from '../../services/companyServices';
 
 const ManageTeams = () => {
@@ -95,11 +96,11 @@ const ManageTeams = () => {
 
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    } else if (!/^[^.@]+@[^.@]+.[^.@]+$/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email address';
     }
 
-    if (formData.phone && !/^[+]?[1-9][\d]{0,15}$/.test(formData.phone.replace(/\D/g, ''))) {
+    if (formData.phone && !/^[+]?[1-9][.]{0,15}$/.test(formData.phone.replace(/./g, ''))) {
       newErrors.phone = 'Please enter a valid phone number';
     }
 

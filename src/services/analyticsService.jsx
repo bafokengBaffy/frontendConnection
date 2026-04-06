@@ -5,7 +5,6 @@
  */
 
 // Import Firebase configuration
-import { db, auth } from '../config/firebase';
 import {
   collection,
   doc,
@@ -26,6 +25,8 @@ import {
   setDoc,
   writeBatch,
 } from 'firebase/firestore';
+
+import { db, auth } from '../config/firebase';
 
 // Import modular analytics services
 import userAnalytics from './analytics/modules/userAnalytics';
@@ -301,7 +302,7 @@ class AnalyticsService {
         .join(',')
     );
 
-    const csvContent = [headers, ...rows].join('\n');
+    const csvContent = [headers, ...rows].join('.');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
 
     return {

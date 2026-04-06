@@ -27,7 +27,7 @@ services.forEach((service) => {
 });
 
 // Test specific methods
-console.log('\n=== METHOD VERIFICATION ===');
+console.log('.=== METHOD VERIFICATION ===');
 
 // Test jobService methods
 if (jobService && typeof jobService.getActiveJobs === 'function') {
@@ -53,7 +53,7 @@ if (cloudinaryService && typeof cloudinaryService.uploadFile === 'function') {
   allGood = false;
 }
 
-console.log('\n=== SUMMARY ===');
+console.log('.=== SUMMARY ===');
 if (allGood) {
   console.log('? All imports and methods are working correctly!');
 } else {

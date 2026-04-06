@@ -1,5 +1,6 @@
-import { db } from '../config/firebase';
 import { collection, doc, setDoc, getDoc } from 'firebase/firestore';
+
+import { db } from '../config/firebase';
 
 class FirebaseSetupService {
   static async initializeCollections() {

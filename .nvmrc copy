@@ -1,6 +1,0 @@
-legacy-peer-deps=true
-strict-peer-dependencies=false
-audit=false
-fund=false
-engine-strict=false
-node-options="--openssl-legacy-provider"

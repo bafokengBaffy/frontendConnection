@@ -8,7 +8,9 @@
 import { doc, getDoc, updateDoc, serverTimestamp, setDoc, arrayUnion } from 'firebase/firestore';
 import { getAuth, updateProfile as updateAuthProfile } from 'firebase/auth';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
 import { db, storage } from '../config/firebase';
+
 import { cloudinaryService } from './cloudinaryService';
 
 class ProfileService {
@@ -615,7 +617,7 @@ class ProfileService {
   }
 
   validateEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^.@]+@[^.@]+.[^.@]+$/;
     return emailRegex.test(email);
   }
 
@@ -694,7 +696,7 @@ class ProfileService {
           canvas.toBlob(
             (blob) => {
               resolve(
-                new File([blob], file.name.replace(/\.[^/.]+$/, '') + '.webp', {
+                new File([blob], file.name.replace(/.[^/.]+$/, '') + '.webp', {
                   type: 'image/webp',
                   lastModified: Date.now(),
                 })

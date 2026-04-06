@@ -12,7 +12,9 @@ import {
   Timestamp,
   onSnapshot,
 } from 'firebase/firestore';
+
 import { db } from '../config/firebase';
+
 import { getAnalyticsData } from './analyticsService';
 
 // AI Dashboard Constants
@@ -574,7 +576,7 @@ const convertToCSV = (data) => {
     csvRows.push(values.join(','));
   }
 
-  return csvRows.join('\n');
+  return csvRows.join('.');
 };
 
 // Helper function to convert to Excel (simplified)

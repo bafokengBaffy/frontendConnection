@@ -1,2 +1,2 @@
-﻿import ApplicationList from './components/EntrepreneurHub/funding/applications/ApplicationList.jsx';
+import ApplicationList from './ApplicationList';
 export default ApplicationList;

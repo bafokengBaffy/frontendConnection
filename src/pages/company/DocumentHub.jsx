@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Container,
   Row,
@@ -49,6 +49,7 @@ import {
   FaTags,
   FaExternalLinkAlt,
 } from 'react-icons/fa';
+
 import { companyFirebaseService } from '../../services/companyServices';
 
 const DocumentHub = () => {
@@ -124,7 +125,7 @@ const DocumentHub = () => {
       setFile(selectedFile);
       setFormData((prev) => ({
         ...prev,
-        name: selectedFile.name.replace(/\.[^/.]+$/, ''), // Remove extension
+        name: selectedFile.name.replace(/.[^/.]+$/, ''), // Remove extension
       }));
       setErrors({});
     }

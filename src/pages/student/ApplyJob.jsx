@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from 'react';
 import {
   Alert,
@@ -14,6 +15,7 @@ import {
   Spinner,
 } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
+
 import { useAuth } from '../../context/AuthContext';
 import jobService from '../../services/jobService';
 import {

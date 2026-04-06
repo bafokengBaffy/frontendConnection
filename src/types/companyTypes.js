@@ -1,9 +1,11 @@
+/* eslint-disable no-unused-vars */
 /**
  * Company-related Type Definitions
  */
 
-import { Status, Country, Currency, Permission } from './index';
 import { UserRole } from './userTypes';
+
+import { Status, Country, Currency, Permission } from './index';
 
 // Company size
 export const CompanySize = {

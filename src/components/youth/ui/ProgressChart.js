@@ -1,2 +1,2 @@
-﻿import ProgressChart from './components/youth/ui/ProgressChart.jsx';
+import ProgressChart from './ProgressChart';
 export default ProgressChart;

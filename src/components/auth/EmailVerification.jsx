@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable no-unused-vars */
+import { useState, useEffect } from 'react';
 import {
   Container,
   Paper,
@@ -16,7 +17,6 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { sendEmailVerification, applyActionCode, checkActionCode } from 'firebase/auth';
-import { auth } from '../../config/firebase';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Email as EmailIcon,
@@ -26,6 +26,8 @@ import {
   ArrowBack as ArrowBackIcon,
   MarkEmailRead as MarkEmailReadIcon,
 } from '@mui/icons-material';
+
+import { auth } from '../../config/firebase';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   marginTop: theme.spacing(8),

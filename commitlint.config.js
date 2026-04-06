@@ -6,11 +6,7 @@ module.exports = {
     'footer-leading-blank': [1, 'always'],
     'footer-max-line-length': [2, 'always', 100],
     'header-max-length': [2, 'always', 100],
-    'subject-case': [
-      2,
-      'never',
-      ['sentence-case', 'start-case', 'pascal-case', 'upper-case']
-    ],
+    'subject-case': [2, 'never', ['sentence-case', 'start-case', 'pascal-case', 'upper-case']],
     'subject-empty': [2, 'never'],
     'subject-full-stop': [2, 'never', '.'],
     'type-case': [2, 'always', 'lower-case'],
@@ -30,8 +26,8 @@ module.exports = {
         'revert',
         'style',
         'test',
-        'wip'
-      ]
+        'wip',
+      ],
     ],
     // Custom rules
     'scope-enum': [
@@ -53,11 +49,11 @@ module.exports = {
         'db',
         'config',
         'deps',
-        'docs'
-      ]
+        'docs',
+      ],
     ],
     'scope-empty': [2, 'never'],
-    'scope-case': [2, 'always', 'lower-case']
+    'scope-case': [2, 'always', 'lower-case'],
   },
   plugins: [
     {
@@ -66,14 +62,14 @@ module.exports = {
           const { type, scope, subject } = parsed;
           const regex = /^[A-Z0-9].*[^.]$/;
           const isValid = regex.test(subject);
-          
+
           return [
             isValid,
-            `Subject must start with uppercase letter/number and not end with period. Got: "${subject}"`
+            `Subject must start with uppercase letter/number and not end with period. Got: "${subject}"`,
           ];
-        }
-      }
-    }
+        },
+      },
+    },
   ],
   prompt: {
     messages: {
@@ -82,7 +78,7 @@ module.exports = {
       min: '%d chars at least',
       emptyWarning: 'can not be empty',
       upperLimitWarning: 'over limit',
-      lowerLimitWarning: 'below limit'
+      lowerLimitWarning: 'below limit',
     },
     questions: {
       type: {
@@ -91,92 +87,95 @@ module.exports = {
           feat: {
             description: 'A new feature',
             title: 'Features',
-            emoji: '✨'
+            emoji: '✨',
           },
           fix: {
             description: 'A bug fix',
             title: 'Bug Fixes',
-            emoji: '🐛'
+            emoji: '🐛',
           },
           docs: {
             description: 'Documentation only changes',
             title: 'Documentation',
-            emoji: '📚'
+            emoji: '📚',
           },
           style: {
-            description: 'Changes that do not affect the meaning of the code (white-space, formatting, etc)',
+            description:
+              'Changes that do not affect the meaning of the code (white-space, formatting, etc)',
             title: 'Styles',
-            emoji: '💎'
+            emoji: '💎',
           },
           refactor: {
             description: 'A code change that neither fixes a bug nor adds a feature',
             title: 'Code Refactoring',
-            emoji: '📦'
+            emoji: '📦',
           },
           perf: {
             description: 'A code change that improves performance',
             title: 'Performance Improvements',
-            emoji: '🚀'
+            emoji: '🚀',
           },
           test: {
             description: 'Adding missing tests or correcting existing tests',
             title: 'Tests',
-            emoji: '🚨'
+            emoji: '🚨',
           },
           build: {
             description: 'Changes that affect the build system or external dependencies',
             title: 'Builds',
-            emoji: '🛠'
+            emoji: '🛠',
           },
           ci: {
             description: 'Changes to our CI configuration files and scripts',
             title: 'Continuous Integrations',
-            emoji: '⚙️'
+            emoji: '⚙️',
           },
           chore: {
             description: "Other changes that don't modify src or test files",
             title: 'Chores',
-            emoji: '♻️'
+            emoji: '♻️',
           },
           revert: {
             description: 'Reverts a previous commit',
             title: 'Reverts',
-            emoji: '🗑'
+            emoji: '🗑',
           },
           wip: {
             description: 'Work in progress',
             title: 'WIP',
-            emoji: '🚧'
-          }
-        }
+            emoji: '🚧',
+          },
+        },
       },
       scope: {
-        description: 'What is the scope of this change (e.g., component or file name)'
+        description: 'What is the scope of this change (e.g., component or file name)',
       },
       subject: {
-        description: 'Write a short, imperative tense description of the change'
+        description: 'Write a short, imperative tense description of the change',
       },
       body: {
-        description: 'Provide a longer description of the change'
+        description: 'Provide a longer description of the change',
       },
       isBreaking: {
-        description: 'Are there any breaking changes?'
+        description: 'Are there any breaking changes?',
       },
       breakingBody: {
-        description: 'A BREAKING CHANGE commit requires a body. Please enter a longer description of the commit itself'
+        description:
+          'A BREAKING CHANGE commit requires a body. Please enter a longer description of the commit itself',
       },
       breaking: {
-        description: 'Describe the breaking changes'
+        description: 'Describe the breaking changes',
       },
       isIssueAffected: {
-        description: 'Does this change affect any open issues?'
+        description: 'Does this change affect any open issues?',
       },
       issuesBody: {
-        description: 'If issues are closed, the commit requires a body. Please enter a longer description of the commit itself'
+        description:
+          'If issues are closed, the commit requires a body. Please enter a longer description of the commit itself',
       },
       issues: {
-        description: 'Add issue references (e.g., "fix #123", "re #123")'
-      }
-    }
-  }
+        description: 'Add issue references (e.g., "fix #123", "re #123")',
+      },
+    },
+  },
 };

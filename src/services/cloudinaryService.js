@@ -535,7 +535,7 @@ class CloudinaryService {
 
           canvas.toBlob(
             (blob) => {
-              const optimizedFile = new File([blob], file.name.replace(/\.[^/.]+$/, '') + '.webp', {
+              const optimizedFile = new File([blob], file.name.replace(/.[^/.]+$/, '') + '.webp', {
                 type: format,
                 lastModified: Date.now(),
               });
@@ -653,7 +653,7 @@ class CloudinaryService {
 
       if (uploadIndex !== -1 && pathParts.length > uploadIndex + 1) {
         const publicIdWithExtension = pathParts.slice(uploadIndex + 1).join('/');
-        return publicIdWithExtension.replace(/\.[^/.]+$/, '');
+        return publicIdWithExtension.replace(/.[^/.]+$/, '');
       }
     } catch (error) {
       console.warn('Could not extract public ID from URL:', url);

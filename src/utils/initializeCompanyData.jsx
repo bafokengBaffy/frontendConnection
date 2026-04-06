@@ -1,6 +1,7 @@
 // frontend/src/utils/initializeCompanyData.js
-import { db } from '../config/firebase';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+
+import { db } from '../config/firebase';
 
 export const initializeCompanyCollections = async (companyId) => {
   try {

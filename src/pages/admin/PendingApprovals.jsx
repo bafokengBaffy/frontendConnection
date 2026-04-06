@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect } from 'react';
 import {
   Container,
   Row,
@@ -36,9 +37,10 @@ import {
   FaUsers,
   FaArrowLeft,
 } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+
 import { useAuth } from '../../context/AuthContext';
 import { useNotification } from '../../context/NotificationContext';
-import { useNavigate } from 'react-router-dom';
 import adminService from '../../services/adminService';
 
 const PendingApprovals = () => {

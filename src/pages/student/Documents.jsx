@@ -1,5 +1,6 @@
-﻿/* eslint-disable no-unused-vars */
-import React, { useState, useEffect, useCallback } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
+import { useState, useEffect, useCallback } from 'react';
 import {
   Container,
   Row,
@@ -41,8 +42,6 @@ import {
   serverTimestamp,
   Timestamp,
 } from 'firebase/firestore';
-import { useAuth } from '../../context/AuthContext';
-import { db, storage } from '../../config/firebase';
 import {
   FaUpload,
   FaDownload,
@@ -65,6 +64,9 @@ import {
   FaSortAmountUp,
 } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+
+import { useAuth } from '../../context/AuthContext';
+import { db, storage } from '../../config/firebase';
 import './Documents.css';
 
 const Documents = () => {
@@ -92,12 +94,12 @@ const Documents = () => {
   });
   const [newTag, setNewTag] = useState('');
   const [categories] = useState([
-    { value: 'academic', label: 'Academic Records', icon: '📚' },
-    { value: 'certificates', label: 'Certificates', icon: '🏆' },
-    { value: 'resume', label: 'Resume/CV', icon: '📄' },
-    { value: 'identification', label: 'Identification', icon: '🆔' },
-    { value: 'portfolio', label: 'Portfolio', icon: '💼' },
-    { value: 'other', label: 'Other', icon: '📎' },
+    { value: 'academic', label: 'Academic Records', icon: '??' },
+    { value: 'certificates', label: 'Certificates', icon: '??' },
+    { value: 'resume', label: 'Resume/CV', icon: '??' },
+    { value: 'identification', label: 'Identification', icon: '??' },
+    { value: 'portfolio', label: 'Portfolio', icon: '??' },
+    { value: 'other', label: 'Other', icon: '??' },
   ]);
 
   // Fetch documents on component mount and when filters change
@@ -156,7 +158,7 @@ const Documents = () => {
       setUploading(true);
       const file = uploadForm.file;
       const fileExtension = file.name.split('.').pop().toLowerCase();
-      const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+      const fileName = `${Date.now()}_${file.name.replace(/.+/g, '_')}`;
       const storageRef = ref(storage, `student-documents/${currentUser.uid}/${fileName}`);
 
       // Start upload with progress tracking
@@ -428,7 +430,7 @@ const Documents = () => {
       {/* Header Section */}
       <Row className="mb-4">
         <Col>
-          <h2 className="mb-3">📄 My Documents</h2>
+          <h2 className="mb-3">?? My Documents</h2>
           <p className="text-muted">
             Manage and organize all your academic and professional documents
           </p>
@@ -467,7 +469,7 @@ const Documents = () => {
                 className="mb-2"
               />
               <small className="text-muted">
-                {storageUsage.percentage.toFixed(1)}% used •{' '}
+                {storageUsage.percentage.toFixed(1)}% used �{' '}
                 {formatFileSize(storageUsage.total - storageUsage.used)} remaining
               </small>
             </Card.Body>

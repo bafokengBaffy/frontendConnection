@@ -18,6 +18,7 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore';
+
 import { auth, db } from '../config/firebase';
 
 const COMPANY_COLLECTION = 'companies';
@@ -61,7 +62,7 @@ const executeCompanyQueryWithFallback = async (
     // Handle index errors
     if (error.code === 'failed-precondition') {
       console.log(`📋 Firestore index required for ${errorContext}. Please create it manually:`);
-      const urlMatch = error.message.match(/https:\/\/console\.firebase\.google\.com[^\s]+/);
+      const urlMatch = error.message.match(/https:..console.firebase.google.com[^.]+/);
       if (urlMatch) {
         console.log(`🔗 ${urlMatch[0]}`);
       }
@@ -1144,31 +1145,31 @@ export const analyticsService = {
 
   // Convert analytics to CSV
   convertToCSV(data) {
-    let csv = 'Analytics Report\n\n';
+    let csv = 'Analytics Report..';
 
     // Overview section
-    csv += 'OVERVIEW\n';
-    csv += 'Metric,Value\n';
-    csv += `Total Applications,${data.overview.totalApplications}\n`;
-    csv += `Active Jobs,${data.overview.activeJobs}\n`;
-    csv += `Profile Views,${data.overview.profileViews}\n`;
-    csv += `Conversion Rate,${data.overview.conversionRate}%\n`;
-    csv += `Interview to Hire Rate,${data.overview.interviewToHireRate}%\n`;
-    csv += `Average Time to Hire,${data.overview.avgTimeToHire}\n`;
-    csv += `Average Response Time,${data.overview.avgResponseTime}\n\n`;
+    csv += 'OVERVIEW.';
+    csv += 'Metric,Value.';
+    csv += `Total Applications,${data.overview.totalApplications}.`;
+    csv += `Active Jobs,${data.overview.activeJobs}.`;
+    csv += `Profile Views,${data.overview.profileViews}.`;
+    csv += `Conversion Rate,${data.overview.conversionRate}%.`;
+    csv += `Interview to Hire Rate,${data.overview.interviewToHireRate}%.`;
+    csv += `Average Time to Hire,${data.overview.avgTimeToHire}.`;
+    csv += `Average Response Time,${data.overview.avgResponseTime}..`;
 
     // Application status
-    csv += 'APPLICATION STATUS\n';
-    csv += 'Status,Count\n';
+    csv += 'APPLICATION STATUS.';
+    csv += 'Status,Count.';
     Object.entries(data.applicationStatus).forEach(([status, count]) => {
-      csv += `${status},${count}\n`;
+      csv += `${status},${count}.`;
     });
 
     // Top skills
-    csv += '\nTOP SKILLS DEMAND\n';
-    csv += 'Skill,Job Count\n';
+    csv += '.TOP SKILLS DEMAND.';
+    csv += 'Skill,Job Count.';
     data.skillDemand.forEach((item) => {
-      csv += `${item.skill},${item.count}\n`;
+      csv += `${item.skill},${item.count}.`;
     });
 
     return csv;

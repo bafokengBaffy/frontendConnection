@@ -1,6 +1,4 @@
 // components/CloudinaryImage.jsx
-import React from 'react';
-
 const CloudinaryImage = ({
   publicId,
   alt,

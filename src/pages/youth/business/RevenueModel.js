@@ -1,2 +1,3 @@
-﻿import RevenueModel from './pages/youth/business/RevenueModel.jsx';
+// src/pages/youth/business/RevenueModel.js
+import RevenueModel from '../../../components/youth/business/RevenueModel';
 export default RevenueModel;

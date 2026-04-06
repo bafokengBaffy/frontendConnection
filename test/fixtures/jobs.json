@@ -1,0 +1,110 @@
+[
+  {
+    "id": "job-1",
+    "title": "Frontend Developer",
+    "company": {
+      "id": "company-1",
+      "name": "Tech Solutions Lesotho"
+    },
+    "location": "Maseru",
+    "type": "Full-time",
+    "category": "Technology",
+    "description": "We are looking for a skilled Frontend Developer...",
+    "requirements": [
+      "3+ years React experience",
+      "JavaScript/TypeScript proficiency",
+      "Experience with modern CSS"
+    ],
+    "responsibilities": [
+      "Build responsive web applications",
+      "Collaborate with design team",
+      "Optimize application performance"
+    ],
+    "salary": {
+      "min": 15000,
+      "max": 25000,
+      "currency": "LSL"
+    },
+    "postedDate": "2024-03-01T00:00:00Z",
+    "deadline": "2024-04-01T00:00:00Z",
+    "applications": 23
+  },
+  {
+    "id": "job-2",
+    "title": "Business Analyst",
+    "company": {
+      "id": "company-2",
+      "name": "Innovation Hub"
+    },
+    "location": "Leribe",
+    "type": "Full-time",
+    "category": "Business",
+    "description": "Seeking a Business Analyst to join our team...",
+    "requirements": [
+      "Bachelor's in Business or related field",
+      "2+ years experience",
+      "Strong analytical skills"
+    ],
+    "responsibilities": [
+      "Analyze business processes",
+      "Create detailed reports",
+      "Work with stakeholders"
+    ],
+    "salary": {
+      "min": 12000,
+      "max": 18000,
+      "currency": "LSL"
+    },
+    "postedDate": "2024-02-28T00:00:00Z",
+    "deadline": "2024-03-28T00:00:00Z",
+    "applications": 15
+  },
+  {
+    "id": "job-3",
+    "title": "Customer Service Representative",
+    "company": {
+      "id": "company-3",
+      "name": "Lesotho Bank"
+    },
+    "location": "Maseru",
+    "type": "Full-time",
+    "category": "Customer Service",
+    "description": "Join our customer service team...",
+    "requirements": [
+      "Excellent communication skills",
+      "Customer service experience",
+      "Banking knowledge preferred"
+    ],
+    "responsibilities": ["Handle customer inquiries", "Process transactions", "Resolve complaints"],
+    "salary": {
+      "min": 8000,
+      "max": 12000,
+      "currency": "LSL"
+    },
+    "postedDate": "2024-02-25T00:00:00Z",
+    "deadline": "2024-03-25T00:00:00Z",
+    "applications": 8
+  },
+  {
+    "id": "job-4",
+    "title": "Marketing Intern",
+    "company": {
+      "id": "company-2",
+      "name": "Innovation Hub"
+    },
+    "location": "Maseru",
+    "type": "Internship",
+    "category": "Marketing",
+    "description": "Exciting internship opportunity in marketing...",
+    "requirements": ["Currently studying Marketing", "Social media skills", "Creative mindset"],
+    "responsibilities": ["Create social media content", "Assist with campaigns", "Market research"],
+    "salary": {
+      "min": 3000,
+      "max": 4000,
+      "currency": "LSL"
+    },
+    "postedDate": "2024-03-02T00:00:00Z",
+    "deadline": "2024-04-02T00:00:00Z",
+    "applications": 12
+  }
+]

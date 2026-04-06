@@ -1,2 +1,2 @@
-﻿import BusinessModelCanvas from './pages/youth/business/BusinessModelCanvas.jsx';
+import BusinessModelCanvas from '../../../components/youth/business/BusinessModelCanvas';
 export default BusinessModelCanvas;

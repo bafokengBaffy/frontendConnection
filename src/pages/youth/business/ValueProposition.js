@@ -1,2 +1,2 @@
-﻿import ValueProposition from './pages/youth/business/ValueProposition.jsx';
+import ValueProposition from '../../../components/youth/business/ValueProposition';
 export default ValueProposition;

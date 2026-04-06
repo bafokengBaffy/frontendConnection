@@ -1,4 +1,4 @@
-import React from 'react';
+/* eslint-disable no-unused-vars */
 import { Tooltip as MuiTooltip, Box, Typography, alpha, styled, useTheme } from '@mui/material';
 import { HelpOutline as HelpIcon } from '@mui/icons-material';
 

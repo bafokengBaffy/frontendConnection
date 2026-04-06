@@ -15,7 +15,9 @@ import {
   where,
 } from 'firebase/firestore';
 import { deleteObject, ref } from 'firebase/storage';
+
 import { db, storage } from '../config/firebase';
+
 import { storageService } from './storageService';
 
 const COLLECTIONS = {

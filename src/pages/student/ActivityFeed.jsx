@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Container,
   Card,
@@ -13,10 +14,6 @@ import {
   Col,
   ProgressBar,
 } from 'react-bootstrap';
-import { useAuth } from '../../context/AuthContext';
-import { getStudentApplications, getApplicationStats } from '../../services/applicationService';
-import { getStudentDocuments } from '../../services/studentServices';
-import { uploadToCloudinary, getCloudinaryUrl } from '../../services/cloudinaryService';
 import {
   collection,
   query,
@@ -27,8 +24,13 @@ import {
   Timestamp,
   getDocs,
 } from 'firebase/firestore';
-import { db } from '../../config/firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+
+import { useAuth } from '../../context/AuthContext';
+import { getStudentApplications, getApplicationStats } from '../../services/applicationService';
+import { getStudentDocuments } from '../../services/studentServices';
+import { uploadToCloudinary, getCloudinaryUrl } from '../../services/cloudinaryService';
+import { db } from '../../config/firebase';
 import { storage } from '../../config/firebase';
 import './ActivityFeed.css';
 

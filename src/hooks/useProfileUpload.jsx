@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 // src/hooks/useProfileUpload.js
 import { useState, useCallback, useEffect, useRef } from 'react';
+
 import { profileService } from '../services/profileService';
 import { useAuth } from '../context/AuthContext';
 

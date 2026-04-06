@@ -1,2 +1,2 @@
-﻿import CoWorkingSpaces from './pages/youth/collaboration/CoWorkingSpaces.jsx';
+import CoWorkingSpaces from './CoWorkingSpaces';
 export default CoWorkingSpaces;

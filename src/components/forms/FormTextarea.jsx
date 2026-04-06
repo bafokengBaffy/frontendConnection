@@ -1,10 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
+/* eslint-disable no-unused-vars */
+import { useState, useRef, useEffect } from 'react';
 import { TextField, FormHelperText, FormControl, alpha, styled, Box, Paper } from '@mui/material';
 import {
   Error as ErrorIcon,
   CheckCircle as CheckCircleIcon,
   Info as InfoIcon,
 } from '@mui/icons-material';
+
 import { useFormContext } from './FormValidation';
 
 const StyledTextarea = styled(TextField)(({ theme, error, touched, success }) => ({

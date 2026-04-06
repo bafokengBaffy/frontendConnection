@@ -1,2 +1,2 @@
-﻿import YouthCard from './components/youth/ui/YouthCard.jsx';
+import YouthCard from './YouthCard';
 export default YouthCard;

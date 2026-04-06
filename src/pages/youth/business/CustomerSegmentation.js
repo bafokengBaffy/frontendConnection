@@ -1,2 +1,2 @@
-﻿import CustomerSegmentation from './pages/youth/business/CustomerSegmentation.jsx';
+import CustomerSegmentation from '../../../components/youth/business/CustomerSegmentation';
 export default CustomerSegmentation;

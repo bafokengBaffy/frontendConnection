@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Alert, Badge, Button, Card } from 'react-bootstrap';
+
 import { useAuth } from '../../context/AuthContext';
 
 const UserTypeDebug = () => {

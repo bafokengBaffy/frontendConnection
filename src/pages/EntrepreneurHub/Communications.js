@@ -1,2 +1,2 @@
-﻿import Communications from './pages/EntrepreneurHub/Communications.jsx';
+import Communications from './Communications';
 export default Communications;

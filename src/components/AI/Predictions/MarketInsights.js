@@ -1,2 +1,2 @@
-﻿import MarketInsights from './components/AI/Predictions/MarketInsights.jsx';
+import MarketInsights from './MarketInsights';
 export default MarketInsights;

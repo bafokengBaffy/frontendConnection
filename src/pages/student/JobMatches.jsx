@@ -1,4 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
+
 import { useAuth } from '../../context/AuthContext';
 import { applyForJob, getRecommendedJobs, getStudentProfile } from '../../services/studentServices';
 import './Student.css';

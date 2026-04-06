@@ -1,4 +1,3 @@
-import React from 'react';
 import { Container, Card, Table, Badge, Button } from 'react-bootstrap';
 
 const Deadlines = () => {

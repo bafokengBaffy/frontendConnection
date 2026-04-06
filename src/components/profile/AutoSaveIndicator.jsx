@@ -1,11 +1,55 @@
 /* eslint-disable no-unused-vars */
-// src/components/profile/AutoSaveIndicator.js
-import React from 'react';
+import PropTypes from 'prop-types';
 import { Badge, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { FaSave, FaCheck, FaExclamationTriangle, FaClock, FaCloud } from 'react-icons/fa';
 
-const AutoSaveIndicator = ({ status, lastSaved, hasUnsavedChanges, saveCount, isSaving }) => {
+/**
+ * AutoSaveIndicator Component
+ * Displays the current save status of auto-save functionality
+ *
+ * @param {Object} props
+ * @param {string} props.status - 'saving', 'success', 'error', or null
+ * @param {Date|string} props.lastSaved - Last save timestamp
+ * @param {boolean} props.hasUnsavedChanges - Whether there are unsaved changes
+ * @param {number} props.saveCount - Number of saves performed
+ * @param {boolean} props.isSaving - Whether currently saving
+ */
+const AutoSaveIndicator = ({
+  status,
+  lastSaved,
+  hasUnsavedChanges,
+  saveCount = 0,
+  isSaving = false,
+}) => {
+  const formatTime = (date) => {
+    if (!date) return 'Never';
+
+    const now = new Date();
+    const saved = new Date(date);
+    const diffMs = now - saved;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays < 7) return `${diffDays}d ago`;
+
+    return saved.toLocaleDateString();
+  };
+
   const getStatusConfig = () => {
+    // If isSaving is true, override any other status
+    if (isSaving) {
+      return {
+        variant: 'warning',
+        icon: <Spinner animation="border" size="sm" className="me-1" />,
+        text: 'Saving...',
+        tooltip: 'Changes are being saved',
+      };
+    }
+
     switch (status) {
       case 'saving':
         return {
@@ -46,24 +90,6 @@ const AutoSaveIndicator = ({ status, lastSaved, hasUnsavedChanges, saveCount, is
     }
   };
 
-  const formatTime = (date) => {
-    if (!date) return 'Never';
-
-    const now = new Date();
-    const saved = new Date(date);
-    const diffMs = now - saved;
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
-
-    if (diffMins < 1) return 'Just now';
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
-
-    return saved.toLocaleDateString();
-  };
-
   const config = getStatusConfig();
 
   const indicator = (
@@ -78,7 +104,7 @@ const AutoSaveIndicator = ({ status, lastSaved, hasUnsavedChanges, saveCount, is
     >
       {config.icon}
       <span>{config.text}</span>
-      {saveCount > 0 && status !== 'saving' && (
+      {saveCount > 0 && status !== 'saving' && !isSaving && (
         <span className="ms-2 opacity-75">({saveCount})</span>
       )}
     </Badge>
@@ -104,87 +130,12 @@ const AutoSaveIndicator = ({ status, lastSaved, hasUnsavedChanges, saveCount, is
   );
 };
 
-// Compact version for inline display
-export const CompactAutoSaveIndicator = ({ status, hasUnsavedChanges }) => {
-  const getIcon = () => {
-    switch (status) {
-      case 'saving':
-        return <Spinner animation="border" size="sm" />;
-      case 'success':
-        return <FaCheck className="text-success" />;
-      case 'error':
-        return <FaExclamationTriangle className="text-danger" />;
-      default:
-        return hasUnsavedChanges ? (
-          <FaClock className="text-warning" />
-        ) : (
-          <FaCheck className="text-muted" />
-        );
-    }
-  };
-
-  const getTooltip = () => {
-    switch (status) {
-      case 'saving':
-        return 'Saving...';
-      case 'success':
-        return 'Saved';
-      case 'error':
-        return 'Save failed';
-      default:
-        return hasUnsavedChanges ? 'Unsaved changes' : 'Saved';
-    }
-  };
-
-  return (
-    <OverlayTrigger placement="top" overlay={<Tooltip>{getTooltip()}</Tooltip>}>
-      <span className="auto-save-compact">{getIcon()}</span>
-    </OverlayTrigger>
-  );
-};
-
-// Status bar for form sections
-export const SectionSaveStatus = ({ title, isSaved, isSaving, hasChanges, onSave }) => {
-  return (
-    <div className="section-save-status d-flex align-items-center justify-content-between p-2 border rounded mb-3">
-      <div className="d-flex align-items-center">
-        <h6 className="mb-0 me-3">{title}</h6>
-
-        {isSaving ? (
-          <span className="text-warning small">
-            <Spinner animation="border" size="sm" className="me-1" />
-            Saving...
-          </span>
-        ) : hasChanges ? (
-          <span className="text-info small">
-            <FaClock className="me-1" />
-            Unsaved changes
-          </span>
-        ) : isSaved ? (
-          <span className="text-success small">
-            <FaCheck className="me-1" />
-            Saved
-          </span>
-        ) : null}
-      </div>
-
-      {hasChanges && onSave && (
-        <button className="btn btn-sm btn-primary" onClick={onSave} disabled={isSaving}>
-          {isSaving ? (
-            <>
-              <Spinner animation="border" size="sm" className="me-1" />
-              Saving...
-            </>
-          ) : (
-            <>
-              <FaSave className="me-1" />
-              Save
-            </>
-          )}
-        </button>
-      )}
-    </div>
-  );
+AutoSaveIndicator.propTypes = {
+  status: PropTypes.oneOf(['saving', 'success', 'error', null]),
+  lastSaved: PropTypes.oneOfType([PropTypes.instanceOf(Date), PropTypes.string]),
+  hasUnsavedChanges: PropTypes.bool,
+  saveCount: PropTypes.number,
+  isSaving: PropTypes.bool,
 };
 
 export default AutoSaveIndicator;

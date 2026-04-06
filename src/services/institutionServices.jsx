@@ -1,5 +1,5 @@
+/* eslint-disable no-unused-vars */
 // src/services/institutionServices.js
-import { db, storage, auth } from '../config/firebase';
 import {
   collection,
   query,
@@ -16,6 +16,8 @@ import {
   writeBatch,
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
+import { db, storage, auth } from '../config/firebase';
 
 export const institutionService = {
   // === DASHBOARD METHODS ===

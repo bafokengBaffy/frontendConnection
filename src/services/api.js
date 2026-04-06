@@ -1,6 +1,72 @@
 // API Base URL from environment variables
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+// CSRF token cache
+let cachedCsrfToken = null;
+let csrfTokenFetchPromise = null;
+
+// Helper function to get CSRF token from cookies
+const getCsrfTokenFromCookie = () => {
+  const name = 'XSRF-TOKEN=';
+  const decodedCookie = decodeURIComponent(document.cookie);
+  const cookies = decodedCookie.split(';');
+  for (let cookie of cookies) {
+    cookie = cookie.trim();
+    if (cookie.startsWith(name)) {
+      return cookie.substring(name.length);
+    }
+  }
+  return '';
+};
+
+// Fetch CSRF token from server
+const fetchCsrfTokenFromServer = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/auth/csrf-token`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      cachedCsrfToken = data.csrfToken;
+      return data.csrfToken;
+    }
+  } catch (error) {
+    console.warn('Failed to fetch CSRF token from server:', error);
+  }
+  
+  return null;
+};
+
+// Get CSRF token with caching and server fetch fallback
+export const getCsrfToken = async () => {
+  // Return cached token if available
+  if (cachedCsrfToken) {
+    return cachedCsrfToken;
+  }
+  
+  // Check cookie first
+  const cookieToken = getCsrfTokenFromCookie();
+  if (cookieToken) {
+    cachedCsrfToken = cookieToken;
+    return cookieToken;
+  }
+  
+  // Fetch from server with deduplication
+  if (!csrfTokenFetchPromise) {
+    csrfTokenFetchPromise = fetchCsrfTokenFromServer();
+  }
+  
+  const token = await csrfTokenFetchPromise;
+  csrfTokenFetchPromise = null;
+  
+  return token || '';
+};
+
 // Test server connection
 export const testConnection = async () => {
   try {
@@ -24,10 +90,13 @@ export const testConnection = async () => {
 export const authAPI = {
   register: async (userData) => {
     try {
+      const csrfToken = await getCsrfToken();
       const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken,
         },
         body: JSON.stringify(userData),
       });
@@ -42,10 +111,13 @@ export const authAPI = {
 
   login: async (credentials) => {
     try {
+      const csrfToken = await getCsrfToken();
       const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken,
         },
         body: JSON.stringify(credentials),
       });

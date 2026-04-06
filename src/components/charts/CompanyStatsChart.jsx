@@ -1,6 +1,5 @@
 /* eslint-disable react/no-unknown-property */
 // src/components/charts/CompanyStatsChart.js
-import React from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from 'chart.jsx';
 

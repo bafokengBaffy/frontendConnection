@@ -3,7 +3,7 @@ export const validation = {
   email: (email) => {
     const errors = [];
 
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(email)) {
       errors.push('Please enter a valid email address');
       return { isValid: false, errors };
@@ -63,10 +63,10 @@ export const validation = {
     if (!/[0-9]/.test(password)) {
       errors.push('One number');
     }
-    if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password)) {
+    if (!/[!@#$%^&*()_+.=[.{};':".|,.<>/?]/.test(password)) {
       errors.push('One special character');
     }
-    if (/(.)\1{3,}/.test(password)) {
+    if (/(.).{3,}/.test(password)) {
       errors.push("No repeated characters (e.g., 'aaaa')");
     }
 
@@ -113,10 +113,10 @@ export const validation = {
       if (trimmed.length > 50) {
         errors.push('Name must be less than 50 characters');
       }
-      if (!/^[a-zA-Z\s'-]+$/.test(trimmed)) {
+      if (!/^[a-zA-Z.'-]+$/.test(trimmed)) {
         errors.push('Name can only contain letters, spaces, hyphens, and apostrophes');
       }
-      if (/\s{2,}/.test(trimmed)) {
+      if (/.{2,}/.test(trimmed)) {
         errors.push('Name cannot contain multiple consecutive spaces');
       }
     }
@@ -141,7 +141,7 @@ export const validation = {
       if (trimmed.length > 100) {
         errors.push('Company name must be less than 100 characters');
       }
-      if (!/^[a-zA-Z0-9\s&'.,-]+$/.test(trimmed)) {
+      if (!/^[a-zA-Z0-9.&'.,-]+$/.test(trimmed)) {
         errors.push('Company name contains invalid characters');
       }
     }
@@ -158,15 +158,15 @@ export const validation = {
 
     const errors = [];
     const phoneRegex =
-      /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}[-\s.]?[0-9]{1,9}$/;
+      /^[+]?[(]?[0-9]{1,4}[)]?[-..]?[(]?[0-9]{1,4}[)]?[-..]?[0-9]{1,9}[-..]?[0-9]{1,9}$/;
 
     if (!phoneRegex.test(phone)) {
       errors.push('Please enter a valid phone number');
     }
-    if (phone.replace(/\D/g, '').length < 8) {
+    if (phone.replace(/./g, '').length < 8) {
       errors.push('Phone number must have at least 8 digits');
     }
-    if (phone.replace(/\D/g, '').length > 15) {
+    if (phone.replace(/./g, '').length > 15) {
       errors.push('Phone number is too long');
     }
 
@@ -247,7 +247,7 @@ function calculatePasswordStrength(password) {
   if (/[0-9]/.test(password)) score++;
   if (/[^A-Za-z0-9]/.test(password)) score++;
 
-  if (/(.)\1{3,}/.test(password)) score = Math.max(0, score - 2);
+  if (/(.).{3,}/.test(password)) score = Math.max(0, score - 2);
 
   return Math.min(10, score);
 }

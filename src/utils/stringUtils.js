@@ -33,10 +33,10 @@ export const stringUtils = {
    */
   toCamelCase(str) {
     return str
-      .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) =>
+      .replace(/(?:^.|[A-Z]|..)/g, (word, index) =>
         index === 0 ? word.toLowerCase() : word.toUpperCase()
       )
-      .replace(/\s+/g, '');
+      .replace(/.+/g, '');
   },
 
   /**
@@ -46,7 +46,7 @@ export const stringUtils = {
    */
   toSnakeCase(str) {
     return str
-      .replace(/\s+/g, '_')
+      .replace(/.+/g, '_')
       .replace(/([a-z])([A-Z])/g, '$1_$2')
       .toLowerCase();
   },
@@ -58,7 +58,7 @@ export const stringUtils = {
    */
   toKebabCase(str) {
     return str
-      .replace(/\s+/g, '-')
+      .replace(/.+/g, '-')
       .replace(/([a-z])([A-Z])/g, '$1-$2')
       .toLowerCase();
   },
@@ -112,9 +112,9 @@ export const stringUtils = {
     if (!str) return '';
     return str
       .toLowerCase()
-      .replace(/\s+/g, '-')
-      .replace(/[^\w\-]+/g, '')
-      .replace(/\-\-+/g, '-')
+      .replace(/.+/g, '-')
+      .replace(/[^..]+/g, '')
+      .replace(/..+/g, '-')
       .replace(/^-+/, '')
       .replace(/-+$/, '');
   },
@@ -153,7 +153,7 @@ export const stringUtils = {
    */
   maskPhone(phone) {
     if (!phone) return '';
-    const cleaned = phone.replace(/\D/g, '');
+    const cleaned = phone.replace(/./g, '');
     if (cleaned.length < 4) return phone;
     const last4 = cleaned.slice(-4);
     return '***-***-' + last4;
@@ -188,6 +188,6 @@ export const stringUtils = {
    * @returns {string} - Numbers only
    */
   extractNumbers(str) {
-    return str.replace(/\D/g, '');
+    return str.replace(/./g, '');
   },
 };

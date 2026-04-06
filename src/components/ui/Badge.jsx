@@ -1,4 +1,4 @@
-import React from 'react';
+/* eslint-disable no-unused-vars */
 import { Badge as MuiBadge, Avatar, Box, alpha, styled, useTheme } from '@mui/material';
 import {
   CheckCircle as CheckCircleIcon,

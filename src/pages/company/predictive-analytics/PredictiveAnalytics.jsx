@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 // frontend/src/pages/company/predictive-analytics/PredictiveAnalytics.js (Enhanced)
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Container,
   Row,
@@ -21,6 +22,7 @@ import {
   FaCalendarAlt,
   FaUserCheck,
 } from 'react-icons/fa';
+
 import analyticsService from '../../../services/companyExtendedServices';
 import { useAuth } from '../../../context/AuthContext';
 import './PredictiveAnalytics.css';

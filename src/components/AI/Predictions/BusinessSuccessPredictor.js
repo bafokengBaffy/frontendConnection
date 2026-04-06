@@ -1,2 +1,2 @@
-﻿import BusinessSuccessPredictor from './components/AI/Predictions/BusinessSuccessPredictor.jsx';
+import BusinessSuccessPredictor from './BusinessSuccessPredictor';
 export default BusinessSuccessPredictor;

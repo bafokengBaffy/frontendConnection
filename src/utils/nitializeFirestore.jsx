@@ -1,6 +1,7 @@
 // src/utils/initializeFirestore.js
-import { db } from '../config/firebase';
 import { collection, doc, setDoc, serverTimestamp } from 'firebase/firestore';
+
+import { db } from '../config/firebase';
 
 export const initializeFirestore = async () => {
   try {

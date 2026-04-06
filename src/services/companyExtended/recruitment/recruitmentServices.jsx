@@ -1,14 +1,5 @@
 /* eslint-disable no-unused-vars */
 import {
-  getCurrentCompanyId,
-  safeConvertFirebaseData,
-  handleServiceError,
-  COLLECTIONS,
-  generateUniqueId,
-  getDateRangeStart,
-} from '../utils/baseService';
-import { db } from '../../../config/firebase';
-import {
   collection,
   doc,
   getDoc,
@@ -22,6 +13,16 @@ import {
   serverTimestamp,
   writeBatch,
 } from 'firebase/firestore';
+
+import {
+  getCurrentCompanyId,
+  safeConvertFirebaseData,
+  handleServiceError,
+  COLLECTIONS,
+  generateUniqueId,
+  getDateRangeStart,
+} from '../utils/baseService';
+import { db } from '../../../config/firebase';
 
 // ============================
 // VIDEO INTERVIEWS SERVICE

@@ -1,9 +1,10 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect, useCallback, useRef } from 'react';
+
 import { useAuth } from '../context/AuthContext';
 import { communicationService } from '../services/communicationService';
 
-export const useCollaboration = () => {
+const useCollaboration = () => {
   const { currentUser, userProfile } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -420,3 +421,7 @@ export const useCollaboration = () => {
       : null,
   };
 };
+
+// Export both as named and default export for maximum compatibility
+export { useCollaboration };
+export default useCollaboration;

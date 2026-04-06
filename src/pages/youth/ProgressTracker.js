@@ -1,2 +1,2 @@
-﻿import ProgressTracker from './pages/youth/ProgressTracker.jsx';
+import ProgressTracker from '../../components/youth/ProgressTracker';
 export default ProgressTracker;

@@ -1,2 +1,2 @@
-﻿import StrategyAdvisor from './components/AI/Recommendations/StrategyAdvisor.jsx';
+import StrategyAdvisor from './StrategyAdvisor';
 export default StrategyAdvisor;

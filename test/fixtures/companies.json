@@ -1,0 +1,44 @@
+[
+  {
+    "id": "company-1",
+    "name": "Tech Solutions Lesotho",
+    "industry": "Technology",
+    "size": "50-100",
+    "location": "Maseru",
+    "website": "https://techsolutions.co.ls",
+    "description": "Leading technology company in Lesotho",
+    "logo": "https://example.com/logo1.png",
+    "founded": 2015,
+    "openPositions": 5,
+    "rating": 4.5,
+    "reviews": 28
+  },
+  {
+    "id": "company-2",
+    "name": "Innovation Hub",
+    "industry": "Business Services",
+    "size": "20-50",
+    "location": "Leribe",
+    "website": "https://innovationhub.co.ls",
+    "description": "Business incubation and innovation center",
+    "logo": "https://example.com/logo2.png",
+    "founded": 2018,
+    "openPositions": 3,
+    "rating": 4.8,
+    "reviews": 15
+  },
+  {
+    "id": "company-3",
+    "name": "Lesotho Bank",
+    "industry": "Finance",
+    "size": "200-500",
+    "location": "Maseru",
+    "website": "https://lesothobank.co.ls",
+    "description": "Leading financial institution",
+    "logo": "https://example.com/logo3.png",
+    "founded": 1980,
+    "openPositions": 8,
+    "rating": 4.2,
+    "reviews": 42
+  }
+]

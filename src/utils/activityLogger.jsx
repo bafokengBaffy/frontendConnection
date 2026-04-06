@@ -1,6 +1,7 @@
 // src/utils/activityLogger.js
-import { db } from '../config/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+
+import { db } from '../config/firebase';
 
 export const ActivityLogger = {
   async logActivity(type, description, userId = null, email = null, metadata = {}) {

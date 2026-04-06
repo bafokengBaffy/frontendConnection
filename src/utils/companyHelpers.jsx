@@ -155,13 +155,13 @@ export const getExperienceLevel = (level) => {
 };
 
 export const validateEmail = (email) => {
-  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const re = /^[^.@]+@[^.@]+.[^.@]+$/;
   return re.test(email);
 };
 
 export const validatePhone = (phone) => {
-  const re = /^[\+]?[1-9][\d]{0,15}$/;
-  return re.test(phone.replace(/[\s\-\(\)]/g, ''));
+  const re = /^[+]?[1-9][.]{0,15}$/;
+  return re.test(phone.replace(/[....]/g, ''));
 };
 
 export const truncateText = (text, maxLength = 100) => {
@@ -388,9 +388,9 @@ export const slugify = (text) => {
   return text
     .toString()
     .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w\-]+/g, '')
-    .replace(/\-\-+/g, '-')
+    .replace(/.+/g, '-')
+    .replace(/[^..]+/g, '')
+    .replace(/..+/g, '-')
     .replace(/^-+/, '')
     .replace(/-+$/, '');
 };
@@ -409,7 +409,7 @@ export const validatePassword = (password) => {
   const minLength = 8;
   const hasUpperCase = /[A-Z]/.test(password);
   const hasLowerCase = /[a-z]/.test(password);
-  const hasNumbers = /\d/.test(password);
+  const hasNumbers = /./.test(password);
   const hasSpecialChar = /[!@#$%^&*]/.test(password);
 
   return {

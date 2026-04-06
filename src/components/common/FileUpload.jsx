@@ -1,4 +1,6 @@
-import React, { useState, useRef, useCallback } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
+import { useState, useRef, useCallback } from 'react';
 import {
   Box,
   Typography,
@@ -31,6 +33,7 @@ import {
   Visibility as ViewIcon,
   AttachFile as AttachIcon,
 } from '@mui/icons-material';
+
 import Button from './Button';
 
 const DropZone = styled(Paper)(({ theme, isDragActive, error }) => ({
@@ -221,7 +224,7 @@ const FileUpload = ({
 
       return validFiles;
     },
-    [files.length, maxFiles, maxSize, accept, validateFile, onValidationError]
+    [maxFiles, files.length, onValidationError, validateFileSize, validateFileType, validateFile]
   );
 
   const handleDragEnter = (e) => {

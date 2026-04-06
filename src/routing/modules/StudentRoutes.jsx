@@ -1,10 +1,10 @@
-﻿import React from 'react';
 import { Route } from 'react-router-dom';
+
 import ProtectedRoute from '../../components/layout/ProtectedRoute';
 
 // Import all student components
 import StudentDashboard from '../../pages/student/StudentDashboard';
-import StudentApplications from '../../pages/student/StudentApplications'; // FIXED: Changed from Applications to StudentApplications
+import StudentApplications from '../../pages/student/StudentApplications';
 import StudentDocuments from '../../pages/student/Documents';
 import StudentProfile from '../../pages/student/StudentProfile';
 import ApplyJob from '../../pages/student/ApplyJob';
@@ -262,4 +262,5 @@ export const getStudentRoutes = () => {
   ];
 };
 
+// Default export for backward compatibility
 export default getStudentRoutes;

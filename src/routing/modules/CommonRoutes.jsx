@@ -1,47 +1,83 @@
-﻿import React from 'react';
-import { Route } from 'react-router-dom';
-import ProtectedRoute from '../../components/layout/ProtectedRoute';
-import SettingsPage from '../../pages/Settings';
-import Notifications from '../../pages/Notifications';
-import Search from '../../pages/Search';
+import React from 'react';
+import { Navigate, Route } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
-/**
- * Common Routes Module
- * Contains routes accessible to all authenticated users
- */
-export const getCommonRoutes = () => {
-  return [
-    // Settings - Accessible to all authenticated users
+// Lazy load common pages
+const Notifications = React.lazy(() => import('../../pages/Notifications'));
+const Settings = React.lazy(() => import('../../pages/Settings'));
+const Search = React.lazy(() => import('../../pages/Search'));
+const Resources = React.lazy(() => import('../../pages/Resources/Resources'));
+
+// Dashboard redirect component
+const DashboardRedirect = () => {
+  const { userProfile } = useAuth();
+
+  if (!userProfile) {
+    return <Navigate to="/login" replace />;
+  }
+
+  const dashboardMap = {
+    admin: '/admin/dashboard',
+    student: '/student/dashboard',
+    company: '/company/dashboard',
+    institute: '/institute/dashboard',
+    mentor: '/mentor/dashboard',
+    youth: '/youth/dashboard',
+    entrepreneur: '/entrepreneur/dashboard',
+    parent: '/parent/dashboard',
+    alumni: '/alumni/dashboard',
+    government: '/government/dashboard',
+    system: '/system/dashboard',
+  };
+
+  const redirectPath = dashboardMap[userProfile.userType] || '/student/dashboard';
+
+  return <Navigate to={redirectPath} replace />;
+};
+
+export const getCommonRoutes = () => (
+  <React.Fragment>
     <Route
-      key="settings"
-      path="/settings"
+      path="/dashboard"
       element={
-        <ProtectedRoute>
-          <SettingsPage />
-        </ProtectedRoute>
+        <CommonRouteGuard>
+          <DashboardRedirect />
+        </CommonRouteGuard>
       }
-    />,
-
-    // Notifications - Accessible to all authenticated users
+    />
     <Route
-      key="notifications"
       path="/notifications"
       element={
-        <ProtectedRoute>
+        <CommonRouteGuard>
           <Notifications />
-        </ProtectedRoute>
+        </CommonRouteGuard>
       }
-    />,
-
-    // Search - Accessible to all authenticated users
+    />
     <Route
-      key="search"
+      path="/settings"
+      element={
+        <CommonRouteGuard>
+          <Settings />
+        </CommonRouteGuard>
+      }
+    />
+    <Route
       path="/search"
       element={
-        <ProtectedRoute>
+        <CommonRouteGuard>
           <Search />
-        </ProtectedRoute>
+        </CommonRouteGuard>
       }
-    />,
-  ];
-};
+    />
+    <Route
+      path="/resources"
+      element={
+        <CommonRouteGuard>
+          <Resources />
+        </CommonRouteGuard>
+      }
+    />
+  </React.Fragment>
+);
+
+export default getCommonRoutes;

@@ -11,7 +11,7 @@ definitions:
           - npm ci --legacy-peer-deps
           - npm run lint
           - npm run format:check
-    
+
     - step: &test-step
         name: Run Tests
         caches:
@@ -20,7 +20,7 @@ definitions:
           - cd frontend
           - npm ci --legacy-peer-deps
           - npm run test:ci
-    
+
     - step: &build-step
         name: Build Application
         caches:
@@ -31,7 +31,7 @@ definitions:
           - npm run build
         artifacts:
           - frontend/dist/**
-    
+
     - step: &deploy-staging-step
         name: Deploy to Staging
         deployment: staging
@@ -39,7 +39,7 @@ definitions:
           - cd frontend
           - npm install -g firebase-tools
           - firebase deploy --only hosting --project career-connect-lesotho-staging --token "$FIREBASE_TOKEN"
-    
+
     - step: &deploy-production-step
         name: Deploy to Production
         deployment: production
@@ -52,8 +52,8 @@ definitions:
 pipelines:
   default:
     - parallel:
-      - step: *lint-step
-      - step: *test-step
+        - step: *lint-step
+        - step: *test-step
     - step: *build-step
 
   branches:
@@ -62,7 +62,7 @@ pipelines:
       - step: *test-step
       - step: *build-step
       - step: *deploy-staging-step
-    
+
     main:
       - step: *lint-step
       - step: *test-step

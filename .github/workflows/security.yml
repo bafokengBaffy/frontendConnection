@@ -6,16 +6,16 @@ on:
   pull_request:
     branches: [main]
   schedule:
-    - cron: '0 0 * * 0'  # Weekly on Sundays
+    - cron: '0 0 * * 0' # Weekly on Sundays
 
 jobs:
   dependency-check:
     name: Dependency Security Check
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run Snyk Security Check
         uses: snyk/actions/node@master
         env:
@@ -28,15 +28,15 @@ jobs:
   npm-audit:
     name: NPM Audit
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18.x
-      
+
       - name: Run npm audit
         run: |
           cd frontend
@@ -45,10 +45,10 @@ jobs:
   trivy-scan:
     name: Trivy Security Scan
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
@@ -57,7 +57,7 @@ jobs:
           format: 'sarif'
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
-      
+
       - name: Upload Trivy results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v2
         with:
@@ -66,10 +66,10 @@ jobs:
   secrets-scan:
     name: Secrets Detection
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: TruffleHog Secrets Scan
         uses: trufflesecurity/trufflehog@main
         with:
@@ -80,7 +80,7 @@ jobs:
   zap-scan:
     name: ZAP Security Scan
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: ZAP Scan
         uses: zaproxy/action-full-scan@v0.7.0

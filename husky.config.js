@@ -8,5 +8,5 @@ module.exports = {
     'post-merge': 'npm install',
     'pre-rebase': 'echo "Please do not rebase main branch"',
     'prepare-commit-msg': 'exec < /dev/tty && npx cz --hook || true',
-  }
+  },
 };

@@ -1,12 +1,14 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { Container, Row, Col, Card, Button, Badge, Spinner } from 'react-bootstrap';
+
 import { useAuth } from '../../context/AuthContext';
 import {
   getStudentApplications,
   getStudentJobApplications,
   getStudentProfile,
 } from '../../services/studentServices';
-import { Container, Row, Col, Card, Button, Badge, Spinner } from 'react-bootstrap';
 
 const ViewApplication = () => {
   const { user } = useAuth();

@@ -1,2 +1,2 @@
-﻿import MetricDisplay from './components/youth/ui/MetricDisplay.jsx';
+import MetricDisplay from './MetricDisplay';
 export default MetricDisplay;

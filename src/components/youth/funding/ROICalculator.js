@@ -1,2 +1,2 @@
-﻿import ROICalculator from './components/youth/funding/ROICalculator.jsx';
+import ROICalculator from './ROICalculator';
 export default ROICalculator;

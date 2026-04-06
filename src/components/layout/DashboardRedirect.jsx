@@ -1,8 +1,8 @@
 // src/components/layout/DashboardRedirect.js - COMPLETELY FIXED VERSION
-import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
 import { Spinner } from 'react-bootstrap';
+
+import { useAuth } from '../../context/AuthContext';
 
 const DashboardRedirect = () => {
   const { userProfile, currentUser, loading } = useAuth();
@@ -50,8 +50,14 @@ const DashboardRedirect = () => {
       return <Navigate to="/entrepreneur/dashboard" replace />;
     case 'institute':
       return <Navigate to="/institute/dashboard" replace />;
+    case 'mentor':
+      return <Navigate to="/mentor/dashboard" replace />;
+    case 'parent':
+      return <Navigate to="/parent/dashboard" replace />;
+    case 'alumni':
+      return <Navigate to="/alumni/dashboard" replace />;
     case 'employer':
-      return <Navigate to="/employer/dashboard" replace />;
+      return <Navigate to="/company/dashboard" replace />;
     default:
       console.warn(`⚠️ Unknown user type: ${userType}, redirecting to student dashboard`);
       return <Navigate to="/student/dashboard" replace />;

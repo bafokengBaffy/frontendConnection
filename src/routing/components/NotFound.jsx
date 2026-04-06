@@ -1,5 +1,4 @@
 /* eslint-disable react/no-unescaped-entities */
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Container, Row, Col, Card } from 'react-bootstrap';
 import { FiHome, FiSearch, FiAlertTriangle } from 'react-icons/fi';

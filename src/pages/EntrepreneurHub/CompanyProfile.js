@@ -1,2 +1,2 @@
-﻿import CompanyProfile from './pages/EntrepreneurHub/CompanyProfile.jsx';
+import CompanyProfile from './CompanyProfile';
 export default CompanyProfile;

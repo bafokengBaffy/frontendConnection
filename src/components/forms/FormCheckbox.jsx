@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable no-unused-vars */
+import { useState } from 'react';
 import {
   FormControlLabel,
   Checkbox,
@@ -16,6 +17,7 @@ import {
   Info as InfoIcon,
   CheckCircle as CheckCircleIcon,
 } from '@mui/icons-material';
+
 import { useFormContext } from './FormValidation';
 
 const StyledCheckbox = styled(Checkbox)(({ theme, error, touched }) => ({

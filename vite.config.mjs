@@ -1,53 +1,160 @@
-// vite.config.mjs
-import { defineConfig, loadEnv } from 'vite'
-import react from '@vitejs/plugin-react'
+﻿import { defineConfig, loadEnv } from 'vite';
+import react from '@vitejs/plugin-react';
+import { VitePWA } from 'vite-plugin-pwa';
+import viteCompression from 'vite-plugin-compression';
+import { createHtmlPlugin } from 'vite-plugin-html';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-// https://vitejs.dev/config/
-export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '')
-  
-  return {
-    plugins: [
-      react({
-        include: '**/*.{js,jsx}',
-        babel: {
-          presets: [
-            ['@babel/preset-react', { runtime: 'automatic' }]
-          ]
-        }
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+export default defineConfig(({ command, mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+  const isProduction = mode === 'production';
+  const isDevelopment = mode === 'development';
+
+  // Filter out false values from plugins array
+  const plugins = [
+    react(),
+  ];
+
+  // Add PWA only in production
+  if (isProduction) {
+    plugins.push(
+      VitePWA({
+        registerType: 'autoUpdate',
+        includeAssets: ['favicon.ico', 'robots.txt', 'vite.svg'],
+        manifest: {
+          name: env.VITE_APP_NAME || 'Career Connect Lesotho',
+          short_name: 'Career Connect',
+          description: 'Bridging youth, education, and employment opportunities in Lesotho',
+          theme_color: '#0d6efd',
+          background_color: '#ffffff',
+          display: 'standalone',
+          icons: [
+            {
+              src: '/logo192.png',
+              sizes: '192x192',
+              type: 'image/png',
+            },
+            {
+              src: '/logo512.png',
+              sizes: '512x512',
+              type: 'image/png',
+            },
+          ],
+        },
+        workbox: {
+          cleanupOutdatedCaches: true,
+          clientsClaim: true,
+          globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+          skipWaiting: true,
+          runtimeCaching: [
+            {
+              urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'google-fonts-cache',
+                expiration: {
+                  maxEntries: 10,
+                  maxAgeSeconds: 60 * 60 * 24 * 365,
+                },
+              },
+            },
+            {
+              urlPattern: /^https:\/\/firebasestorage\.googleapis\.com\/.*/i,
+              handler: 'StaleWhileRevalidate',
+              options: {
+                cacheName: 'firebase-storage-cache',
+                expiration: {
+                  maxEntries: 50,
+                  maxAgeSeconds: 60 * 60 * 24 * 7,
+                },
+              },
+            },
+          ],
+        },
       })
-    ],
-    server: {
-      port: 3000,
-      open: true,
-      host: true,
-      hmr: {
-        overlay: false
-      }
+    );
+  }
+
+  // Add compression plugins
+  plugins.push(
+    viteCompression({
+      algorithm: 'gzip',
+      threshold: 10240,
+    }),
+    viteCompression({
+      algorithm: 'brotliCompress',
+      threshold: 10240,
+    })
+  );
+
+  // Add HTML plugin
+  plugins.push(
+    createHtmlPlugin({
+      minify: isProduction,
+      inject: {
+        data: {
+          title: env.VITE_APP_NAME || 'Career Connect Lesotho',
+          description: 'Bridging youth, education, and employment opportunities in Lesotho',
+        },
+      },
+    })
+  );
+
+  return {
+    plugins,
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, './src'),
+      },
     },
     build: {
+      target: 'es2020',
       outDir: 'dist',
-      sourcemap: false,
+      assetsDir: 'assets',
+      sourcemap: isDevelopment,
       minify: 'terser',
       terserOptions: {
         compress: {
-          drop_console: mode === 'production',
-          drop_debugger: true
-        }
-      }
+          drop_console: isProduction,
+          drop_debugger: isProduction,
+        },
+      },
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['react', 'react-dom', 'react-router-dom'],
+            firebase: ['firebase/app', 'firebase/auth', 'firebase/firestore', 'firebase/storage'],
+            ui: ['react-bootstrap', 'bootstrap', 'framer-motion'],
+            charts: ['chart.js', 'react-chartjs-2', 'recharts'],
+            forms: ['formik', 'yup', 'react-hook-form'],
+          },
+        },
+      },
+      chunkSizeWarningLimit: 1000,
     },
-    esbuild: {
-      loader: 'jsx',
-      include: /src\/.*\.jsx?$/,
-      exclude: [],
+    server: {
+      port: 5173,
+      host: true,
+      open: true,
+      cors: true,
+      strictPort: true,
+    },
+    preview: {
+      port: 4173,
+      host: true,
+      strictPort: true,
     },
     define: {
       'process.env.NODE_ENV': JSON.stringify(mode),
-      'import.meta.env.NODE_ENV': JSON.stringify(mode)
     },
     optimizeDeps: {
-      include: ['react', 'react-dom', 'firebase', 'firebase/auth', 'firebase/firestore'],
-      exclude: ['js-big-decimal']
-    }
-  }
-})
+      include: ['react', 'react-dom', 'react-router-dom', 'firebase/app', 'firebase/auth'],
+    },
+    esbuild: {
+      logOverride: { 'this-is-undefined-in-esm': 'silent' },
+    },
+  };
+});

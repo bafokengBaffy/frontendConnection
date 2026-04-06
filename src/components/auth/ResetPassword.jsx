@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect } from 'react';
 import {
   Container,
   Paper,
@@ -15,7 +16,6 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { confirmPasswordReset, verifyPasswordResetCode } from 'firebase/auth';
-import { auth } from '../../config/firebase';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Lock as LockIcon,
@@ -24,6 +24,8 @@ import {
   CheckCircle as CheckCircleIcon,
   Error as ErrorIcon,
 } from '@mui/icons-material';
+
+import { auth } from '../../config/firebase';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   marginTop: theme.spacing(8),

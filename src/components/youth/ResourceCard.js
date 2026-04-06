@@ -1,2 +1,2 @@
-﻿import ResourceCard from './components/youth/ResourceCard.jsx';
+import ResourceCard from './ResourceCard';
 export default ResourceCard;

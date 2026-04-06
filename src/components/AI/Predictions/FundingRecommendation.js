@@ -1,2 +1,2 @@
-﻿import FundingRecommendation from './components/AI/Predictions/FundingRecommendation.jsx';
+import FundingRecommendation from './FundingRecommendation';
 export default FundingRecommendation;

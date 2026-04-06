@@ -1,4 +1,5 @@
-﻿import React, { useState, useEffect } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect } from 'react';
 import {
   Container,
   Row,
@@ -45,6 +46,7 @@ import {
   FaSortUp,
   FaSortDown,
 } from 'react-icons/fa';
+
 import { useAuth } from '../../context/AuthContext';
 import { useNotification } from '../../context/NotificationContext';
 import { adminService } from '../../services/adminService';
@@ -351,7 +353,7 @@ const UserManagement = () => {
       formatDate(user.updatedAt),
     ]);
 
-    const csvContent = [headers.join(','), ...csvData.map((row) => row.join(','))].join('\n');
+    const csvContent = [headers.join(','), ...csvData.map((row) => row.join(','))].join('.');
 
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);

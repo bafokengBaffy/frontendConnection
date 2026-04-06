@@ -1,2 +1,2 @@
-﻿import FundingApplicationForm from './pages/youth/forms/FundingApplicationForm.jsx';
+import FundingApplicationForm from '../../../components/youth/forms/FundingApplicationForm';
 export default FundingApplicationForm;

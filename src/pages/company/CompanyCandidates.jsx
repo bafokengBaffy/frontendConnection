@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-undef */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   Container,
   Row,
@@ -24,8 +24,6 @@ import {
   Filter,
   Person,
   Building,
-  GraduationCap,
-  MapPin,
   Star,
   Eye,
   Calendar,
@@ -35,9 +33,12 @@ import {
   CheckCircle,
   XCircle,
   Clock,
+  GeoAlt, // Fixed: Changed from MapPin to GeoAlt
+  Briefcase, // Added: For job title
 } from 'react-bootstrap-icons';
-import { db } from '../../config/firebase';
 import { collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
+
+import { db } from '../../config/firebase';
 import './CompanyCandidates.css';
 
 const CompanyCandidates = () => {
@@ -623,7 +624,7 @@ const CompanyCandidates = () => {
                           </td>
                           <td>
                             <div>
-                              <Building className="me-2" size={14} />
+                              <Briefcase className="me-2" size={14} />
                               {candidate.jobTitle}
                             </div>
                           </td>
@@ -668,9 +669,9 @@ const CompanyCandidates = () => {
                                 <Dropdown.Item onClick={() => scheduleInterview(candidate)}>
                                   <Calendar className="me-2" /> Schedule Interview
                                 </Dropdown.Item>
-                                <Dropdown.Item
-                                  onClick={() => sendMessage(candidate.id)}
-                                ></Dropdown.Item>
+                                <Dropdown.Item onClick={() => sendMessage(candidate.id)}>
+                                  <FileText className="me-2" /> Send Message
+                                </Dropdown.Item>
                                 <Dropdown.Item onClick={() => downloadResume(candidate.id)}>
                                   <Download className="me-2" /> Download Resume
                                 </Dropdown.Item>
@@ -784,8 +785,18 @@ const CompanyCandidates = () => {
                   </div>
                   <small className="text-muted">Candidate Rating</small>
                 </div>
-                <Button variant="primary" className="me-2 mb-2"></Button>
-                <Button variant="outline-primary" className="mb-2">
+                <Button
+                  variant="primary"
+                  className="me-2 mb-2"
+                  onClick={() => sendMessage(selectedCandidate.id)}
+                >
+                  <FileText className="me-1" /> Message
+                </Button>
+                <Button
+                  variant="outline-primary"
+                  className="mb-2"
+                  onClick={() => (window.location.href = `tel:${selectedCandidate.phone}`)}
+                >
                   <Phone className="me-1" /> Call
                 </Button>
               </Col>
@@ -801,7 +812,8 @@ const CompanyCandidates = () => {
                 </Row>
                 <Row className="mb-3">
                   <Col>
-                    <strong>Location:</strong> {selectedCandidate.location}
+                    <strong>Location:</strong> <GeoAlt className="me-1" size={12} />{' '}
+                    {selectedCandidate.location}
                   </Col>
                   <Col>
                     <strong>Phone:</strong> {selectedCandidate.phone}

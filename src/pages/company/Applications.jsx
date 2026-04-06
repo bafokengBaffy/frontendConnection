@@ -1,2 +1,2 @@
-﻿import Applications from './pages/company/Applications.jsx';
+import Applications from './Applications';
 export default Applications;

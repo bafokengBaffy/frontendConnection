@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable no-unused-vars */
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   DollarSign,
@@ -20,9 +21,10 @@ import {
   ArrowUpRight,
   ArrowDownRight,
 } from 'lucide-react';
+import { Line, Bar, Doughnut } from 'react-chartjs-2';
+
 import { mentorService } from '../../services/mentorService';
 import { useAuth } from '../../hooks/useAuth';
-import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import './MentorStyles.css';
 
 const MentorEarnings = () => {

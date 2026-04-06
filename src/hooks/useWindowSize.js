@@ -1,4 +1,6 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect, useCallback } from 'react';
+
 import { useDebounce } from './useDebounce';
 
 export const useWindowSize = () => {

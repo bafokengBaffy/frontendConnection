@@ -1,2 +1,2 @@
-﻿import ProfileCompletionForm from './components/youth/forms/ProfileCompletionForm.jsx';
+import ProfileCompletionForm from './ProfileCompletionForm';
 export default ProfileCompletionForm;

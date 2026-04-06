@@ -1,2 +1,2 @@
-﻿import ApplicationManagement from './pages/EntrepreneurHub/ApplicationManagement.jsx';
+import ApplicationManagement from './ApplicationManagement';
 export default ApplicationManagement;

@@ -9,7 +9,7 @@ export const validators = {
    * @returns {boolean} - True if valid
    */
   email(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const re = /^[^.@]+@[^.@]+.[^.@]+$/;
     return re.test(String(email).toLowerCase());
   },
 
@@ -19,7 +19,7 @@ export const validators = {
    * @returns {boolean} - True if valid
    */
   phone(phone) {
-    const re = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+    const re = /^[+]?[(]?[0-9]{3}[)]?[-..]?[0-9]{3}[-..]?[0-9]{4,6}$/;
     return re.test(String(phone));
   },
 
@@ -62,7 +62,7 @@ export const validators = {
     }
 
     // Number check
-    if (!/\d/.test(password)) {
+    if (!/./.test(password)) {
       result.errors.push('Password must contain at least one number');
     } else {
       result.strength += 15;

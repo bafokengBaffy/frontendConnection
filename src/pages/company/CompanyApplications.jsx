@@ -1,5 +1,5 @@
 // src/pages/company/CompanyApplications.js
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Container,
@@ -30,6 +30,7 @@ import {
   FaCommentDots,
   FaArrowLeft,
 } from 'react-icons/fa';
+
 import { applicationService } from '../../services/companyServices';
 import './CompanyApplications.css';
 

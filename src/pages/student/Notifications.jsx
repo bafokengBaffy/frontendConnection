@@ -1,4 +1,3 @@
-﻿import React from 'react';
 import { Container, Card, ListGroup, Badge, Button, Tabs, Tab } from 'react-bootstrap';
 
 const Notifications = () => {
@@ -201,7 +200,7 @@ const Notifications = () => {
         <div className="col-md-6">
           <Card className="shadow-sm">
             <Card.Body>
-              <Card.Title>🔔 Notification Settings</Card.Title>
+              <Card.Title>?? Notification Settings</Card.Title>
               <div className="form-check form-switch mb-3">
                 <input
                   className="form-check-input"
@@ -256,7 +255,7 @@ const Notifications = () => {
         <div className="col-md-6">
           <Card className="shadow-sm">
             <Card.Body>
-              <Card.Title>📊 Notification Stats</Card.Title>
+              <Card.Title>?? Notification Stats</Card.Title>
               <div className="row text-center">
                 <div className="col-md-4">
                   <div className="p-3">

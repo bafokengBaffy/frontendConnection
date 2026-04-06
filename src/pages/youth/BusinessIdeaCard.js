@@ -1,2 +1,2 @@
-﻿import BusinessIdeaCard from './pages/youth/BusinessIdeaCard.jsx';
+import BusinessIdeaCard from '../../components/youth/BusinessIdeaCard';
 export default BusinessIdeaCard;

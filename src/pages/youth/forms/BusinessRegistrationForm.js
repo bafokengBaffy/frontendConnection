@@ -1,2 +1,2 @@
-﻿import BusinessRegistrationForm from './pages/youth/forms/BusinessRegistrationForm.jsx';
+import BusinessRegistrationForm from '../../../components/youth/forms/BusinessRegistrationForm';
 export default BusinessRegistrationForm;

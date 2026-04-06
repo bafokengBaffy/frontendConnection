@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+/* eslint-disable no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect, useCallback } from 'react';
 import {
   Snackbar,
   Alert as MuiAlert,

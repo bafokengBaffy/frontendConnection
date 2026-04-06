@@ -1,9 +1,12 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-dupe-keys */
 /**
  * Student-related Type Definitions
  */
 
-import { Status } from './index';
 import { JobType } from './companyTypes';
+
+import { Status } from './index';
 
 // Student status
 export const StudentStatus = {

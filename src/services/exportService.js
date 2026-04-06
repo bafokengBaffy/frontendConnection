@@ -1,4 +1,8 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
+/* eslint-disable import/order */
 import { db, storage } from '../config/firebase';
+
 import { collection, getDocs, query, where, orderBy, Timestamp } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import * as XLSX from 'xlsx';
@@ -202,7 +206,7 @@ class ExportService {
       header,
     });
 
-    const blob = new Blob([bom ? '\uFEFF' + csv : csv], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob([bom ? '.FEFF' + csv : csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
 
     const result = {
@@ -440,18 +444,18 @@ class ExportService {
   async exportToXML(data, filename, options = {}) {
     const { rootElement = 'root', itemElement = 'item', pretty = true } = options;
 
-    let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+    let xml = '<?xml version="1.0" encoding="UTF-8"?>.';
 
     if (pretty) {
-      xml += `\n<${rootElement}>`;
+      xml += `.<${rootElement}>`;
       data.forEach((item) => {
-        xml += `\n  <${itemElement}>`;
+        xml += `.  <${itemElement}>`;
         Object.entries(item).forEach(([key, value]) => {
-          xml += `\n    <${key}>${this.escapeXml(value)}</${key}>`;
+          xml += `.    <${key}>${this.escapeXml(value)}</${key}>`;
         });
-        xml += `\n  </${itemElement}>`;
+        xml += `.  </${itemElement}>`;
       });
-      xml += `\n</${rootElement}>`;
+      xml += `.</${rootElement}>`;
     } else {
       xml += `<${rootElement}>`;
       data.forEach((item) => {

@@ -1,4 +1,3 @@
-﻿import React from 'react';
 import { Container, Card } from 'react-bootstrap';
 import { FaUsersCog } from 'react-icons/fa';
 import './TeamWorkspace.css';

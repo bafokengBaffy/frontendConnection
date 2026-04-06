@@ -1,2 +1,2 @@
-﻿import MentorSuggestions from './components/AI/Recommendations/MentorSuggestions.jsx';
+import MentorSuggestions from './MentorSuggestions';
 export default MentorSuggestions;

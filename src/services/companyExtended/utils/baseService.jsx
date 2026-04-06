@@ -2,8 +2,6 @@
 /* eslint-disable no-case-declarations */
 /* eslint-disable no-useless-escape */
 // Base service utilities and shared functionality
-import { baseService } from '../../companyExtendedServices';
-import { auth, db, storage } from '../../../config/firebase';
 import {
   // Firestore
   collection,
@@ -21,12 +19,12 @@ import {
   serverTimestamp,
   onSnapshot,
   writeBatch,
-  // Storage
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  deleteObject,
 } from 'firebase/firestore';
+
+// Storage imports need to come from firebase/storage, not firestore
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+
+import { auth, db, storage } from '../../../config/firebase';
 
 // Collection names constant
 export const COLLECTIONS = {
@@ -59,6 +57,7 @@ export const handleServiceError = (error, context) => {
 
   // Production error tracking
   if (process.env.NODE_ENV === 'production') {
+    // Log to monitoring service
     console.log('📊 Error logged to monitoring service');
   }
 
@@ -134,8 +133,9 @@ export const validateEmail = (email) => {
 };
 
 export const validatePhone = (phone) => {
-  const re = /^[\+]?[1-9][\d]{0,15}$/;
-  return re.test(phone.replace(/[\s\-\(\)]/g, ''));
+  const re =
+    /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,4}[-\s\.]?[0-9]{1,4}$/;
+  return re.test(phone.replace(/\s/g, ''));
 };
 
 export const generateUniqueId = () => {
@@ -239,4 +239,138 @@ export const createSafeSubscription = (queryCallback, errorCallback) => {
     return () => {}; // Return empty cleanup function
   }
 };
-export default baseService;
+
+// Base service class
+class BaseService {
+  constructor(collectionName) {
+    this.collectionName = collectionName;
+  }
+
+  /**
+   * Get collection reference
+   */
+  getCollectionRef() {
+    return collection(db, this.collectionName);
+  }
+
+  /**
+   * Get document reference
+   */
+  getDocRef(id) {
+    return doc(db, this.collectionName, id);
+  }
+
+  /**
+   * Create a new document
+   */
+  async create(data) {
+    try {
+      const docRef = await addDoc(this.getCollectionRef(), {
+        ...data,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+      return { id: docRef.id, ...data };
+    } catch (error) {
+      console.error('Error creating document:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get document by ID
+   */
+  async getById(id) {
+    try {
+      const docRef = this.getDocRef(id);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        return { id: docSnap.id, ...docSnap.data() };
+      }
+      return null;
+    } catch (error) {
+      console.error('Error getting document:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Update document
+   */
+  async update(id, data) {
+    try {
+      const docRef = this.getDocRef(id);
+      await updateDoc(docRef, {
+        ...data,
+        updatedAt: serverTimestamp(),
+      });
+      return true;
+    } catch (error) {
+      console.error('Error updating document:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Delete document
+   */
+  async delete(id) {
+    try {
+      const docRef = this.getDocRef(id);
+      await deleteDoc(docRef);
+      return true;
+    } catch (error) {
+      console.error('Error deleting document:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Query documents
+   */
+  async query(constraints = []) {
+    try {
+      const q = query(this.getCollectionRef(), ...constraints);
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+    } catch (error) {
+      console.error('Error querying documents:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Upload file to storage
+   */
+  async uploadFile(path, file) {
+    try {
+      const storageRef = ref(storage, path);
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      return { path, url };
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Delete file from storage
+   */
+  async deleteFile(path) {
+    try {
+      const storageRef = ref(storage, path);
+      await deleteObject(storageRef);
+      return true;
+    } catch (error) {
+      console.error('Error deleting file:', error);
+      throw error;
+    }
+  }
+}
+
+export default BaseService;

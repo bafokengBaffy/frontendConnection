@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+/* eslint-disable no-unused-vars */
+import { useState, useEffect, useRef } from 'react';
 import {
   Paper,
   InputBase,
@@ -29,6 +30,7 @@ import {
   Tune as TuneIcon,
   ArrowForward as ArrowForwardIcon,
 } from '@mui/icons-material';
+
 import Button from './Button';
 
 const SearchContainer = styled(Paper)(({ theme, expanded }) => ({

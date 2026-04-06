@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, alpha, styled, useTheme } from '@mui/material';
 import * as Icons from '@mui/icons-material';
 

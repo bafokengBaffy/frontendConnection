@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+
 import { authAPI, testConnection } from '../../services/api';
-import './Auth.css';
+import '../../pages/auth/Auth.css';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -72,7 +73,7 @@ const Register = () => {
     }
 
     // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^.@]+@[^.@]+.[^.@]+$/;
     if (!formData.email) {
       newErrors.email = 'Email is required';
     } else if (!emailRegex.test(formData.email)) {
@@ -139,7 +140,7 @@ const Register = () => {
           const dashboardPath =
             result.data.user.userType === 'student'
               ? '/student'
-              : result.data.user.userType === 'employer'
+              : result.data.user.userType === 'company'
                 ? '/company'
                 : '/';
           navigate(dashboardPath);
@@ -213,10 +214,10 @@ const Register = () => {
               </button>
               <button
                 type="button"
-                className={`user-type-btn ${formData.userType === 'employer' ? 'active' : ''}`}
-                onClick={() => setFormData((prev) => ({ ...prev, userType: 'employer' }))}
+                className={`user-type-btn ${formData.userType === 'company' ? 'active' : ''}`}
+                onClick={() => setFormData((prev) => ({ ...prev, userType: 'company' }))}
               >
-                Employer
+                Company
               </button>
             </div>
           </div>

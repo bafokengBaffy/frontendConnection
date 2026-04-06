@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Container,
   Row,
@@ -51,6 +51,7 @@ import {
   MdOutlineCloudUpload,
 } from 'react-icons/md';
 import { FaGraduationCap, FaFilePdf, FaRegIdCard } from 'react-icons/fa';
+
 import { useAuth, useStudent } from '../../context';
 import { profileService } from '../../services/profileService';
 import ProfilePhotoUpload from '../../components/profile/ProfilePhotoUpload';

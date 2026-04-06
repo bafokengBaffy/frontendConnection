@@ -1,4 +1,5 @@
-import React, { createContext, useState, useContext, useCallback, useEffect } from 'react';
+/* eslint-disable prettier/prettier */
+import { createContext, useState, useContext, useCallback, useEffect } from 'react';
 import {
   FaBell,
   FaCheckCircle,
@@ -22,7 +23,6 @@ export const useNotification = () => {
 export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
 
-  // Load notifications from localStorage on mount
   useEffect(() => {
     const savedNotifications = localStorage.getItem('careerconnect_notifications');
     if (savedNotifications) {
@@ -33,7 +33,6 @@ export const NotificationProvider = ({ children }) => {
       }
     }
 
-    // Add some sample notifications for demo
     if (!savedNotifications) {
       const sampleNotifications = [
         {
@@ -67,68 +66,69 @@ export const NotificationProvider = ({ children }) => {
           link: '/funding',
         },
       ];
+
       setNotifications(sampleNotifications);
       localStorage.setItem('careerconnect_notifications', JSON.stringify(sampleNotifications));
     }
   }, []);
 
-  // Save notifications to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('careerconnect_notifications', JSON.stringify(notifications));
   }, [notifications]);
 
-  const addNotification = useCallback((notification) => {
-    const id = Date.now().toString();
-    const icons = {
-      success: <FaCheckCircle />,
-      warning: <FaExclamationTriangle />,
-      info: <FaInfoCircle />,
-      funding: <FaMoneyBillWave />,
-      mentorship: <FaUsers />,
-      deadline: <FaCalendarAlt />,
-      default: <FaBell />,
-    };
-
-    const newNotification = {
-      id,
-      type: notification.type || 'info',
-      title: notification.title,
-      message: notification.message,
-      time: 'Just now',
-      read: false,
-      icon: icons[notification.type] || icons.default,
-      link: notification.link,
-      duration: notification.duration || 5000,
-      priority: notification.priority || 'normal',
-      ...notification,
-    };
-
-    setNotifications((prev) => [newNotification, ...prev]);
-
-    // Auto-remove notification after duration
-    if (newNotification.duration > 0) {
-      setTimeout(() => {
-        removeNotification(id);
-      }, newNotification.duration);
-    }
-
-    // Play notification sound (optional)
-    if (notification.playSound !== false) {
-      try {
-        const audio = new Audio('/notification.mp3');
-        audio.volume = 0.3;
-        audio.play().catch(() => {});
-      } catch (error) {
-        console.log('Notification sound error:', error);
-      }
-    }
-
-    return id;
-  }, []);
-
   const removeNotification = useCallback((id) => {
     setNotifications((prev) => prev.filter((notification) => notification.id !== id));
   }, []);
+
+  const addNotification = useCallback(
+    (notification) => {
+      const id = Date.now().toString();
+      const icons = {
+        success: <FaCheckCircle />,
+        warning: <FaExclamationTriangle />,
+        info: <FaInfoCircle />,
+        funding: <FaMoneyBillWave />,
+        mentorship: <FaUsers />,
+        deadline: <FaCalendarAlt />,
+        default: <FaBell />,
+      };
+
+      const newNotification = {
+        id,
+        type: notification.type || 'info',
+        title: notification.title,
+        message: notification.message,
+        time: 'Just now',
+        read: false,
+        icon: icons[notification.type] || icons.default,
+        link: notification.link,
+        duration: notification.duration || 5000,
+        priority: notification.priority || 'normal',
+        ...notification,
+      };
+
+      setNotifications((prev) => [newNotification, ...prev]);
+
+      if (newNotification.duration > 0) {
+        setTimeout(() => {
+          removeNotification(id);
+        }, newNotification.duration);
+      }
+
+      if (notification.playSound !== false) {
+        try {
+          const audio = new Audio('/notification.mp3');
+          audio.volume = 0.3;
+          audio.play().catch(() => {});
+        } catch (error) {
+          console.log('Notification sound error:', error);
+        }
+      }
+
+      return id;
+    },
+    [removeNotification]
+  );
 
   const markAsRead = useCallback((id) => {
     setNotifications((prev) =>
@@ -148,49 +148,46 @@ export const NotificationProvider = ({ children }) => {
   }, []);
 
   const getUnreadCount = useCallback(() => {
-    return notifications.filter((n) => !n.read).length;
+    return notifications.filter((notification) => !notification.read).length;
   }, [notifications]);
 
   const getNotificationsByType = useCallback(
     (type) => {
-      return notifications.filter((n) => n.type === type);
+      return notifications.filter((notification) => notification.type === type);
     },
     [notifications]
   );
 
   const addSuccessNotification = useCallback(
-    (title, message, options = {}) => {
-      return addNotification({
+    (title, message, options = {}) =>
+      addNotification({
         type: 'success',
         title,
         message,
         ...options,
-      });
-    },
+      }),
     [addNotification]
   );
 
   const addErrorNotification = useCallback(
-    (title, message, options = {}) => {
-      return addNotification({
+    (title, message, options = {}) =>
+      addNotification({
         type: 'danger',
         title,
         message,
         ...options,
-      });
-    },
+      }),
     [addNotification]
   );
 
   const addWarningNotification = useCallback(
-    (title, message, options = {}) => {
-      return addNotification({
+    (title, message, options = {}) =>
+      addNotification({
         type: 'warning',
         title,
         message,
         ...options,
-      });
-    },
+      }),
     [addNotification]
   );
 

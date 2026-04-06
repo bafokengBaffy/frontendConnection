@@ -1,2 +1,2 @@
-﻿import MentorshipRequestForm from './components/youth/forms/MentorshipRequestForm.jsx';
+import MentorshipRequestForm from './MentorshipRequestForm';
 export default MentorshipRequestForm;

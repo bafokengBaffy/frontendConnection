@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { collection, doc, getDocs, orderBy, query, updateDoc, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import {
@@ -13,6 +14,7 @@ import {
   Spinner,
   Table,
 } from 'react-bootstrap';
+
 import { db } from '../../config/firebase';
 import { useAuth } from '../../context/AuthContext';
 

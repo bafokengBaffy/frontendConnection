@@ -1,15 +1,5 @@
 /* eslint-disable no-unused-vars */
 import {
-  getCurrentCompanyId,
-  safeConvertFirebaseData,
-  handleServiceError,
-  COLLECTIONS,
-  generateUniqueId,
-  formatFileSize,
-  validateEmail,
-} from '../utils/baseService';
-import { db, storage, auth } from '../../../config/firebase';
-import {
   collection,
   doc,
   getDoc,
@@ -31,6 +21,17 @@ import {
   updateProfile,
   sendPasswordResetEmail,
 } from 'firebase/auth';
+
+import { db, storage, auth } from '../../../config/firebase';
+import {
+  getCurrentCompanyId,
+  safeConvertFirebaseData,
+  handleServiceError,
+  COLLECTIONS,
+  generateUniqueId,
+  formatFileSize,
+  validateEmail,
+} from '../utils/baseService';
 
 // ============================
 // TEAM MANAGEMENT SERVICE

@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Form, Alert, Spinner } from 'react-bootstrap';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { getAuth, updateProfile } from 'firebase/auth';
+
 import { db } from '../../config/firebase';
 
 function CompanyProfile() {
@@ -75,7 +77,7 @@ function CompanyProfile() {
     }
     if (!profile.email.trim()) {
       newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(profile.email)) {
+    } else if (!/.+@.+..+/.test(profile.email)) {
       newErrors.email = 'Email is invalid';
     }
     if (!profile.industry.trim()) {

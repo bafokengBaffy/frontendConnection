@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-import React from 'react';
 import { Container, Card, Button, Row, Col, Badge } from 'react-bootstrap';
 
 const BusinessInsights = () => {

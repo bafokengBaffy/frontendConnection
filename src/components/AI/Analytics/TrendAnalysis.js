@@ -1,2 +1,2 @@
-﻿import TrendAnalysis from './components/AI/Analytics/TrendAnalysis.jsx';
+import TrendAnalysis from './TrendAnalysis';
 export default TrendAnalysis;

@@ -1,4 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useCallback, useRef } from 'react';
+
 import { useDebounce } from './useDebounce';
 
 export const useFetch = (url, options = {}) => {

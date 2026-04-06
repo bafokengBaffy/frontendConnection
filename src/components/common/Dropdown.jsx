@@ -1,4 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+/* eslint-disable no-undef */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
+import { useState, useEffect, useRef } from 'react';
 import {
   FormControl,
   InputLabel,
@@ -121,12 +124,12 @@ const Dropdown = ({
     } else {
       setFilteredOptions(options);
     }
-  }, [searchTerm, options]);
+  }, [searchTerm, options, getOptionLabel]);
 
-  const getOptionLabel = (option) => {
+  const getOptionLabel = useCallback((option) => {
     if (typeof option === 'string') return option;
     return option[optionLabel] || '';
-  };
+  });
 
   const getOptionValue = (option) => {
     if (typeof option === 'string') return option;

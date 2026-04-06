@@ -1,2 +1,2 @@
-﻿import PatternRecognition from './components/AI/Analytics/PatternRecognition.jsx';
+import PatternRecognition from './PatternRecognition';
 export default PatternRecognition;

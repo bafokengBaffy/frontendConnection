@@ -1,7 +1,8 @@
+/* eslint-disable import/order */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-no-undef */
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Container,
   Row,
@@ -87,9 +88,11 @@ import {
   FaBars,
   FaSignOutAlt,
 } from 'react-icons/fa';
+
 import { useAuth } from '../../../context/AuthContext';
 import { useCollaboration } from '../../../hooks/useCollaboration';
 import { communicationService } from '../../../services/communicationService';
+
 import './CompanyChat.css';
 import EmojiPicker from 'emoji-picker-react';
 

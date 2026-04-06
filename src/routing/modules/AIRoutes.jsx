@@ -1,5 +1,6 @@
-import React, { lazy } from 'react';
+import { lazy } from 'react';
 import { Route } from 'react-router-dom';
+
 import ProtectedRoute from '../../components/layout/ProtectedRoute';
 
 // Lazy loaded AI components
@@ -75,3 +76,5 @@ export const getAIRoutes = () => [
     }
   />,
 ];
+
+export default getAIRoutes;

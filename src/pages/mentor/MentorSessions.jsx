@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable no-unused-vars */
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   Calendar,
@@ -22,6 +23,7 @@ import {
   Phone,
   Mail,
 } from 'lucide-react';
+
 import { mentorService } from '../../services/mentorService';
 import { useAuth } from '../../hooks/useAuth';
 import './MentorStyles.css';

@@ -1,0 +1,280 @@
+/* FundingOpportunities.css */
+.funding-opportunities-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.funding-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.funding-title {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.opportunity-count {
+  font-size: 1.2rem;
+  color: #7f8c8d;
+  font-weight: normal;
+}
+
+.funding-subtitle {
+  font-size: 1.1rem;
+  color: #34495e;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-filter-section {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.funding-search {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.view-toggle {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+.view-toggle-btn {
+  padding: 0.75rem;
+  border: 2px solid #e0e0e0;
+  background: white;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.view-toggle-btn:hover {
+  background: #f0f0f0;
+  transform: translateY(-2px);
+}
+
+.view-toggle-btn.active {
+  background: #3498db;
+  border-color: #3498db;
+  color: white;
+}
+
+/* Grid View */
+.opportunities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+/* List View */
+.opportunities-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.list-item {
+  width: 100%;
+}
+
+/* Loading States */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 1rem;
+}
+
+.loading-container p {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+}
+
+/* No Results */
+.no-results {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.no-results h3 {
+  font-size: 1.8rem;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+.no-results p {
+  color: #7f8c8d;
+  margin-bottom: 2rem;
+}
+
+/* Load More */
+.load-more-container {
+  text-align: center;
+  margin-top: 3rem;
+  padding: 2rem;
+}
+
+.load-more-btn {
+  min-width: 250px;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.load-more-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+.load-more-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Floating Actions (Mobile) */
+.floating-actions {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  display: flex;
+  gap: 1rem;
+  z-index: 1000;
+}
+
+.mobile-save-btn,
+.mobile-share-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #3498db;
+  color: white;
+  border: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.mobile-save-btn:hover,
+.mobile-share-btn:hover {
+  transform: scale(1.1);
+  background: #2980b9;
+}
+
+/* Error State */
+.funding-opportunities-error {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: #fee;
+  border-radius: 20px;
+  margin: 2rem;
+}
+
+.funding-opportunities-error h3 {
+  color: #c0392b;
+  margin-bottom: 1rem;
+}
+
+.funding-opportunities-error button {
+  margin-top: 1rem;
+  padding: 0.75rem 2rem;
+  background: #3498db;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .funding-title {
+    font-size: 2rem;
+  }
+
+  .opportunities-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .search-filter-section {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .view-toggle {
+    justify-content: center;
+  }
+
+  .floating-actions {
+    bottom: 1rem;
+    right: 1rem;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .funding-card,
+  .view-toggle-btn,
+  .load-more-btn {
+    transition: none;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .funding-card {
+    border: 2px solid black;
+  }
+
+  .view-toggle-btn.active {
+    background: black;
+    border-color: black;
+  }
+}

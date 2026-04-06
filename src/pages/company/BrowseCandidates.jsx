@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-no-undef */
 // src/pages/company/BrowseCandidates.js
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Container,
   Row,
@@ -56,6 +57,7 @@ import {
   FaArrowLeft,
   FaPaperPlane, // ADD THIS IMPORT
 } from 'react-icons/fa';
+
 import { companyFirebaseService } from '../../services/companyServices';
 
 const BrowseCandidates = () => {
@@ -142,11 +144,11 @@ const BrowseCandidates = () => {
 
   useEffect(() => {
     loadCandidates();
-  }, []);
+  }, [loadCandidates]);
 
   useEffect(() => {
     filterAndSortCandidates();
-  }, [candidates, searchTerm, filters, sortBy]);
+  }, [candidates, searchTerm, filters, sortBy, filterAndSortCandidates]);
 
   const loadCandidates = async () => {
     try {

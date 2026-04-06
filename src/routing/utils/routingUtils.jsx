@@ -1,7 +1,9 @@
-﻿import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
 import { Spinner } from 'react-bootstrap';
+
+import { useAuth } from '../../context/AuthContext';
+
 import { ROLE_BASED_REDIRECTS } from './routeConstants';
 
 // Import Layout for LoadingFallback

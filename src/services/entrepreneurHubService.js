@@ -12,7 +12,8 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore';
-import { db } from '../../config/firebase';
+
+import { db } from '../config/firebase';
 
 class EntrepreneurHubService {
   constructor() {

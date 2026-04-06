@@ -1,2 +1,2 @@
-﻿import GrantEligibility from './components/youth/funding/GrantEligibility.jsx';
+import GrantEligibility from './GrantEligibility';
 export default GrantEligibility;

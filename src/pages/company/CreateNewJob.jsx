@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/jsx-no-undef */
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Container,
@@ -44,6 +45,7 @@ import {
   FaTrash,
   FaMagic,
 } from 'react-icons/fa';
+
 import { jobService, cloudinaryService } from '../../services/companyServices';
 import './CreateNewJob.css';
 

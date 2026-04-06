@@ -1,4 +1,4 @@
-import { db, auth, storage } from '../config/firebase';
+/* eslint-disable no-unused-vars */
 import {
   collection,
   doc,
@@ -19,6 +19,9 @@ import {
   increment,
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+
+import { db, auth, storage } from '../config/firebase';
+
 import { cloudinaryService } from './cloudinaryService';
 
 class MentorService {

@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
+import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
+
 import {
   getCurrentCompanyId,
   safeConvertFirebaseData,
@@ -9,7 +11,6 @@ import {
   formatFileSize,
 } from '../utils/baseService';
 import { db } from '../../../config/firebase';
-import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
 
 // ============================
 // ANALYTICS SERVICE

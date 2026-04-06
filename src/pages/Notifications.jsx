@@ -1,9 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Container, Card, ListGroup, Badge, Button, Form, Spinner, Alert } from 'react-bootstrap';
-import { useAuth } from '../context/AuthContext';
-import { app } from '../config/firebase';
 import {
   collection,
   query,
@@ -14,6 +12,9 @@ import {
   doc,
   getDocs,
 } from 'firebase/firestore';
+
+import { useAuth } from '../context/AuthContext';
+import { app } from '../config/firebase';
 import './Notifications.css';
 
 const Notifications = () => {

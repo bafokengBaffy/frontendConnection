@@ -1,4 +1,4 @@
-import { db, auth } from '../config/firebase';
+/* eslint-disable no-unused-vars */
 import {
   collection,
   doc,
@@ -16,6 +16,8 @@ import {
   increment,
 } from 'firebase/firestore';
 import axios from 'axios';
+
+import { db, auth } from '../config/firebase';
 
 class PaymentService {
   constructor() {

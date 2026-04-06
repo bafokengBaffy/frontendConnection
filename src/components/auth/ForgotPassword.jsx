@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable no-unused-vars */
+import { useState } from 'react';
 import {
   Container,
   Paper,
@@ -14,13 +15,14 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { sendPasswordResetEmail } from 'firebase/auth';
-import { auth } from '../../config/firebase';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import {
   Email as EmailIcon,
   ArrowBack as ArrowBackIcon,
   Send as SendIcon,
 } from '@mui/icons-material';
+
+import { auth } from '../../config/firebase';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   marginTop: theme.spacing(8),
@@ -41,7 +43,7 @@ const ForgotPassword = () => {
   const navigate = useNavigate();
 
   const validateEmail = (email) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const re = /^[^.@]+@[^.@]+.[^.@]+$/;
     return re.test(email);
   };
 

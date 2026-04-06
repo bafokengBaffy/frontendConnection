@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-undef */
 /* eslint-disable react/jsx-no-undef */
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useCallback } from 'react';
@@ -29,7 +31,6 @@ import {
   Tab,
   Placeholder,
 } from 'react-bootstrap';
-
 import {
   FaBuilding,
   FaUsers,

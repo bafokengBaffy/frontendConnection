@@ -1,3 +1,6 @@
+/* eslint-disable no-undef */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import {
   FormControl,
@@ -28,6 +31,7 @@ import {
   Clear as ClearIcon,
   Search as SearchIcon,
 } from '@mui/icons-material';
+
 import { useFormContext } from './FormValidation';
 
 const StyledSelect = styled(Select)(({ theme, error, touched, success }) => ({

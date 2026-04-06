@@ -1,8 +1,8 @@
 # Dependencies
-node_modules
-dist
-build
-coverage
+node_modules/
+dist/
+build/
+coverage/
 .firebase
 *.log
 *.lock
@@ -40,14 +40,11 @@ docs
 *.txt
 
 # Test files
-__tests__
-test
-tests
-*.test.js
-*.test.jsx
-*.spec.js
-*.spec.jsx
-coverage/
+scripts/
+**/__tests__/**
+**/*.test.js
+**/*.spec.js
+test-imports.jsx
 
 # Temporary files
 *.tmp

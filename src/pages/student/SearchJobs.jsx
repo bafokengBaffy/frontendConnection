@@ -1,5 +1,7 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 // src/pages/student/SearchJobs.jsx
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Container,
   Row,
@@ -29,18 +31,18 @@ import {
 } from 'react-icons/fa';
 import { toast } from 'react-hot-toast';
 import { motion } from 'framer-motion';
-import { useAuthState } from 'react-firebase-hooks/auth';
 import { collection, query, where, getDocs, orderBy, limit, startAfter } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 // Import your Firebase configuration
-import { auth, db, storage } from '../../config/firebase';
+import { db, storage } from '../../config/firebase';
+import { useAuth } from '../../context/AuthContext';
 import cloudinaryService from '../../services/cloudinaryService';
 import jobService from '../../services/jobService';
 import { applicationService } from '../../services/applicationService';
 
 const SearchJobs = () => {
-  const [user] = useAuthState(auth);
+  const { currentUser: user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);

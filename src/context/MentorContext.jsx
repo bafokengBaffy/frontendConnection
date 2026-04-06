@@ -1,6 +1,9 @@
-import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
+/* eslint-disable no-unused-vars */
+import { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
+
 import { logger } from '../utils/logger';
 import { mentorService } from '../services/mentorService';
+
 import { useAuth } from './AuthContext';
 
 // Create context

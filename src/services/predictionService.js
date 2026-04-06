@@ -10,6 +10,7 @@ import {
   updateDoc,
   doc,
 } from 'firebase/firestore';
+
 import { db } from '../config/firebase';
 
 // AI Prediction Service

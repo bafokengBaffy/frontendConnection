@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable no-unused-vars */
+import { useState } from 'react';
 import {
   TextField,
   InputAdornment,
@@ -17,6 +18,7 @@ import {
   CheckCircle as CheckCircleIcon,
   Info as InfoIcon,
 } from '@mui/icons-material';
+
 import { useFormContext } from './FormValidation';
 
 const StyledTextField = styled(TextField)(({ theme, error, success, touched }) => ({
@@ -219,7 +221,7 @@ const FormInput = ({
 
       if (mask[i] === '9') {
         // Digit
-        if (/\d/.test(value[valueIndex])) {
+        if (/./.test(value[valueIndex])) {
           result += value[valueIndex];
           valueIndex++;
         } else {

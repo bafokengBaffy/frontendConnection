@@ -1,6 +1,11 @@
-import React from 'react';
+// src/components/layout/LoadingSpinner.jsx
+import PropTypes from 'prop-types';
 
-const LoadingSpinner = ({ message = 'Loading...', size = 'lg' }) => {
+/**
+ * LoadingSpinner Component
+ * Displays a loading spinner with optional message and size variants
+ */
+export const LoadingSpinner = ({ message = 'Loading...', size = 'lg' }) => {
   const spinnerSize = {
     sm: { width: '1.5rem', height: '1.5rem' },
     md: { width: '2rem', height: '2rem' },
@@ -17,6 +22,11 @@ const LoadingSpinner = ({ message = 'Loading...', size = 'lg' }) => {
       </div>
     </div>
   );
+};
+
+LoadingSpinner.propTypes = {
+  message: PropTypes.string,
+  size: PropTypes.oneOf(['sm', 'md', 'lg']),
 };
 
 export default LoadingSpinner;

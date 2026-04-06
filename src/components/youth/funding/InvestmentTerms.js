@@ -1,2 +1,2 @@
-﻿import InvestmentTerms from './components/youth/funding/InvestmentTerms.jsx';
+import InvestmentTerms from './InvestmentTerms';
 export default InvestmentTerms;

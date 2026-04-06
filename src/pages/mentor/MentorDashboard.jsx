@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   Calendar,
@@ -17,8 +19,6 @@ import {
   BookOpen,
   Briefcase,
 } from 'lucide-react';
-import { mentorService } from '../../services/mentorService';
-import { useAuth } from '../../hooks/useAuth';
 import { Line, Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -31,6 +31,9 @@ import {
   Legend,
   ArcElement,
 } from 'chart.js';
+
+import { mentorService } from '../../services/mentorService';
+import { useAuth } from '../../hooks/useAuth';
 import './MentorStyles.css';
 
 ChartJS.register(

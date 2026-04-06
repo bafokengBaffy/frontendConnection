@@ -1,3 +1,5 @@
+/* eslint-disable no-unreachable */
+/* eslint-disable no-unused-vars */
 /**
  * Admin User Setup Utility
  *
@@ -5,9 +7,10 @@
  * In production, admin users should be created through secure backend processes
  */
 
-import { auth, db } from './firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndAnimation } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
+
+import { auth, db } from './firebase';
 
 // Import environment variables
 const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
@@ -21,7 +24,7 @@ const validateEnvVars = () => {
   }
 
   // Basic email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailRegex = /^[^.@]+@[^.@]+\.[^.@]+$/;
   if (!emailRegex.test(ADMIN_EMAIL)) {
     console.error('❌ Invalid admin email format');
     return false;
@@ -36,24 +39,6 @@ const validateEnvVars = () => {
   return true;
 };
 
-// Admin configuration - fallback to env vars if provided, otherwise use secure defaults
-const getAdminConfig = () => {
-  const isProduction = import.meta.env.VITE_APP_ENVIRONMENT === 'production';
-
-  if (isProduction && !validateEnvVars()) {
-    throw new Error('Admin credentials required for production setup');
-  }
-
-  return {
-    email: ADMIN_EMAIL || 'admin@careerconnect.com',
-    password: ADMIN_PASSWORD || this.generateSecurePassword(),
-    name: 'System Administrator',
-    userType: 'admin',
-    role: 'admin',
-    permissions: ['all'],
-  };
-};
-
 // Generate secure random password (fallback)
 const generateSecurePassword = () => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
@@ -64,6 +49,24 @@ const generateSecurePassword = () => {
     password += chars.charAt(b % chars.length);
   });
   return password;
+};
+
+// Admin configuration - fallback to env vars if provided, otherwise use secure defaults
+const getAdminConfig = () => {
+  const isProduction = import.meta.env.VITE_APP_ENVIRONMENT === 'production';
+
+  if (isProduction && !validateEnvVars()) {
+    throw new Error('Admin credentials required for production setup');
+  }
+
+  return {
+    email: ADMIN_EMAIL || 'admin@careerconnect.com',
+    password: ADMIN_PASSWORD || generateSecurePassword(),
+    name: 'System Administrator',
+    userType: 'admin',
+    role: 'admin',
+    permissions: ['all'],
+  };
 };
 
 // Check if admin already exists
@@ -81,7 +84,7 @@ const checkAdminExists = async (email) => {
 // Create admin user in Firebase Auth
 const createAuthAdmin = async (email, password) => {
   try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const userCredential = await createUserWithEmailAndAnimation(auth, email, password);
     console.log('✅ Admin user created in Firebase Auth');
     return userCredential.user;
   } catch (error) {
@@ -204,6 +207,20 @@ export const initializeAdminUser = async () => {
 
     // Create admin in Firebase Auth
     const authUser = await createAuthAdmin(adminConfig.email, adminConfig.password);
+
+    // Skip if user already exists
+    if (authUser === null) {
+      console.log('ℹ️  Admin user already exists, skipping creation');
+      return {
+        success: true,
+        message: 'Admin user already exists',
+        data: {
+          email: adminConfig.email,
+          userId: null,
+          profileCreated: false,
+        },
+      };
+    }
 
     // Create admin profile in Firestore
     const adminProfile = await createFirestoreAdmin(

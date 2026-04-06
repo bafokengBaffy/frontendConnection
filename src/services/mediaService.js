@@ -1,7 +1,8 @@
 // src/services/mediaService.js
+import { validateFile } from '../utils/validationSchemas';
+
 import { cloudinaryService } from './cloudinaryService';
 import { storageService } from './storageService';
-import { validateFile } from '../utils/validationSchemas';
 
 /**
  * Comprehensive Media Service
@@ -358,7 +359,7 @@ class MediaService {
       // Firebase Storage URLs have a specific pattern
       if (urlObj.hostname.includes('firebasestorage')) {
         // Remove /v0/b/{bucket-name}/o/ prefix and decode
-        const match = pathname.match(/\/o\/(.+?)\?/);
+        const match = pathname.match(/.o.(.+?)./);
         if (match && match[1]) {
           return decodeURIComponent(match[1]);
         }

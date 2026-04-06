@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
-import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
+import { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import { doc, getDoc, updateDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+
 import { db } from '../config/firebase';
-import { useAuth } from './AuthContext';
 import {
   getStudentProfile,
   updateStudentProfile as updateProfile,
@@ -15,6 +15,8 @@ import {
   getDashboardStats,
   initializeStudentProfile,
 } from '../services/studentServices';
+
+import { useAuth } from './AuthContext';
 
 const StudentContext = createContext();
 

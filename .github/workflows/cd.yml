@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' || github.event_name == 'release'
     environment: production
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -68,10 +68,10 @@ jobs:
           name: Release v${{ github.run_number }}
           body: |
             ## Production Release v${{ github.run_number }}
-            
+
             ### Changes
             ${{ github.event.head_commit.message }}
-            
+
             ### Deployment
             - Environment: Production
             - Deployed by: @${{ github.actor }}
@@ -86,7 +86,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/staging'
     environment: staging
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -136,7 +136,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [deploy-production, deploy-staging]
     if: always()
-    
+
     steps:
       - name: Send Slack notification
         uses: 8398a7/action-slack@v3
@@ -159,7 +159,7 @@ jobs:
           from: CI/CD Bot
           body: |
             Deployment Status: ${{ job.status }}
-            
+
             Environment: ${{ github.ref == 'refs/heads/main' && 'Production' || 'Staging' }}
             Commit: ${{ github.sha }}
             Author: ${{ github.actor }}

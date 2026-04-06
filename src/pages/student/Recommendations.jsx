@@ -1,4 +1,3 @@
-import React from 'react';
 import { Container, Row, Col, Card, Button, Badge } from 'react-bootstrap';
 
 const Recommendations = () => {

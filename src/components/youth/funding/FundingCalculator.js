@@ -1,2 +1,2 @@
-﻿import FundingCalculator from './components/youth/funding/FundingCalculator.jsx';
+import FundingCalculator from './FundingCalculator';
 export default FundingCalculator;

@@ -1,2 +1,2 @@
-﻿import PitchDeckBuilder from './components/youth/PitchDeckBuilder.jsx';
+import PitchDeckBuilder from './PitchDeckBuilder';
 export default PitchDeckBuilder;

@@ -1,6 +1,5 @@
 // src/services/companyServices/companyFirebaseService.js
 
-import { db } from '../config/firebase';
 import {
   collection,
   query,
@@ -12,6 +11,8 @@ import {
   getDoc,
   updateDoc,
 } from 'firebase/firestore';
+
+import { db } from '../config/firebase';
 
 const companyFirebaseService = {
   /**

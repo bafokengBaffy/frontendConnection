@@ -15,6 +15,7 @@ import {
   getDocs,
   writeBatch,
 } from 'firebase/firestore';
+
 import { db, auth } from '../config/firebase';
 
 /**

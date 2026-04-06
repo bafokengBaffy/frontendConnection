@@ -1,0 +1,17 @@
+.dashboard-container {
+  width: 100%;
+}
+
+.dashboard-header {
+  margin-bottom: 1rem;
+}
+
+.dashboard-title {
+  margin: 0;
+}
+
+.dashboard-subtitle {
+  margin: 0.25rem 0 0;
+  color: #6c757d;
+}
+

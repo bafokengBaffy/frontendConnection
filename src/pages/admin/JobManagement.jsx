@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Card,
   Table,
@@ -14,8 +15,6 @@ import {
   InputGroup,
   Pagination,
 } from 'react-bootstrap';
-import { useAuth } from '../../context/AuthContext';
-import adminService from '../../services/adminService';
 import {
   FaSearch,
   FaBriefcase,
@@ -27,6 +26,9 @@ import {
   FaCheckCircle,
   FaTimesCircle,
 } from 'react-icons/fa';
+
+import { useAuth } from '../../context/AuthContext';
+import adminService from '../../services/adminService';
 
 const JobManagement = () => {
   const { currentUser, userProfile } = useAuth();

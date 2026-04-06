@@ -448,7 +448,7 @@ export const TypeValidators = {
    * Check if value is a valid email
    */
   isEmail: (value) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const re = /^[^.@]+@[^.@]+.[^.@]+$/;
     return re.test(String(value).toLowerCase());
   },
 
@@ -456,7 +456,7 @@ export const TypeValidators = {
    * Check if value is a valid phone number
    */
   isPhone: (value) => {
-    const re = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
+    const re = /^[+]?[(]?[0-9]{3}[)]?[-..]?[0-9]{3}[-..]?[0-9]{4,6}$/;
     return re.test(String(value));
   },
 
@@ -492,7 +492,7 @@ export const TypeValidators = {
    * Check if value is a valid ISO date string
    */
   isIsoDate: (value) => {
-    const re = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z$/;
+    const re = /^.{4}-.{2}-.{2}T.{2}:.{2}:.{2}(..{3})?Z$/;
     return re.test(String(value));
   },
 
@@ -508,8 +508,8 @@ export const TypeValidators = {
    * Check if value is a valid credit card number
    */
   isCreditCard: (value) => {
-    const re = /^\d{13,19}$/;
-    return re.test(String(value).replace(/\s/g, ''));
+    const re = /^.{13,19}$/;
+    return re.test(String(value).replace(/./g, ''));
   },
 };
 

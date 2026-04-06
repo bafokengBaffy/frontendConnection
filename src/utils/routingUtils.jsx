@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+
+import { useAuth } from '../context/AuthContext';
 
 /**
  * Scroll to top on route change
@@ -75,34 +76,40 @@ export const ROUTES = {
  * Utility to check if user has access to route
  */
 export const checkRouteAccess = (userType, path) => {
-  const studentPaths = [
-    '/student/dashboard',
-    '/student/profile',
-    '/student/applications',
-    '/student/jobs',
-    '/student/documents',
-    '/student/search',
-  ];
-
-  const companyPaths = [
-    '/company/dashboard',
-    '/company/profile',
-    '/company/jobs',
-    '/company/applications',
-  ];
-
-  const adminPaths = ['/admin/dashboard', '/admin/users', '/admin/companies'];
-
   if (path.startsWith('/admin')) {
     return userType === 'admin';
   }
 
   if (path.startsWith('/student')) {
-    return userType === 'student';
+    return userType === 'student' || userType === 'admin';
   }
 
   if (path.startsWith('/company')) {
-    return userType === 'company';
+    return userType === 'company' || userType === 'admin';
+  }
+
+  if (path.startsWith('/institute')) {
+    return userType === 'institute' || userType === 'admin';
+  }
+
+  if (path.startsWith('/mentor')) {
+    return userType === 'mentor' || userType === 'admin';
+  }
+
+  if (path.startsWith('/youth')) {
+    return userType === 'youth' || userType === 'entrepreneur' || userType === 'admin';
+  }
+
+  if (path.startsWith('/entrepreneur')) {
+    return userType === 'entrepreneur' || userType === 'admin';
+  }
+
+  if (path.startsWith('/parent')) {
+    return userType === 'parent' || userType === 'admin';
+  }
+
+  if (path.startsWith('/alumni')) {
+    return userType === 'alumni' || userType === 'admin';
   }
 
   // Common routes accessible to all authenticated users

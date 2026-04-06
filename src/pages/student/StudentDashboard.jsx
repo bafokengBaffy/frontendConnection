@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Container,
   Row,
@@ -62,6 +63,19 @@ import {
 } from 'react-icons/fa';
 import { Line, Doughnut } from 'react-chartjs-2';
 import { format, parseISO, differenceInDays, isBefore, addDays } from 'date-fns';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  ArcElement,
+  Title,
+  Tooltip as ChartTooltip,
+  Legend,
+  Filler,
+} from 'chart.js';
+
 import { useStudent } from '../../context/StudentContext';
 import { useAuth } from '../../context/AuthContext';
 import { useNotification } from '../../context/NotificationContext';
@@ -81,18 +95,6 @@ import { storageService } from '../../services/storageService';
 import './StudentDashboard.css';
 
 // Chart.js configuration
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  ArcElement,
-  Title,
-  Tooltip as ChartTooltip,
-  Legend,
-  Filler,
-} from 'chart.js';
 
 ChartJS.register(
   CategoryScale,

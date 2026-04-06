@@ -1,14 +1,5 @@
 /* eslint-disable no-unused-vars */
 import {
-  getCurrentCompanyId,
-  safeConvertFirebaseData,
-  handleServiceError,
-  COLLECTIONS,
-  generateUniqueId,
-  paginateResults,
-} from '../utils/baseService';
-import { db, storage } from '../../../config/firebase';
-import {
   collection,
   doc,
   getDoc,
@@ -25,6 +16,16 @@ import {
   writeBatch,
 } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+
+import {
+  getCurrentCompanyId,
+  safeConvertFirebaseData,
+  handleServiceError,
+  COLLECTIONS,
+  generateUniqueId,
+  paginateResults,
+} from '../utils/baseService';
+import { db, storage } from '../../../config/firebase';
 
 // ============================
 // FOLLOWERS SERVICE

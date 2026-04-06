@@ -1,5 +1,5 @@
-﻿/* eslint-disable no-unused-vars */
-import React, { useState } from 'react';
+/* eslint-disable no-unused-vars */
+import { useState } from 'react';
 import { Container, Row, Col, Card, Form, Button, Image, Tab, Nav, Badge } from 'react-bootstrap';
 import { FaCamera, FaPalette, FaFont, FaImage, FaVideo, FaBullhorn } from 'react-icons/fa';
 import './CompanyBranding.css';

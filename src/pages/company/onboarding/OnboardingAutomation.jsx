@@ -1,4 +1,3 @@
-﻿import React from 'react';
 import { Container, Card } from 'react-bootstrap';
 import { FaUserCheck } from 'react-icons/fa';
 import './OnboardingAutomation.css';

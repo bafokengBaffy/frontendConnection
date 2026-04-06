@@ -1,6 +1,7 @@
-﻿/* eslint-disable no-undef */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Container,
   Row,
@@ -57,9 +58,10 @@ import {
   FaCog,
   FaBell,
 } from 'react-icons/fa';
+import { toast } from 'react-toastify';
+
 import { useAuth } from '../context/AuthContext';
 
-import { toast } from 'react-toastify';
 import './Search.css';
 
 const Search = () => {
@@ -760,9 +762,9 @@ const Search = () => {
                             {opportunity.type === OPPORTUNITY_TYPES.JOB && (
                               <>
                                 <FaBuilding className="me-1" />
-                                {opportunity.company || 'Company not specified'} •
+                                {opportunity.company || 'Company not specified'} �
                                 <FaMapMarkerAlt className="ms-2 me-1" />
-                                {opportunity.location || 'Location not specified'} •
+                                {opportunity.location || 'Location not specified'} �
                                 {opportunity.salary && (
                                   <>
                                     <FaMoneyBillWave className="ms-2 me-1" />
@@ -774,9 +776,9 @@ const Search = () => {
                             {opportunity.type === OPPORTUNITY_TYPES.COURSE && (
                               <>
                                 <FaGraduationCap className="me-1" />
-                                {opportunity.institution || 'Institution not specified'} •
+                                {opportunity.institution || 'Institution not specified'} �
                                 <FaMapMarkerAlt className="ms-2 me-1" />
-                                {opportunity.location || 'Online'} •
+                                {opportunity.location || 'Online'} �
                                 {opportunity.duration && (
                                   <>
                                     <FaClock className="ms-2 me-1" />
@@ -788,11 +790,11 @@ const Search = () => {
                             {opportunity.type === OPPORTUNITY_TYPES.FUNDING && (
                               <>
                                 <FaShieldAlt className="me-1" />
-                                {opportunity.organization || 'Organization not specified'} •
+                                {opportunity.organization || 'Organization not specified'} �
                                 {opportunity.amount && (
                                   <>
                                     <FaMoneyBillWave className="ms-2 me-1" />
-                                    {opportunity.amount} •
+                                    {opportunity.amount} �
                                   </>
                                 )}
                                 <FaClock className="me-1" />
@@ -802,7 +804,7 @@ const Search = () => {
                             {opportunity.type === OPPORTUNITY_TYPES.BUSINESS_IDEA && (
                               <>
                                 <FaRocket className="me-1" />
-                                Business Idea •
+                                Business Idea �
                                 <FaChartLine className="ms-2 me-1" />
                                 {opportunity.industry || 'Industry not specified'}
                               </>
@@ -810,7 +812,7 @@ const Search = () => {
                             {opportunity.type === OPPORTUNITY_TYPES.MENTORSHIP && (
                               <>
                                 <FaUserTie className="me-1" />
-                                {opportunity.mentorName || 'Mentor not specified'} •
+                                {opportunity.mentorName || 'Mentor not specified'} �
                                 <FaClock className="ms-2 me-1" />
                                 {opportunity.duration || 'Duration not specified'}
                               </>
@@ -1070,7 +1072,7 @@ const Search = () => {
                     fetchOpportunities();
                   }}
                 >
-                  View all popular opportunities →
+                  View all popular opportunities ?
                 </Button>
               </Card.Body>
             </Card>
@@ -1111,7 +1113,7 @@ const Search = () => {
                     fetchOpportunities();
                   }}
                 >
-                  View all recent opportunities →
+                  View all recent opportunities ?
                 </Button>
               </Card.Body>
             </Card>

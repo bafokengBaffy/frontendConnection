@@ -1,0 +1,19 @@
+{
+  "name": "Career Connect Lesotho",
+  "email": "test@careerconnect.co.ls",
+  "body": "This is a test fixture for Cypress",
+  "users": {
+    "student": {
+      "email": "student@test.com",
+      "password": "Test123!@#"
+    },
+    "company": {
+      "email": "company@test.com",
+      "password": "Test123!@#"
+    },
+    "admin": {
+      "email": "admin@test.com",
+      "password": "Admin123!@#"
+    }
+  }
+}

@@ -1,6 +1,6 @@
-﻿/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Container,
   Row,
@@ -44,6 +44,7 @@ import {
   FiMessageSquare,
 } from 'react-icons/fi';
 import { MdAssignment, MdWork, MdBusiness, MdLocationOn, MdAccessTime } from 'react-icons/md';
+
 import { useAuth, useStudent } from '../../context';
 import {
   getStudentApplications,
@@ -463,7 +464,7 @@ const Applications = () => {
   // Format status text
   const formatStatus = (status) => {
     if (!status) return 'Unknown';
-    return status.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
+    return status.replace(/_/g, ' ').replace(/../g, (l) => l.toUpperCase());
   };
 
   // Get status icon
@@ -772,7 +773,7 @@ const Applications = () => {
                                 </Link>
                               </strong>
                               <small className="text-muted">
-                                {application.jobType || 'N/A'} • {application.location || 'Remote'}
+                                {application.jobType || 'N/A'} � {application.location || 'Remote'}
                               </small>
                             </div>
                           </div>

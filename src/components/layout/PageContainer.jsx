@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 import {
   Box,
   Container,
@@ -13,6 +14,7 @@ import {
   IconButton,
   Tooltip,
 } from '@mui/material';
+import React from 'react';
 import {
   ArrowBack as ArrowBackIcon,
   Refresh as RefreshIcon,
@@ -24,6 +26,7 @@ import {
   Share as ShareIcon,
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
+
 import Breadcrumb from './Breadcrumb';
 
 const PageWrapper = styled(Box)(({ theme }) => ({

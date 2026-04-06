@@ -1,5 +1,4 @@
 // pages/admin/AdminProfile.js
-import React from 'react';
 import { Container, Card, Row, Col } from 'react-bootstrap';
 
 const AdminProfile = () => {

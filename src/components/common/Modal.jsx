@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import React, { useEffect } from 'react';
 import {
   Dialog,
@@ -17,6 +18,7 @@ import {
   Fullscreen as FullscreenIcon,
   FullscreenExit as FullscreenExitIcon,
 } from '@mui/icons-material';
+
 import Button from './Button';
 
 const Transition = React.forwardRef(function Transition(props, ref) {

@@ -1,0 +1,67 @@
+{
+  "student": {
+    "id": "user-123",
+    "email": "student@test.com",
+    "firstName": "John",
+    "lastName": "Doe",
+    "role": "student",
+    "profile": {
+      "phone": "+266 12345678",
+      "location": "Maseru",
+      "bio": "Computer Science student",
+      "skills": ["JavaScript", "React", "Node.js"],
+      "education": [
+        {
+          "institution": "National University of Lesotho",
+          "degree": "Bachelor of Science",
+          "field": "Computer Science",
+          "startDate": "2022-01-01",
+          "endDate": "2025-12-31"
+        }
+      ],
+      "experience": []
+    },
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T00:00:00Z"
+  },
+  "company": {
+    "id": "company-456",
+    "email": "company@test.com",
+    "companyName": "Tech Solutions Lesotho",
+    "role": "company",
+    "profile": {
+      "industry": "Technology",
+      "size": "50-100",
+      "location": "Maseru",
+      "website": "https://techsolutions.co.ls",
+      "description": "Leading tech company in Lesotho"
+    },
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T00:00:00Z"
+  },
+  "admin": {
+    "id": "admin-789",
+    "email": "admin@test.com",
+    "firstName": "Admin",
+    "lastName": "User",
+    "role": "admin",
+    "permissions": ["manage_users", "manage_jobs", "view_analytics"],
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T00:00:00Z"
+  },
+  "mentor": {
+    "id": "mentor-101",
+    "email": "mentor@test.com",
+    "firstName": "Sarah",
+    "lastName": "Johnson",
+    "role": "mentor",
+    "profile": {
+      "expertise": ["Business Strategy", "Marketing", "Leadership"],
+      "experience": 10,
+      "company": "Global Consulting",
+      "bio": "Experienced business mentor"
+    },
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T00:00:00Z"
+  }
+}

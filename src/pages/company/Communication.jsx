@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Container,
   Row,
@@ -58,6 +59,7 @@ import {
   FaRegCopy,
   FaRegEnvelope,
 } from 'react-icons/fa';
+
 import { companyFirebaseService } from '../../services/companyServices';
 
 const Communication = () => {

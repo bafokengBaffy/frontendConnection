@@ -1,2 +1,2 @@
-﻿import FundingOpportunityCard from './pages/youth/FundingOpportunityCard.jsx';
+import FundingOpportunityCard from '../../components/youth/FundingOpportunityCard';
 export default FundingOpportunityCard;

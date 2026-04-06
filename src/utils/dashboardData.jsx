@@ -1,5 +1,4 @@
 // src/utils/dashboardData.js - FIXED VERSION
-import { db } from '../config/firebase';
 import {
   collection,
   query,
@@ -8,6 +7,8 @@ import {
   getCountFromServer,
   onSnapshot,
 } from 'firebase/firestore';
+
+import { db } from '../config/firebase';
 
 // Dashboard statistics service
 export const DashboardService = {

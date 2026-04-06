@@ -6,7 +6,9 @@ export const DASHBOARD_PATHS = {
   COMPANY: '/company/dashboard',
   ENTREPRENEUR: '/entrepreneur/dashboard',
   INSTITUTE: '/institute/dashboard',
-  EMPLOYER: '/employer/dashboard',
+  MENTOR: '/mentor/dashboard',
+  PARENT: '/parent/dashboard',
+  ALUMNI: '/alumni/dashboard',
 };
 
 export const USER_TYPES = {
@@ -16,7 +18,9 @@ export const USER_TYPES = {
   COMPANY: 'company',
   ENTREPRENEUR: 'entrepreneur',
   INSTITUTE: 'institute',
-  EMPLOYER: 'employer',
+  MENTOR: 'mentor',
+  PARENT: 'parent',
+  ALUMNI: 'alumni',
 };
 
 export const getUserDashboardPath = (userType) => {
@@ -33,9 +37,13 @@ export const getUserDashboardPath = (userType) => {
       return DASHBOARD_PATHS.ENTREPRENEUR;
     case USER_TYPES.INSTITUTE:
       return DASHBOARD_PATHS.INSTITUTE;
-    case USER_TYPES.EMPLOYER:
-      return DASHBOARD_PATHS.EMPLOYER;
+    case USER_TYPES.MENTOR:
+      return DASHBOARD_PATHS.MENTOR;
+    case USER_TYPES.PARENT:
+      return DASHBOARD_PATHS.PARENT;
+    case USER_TYPES.ALUMNI:
+      return DASHBOARD_PATHS.ALUMNI;
     default:
-      return '/dashboard';
+      return DASHBOARD_PATHS.STUDENT;
   }
 };

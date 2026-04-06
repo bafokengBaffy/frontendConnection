@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Container,
   Row,
@@ -32,8 +32,9 @@ import {
   Users,
   Upload,
 } from 'react-feather';
-import { useAuth } from '../../context/AuthContext';
 import { formatDistanceToNow, format } from 'date-fns';
+
+import { useAuth } from '../../context/AuthContext';
 import './StudentJobs.css';
 
 // Mock data for development
@@ -339,7 +340,7 @@ function StudentJobs() {
     } finally {
       setLoading(false);
     }
-  }, [user, filters, sortBy, sortOrder, pagination.currentPage]);
+  }, [sortBy, sortOrder, pagination.currentPage, pagination.itemsPerPage, filters, user?.uid]);
 
   useEffect(() => {
     if (user) {
@@ -368,7 +369,7 @@ function StudentJobs() {
       };
       loadPublicJobs();
     }
-  }, [user, loadData, filters, sortBy, sortOrder, pagination.currentPage]);
+  }, [user, loadData, filters, sortBy, sortOrder, pagination.currentPage, pagination.itemsPerPage]);
 
   // Apply for job
   const handleApply = async (job) => {

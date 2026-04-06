@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-no-undef */
 /* eslint-disable no-undef */
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   Container,
   Row,
@@ -17,8 +17,9 @@ import {
   Modal,
 } from 'react-bootstrap';
 import { Search, Filter, Person, Building, Star, Eye, Download } from 'react-bootstrap-icons';
-import { db } from '../../config/firebase';
 import { collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
+
+import { db } from '../../config/firebase';
 import './SearchStudents.css';
 
 const SearchStudents = () => {

@@ -1,8 +1,7 @@
-﻿/* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
+import { useState, useEffect } from 'react';
 import { Card, Row, Col, Button, Table, Badge, Spinner, Alert, Form } from 'react-bootstrap';
-import { useAuth } from '../../context/AuthContext';
-import adminService from '../../services/adminService';
 import {
   FaChartLine,
   FaUsers,
@@ -13,6 +12,9 @@ import {
   FaDownload,
   FaFilter,
 } from 'react-icons/fa';
+
+import { useAuth } from '../../context/AuthContext';
+import adminService from '../../services/adminService';
 
 const SystemReports = () => {
   const { currentUser, userProfile } = useAuth();

@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
+import { useState, useEffect } from 'react';
 import {
   Container,
   Paper,
@@ -26,7 +28,6 @@ import {
   IconButton,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { auth } from '../../config/firebase';
 import {
   Phone as PhoneIcon,
   Smartphone as SmartphoneIcon,
@@ -42,6 +43,8 @@ import {
 import { QRCodeCanvas } from 'qrcode.react';
 import * as speakeasy from 'speakeasy';
 import { MultiFactorAuth, TotpMultiFactorGenerator, TotpSecret } from 'firebase/auth';
+
+import { auth } from '../../config/firebase';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   marginTop: theme.spacing(4),
@@ -394,7 +397,7 @@ const TwoFactorAuth = () => {
               fullWidth
               label="Verification Code"
               value={verificationCode}
-              onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+              onChange={(e) => setVerificationCode(e.target.value.replace(/./g, '').slice(0, 6))}
               inputProps={{ maxLength: 6 }}
               sx={{ mb: 3 }}
             />
@@ -438,7 +441,7 @@ const TwoFactorAuth = () => {
               <Button
                 variant="contained"
                 onClick={() => {
-                  const text = backupCodes.join('\n');
+                  const text = backupCodes.join('.');
                   navigator.clipboard.writeText(text);
                 }}
               >

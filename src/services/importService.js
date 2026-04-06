@@ -54,9 +54,6 @@ export const importService = {
    * @returns {string} - Chunk name
    */
   getChunkName(path) {
-    return path
-      .split('/')
-      .pop()
-      .replace(/\.\w+$/, '');
+    return path.split('/').pop().replace(/..+$/, '');
   },
 };

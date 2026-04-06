@@ -1,2 +1,2 @@
-﻿import Analytics from './pages/EntrepreneurHub/Analytics.jsx';
+import Analytics from './Analytics';
 export default Analytics;
