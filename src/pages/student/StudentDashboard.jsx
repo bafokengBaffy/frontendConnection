@@ -111,7 +111,25 @@ ChartJS.register(
 const StudentDashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { studentData, loading, updateStudent, refreshData } = useStudent();
+
+  // Safely use student context with error handling
+  let studentContext;
+  try {
+    studentContext = useStudent();
+  } catch (error) {
+    console.error('StudentProvider not available:', error);
+    // Return loading state if provider is not available
+    return (
+      <Container className="d-flex justify-content-center align-items-center min-vh-100">
+        <div className="text-center">
+          <Spinner animation="border" variant="primary" />
+          <p className="mt-3 text-muted">Loading student dashboard...</p>
+        </div>
+      </Container>
+    );
+  }
+
+  const { studentData, loading, updateStudent, refreshData } = studentContext;
   const { currentUser, logout, userData } = useAuth();
   const { notifications, unreadCount, markAsRead, fetchNotifications } = useNotification();
 

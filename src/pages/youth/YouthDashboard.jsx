@@ -44,6 +44,23 @@ ChartJS.register(
 );
 
 const YouthDashboard = () => {
+  // Safely use youth context with error handling
+  let youthContext;
+  try {
+    youthContext = useYouth();
+  } catch (error) {
+    console.error('YouthProvider not available:', error);
+    // Return loading state if provider is not available
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading youth dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
   const {
     youthProfile,
     loading,
@@ -56,7 +73,7 @@ const YouthDashboard = () => {
     getAchievements,
     getRecentActivities,
     getDashboardStats,
-  } = useYouth();
+  } = youthContext;
 
   const { userProfile } = useAuth();
 
