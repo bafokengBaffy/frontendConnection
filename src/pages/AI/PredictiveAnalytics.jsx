@@ -1,254 +1,348 @@
-import { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Table, Spinner, Alert } from 'react-bootstrap';
-import {
-  LineChart,
-  Line,
-  PieChart,
-  Pie,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from 'recharts';
+import React, { useState, useEffect } from 'react';
+import { Container, Row, Col, Card, Button, Spinner, Alert, Form, Badge, ProgressBar } from 'react-bootstrap';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
+import { TrendingUp, Users, Target, Award, AlertTriangle, CheckCircle } from 'lucide-react';
 
-function PredictiveAnalytics() {
-  const [loading, setLoading] = useState(true);
-  const [insights, setInsights] = useState([]);
-  const [chartData, setChartData] = useState([]);
-  const [predictionData, setPredictionData] = useState([]);
+import {
+  predictStudentInternship,
+  predictStudentCompanyMatch,
+  predictFundingEligibility,
+  batchPredict,
+  getAIAnalyticsStats
+} from '../../services/aiService';
+import { useAuth } from '../../context/AuthContext';
+
+const PredictiveAnalytics = () => {
+  const { userProfile } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [predictions, setPredictions] = useState(null);
+  const [analyticsData, setAnalyticsData] = useState(null);
+  const [error, setError] = useState(null);
+  const [selectedPrediction, setSelectedPrediction] = useState('internship');
 
   useEffect(() => {
-    // Simulate loading data
-    setTimeout(() => {
-      // Sample insights data
-      setInsights([
-        {
-          id: 1,
-          title: 'Market Growth',
-          value: '+24%',
-          description: 'Projected market growth in your sector',
-          trend: 'up',
-        },
-        {
-          id: 2,
-          title: 'Competition Level',
-          value: 'Medium',
-          description: 'Current competitive landscape',
-          trend: 'stable',
-        },
-        {
-          id: 3,
-          title: 'Customer Demand',
-          value: 'High',
-          description: 'Current customer demand for your offerings',
-          trend: 'up',
-        },
-        {
-          id: 4,
-          title: 'Risk Level',
-          value: 'Low',
-          description: 'Overall business risk assessment',
-          trend: 'down',
-        },
-      ]);
-
-      // Sample chart data
-      setChartData([
-        { month: 'Jan', revenue: 4000, customers: 2400 },
-        { month: 'Feb', revenue: 3000, customers: 1398 },
-        { month: 'Mar', revenue: 2000, customers: 9800 },
-        { month: 'Apr', revenue: 2780, customers: 3908 },
-        { month: 'May', revenue: 1890, customers: 4800 },
-        { month: 'Jun', revenue: 2390, customers: 3800 },
-        { month: 'Jul', revenue: 3490, customers: 4300 },
-      ]);
-
-      // Sample prediction data
-      setPredictionData([
-        { category: 'Success Probability', value: 78 },
-        { category: 'Market Fit', value: 85 },
-        { category: 'Financial Viability', value: 72 },
-        { category: 'Growth Potential', value: 90 },
-      ]);
-
-      setLoading(false);
-    }, 1500);
+    loadAnalyticsData();
   }, []);
 
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+  const loadAnalyticsData = async () => {
+    try {
+      setLoading(true);
+      const stats = await getAIAnalyticsStats();
+      setAnalyticsData(stats);
+    } catch (err) {
+      console.error('Error loading analytics:', err);
+      setError('Failed to load analytics data');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  if (loading) {
+  const runPredictions = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Sample student data for demonstration
+      const sampleStudents = [
+        {
+          gpa: 3.8,
+          skills: ['Python', 'JavaScript', 'React'],
+          experienceMonths: 12,
+          fieldOfStudy: 'Computer Science'
+        },
+        {
+          gpa: 3.2,
+          skills: ['Java', 'SQL', 'HTML'],
+          experienceMonths: 6,
+          fieldOfStudy: 'Information Technology'
+        },
+        {
+          gpa: 3.9,
+          skills: ['Python', 'Machine Learning', 'Data Analysis'],
+          experienceMonths: 18,
+          fieldOfStudy: 'Data Science'
+        }
+      ];
+
+      // Run batch predictions
+      const batchResults = await batchPredict(sampleStudents);
+
+      // Individual predictions
+      const internshipPredictions = await Promise.all(
+        sampleStudents.map(student => predictStudentInternship(student))
+      );
+
+      const fundingPredictions = await Promise.all(
+        sampleStudents.map(student => predictFundingEligibility(student))
+      );
+
+      setPredictions({
+        batch: batchResults,
+        internship: internshipPredictions,
+        funding: fundingPredictions,
+        sampleStudents
+      });
+
+    } catch (err) {
+      console.error('Error running predictions:', err);
+      setError('Failed to run AI predictions');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getPredictionColor = (score) => {
+    if (score >= 0.8) return '#28a745';
+    if (score >= 0.6) return '#ffc107';
+    return '#dc3545';
+  };
+
+  const getPredictionIcon = (score) => {
+    if (score >= 0.8) return <CheckCircle size={20} color="#28a745" />;
+    if (score >= 0.6) return <AlertTriangle size={20} color="#ffc107" />;
+    return <AlertTriangle size={20} color="#dc3545" />;
+  };
+
+  const renderPredictionChart = () => {
+    if (!predictions) return null;
+
+    const data = predictions.sampleStudents.map((student, index) => ({
+      student: `Student ${index + 1}`,
+      internship: Math.round((predictions.internship[index]?.prediction || 0) * 100),
+      funding: Math.round((predictions.funding[index]?.eligibility || 0) * 100),
+      gpa: student.gpa * 25 // Scale GPA for chart
+    }));
+
     return (
-      <Container className="mt-4 text-center">
-        <Spinner animation="border" variant="primary" />
-        <p className="mt-2">Loading AI Predictive Analytics...</p>
-      </Container>
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={data}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="student" />
+          <YAxis />
+          <Tooltip />
+          <Bar dataKey="internship" fill="#007bff" name="Internship Success %" />
+          <Bar dataKey="funding" fill="#28a745" name="Funding Eligibility %" />
+        </BarChart>
+      </ResponsiveContainer>
     );
-  }
+  };
+
+  const renderAnalyticsCharts = () => {
+    if (!analyticsData?.stats) return null;
+
+    const pieData = [
+      { name: 'Successful Predictions', value: analyticsData.stats.successful_predictions || 0, color: '#28a745' },
+      { name: 'Failed Predictions', value: analyticsData.stats.failed_predictions || 0, color: '#dc3545' },
+      { name: 'Fallback Used', value: analyticsData.stats.fallback_predictions || 0, color: '#ffc107' }
+    ];
+
+    return (
+      <Row className="mb-4">
+        <Col md={6}>
+          <Card>
+            <Card.Header>
+              <h6 className="mb-0">Prediction Success Rate</h6>
+            </Card.Header>
+            <Card.Body>
+              <ResponsiveContainer width="100%" height={200}>
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={60}
+                    fill="#8884d8"
+                    dataKey="value"
+                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  >
+                    {pieData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={6}>
+          <Card>
+            <Card.Header>
+              <h6 className="mb-0">Model Performance</h6>
+            </Card.Header>
+            <Card.Body>
+              <div className="mb-3">
+                <div className="d-flex justify-content-between mb-1">
+                  <small>Accuracy</small>
+                  <small>{Math.round((analyticsData.stats.accuracy || 0) * 100)}%</small>
+                </div>
+                <ProgressBar now={(analyticsData.stats.accuracy || 0) * 100} variant="success" />
+              </div>
+              <div className="mb-3">
+                <div className="d-flex justify-content-between mb-1">
+                  <small>Precision</small>
+                  <small>{Math.round((analyticsData.stats.precision || 0) * 100)}%</small>
+                </div>
+                <ProgressBar now={(analyticsData.stats.precision || 0) * 100} variant="info" />
+              </div>
+              <div>
+                <div className="d-flex justify-content-between mb-1">
+                  <small>Recall</small>
+                  <small>{Math.round((analyticsData.stats.recall || 0) * 100)}%</small>
+                </div>
+                <ProgressBar now={(analyticsData.stats.recall || 0) * 100} variant="warning" />
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    );
+  };
 
   return (
-    <Container className="mt-4">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <div>
-          <h1 className="h2">Predictive Analytics</h1>
-          <p className="text-muted mb-0">Predict market trends and business performance</p>
-        </div>
-        <Button variant="primary">Generate New Report</Button>
-      </div>
-
-      {/* AI Insights Cards */}
+    <Container fluid className="py-4">
+      {/* Header */}
       <Row className="mb-4">
-        {insights.map((insight) => (
-          <Col md={3} key={insight.id}>
-            <Card className="h-100">
-              <Card.Body>
-                <div className="d-flex justify-content-between align-items-start">
-                  <div>
-                    <Card.Title className="h6 text-muted">{insight.title}</Card.Title>
-                    <h3 className="fw-bold mt-2">{insight.value}</h3>
-                  </div>
-                  <span
-                    className={`badge ${insight.trend === 'up' ? 'bg-success' : insight.trend === 'down' ? 'bg-danger' : 'bg-warning'}`}
-                  >
-                    {insight.trend === 'up' ? '↑' : insight.trend === 'down' ? '↓' : '↔'}
-                  </span>
-                </div>
-                <Card.Text className="small mt-2">{insight.description}</Card.Text>
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
-      </Row>
-
-      {/* Charts */}
-      <Row className="mb-4">
-        <Col md={8}>
-          <Card className="h-100">
-            <Card.Body>
-              <Card.Title>Revenue & Customer Trends</Card.Title>
-              <div style={{ width: '100%', height: 300 }}>
-                <ResponsiveContainer>
-                  <LineChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Line type="monotone" dataKey="revenue" stroke="#8884d8" activeDot={{ r: 8 }} />
-                    <Line type="monotone" dataKey="customers" stroke="#82ca9d" />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={4}>
-          <Card className="h-100">
-            <Card.Body>
-              <Card.Title>Business Metrics</Card.Title>
-              <div style={{ width: '100%', height: 300 }}>
-                <ResponsiveContainer>
-                  <PieChart>
-                    <Pie
-                      data={predictionData}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={({ category, value }) => `${category}: ${value}%`}
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {predictionData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-
-      {/* AI Recommendations */}
-      <Card className="mb-4">
-        <Card.Body>
-          <Card.Title>AI Recommendations</Card.Title>
-          <Alert variant="info">
-            <strong>💡 Insight:</strong> Based on market analysis, expanding into digital services
-            could increase revenue by 35%.
-          </Alert>
-          <Alert variant="success">
-            <strong>🎯 Opportunity:</strong> Your target market shows high demand for eco-friendly
-            products.
-          </Alert>
-          <Alert variant="warning">
-            <strong>⚠️ Warning:</strong> Monitor competitor pricing as 3 new competitors entered the
-            market this quarter.
-          </Alert>
-          <div className="mt-3">
-            <Button variant="outline-primary" className="me-2">
-              View Detailed Analysis
-            </Button>
-            <Button variant="outline-success">Export Insights</Button>
+        <Col>
+          <div className="d-flex align-items-center mb-3">
+            <TrendingUp className="me-3" size={32} color="#007bff" />
+            <div>
+              <h1 className="h2 mb-0">Predictive Analytics</h1>
+              <p className="text-muted mb-0">AI-powered insights and predictions</p>
+            </div>
           </div>
-        </Card.Body>
-      </Card>
+        </Col>
+      </Row>
 
-      {/* Data Table */}
-      <Card>
-        <Card.Body>
-          <Card.Title>Detailed Analysis</Card.Title>
-          <Table responsive>
-            <thead>
-              <tr>
-                <th>Metric</th>
-                <th>Current Value</th>
-                <th>Previous Value</th>
-                <th>Change</th>
-                <th>Trend</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Market Share</td>
-                <td>15.2%</td>
-                <td>12.8%</td>
-                <td className="text-success">+2.4%</td>
-                <td>📈 Growing</td>
-              </tr>
-              <tr>
-                <td>Customer Satisfaction</td>
-                <td>4.2/5</td>
-                <td>4.1/5</td>
-                <td className="text-success">+0.1</td>
-                <td>📈 Improving</td>
-              </tr>
-              <tr>
-                <td>Operating Costs</td>
-                <td>$1,500</td>
-                <td>$1,200</td>
-                <td className="text-success">-$300</td>
-                <td>📉 Decreasing</td>
-              </tr>
-              <tr>
-                <td>Revenue Growth</td>
-                <td>18.5%</td>
-                <td>15.3%</td>
-                <td className="text-success">+3.2%</td>
-                <td>📈 Accelerating</td>
-              </tr>
-            </tbody>
-          </Table>
-        </Card.Body>
-      </Card>
+      {/* Error Alert */}
+      {error && (
+        <Row className="mb-4">
+          <Col>
+            <Alert variant="danger" dismissible onClose={() => setError(null)}>
+              <Alert.Heading>Prediction Error</Alert.Heading>
+              <p>{error}</p>
+            </Alert>
+          </Col>
+        </Row>
+      )}
+
+      {/* Analytics Overview */}
+      {renderAnalyticsCharts()}
+
+      {/* Prediction Controls */}
+      <Row className="mb-4">
+        <Col>
+          <Card className="shadow-sm">
+            <Card.Header>
+              <div className="d-flex justify-content-between align-items-center">
+                <h5 className="mb-0">Run AI Predictions</h5>
+                <Button
+                  variant="primary"
+                  onClick={runPredictions}
+                  disabled={loading}
+                >
+                  {loading ? <Spinner animation="border" size="sm" /> : <Target className="me-2" size={16} />}
+                  Run Predictions
+                </Button>
+              </div>
+            </Card.Header>
+            <Card.Body>
+              <p className="text-muted">
+                Click to run AI predictions on sample student data. This will demonstrate internship success rates,
+                company matching scores, and funding eligibility predictions.
+              </p>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Prediction Results */}
+      {predictions && (
+        <>
+          {/* Chart Visualization */}
+          <Row className="mb-4">
+            <Col>
+              <Card className="shadow-sm">
+                <Card.Header>
+                  <h5 className="mb-0">Prediction Results Overview</h5>
+                </Card.Header>
+                <Card.Body>
+                  {renderPredictionChart()}
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+
+          {/* Detailed Results */}
+          <Row>
+            {predictions.sampleStudents.map((student, index) => (
+              <Col md={4} key={index} className="mb-4">
+                <Card className="shadow-sm h-100">
+                  <Card.Header>
+                    <h6 className="mb-0">Student {index + 1}</h6>
+                    <small className="text-muted">{student.fieldOfStudy}</small>
+                  </Card.Header>
+                  <Card.Body>
+                    <div className="mb-3">
+                      <small className="text-muted d-block">GPA: {student.gpa}</small>
+                      <small className="text-muted d-block">Experience: {student.experienceMonths} months</small>
+                      <small className="text-muted d-block">Skills: {student.skills.join(', ')}</small>
+                    </div>
+
+                    <div className="mb-3">
+                      <div className="d-flex align-items-center mb-2">
+                        {getPredictionIcon(predictions.internship[index]?.prediction || 0)}
+                        <span className="ms-2 fw-bold">Internship Success</span>
+                      </div>
+                      <div className="d-flex align-items-center">
+                        <ProgressBar
+                          now={(predictions.internship[index]?.prediction || 0) * 100}
+                          style={{ flex: 1, height: '8px' }}
+                          variant={predictions.internship[index]?.prediction >= 0.8 ? 'success' :
+                                   predictions.internship[index]?.prediction >= 0.6 ? 'warning' : 'danger'}
+                        />
+                        <span className="ms-2 small">
+                          {Math.round((predictions.internship[index]?.prediction || 0) * 100)}%
+                        </span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="d-flex align-items-center mb-2">
+                        {getPredictionIcon(predictions.funding[index]?.eligibility || 0)}
+                        <span className="ms-2 fw-bold">Funding Eligibility</span>
+                      </div>
+                      <div className="d-flex align-items-center">
+                        <ProgressBar
+                          now={(predictions.funding[index]?.eligibility || 0) * 100}
+                          style={{ flex: 1, height: '8px' }}
+                          variant={predictions.funding[index]?.eligibility >= 0.8 ? 'success' :
+                                   predictions.funding[index]?.eligibility >= 0.6 ? 'warning' : 'danger'}
+                        />
+                        <span className="ms-2 small">
+                          {Math.round((predictions.funding[index]?.eligibility || 0) * 100)}%
+                        </span>
+                      </div>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </>
+      )}
+
+      {/* Loading State */}
+      {loading && !predictions && (
+        <Row className="mt-4">
+          <Col className="text-center">
+            <Spinner animation="border" variant="primary" size="lg" />
+            <p className="mt-3 text-muted">Running AI predictions...</p>
+          </Col>
+        </Row>
+      )}
     </Container>
   );
-}
+};
 
 export default PredictiveAnalytics;

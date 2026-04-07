@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate, Route } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import ProtectedRoute from '../../components/layout/ProtectedRoute';
 
 // Lazy load common pages
 const Notifications = React.lazy(() => import('../../pages/Notifications'));
@@ -40,41 +41,41 @@ export const getCommonRoutes = () => (
     <Route
       path="/dashboard"
       element={
-        <CommonRouteGuard>
+        <ProtectedRoute>
           <DashboardRedirect />
-        </CommonRouteGuard>
+        </ProtectedRoute>
       }
     />
     <Route
       path="/notifications"
       element={
-        <CommonRouteGuard>
+        <ProtectedRoute>
           <Notifications />
-        </CommonRouteGuard>
+        </ProtectedRoute>
       }
     />
     <Route
       path="/settings"
       element={
-        <CommonRouteGuard>
+        <ProtectedRoute>
           <Settings />
-        </CommonRouteGuard>
+        </ProtectedRoute>
       }
     />
     <Route
       path="/search"
       element={
-        <CommonRouteGuard>
+        <ProtectedRoute>
           <Search />
-        </CommonRouteGuard>
+        </ProtectedRoute>
       }
     />
     <Route
       path="/resources"
       element={
-        <CommonRouteGuard>
+        <ProtectedRoute>
           <Resources />
-        </CommonRouteGuard>
+        </ProtectedRoute>
       }
     />
   </React.Fragment>
