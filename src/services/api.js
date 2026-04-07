@@ -26,10 +26,10 @@ const fetchCsrfTokenFromServer = async () => {
       method: 'GET',
       credentials: 'include',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
       },
     });
-    
+
     if (response.ok) {
       const data = await response.json();
       cachedCsrfToken = data.csrfToken;
@@ -38,7 +38,7 @@ const fetchCsrfTokenFromServer = async () => {
   } catch (error) {
     console.warn('Failed to fetch CSRF token from server:', error);
   }
-  
+
   return null;
 };
 
@@ -48,22 +48,22 @@ export const getCsrfToken = async () => {
   if (cachedCsrfToken) {
     return cachedCsrfToken;
   }
-  
+
   // Check cookie first
   const cookieToken = getCsrfTokenFromCookie();
   if (cookieToken) {
     cachedCsrfToken = cookieToken;
     return cookieToken;
   }
-  
+
   // Fetch from server with deduplication
   if (!csrfTokenFetchPromise) {
     csrfTokenFetchPromise = fetchCsrfTokenFromServer();
   }
-  
+
   const token = await csrfTokenFetchPromise;
   csrfTokenFetchPromise = null;
-  
+
   return token || '';
 };
 

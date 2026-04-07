@@ -41,7 +41,8 @@ export const EntrepreneurProvider = ({ children }) => {
       const entrepreneurProfile = {
         id: currentUser.uid,
         email: currentUser.email || '',
-        entrepreneurName: currentUser.displayName || currentUser.email?.split('@')[0] || 'Entrepreneur',
+        entrepreneurName:
+          currentUser.displayName || currentUser.email?.split('@')[0] || 'Entrepreneur',
         userType: 'entrepreneur',
         profileCompletion: 30,
         businessName: '',

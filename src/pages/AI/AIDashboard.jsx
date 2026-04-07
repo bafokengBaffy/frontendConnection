@@ -1,6 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button, Spinner, Alert, Badge } from 'react-bootstrap';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+} from 'recharts';
 import { Brain, TrendingUp, Users, Target, Zap, Award } from 'lucide-react';
 
 import {
@@ -8,7 +19,7 @@ import {
   getAIModelsInfo,
   getAIAnalyticsStats,
   predictStudentInternship,
-  predictFundingEligibility
+  predictFundingEligibility,
 } from '../../services/aiService';
 import { useAuth } from '../../context/AuthContext';
 
@@ -46,7 +57,6 @@ const AIDashboard = () => {
       if (userProfile?.userType === 'student') {
         await generatePersonalPredictions();
       }
-
     } catch (err) {
       console.error('Error loading AI dashboard:', err);
       setError('Failed to load AI dashboard data');
@@ -143,13 +153,20 @@ const AIDashboard = () => {
             <Card.Body>
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h5 className="mb-0">AI Service Status</h5>
-                {aiHealth && getStatusBadge(aiHealth.status || (aiHealth.fallback ? 'fallback' : 'error'))}
+                {aiHealth &&
+                  getStatusBadge(aiHealth.status || (aiHealth.fallback ? 'fallback' : 'error'))}
               </div>
               {aiHealth && (
                 <div>
-                  <p className="mb-1"><strong>Service:</strong> {aiHealth.service || 'Career Connect AI'}</p>
-                  <p className="mb-1"><strong>Version:</strong> {aiHealth.version || '1.0.0'}</p>
-                  <p className="mb-0"><strong>Status:</strong> {aiHealth.success ? 'Connected' : 'Disconnected'}</p>
+                  <p className="mb-1">
+                    <strong>Service:</strong> {aiHealth.service || 'Career Connect AI'}
+                  </p>
+                  <p className="mb-1">
+                    <strong>Version:</strong> {aiHealth.version || '1.0.0'}
+                  </p>
+                  <p className="mb-0">
+                    <strong>Status:</strong> {aiHealth.success ? 'Connected' : 'Disconnected'}
+                  </p>
                 </div>
               )}
             </Card.Body>
@@ -188,25 +205,45 @@ const AIDashboard = () => {
                 <Row>
                   <Col md={6}>
                     <div className="text-center p-3">
-                      <Award size={48} color={getPredictionColor(personalPredictions.internship?.prediction || 0)} />
-                      <h4 className="mt-3" style={{ color: getPredictionColor(personalPredictions.internship?.prediction || 0) }}>
+                      <Award
+                        size={48}
+                        color={getPredictionColor(personalPredictions.internship?.prediction || 0)}
+                      />
+                      <h4
+                        className="mt-3"
+                        style={{
+                          color: getPredictionColor(
+                            personalPredictions.internship?.prediction || 0
+                          ),
+                        }}
+                      >
                         {Math.round((personalPredictions.internship?.prediction || 0) * 100)}%
                       </h4>
                       <p className="text-muted">Internship Success</p>
                       <small className="text-muted">
-                        Confidence: {Math.round((personalPredictions.internship?.confidence || 0) * 100)}%
+                        Confidence:{' '}
+                        {Math.round((personalPredictions.internship?.confidence || 0) * 100)}%
                       </small>
                     </div>
                   </Col>
                   <Col md={6}>
                     <div className="text-center p-3">
-                      <TrendingUp size={48} color={getPredictionColor(personalPredictions.funding?.eligibility || 0)} />
-                      <h4 className="mt-3" style={{ color: getPredictionColor(personalPredictions.funding?.eligibility || 0) }}>
+                      <TrendingUp
+                        size={48}
+                        color={getPredictionColor(personalPredictions.funding?.eligibility || 0)}
+                      />
+                      <h4
+                        className="mt-3"
+                        style={{
+                          color: getPredictionColor(personalPredictions.funding?.eligibility || 0),
+                        }}
+                      >
                         {Math.round((personalPredictions.funding?.eligibility || 0) * 100)}%
                       </h4>
                       <p className="text-muted">Funding Eligibility</p>
                       <small className="text-muted">
-                        Confidence: {Math.round((personalPredictions.funding?.confidence || 0) * 100)}%
+                        Confidence:{' '}
+                        {Math.round((personalPredictions.funding?.confidence || 0) * 100)}%
                       </small>
                     </div>
                   </Col>
@@ -257,15 +294,21 @@ const AIDashboard = () => {
             </Card.Header>
             <Card.Body>
               <div className="d-flex gap-3 flex-wrap">
-                <Button variant="primary" onClick={() => window.location.href = '/ai/analytics'}>
+                <Button variant="primary" onClick={() => (window.location.href = '/ai/analytics')}>
                   <TrendingUp className="me-2" size={16} />
                   View Analytics
                 </Button>
-                <Button variant="success" onClick={() => window.location.href = '/ai/recommendations'}>
+                <Button
+                  variant="success"
+                  onClick={() => (window.location.href = '/ai/recommendations')}
+                >
                   <Brain className="me-2" size={16} />
                   Get Recommendations
                 </Button>
-                <Button variant="info" onClick={() => window.location.href = '/ai/business-insights'}>
+                <Button
+                  variant="info"
+                  onClick={() => (window.location.href = '/ai/business-insights')}
+                >
                   <Target className="me-2" size={16} />
                   Business Insights
                 </Button>

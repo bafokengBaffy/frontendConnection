@@ -10,7 +10,7 @@ const aiApi = axios.create({
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
-    ...(AI_API_KEY && { 'Authorization': `Bearer ${AI_API_KEY}` }),
+    ...(AI_API_KEY && { Authorization: `Bearer ${AI_API_KEY}` }),
   },
 });
 
@@ -151,7 +151,7 @@ export const predictFundingEligibility = async (studentData) => {
 export const batchPredict = async (records, modelType) => {
   try {
     const payload = {
-      records: records.map(record => ({
+      records: records.map((record) => ({
         gpa: record.gpa || 3.0,
         skills: record.skills || [],
         experience_months: record.experienceMonths || 0,
@@ -231,14 +231,18 @@ const getFallbackMatchPrediction = (studentData, companyData) => {
   const studentSkills = new Set(studentData.skills || []);
   const requiredSkills = new Set(companyData.requiredSkills || []);
 
-  const skillOverlap = studentSkills.size > 0 && requiredSkills.size > 0
-    ? new Set([...studentSkills].filter(x => requiredSkills.has(x))).size / requiredSkills.size
-    : 0.5;
+  const skillOverlap =
+    studentSkills.size > 0 && requiredSkills.size > 0
+      ? new Set([...studentSkills].filter((x) => requiredSkills.has(x))).size / requiredSkills.size
+      : 0.5;
 
-  const experienceMatch = Math.min(1, (studentData.experienceMonths || 0) / Math.max(companyData.preferredExperience || 12, 1));
+  const experienceMatch = Math.min(
+    1,
+    (studentData.experienceMonths || 0) / Math.max(companyData.preferredExperience || 12, 1)
+  );
   const gpaMatch = Math.min(1, (studentData.gpa || 3.0) / 3.8);
 
-  const matchScore = (skillOverlap * 0.5 + experienceMatch * 0.3 + gpaMatch * 0.2);
+  const matchScore = skillOverlap * 0.5 + experienceMatch * 0.3 + gpaMatch * 0.2;
 
   return {
     success: true,
@@ -267,7 +271,7 @@ const getFallbackFundingPrediction = (studentData) => {
 };
 
 const getFallbackBatchPrediction = (records, modelType) => {
-  const predictions = records.map(record => {
+  const predictions = records.map((record) => {
     let prediction = 0.5;
 
     switch (modelType) {

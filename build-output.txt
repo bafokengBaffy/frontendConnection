@@ -1,0 +1,5 @@
+
+> career-connect-lesotho-frontend@2.0.0 build
+> node ./node_modules/vite/dist/node/cli.js build
+
+Terminate batch job (Y/N)? 

@@ -1,12 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Spinner, Alert, Badge, ProgressBar, ListGroup } from 'react-bootstrap';
-import { Brain, Target, TrendingUp, Award, Users, Lightbulb, Star, AlertTriangle } from 'lucide-react';
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Spinner,
+  Alert,
+  Badge,
+  ProgressBar,
+  ListGroup,
+} from 'react-bootstrap';
+import {
+  Brain,
+  Target,
+  TrendingUp,
+  Award,
+  Users,
+  Lightbulb,
+  Star,
+  AlertTriangle,
+} from 'lucide-react';
 
 import {
   predictStudentInternship,
   predictStudentCompanyMatch,
   predictFundingEligibility,
-  getAIAnalyticsStats
+  getAIAnalyticsStats,
 } from '../../services/aiService';
 import { useAuth } from '../../context/AuthContext';
 
@@ -40,40 +60,44 @@ const RecommendationEngine = () => {
             {
               id: 1,
               title: 'Complete Your Profile',
-              description: 'Add your skills, GPA, and experience to get personalized AI recommendations',
+              description:
+                'Add your skills, GPA, and experience to get personalized AI recommendations',
               priority: 'high',
               type: 'action',
-              impact: 0.9
+              impact: 0.9,
             },
             {
               id: 2,
               title: 'Explore Internship Opportunities',
-              description: 'Based on current market trends, internships in tech and business are highly recommended',
+              description:
+                'Based on current market trends, internships in tech and business are highly recommended',
               priority: 'medium',
               type: 'insight',
-              impact: 0.7
-            }
+              impact: 0.7,
+            },
           ],
           business: [
             {
               id: 3,
               title: 'Digital Skills Training',
-              description: 'Invest in digital skills training to improve employability in the modern economy',
+              description:
+                'Invest in digital skills training to improve employability in the modern economy',
               priority: 'high',
               type: 'opportunity',
-              impact: 0.8
-            }
+              impact: 0.8,
+            },
           ],
           funding: [
             {
               id: 4,
               title: 'Scholarship Opportunities',
-              description: 'Multiple scholarships available for students with strong academic performance',
+              description:
+                'Multiple scholarships available for students with strong academic performance',
               priority: 'medium',
               type: 'funding',
-              impact: 0.6
-            }
-          ]
+              impact: 0.6,
+            },
+          ],
         });
       }
     } catch (err) {
@@ -91,7 +115,7 @@ const RecommendationEngine = () => {
       const recommendations = {
         career: [],
         business: [],
-        funding: []
+        funding: [],
       };
 
       // Career recommendations based on user profile
@@ -113,7 +137,7 @@ const RecommendationEngine = () => {
             description: `Your profile shows ${Math.round(internshipPrediction.prediction * 100)}% success rate for internships. Focus on applying to top companies in your field.`,
             priority: 'high',
             type: 'opportunity',
-            impact: internshipPrediction.prediction
+            impact: internshipPrediction.prediction,
           });
         }
 
@@ -122,10 +146,11 @@ const RecommendationEngine = () => {
           recommendations.career.push({
             id: 2,
             title: 'Expand Your Skill Set',
-            description: 'Consider adding more technical skills to improve your marketability. Popular skills include Python, JavaScript, and data analysis.',
+            description:
+              'Consider adding more technical skills to improve your marketability. Popular skills include Python, JavaScript, and data analysis.',
             priority: 'medium',
             type: 'action',
-            impact: 0.6
+            impact: 0.6,
           });
         }
 
@@ -134,10 +159,11 @@ const RecommendationEngine = () => {
           recommendations.career.push({
             id: 3,
             title: 'Gain Practical Experience',
-            description: 'Look for part-time roles, volunteer work, or projects to build your experience portfolio.',
+            description:
+              'Look for part-time roles, volunteer work, or projects to build your experience portfolio.',
             priority: 'high',
             type: 'action',
-            impact: 0.8
+            impact: 0.8,
           });
         }
       }
@@ -157,17 +183,18 @@ const RecommendationEngine = () => {
             description: `Your business idea has a ${Math.round(fundingPrediction.eligibility * 100)}% chance of securing funding. Prepare a solid business plan.`,
             priority: 'high',
             type: 'funding',
-            impact: fundingPrediction.eligibility
+            impact: fundingPrediction.eligibility,
           });
         }
 
         recommendations.business.push({
           id: 5,
           title: 'Market Research Opportunity',
-          description: 'Conduct thorough market research to validate your business idea and identify target customers.',
+          description:
+            'Conduct thorough market research to validate your business idea and identify target customers.',
           priority: 'medium',
           type: 'action',
-          impact: 0.7
+          impact: 0.7,
         });
       }
 
@@ -176,10 +203,11 @@ const RecommendationEngine = () => {
         recommendations.funding.push({
           id: 6,
           title: 'Academic Excellence Scholarships',
-          description: 'Your high GPA qualifies you for merit-based scholarships. Apply to academic excellence programs.',
+          description:
+            'Your high GPA qualifies you for merit-based scholarships. Apply to academic excellence programs.',
           priority: 'high',
           type: 'funding',
-          impact: 0.9
+          impact: 0.9,
         });
       }
 
@@ -191,20 +219,29 @@ const RecommendationEngine = () => {
 
   const getPriorityColor = (priority) => {
     switch (priority) {
-      case 'high': return 'danger';
-      case 'medium': return 'warning';
-      case 'low': return 'success';
-      default: return 'secondary';
+      case 'high':
+        return 'danger';
+      case 'medium':
+        return 'warning';
+      case 'low':
+        return 'success';
+      default:
+        return 'secondary';
     }
   };
 
   const getTypeIcon = (type) => {
     switch (type) {
-      case 'opportunity': return <Target size={16} />;
-      case 'action': return <Lightbulb size={16} />;
-      case 'funding': return <Award size={16} />;
-      case 'insight': return <TrendingUp size={16} />;
-      default: return <Brain size={16} />;
+      case 'opportunity':
+        return <Target size={16} />;
+      case 'action':
+        return <Lightbulb size={16} />;
+      case 'funding':
+        return <Award size={16} />;
+      case 'insight':
+        return <TrendingUp size={16} />;
+      default:
+        return <Brain size={16} />;
     }
   };
 
@@ -235,7 +272,9 @@ const RecommendationEngine = () => {
                     <ProgressBar
                       now={rec.impact * 100}
                       style={{ flex: 1, height: '4px' }}
-                      variant={rec.impact > 0.7 ? 'success' : rec.impact > 0.5 ? 'warning' : 'danger'}
+                      variant={
+                        rec.impact > 0.7 ? 'success' : rec.impact > 0.5 ? 'warning' : 'danger'
+                      }
                     />
                     <small className="ms-2">{Math.round(rec.impact * 100)}%</small>
                   </div>
@@ -325,7 +364,9 @@ const RecommendationEngine = () => {
             <Card className="text-center shadow-sm">
               <Card.Body className="py-3">
                 <Award size={24} className="mb-2 text-info" />
-                <h4 className="mb-1">{recommendations ? Object.values(recommendations).flat().length : 0}</h4>
+                <h4 className="mb-1">
+                  {recommendations ? Object.values(recommendations).flat().length : 0}
+                </h4>
                 <small className="text-muted">Recommendations</small>
               </Card.Body>
             </Card>

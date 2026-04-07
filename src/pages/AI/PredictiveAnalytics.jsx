@@ -1,6 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Spinner, Alert, Form, Badge, ProgressBar } from 'react-bootstrap';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  Spinner,
+  Alert,
+  Form,
+  Badge,
+  ProgressBar,
+} from 'react-bootstrap';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+} from 'recharts';
 import { TrendingUp, Users, Target, Award, AlertTriangle, CheckCircle } from 'lucide-react';
 
 import {
@@ -8,7 +32,7 @@ import {
   predictStudentCompanyMatch,
   predictFundingEligibility,
   batchPredict,
-  getAIAnalyticsStats
+  getAIAnalyticsStats,
 } from '../../services/aiService';
 import { useAuth } from '../../context/AuthContext';
 
@@ -48,20 +72,20 @@ const PredictiveAnalytics = () => {
           gpa: 3.8,
           skills: ['Python', 'JavaScript', 'React'],
           experienceMonths: 12,
-          fieldOfStudy: 'Computer Science'
+          fieldOfStudy: 'Computer Science',
         },
         {
           gpa: 3.2,
           skills: ['Java', 'SQL', 'HTML'],
           experienceMonths: 6,
-          fieldOfStudy: 'Information Technology'
+          fieldOfStudy: 'Information Technology',
         },
         {
           gpa: 3.9,
           skills: ['Python', 'Machine Learning', 'Data Analysis'],
           experienceMonths: 18,
-          fieldOfStudy: 'Data Science'
-        }
+          fieldOfStudy: 'Data Science',
+        },
       ];
 
       // Run batch predictions
@@ -69,20 +93,19 @@ const PredictiveAnalytics = () => {
 
       // Individual predictions
       const internshipPredictions = await Promise.all(
-        sampleStudents.map(student => predictStudentInternship(student))
+        sampleStudents.map((student) => predictStudentInternship(student))
       );
 
       const fundingPredictions = await Promise.all(
-        sampleStudents.map(student => predictFundingEligibility(student))
+        sampleStudents.map((student) => predictFundingEligibility(student))
       );
 
       setPredictions({
         batch: batchResults,
         internship: internshipPredictions,
         funding: fundingPredictions,
-        sampleStudents
+        sampleStudents,
       });
-
     } catch (err) {
       console.error('Error running predictions:', err);
       setError('Failed to run AI predictions');
@@ -110,7 +133,7 @@ const PredictiveAnalytics = () => {
       student: `Student ${index + 1}`,
       internship: Math.round((predictions.internship[index]?.prediction || 0) * 100),
       funding: Math.round((predictions.funding[index]?.eligibility || 0) * 100),
-      gpa: student.gpa * 25 // Scale GPA for chart
+      gpa: student.gpa * 25, // Scale GPA for chart
     }));
 
     return (
@@ -131,9 +154,21 @@ const PredictiveAnalytics = () => {
     if (!analyticsData?.stats) return null;
 
     const pieData = [
-      { name: 'Successful Predictions', value: analyticsData.stats.successful_predictions || 0, color: '#28a745' },
-      { name: 'Failed Predictions', value: analyticsData.stats.failed_predictions || 0, color: '#dc3545' },
-      { name: 'Fallback Used', value: analyticsData.stats.fallback_predictions || 0, color: '#ffc107' }
+      {
+        name: 'Successful Predictions',
+        value: analyticsData.stats.successful_predictions || 0,
+        color: '#28a745',
+      },
+      {
+        name: 'Failed Predictions',
+        value: analyticsData.stats.failed_predictions || 0,
+        color: '#dc3545',
+      },
+      {
+        name: 'Fallback Used',
+        value: analyticsData.stats.fallback_predictions || 0,
+        color: '#ffc107',
+      },
     ];
 
     return (
@@ -236,20 +271,20 @@ const PredictiveAnalytics = () => {
             <Card.Header>
               <div className="d-flex justify-content-between align-items-center">
                 <h5 className="mb-0">Run AI Predictions</h5>
-                <Button
-                  variant="primary"
-                  onClick={runPredictions}
-                  disabled={loading}
-                >
-                  {loading ? <Spinner animation="border" size="sm" /> : <Target className="me-2" size={16} />}
+                <Button variant="primary" onClick={runPredictions} disabled={loading}>
+                  {loading ? (
+                    <Spinner animation="border" size="sm" />
+                  ) : (
+                    <Target className="me-2" size={16} />
+                  )}
                   Run Predictions
                 </Button>
               </div>
             </Card.Header>
             <Card.Body>
               <p className="text-muted">
-                Click to run AI predictions on sample student data. This will demonstrate internship success rates,
-                company matching scores, and funding eligibility predictions.
+                Click to run AI predictions on sample student data. This will demonstrate internship
+                success rates, company matching scores, and funding eligibility predictions.
               </p>
             </Card.Body>
           </Card>
@@ -266,9 +301,7 @@ const PredictiveAnalytics = () => {
                 <Card.Header>
                   <h5 className="mb-0">Prediction Results Overview</h5>
                 </Card.Header>
-                <Card.Body>
-                  {renderPredictionChart()}
-                </Card.Body>
+                <Card.Body>{renderPredictionChart()}</Card.Body>
               </Card>
             </Col>
           </Row>
@@ -285,8 +318,12 @@ const PredictiveAnalytics = () => {
                   <Card.Body>
                     <div className="mb-3">
                       <small className="text-muted d-block">GPA: {student.gpa}</small>
-                      <small className="text-muted d-block">Experience: {student.experienceMonths} months</small>
-                      <small className="text-muted d-block">Skills: {student.skills.join(', ')}</small>
+                      <small className="text-muted d-block">
+                        Experience: {student.experienceMonths} months
+                      </small>
+                      <small className="text-muted d-block">
+                        Skills: {student.skills.join(', ')}
+                      </small>
                     </div>
 
                     <div className="mb-3">
@@ -298,8 +335,13 @@ const PredictiveAnalytics = () => {
                         <ProgressBar
                           now={(predictions.internship[index]?.prediction || 0) * 100}
                           style={{ flex: 1, height: '8px' }}
-                          variant={predictions.internship[index]?.prediction >= 0.8 ? 'success' :
-                                   predictions.internship[index]?.prediction >= 0.6 ? 'warning' : 'danger'}
+                          variant={
+                            predictions.internship[index]?.prediction >= 0.8
+                              ? 'success'
+                              : predictions.internship[index]?.prediction >= 0.6
+                                ? 'warning'
+                                : 'danger'
+                          }
                         />
                         <span className="ms-2 small">
                           {Math.round((predictions.internship[index]?.prediction || 0) * 100)}%
@@ -316,8 +358,13 @@ const PredictiveAnalytics = () => {
                         <ProgressBar
                           now={(predictions.funding[index]?.eligibility || 0) * 100}
                           style={{ flex: 1, height: '8px' }}
-                          variant={predictions.funding[index]?.eligibility >= 0.8 ? 'success' :
-                                   predictions.funding[index]?.eligibility >= 0.6 ? 'warning' : 'danger'}
+                          variant={
+                            predictions.funding[index]?.eligibility >= 0.8
+                              ? 'success'
+                              : predictions.funding[index]?.eligibility >= 0.6
+                                ? 'warning'
+                                : 'danger'
+                          }
                         />
                         <span className="ms-2 small">
                           {Math.round((predictions.funding[index]?.eligibility || 0) * 100)}%

@@ -19,64 +19,12 @@ export default defineConfig(({ command, mode }) => {
   ];
 
   // Add PWA only in production
-  if (isProduction) {
-    plugins.push(
-      VitePWA({
-        registerType: 'autoUpdate',
-        includeAssets: ['favicon.ico', 'robots.txt', 'vite.svg'],
-        manifest: {
-          name: env.VITE_APP_NAME || 'Career Connect Lesotho',
-          short_name: 'Career Connect',
-          description: 'Bridging youth, education, and employment opportunities in Lesotho',
-          theme_color: '#0d6efd',
-          background_color: '#ffffff',
-          display: 'standalone',
-          icons: [
-            {
-              src: '/logo192.png',
-              sizes: '192x192',
-              type: 'image/png',
-            },
-            {
-              src: '/logo512.png',
-              sizes: '512x512',
-              type: 'image/png',
-            },
-          ],
-        },
-        workbox: {
-          cleanupOutdatedCaches: true,
-          clientsClaim: true,
-          globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
-          skipWaiting: true,
-          runtimeCaching: [
-            {
-              urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-              handler: 'CacheFirst',
-              options: {
-                cacheName: 'google-fonts-cache',
-                expiration: {
-                  maxEntries: 10,
-                  maxAgeSeconds: 60 * 60 * 24 * 365,
-                },
-              },
-            },
-            {
-              urlPattern: /^https:\/\/firebasestorage\.googleapis\.com\/.*/i,
-              handler: 'StaleWhileRevalidate',
-              options: {
-                cacheName: 'firebase-storage-cache',
-                expiration: {
-                  maxEntries: 50,
-                  maxAgeSeconds: 60 * 60 * 24 * 7,
-                },
-              },
-            },
-          ],
-        },
-      })
-    );
-  }
+  // PWA plugin disabled due to vite-plugin-pwa dependency resolution issues
+  // if (isProduction) {
+  //   plugins.push(
+  //     VitePWA({...})
+  //   );
+  // }
 
   // Add compression plugins
   plugins.push(
