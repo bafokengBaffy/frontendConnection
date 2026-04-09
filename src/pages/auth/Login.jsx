@@ -267,8 +267,6 @@ export const Login = () => {
         Logger.warn('reCAPTCHA not loaded');
         return null;
       }
-      x;
-
       const token = await window.grecaptcha.execute(
         import.meta.env.VITE_RECAPTCHA_SITE_KEY || 'YOUR_RECAPTCHA_KEY',
         { action: 'login' }

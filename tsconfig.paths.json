@@ -13,9 +13,7 @@
       "@styles/*": ["src/styles/*"],
       "@config/*": ["src/config/*"],
       "@types/*": ["src/types/*"],
-      "@routing/*": ["src/routing/*"],
-      "@tests/*": ["__tests__/*"],
-      "@test-utils": ["__tests__/utils/test-utils.jsx"]
+      "@routing/*": ["src/routing/*"]
     }
   }
 }

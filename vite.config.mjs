@@ -1,8 +1,6 @@
 ﻿import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
-import { VitePWA } from 'vite-plugin-pwa';
 import viteCompression from 'vite-plugin-compression';
-import { createHtmlPlugin } from 'vite-plugin-html';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -38,24 +36,13 @@ export default defineConfig(({ command, mode }) => {
     })
   );
 
-  // Add HTML plugin
-  plugins.push(
-    createHtmlPlugin({
-      minify: isProduction,
-      inject: {
-        data: {
-          title: env.VITE_APP_NAME || 'Career Connect Lesotho',
-          description: 'Bridging youth, education, and employment opportunities in Lesotho',
-        },
-      },
-    })
-  );
-
   return {
     plugins,
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
+        '@restart/ui/esm/popper': path.resolve(__dirname, './src/shims/restartUiPopper.js'),
+        '@restart/ui/esm/popper.js': path.resolve(__dirname, './src/shims/restartUiPopper.js'),
       },
     },
     build: {
@@ -63,13 +50,7 @@ export default defineConfig(({ command, mode }) => {
       outDir: 'dist',
       assetsDir: 'assets',
       sourcemap: isDevelopment,
-      minify: 'terser',
-      terserOptions: {
-        compress: {
-          drop_console: isProduction,
-          drop_debugger: isProduction,
-        },
-      },
+      minify: isProduction ? 'esbuild' : false,
       rollupOptions: {
         output: {
           manualChunks: {

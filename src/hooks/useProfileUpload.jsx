@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 // src/hooks/useProfileUpload.js
 import { useState, useCallback, useEffect, useRef } from 'react';
 
@@ -64,25 +63,31 @@ export const useProfileUpload = (options = {}) => {
     }
   }, []);
 
-  const simulateProgress = useCallback((duration = 2000, steps = 10) => {
-    if (progressInterval.current) {
-      clearInterval(progressInterval.current);
-    }
-
-    const step = 100 / steps;
-    const interval = duration / steps;
-    let current = 0;
-
-    progressInterval.current = setInterval(() => {
-      current += step;
-      if (current >= 90) {
+  const simulateProgress = useCallback(
+    (duration = 2000, steps = 10) => {
+      if (progressInterval.current) {
         clearInterval(progressInterval.current);
-        setProgress(90); // Hold at 90% until actual upload completes
-      } else {
-        setProgress(Math.min(current, 90));
       }
-    }, interval);
-  }, []);
+
+      const step = 100 / steps;
+      const interval = duration / steps;
+      let current = 0;
+
+      progressInterval.current = setInterval(() => {
+        current += step;
+        if (current >= 90) {
+          clearInterval(progressInterval.current);
+          setProgress(90); // Hold at 90% until actual upload completes
+          onUploadProgress(90);
+        } else {
+          const nextProgress = Math.min(current, 90);
+          setProgress(nextProgress);
+          onUploadProgress(nextProgress);
+        }
+      }, interval);
+    },
+    [onUploadProgress]
+  );
 
   // Enhanced file validation with detailed error messages
   const validateFile = useCallback(

@@ -35,12 +35,14 @@ import getStudentRoutes from './routing/modules/StudentRoutes';
 import getYouthRoutes from './routing/modules/YouthRoutes';
 import './App.css';
 
+// Loading fallback component
 const LoadingFallback = () => (
   <div className="loading-container">
     <LoadingSpinner message="Loading Career Connect..." />
   </div>
 );
 
+// Error fallback component
 const ErrorFallback = ({ error, resetErrorBoundary }) => (
   <div className="error-container">
     <div className="error-content">
@@ -54,18 +56,40 @@ const ErrorFallback = ({ error, resetErrorBoundary }) => (
   </div>
 );
 
+// Main app content with routes
 const AppContent = () => {
-  const { loading } = useAuth();
+  const { loading, error } = useAuth();
 
+  // Show loading state
   if (loading) {
     return <LoadingFallback />;
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="error-container">
+        <div className="error-content">
+          <h1>Authentication Error</h1>
+          <p>{error}</p>
+          <button onClick={() => window.location.reload()} className="btn btn-primary">
+            Refresh Page
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
     <Suspense fallback={<LoadingFallback />}>
       <Routes>
+        {/* Public Routes - No authentication required */}
         {getPublicRoutes()}
+
+        {/* Common Routes - Authentication required */}
         {getCommonRoutes()}
+
+        {/* Protected Routes by User Type */}
         {getAdminRoutes()}
         {getStudentRoutes()}
         {getCompanyRoutes()}
@@ -76,20 +100,28 @@ const AppContent = () => {
         {getParentRoutes()}
         {getAlumniRoutes()}
         {getAIRoutes()}
+
+        {/* Catch all - redirect to home */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Suspense>
   );
 };
 
+// Main App component
 function App() {
+  // Network status monitoring
   useEffect(() => {
     const handleOnline = () => {
       console.log('App is online');
+      // Optional: Trigger a refresh or reconnection
+      if (window.location.pathname !== '/') {
+        window.location.reload();
+      }
     };
 
     const handleOffline = () => {
-      console.warn('App is offline');
+      console.warn('App is offline - some features may be limited');
     };
 
     window.addEventListener('online', handleOnline);

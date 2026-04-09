@@ -32,16 +32,16 @@ const FAQ = () => {
     {
       id: 1,
       category: 'general',
-      question: 'What is Youth Entrepreneur Platform?',
+      question: 'What is Career Connect Lesotho?',
       answer:
-        'Youth Entrepreneur Platform is a comprehensive ecosystem designed to empower young entrepreneurs aged 16-35 with tools, resources, mentorship, and funding opportunities to launch and grow their businesses.',
+        'Career Connect Lesotho is a comprehensive ecosystem designed to empower students and young professionals with tools, AI-driven career guidance, mentorship, and job opportunities.',
     },
     {
       id: 2,
       category: 'general',
       question: 'Who can join the platform?',
       answer:
-        'Anyone aged 16-35 with an entrepreneurial spirit can join. Whether you have a business idea, an existing startup, or just want to learn about entrepreneurship, our platform has resources for you.',
+        'The platform is open to students looking for internships, mentors looking to give back, and companies seeking fresh talent in Lesotho.',
     },
     {
       id: 3,
@@ -104,7 +104,7 @@ const FAQ = () => {
       category: 'support',
       question: 'How do I contact support?',
       answer:
-        'You can reach our support team through the Contact page, email us at support@youthentrepreneur.com, or use the live chat feature available during business hours.',
+        'You can reach our support team through the Contact page, email us at support@careerconnect.ls, or use the live chat feature available during business hours.',
     },
     {
       id: 12,

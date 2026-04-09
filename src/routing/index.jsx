@@ -3,41 +3,41 @@
  * Central export point for all route modules
  */
 
-// Import all route modules (these are functions that return arrays of Route elements)
-import AdminRoutes from './AdminRoutes';
-import AIRoutes from './AIRoutes';
-import AlumniRoutes from './AlumniRoutes';
-import CollaborationRoutes from './CollaborationRoutes';
-import CommonRoutes from './CommonRoutes';
-import CompanyRoutes from './CompanyRoutes';
-import EntrepreneurRoutes from './EntrepreneurRoutes';
-import GovernmentRoutes from './GovernmentRoutes';
-import InstituteRoutes from './InstituteRoutes';
-import MentorRoutes from './MentorRoutes';
-import ParentRoutes from './ParentRoutes';
-import PublicRoutes from './PublicRoutes';
-import ResourcesRoutes from './ResourcesRoutes';
-import StudentRoutes from './StudentRoutes';
-import SystemRoutes from './SystemRoutes';
-import YouthRoutes from './YouthRoutes';
+// Import all route modules
+import getAdminRoutes from './modules/AdminRoutes';
+import getAIRoutes from './modules/AIRoutes';
+import getAlumniRoutes from './modules/AlumniRoutes';
+import getCollaborationRoutes from './modules/CollaborationRoutes';
+import getCommonRoutes from './modules/CommonRoutes';
+import getCompanyRoutes from './modules/CompanyRoutes';
+import getEntrepreneurRoutes from './modules/EntrepreneurRoutes';
+import getGovernmentRoutes from './modules/GovernmentRoutes';
+import getInstituteRoutes from './modules/InstituteRoutes';
+import getMentorRoutes from './modules/MentorRoutes';
+import getParentRoutes from './modules/ParentRoutes';
+import getPublicRoutes from './modules/PublicRoutes';
+import getResourcesRoutes from './modules/ResourcesRoutes';
+import getStudentRoutes from './modules/StudentRoutes';
+import getSystemRoutes from './modules/SystemRoutes';
+import getYouthRoutes from './modules/YouthRoutes';
 
 // Execute the route functions to get the actual route arrays
-const adminRoutes = AdminRoutes();
-const aiRoutes = AIRoutes();
-const alumniRoutes = AlumniRoutes();
-const collaborationRoutes = CollaborationRoutes();
-const commonRoutes = CommonRoutes();
-const companyRoutes = CompanyRoutes();
-const entrepreneurRoutes = EntrepreneurRoutes();
-const governmentRoutes = GovernmentRoutes();
-const instituteRoutes = InstituteRoutes();
-const mentorRoutes = MentorRoutes();
-const parentRoutes = ParentRoutes();
-const publicRoutes = PublicRoutes();
-const resourcesRoutes = ResourcesRoutes();
-const studentRoutes = StudentRoutes();
-const systemRoutes = SystemRoutes();
-const youthRoutes = YouthRoutes();
+export const adminRoutes = getAdminRoutes();
+export const aiRoutes = getAIRoutes();
+export const alumniRoutes = getAlumniRoutes();
+export const collaborationRoutes = getCollaborationRoutes();
+export const commonRoutes = getCommonRoutes();
+export const companyRoutes = getCompanyRoutes();
+export const entrepreneurRoutes = getEntrepreneurRoutes();
+export const governmentRoutes = getGovernmentRoutes();
+export const instituteRoutes = getInstituteRoutes();
+export const mentorRoutes = getMentorRoutes();
+export const parentRoutes = getParentRoutes();
+export const publicRoutes = getPublicRoutes();
+export const resourcesRoutes = getResourcesRoutes();
+export const studentRoutes = getStudentRoutes();
+export const systemRoutes = getSystemRoutes();
+export const youthRoutes = getYouthRoutes();
 
 // Combine all protected routes (require authentication)
 export const protectedRoutes = [
@@ -61,26 +61,6 @@ export const allPublicRoutes = [...commonRoutes, ...publicRoutes, ...resourcesRo
 
 // Combined routes for easy import
 export const allRoutes = [...protectedRoutes, ...allPublicRoutes];
-
-// Export the route functions for use in other parts of the app
-export {
-  adminRoutes,
-  aiRoutes,
-  alumniRoutes,
-  collaborationRoutes,
-  commonRoutes,
-  companyRoutes,
-  entrepreneurRoutes,
-  governmentRoutes,
-  instituteRoutes,
-  mentorRoutes,
-  parentRoutes,
-  publicRoutes,
-  resourcesRoutes,
-  studentRoutes,
-  systemRoutes,
-  youthRoutes,
-};
 
 // Default export for convenience
 export default {

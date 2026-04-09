@@ -21,7 +21,7 @@ export const getInstituteRoutes = () => {
       key="institute-root"
       path="/institute"
       element={
-        <ProtectedRoute requiredRole="institute">
+        <ProtectedRoute allowedUserTypes={['institute']}>
           <InstitutionDashboard />
         </ProtectedRoute>
       }
@@ -30,7 +30,7 @@ export const getInstituteRoutes = () => {
       key="institute-dashboard"
       path="/institute/dashboard"
       element={
-        <ProtectedRoute requiredRole="institute">
+        <ProtectedRoute allowedUserTypes={['institute']}>
           <InstitutionDashboard />
         </ProtectedRoute>
       }
@@ -39,7 +39,7 @@ export const getInstituteRoutes = () => {
       key="institute-profile"
       path="/institute/profile"
       element={
-        <ProtectedRoute requiredRole="institute">
+        <ProtectedRoute allowedUserTypes={['institute']}>
           <InstituteProfile />
         </ProtectedRoute>
       }
@@ -48,7 +48,7 @@ export const getInstituteRoutes = () => {
       key="institute-courses"
       path="/institute/courses"
       element={
-        <ProtectedRoute requiredRole="institute">
+        <ProtectedRoute allowedUserTypes={['institute']}>
           <ManageCourses />
         </ProtectedRoute>
       }
@@ -57,7 +57,7 @@ export const getInstituteRoutes = () => {
       key="institute-faculties"
       path="/institute/faculties"
       element={
-        <ProtectedRoute requiredRole="institute">
+        <ProtectedRoute allowedUserTypes={['institute']}>
           <ManageFaculties />
         </ProtectedRoute>
       }
@@ -66,7 +66,7 @@ export const getInstituteRoutes = () => {
       key="institute-applications"
       path="/institute/applications"
       element={
-        <ProtectedRoute requiredRole="institute">
+        <ProtectedRoute allowedUserTypes={['institute']}>
           <ReviewApplications />
         </ProtectedRoute>
       }
@@ -75,7 +75,7 @@ export const getInstituteRoutes = () => {
       key="institute-students"
       path="/institute/students"
       element={
-        <ProtectedRoute requiredRole="institute">
+        <ProtectedRoute allowedUserTypes={['institute']}>
           <StudentManagement />
         </ProtectedRoute>
       }
@@ -84,7 +84,7 @@ export const getInstituteRoutes = () => {
       key="institute-settings"
       path="/institute/settings"
       element={
-        <ProtectedRoute requiredRole="institute">
+        <ProtectedRoute allowedUserTypes={['institute']}>
           <InstituteSettings />
         </ProtectedRoute>
       }
