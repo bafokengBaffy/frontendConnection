@@ -3,11 +3,12 @@ import { createContext, useContext } from 'react';
 
 import { useAlumni } from '../hooks/useAlumni';
 
-const AlumniContext = createContext();
+const AlumniContext = createContext(null);
 
 export const AlumniProvider = ({ children }) => {
-  const value = useAlumni();
-  return <AlumniContext.Provider value={value}>{children}</AlumniContext.Provider>;
+  const alumniData = useAlumni();
+
+  return <AlumniContext.Provider value={alumniData}>{children}</AlumniContext.Provider>;
 };
 
 export const useAlumniContext = () => {
@@ -17,3 +18,5 @@ export const useAlumniContext = () => {
   }
   return context;
 };
+
+export default AlumniContext;

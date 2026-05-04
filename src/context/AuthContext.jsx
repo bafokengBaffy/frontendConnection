@@ -1,41 +1,34 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
-import React, {
-  createContext,
-  useState,
-  useContext,
-  useEffect,
-  useCallback,
-  useMemo,
-  useRef,
-} from 'react';
 import {
-  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  signOut,
+  fetchSignInMethodsForEmail,
   onAuthStateChanged,
-  signInWithPopup,
-  updateProfile,
   sendEmailVerification,
   sendPasswordResetEmail,
-  fetchSignInMethodsForEmail,
-  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+  updateProfile
 } from 'firebase/auth';
 import {
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-  serverTimestamp,
-  Timestamp,
-  collection,
-  query,
-  where,
-  getDocs,
-  enableNetwork,
   disableNetwork,
-  writeBatch,
+  doc,
+  enableNetwork,
+  getDoc,
+  serverTimestamp,
+  setDoc,
+  updateDoc
 } from 'firebase/firestore';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { auth, db, googleProvider } from '../config/firebase';
 
@@ -73,6 +66,10 @@ const isPermissionDeniedError = (error) => {
     error?.code === 'firestore/permission-denied' ||
     /insufficient permissions|permission-denied/i.test(error?.message || '')
   );
+};
+
+const isProfileMissingError = (error) => {
+  return /profile not found/i.test(error || '');
 };
 
 const normalizeUserTypeForFirestore = (userType) => {
@@ -177,7 +174,7 @@ export const STORAGE_KEYS = {
 };
 
 // ==================== AUTH CONTEXT ====================
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -927,7 +924,16 @@ export const AuthProvider = ({ children }) => {
             };
 
             await setDoc(userRef, adminProfile, { merge: true });
-            await createAdminProfile(user.uid, { ...additionalData, ...adminProfile });
+            const adminProfileResult = await createAdminProfile(user.uid, {
+              ...additionalData,
+              ...adminProfile,
+            });
+            if (!adminProfileResult.success) {
+              console.warn(
+                'Admin profile collection write failed, but base admin user profile was created.',
+                adminProfileResult.error
+              );
+            }
             return { success: true, data: adminProfile };
           }
 
@@ -960,8 +966,8 @@ export const AuthProvider = ({ children }) => {
             isGoogleAuth: additionalData.isGoogleAuth || false,
             status:
               userType === USER_TYPES.COMPANY ||
-              userType === USER_TYPES.INSTITUTE ||
-              userType === USER_TYPES.MENTOR
+                userType === USER_TYPES.INSTITUTE ||
+                userType === USER_TYPES.MENTOR
                 ? ACCOUNT_STATUS.PENDING_APPROVAL
                 : ACCOUNT_STATUS.ACTIVE,
             preferences: {
@@ -1443,10 +1449,20 @@ export const AuthProvider = ({ children }) => {
         }
 
         const userRef = doc(db, 'users', user.uid);
-        await updateDoc(userRef, {
-          lastLogin: serverTimestamp(),
-          lastActivity: serverTimestamp(),
-        });
+        try {
+          await updateDoc(userRef, {
+            lastLogin: serverTimestamp(),
+            lastActivity: serverTimestamp(),
+          });
+        } catch (profileUpdateError) {
+          if (!isPermissionDeniedError(profileUpdateError)) {
+            throw profileUpdateError;
+          }
+          console.warn(
+            'Skipping lastLogin update due to Firestore permissions:',
+            profileUpdateError
+          );
+        }
 
         const profileResult = await getUserProfile(user.uid);
 
@@ -1471,7 +1487,7 @@ export const AuthProvider = ({ children }) => {
             userType: profileResult.data.userType,
             isAdmin: profileResult.data.isAdmin || false,
           };
-        } else {
+        } else if (isProfileMissingError(profileResult.error)) {
           const isAdminUser = isAdminEmail(user.email);
           const userType = isAdminUser ? USER_TYPES.ADMIN : USER_TYPES.STUDENT;
 
@@ -1505,6 +1521,14 @@ export const AuthProvider = ({ children }) => {
             isAdmin: createResult.data.isAdmin || false,
           };
         }
+
+        return {
+          success: true,
+          user,
+          profile: null,
+          userType: USER_TYPES.STUDENT,
+          isAdmin: false,
+        };
       } catch (error) {
         console.error('❌ Login failed:', error);
 
@@ -1596,10 +1620,20 @@ export const AuthProvider = ({ children }) => {
         if (profileResult.success) {
           // Update last login
           const userRef = doc(db, 'users', user.uid);
-          await updateDoc(userRef, {
-            lastLogin: serverTimestamp(),
-            lastActivity: serverTimestamp(),
-          });
+          try {
+            await updateDoc(userRef, {
+              lastLogin: serverTimestamp(),
+              lastActivity: serverTimestamp(),
+            });
+          } catch (profileUpdateError) {
+            if (!isPermissionDeniedError(profileUpdateError)) {
+              throw profileUpdateError;
+            }
+            console.warn(
+              'Skipping Google login profile timestamp update due to Firestore permissions:',
+              profileUpdateError
+            );
+          }
 
           // Update type-specific profile last login if needed
           try {
@@ -1634,7 +1668,7 @@ export const AuthProvider = ({ children }) => {
             userType: profileResult.data.userType,
             isAdmin: profileResult.data.isAdmin || false,
           };
-        } else {
+        } else if (isProfileMissingError(profileResult.error)) {
           // New Google user - create profile with selected type
           const isAdminUser = isAdminEmail(user.email);
           const userType = isAdminUser ? USER_TYPES.ADMIN : selectedUserType;
@@ -1678,6 +1712,14 @@ export const AuthProvider = ({ children }) => {
             isAdmin: createResult.data.isAdmin || false,
           };
         }
+
+        return {
+          success: true,
+          user,
+          profile: null,
+          userType: selectedUserType,
+          isAdmin: false,
+        };
       } catch (error) {
         console.error('❌ Google login failed:', error);
 
@@ -2033,7 +2075,10 @@ export const AuthProvider = ({ children }) => {
           if (profileResult.success) {
             setUserProfile(profileResult.data);
           } else {
-            if (managedAuthFlowRef.current.suppressAutoProfileCreation) {
+            if (
+              managedAuthFlowRef.current.suppressAutoProfileCreation ||
+              !isProfileMissingError(profileResult.error)
+            ) {
               return;
             }
 
@@ -2086,8 +2131,10 @@ export const AuthProvider = ({ children }) => {
   // ==================== CONTEXT VALUE ====================
   const value = {
     // User state
+    user: userProfile,
     currentUser,
     userProfile,
+    userData: userProfile,
     loading: loading || isInitializing,
     isAuthenticated: !!currentUser,
     isAdmin: userProfile?.isAdmin || userProfile?.userType === USER_TYPES.ADMIN,

@@ -8,7 +8,7 @@ export const realtimeService = {
     const user = auth.currentUser;
     if (!user) {
       console.log('No authenticated user found for realtime updates');
-      return () => {};
+      return () => { };
     }
 
     try {
@@ -42,19 +42,19 @@ export const realtimeService = {
           }
         },
         (error) => {
-          console.error('Error in real-time subscription:', error);
-          // Try to reconnect after error
-          setTimeout(() => {
-            console.log('Attempting to reconnect realtime service...');
-            this.subscribeToUpdates(callback);
-          }, 5000);
+          if (error.code === 'permission-denied') {
+            console.warn('Realtime subscription permission denied - user may not be a company.');
+          } else {
+            console.error('Error in real-time subscription:', error);
+            setTimeout(() => this.subscribeToUpdates(callback), 10000);
+          }
         }
       );
 
       return unsubscribe;
     } catch (error) {
       console.error('Error setting up real-time updates:', error);
-      return () => {};
+      return () => { };
     }
   },
 
@@ -62,7 +62,7 @@ export const realtimeService = {
     const user = auth.currentUser;
     if (!user) {
       console.log('No authenticated user found for job updates');
-      return () => {};
+      return () => { };
     }
 
     try {
@@ -92,24 +92,25 @@ export const realtimeService = {
           }
         },
         (error) => {
-          console.error('Error in job updates subscription:', error);
-          setTimeout(() => {
-            console.log('Attempting to reconnect job updates service...');
-            this.subscribeToJobUpdates(callback);
-          }, 5000);
+          if (error.code === 'permission-denied') {
+            console.warn('Job updates permission denied.');
+          } else {
+            console.error('Error in job updates subscription:', error);
+            setTimeout(() => this.subscribeToJobUpdates(callback), 10000);
+          }
         }
       );
 
       return unsubscribe;
     } catch (error) {
       console.error('Error setting up job updates:', error);
-      return () => {};
+      return () => { };
     }
   },
 
   subscribeToProfileViews(callback) {
     const user = auth.currentUser;
-    if (!user) return () => {};
+    if (!user) return () => { };
 
     try {
       const companyRef = doc(db, 'companies', user.uid);
@@ -131,7 +132,7 @@ export const realtimeService = {
       return unsubscribe;
     } catch (error) {
       console.error('Error setting up profile view updates:', error);
-      return () => {};
+      return () => { };
     }
   },
 };
@@ -183,7 +184,7 @@ export const setupSSEConnection = (companyId) => {
       console.error('Error setting up SSE:', error);
     }
   }
-  return () => {};
+  return () => { };
 };
 
 // Polling fallback for environments without realtime support

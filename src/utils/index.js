@@ -3,6 +3,7 @@
  * Central export point for all utility functions
  */
 
+// Export all utilities from individual files
 export * from './activityLogger';
 export * from './aiHelpers';
 export * from './alertUtils';
@@ -36,38 +37,75 @@ export * from './validators';
 export * from './youthConstants';
 export * from './youthHelpers';
 
-// Default export for all utilities
-export default {
-  ...require('./activityLogger'),
-  ...require('./aiHelpers'),
-  ...require('./alertUtils'),
-  ...require('./arrayUtils'),
-  ...require('./businessCalculations'),
-  ...require('./businessTemplates'),
-  ...require('./companyHelpers'),
-  ...require('./constants'),
-  ...require('./dashboardConstants'),
-  ...require('./dashboardData'),
-  ...require('./dataFormatters'),
-  ...require('./dateUtils'),
-  ...require('./entrepreneurHubUtils'),
-  ...require('./errorHandlers'),
-  ...require('./formatters'),
-  ...require('./fundingCalculators'),
-  ...require('./fundingData'),
-  ...require('./helpers'),
-  ...require('./initializeCompanyData'),
-  ...require('./logger'),
-  ...require('./mlConstants'),
-  ...require('./nitializeFirestore'),
-  ...require('./objectUtils'),
-  ...require('./permissions'),
-  ...require('./routingUtils'),
-  ...require('./stringUtils'),
-  ...require('./validation'),
-  ...require('./validationSchemas'),
-  ...require('./validationUtils'),
-  ...require('./validators'),
-  ...require('./youthConstants'),
-  ...require('./youthHelpers'),
+// Also import for default export
+import * as activityLogger from './activityLogger';
+import * as aiHelpers from './aiHelpers';
+import * as alertUtils from './alertUtils';
+import * as arrayUtils from './arrayUtils';
+import * as businessCalculations from './businessCalculations';
+import * as businessTemplates from './businessTemplates';
+import * as companyHelpers from './companyHelpers';
+import * as constants from './constants';
+import * as dashboardConstants from './dashboardConstants';
+import * as dashboardData from './dashboardData';
+import * as dataFormatters from './dataFormatters';
+import * as dateUtils from './dateUtils';
+import * as entrepreneurHubUtils from './entrepreneurHubUtils';
+import * as errorHandlers from './errorHandlers';
+import * as formatters from './formatters';
+import * as fundingCalculators from './fundingCalculators';
+import * as fundingData from './fundingData';
+import * as helpers from './helpers';
+import * as initializeCompanyData from './initializeCompanyData';
+import * as logger from './logger';
+import * as mlConstants from './mlConstants';
+import * as nitializeFirestore from './nitializeFirestore';
+import * as objectUtils from './objectUtils';
+import * as permissions from './permissions';
+import * as routingUtils from './routingUtils';
+import * as stringUtils from './stringUtils';
+import * as validation from './validation';
+import * as validationSchemas from './validationSchemas';
+import * as validationUtils from './validationUtils';
+import * as validators from './validators';
+import * as youthConstants from './youthConstants';
+import * as youthHelpers from './youthHelpers';
+
+// Create combined default export
+const allUtils = {
+  ...activityLogger,
+  ...aiHelpers,
+  ...alertUtils,
+  ...arrayUtils,
+  ...businessCalculations,
+  ...businessTemplates,
+  ...companyHelpers,
+  ...constants,
+  ...dashboardConstants,
+  ...dashboardData,
+  ...dataFormatters,
+  ...dateUtils,
+  ...entrepreneurHubUtils,
+  ...errorHandlers,
+  ...formatters,
+  ...fundingCalculators,
+  ...fundingData,
+  ...helpers,
+  ...initializeCompanyData,
+  ...logger,
+  ...mlConstants,
+  ...nitializeFirestore,
+  ...objectUtils,
+  ...permissions,
+  ...routingUtils,
+  ...stringUtils,
+  ...validation,
+  ...validationSchemas,
+  ...validationUtils,
+  ...validators,
+  ...youthConstants,
+  ...youthHelpers,
 };
+
+// Default export
+export default allUtils;

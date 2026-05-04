@@ -1,19 +1,19 @@
 /* eslint-disable no-unused-vars */
-import { createContext, useState, useContext, useEffect, useCallback } from 'react';
-import { doc, getDoc, updateDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 import { db } from '../config/firebase';
 import {
-  getStudentProfile,
-  updateStudentProfile as updateProfile,
-  getStudentApplications,
-  getStudentDocuments,
-  uploadDocument,
   deleteDocument,
+  getDashboardStats,
   getJobs,
   getRecommendedJobs,
-  getDashboardStats,
+  getStudentApplications,
+  getStudentDocuments,
+  getStudentProfile,
   initializeStudentProfile,
+  updateStudentProfile as updateProfile,
+  uploadDocument,
 } from '../services/studentServices';
 
 import { useAuth } from './AuthContext';
@@ -37,24 +37,11 @@ export const StudentProvider = ({ children }) => {
 
   // Helper to determine if user is a student
   const isUserStudent = useCallback(() => {
-    if (!userData) return false;
+    if (!userData) return null; // Return null while loading
 
     // Check multiple possible userType fields
     const userType = userData.userType || userData.role || userData.type;
-
-    // If userType is explicitly set
-    if (userType) {
-      return userType === 'student' || userType === 'Student';
-    }
-
-    // If no userType is set, check email pattern
-    const email = userData.email || currentUser?.email || '';
-
-    // If email doesn't look like a company email, assume student
-    const isCompanyEmail =
-      email.includes('@company.') || email.includes('@corp.') || email.includes('@business.');
-
-    return !isCompanyEmail;
+    return userType?.toLowerCase() === 'student';
   }, [userData, currentUser]);
 
   // Ensure user document exists with correct type
@@ -107,11 +94,11 @@ export const StudentProvider = ({ children }) => {
       hasCurrentUser: !!currentUser,
       userData: userData
         ? {
-            email: userData.email,
-            userType: userData.userType,
-            role: userData.role,
-            type: userData.type,
-          }
+          email: userData.email,
+          userType: userData.userType,
+          role: userData.role,
+          type: userData.type,
+        }
         : null,
       studentId: currentUser?.uid,
     });
@@ -122,6 +109,20 @@ export const StudentProvider = ({ children }) => {
       setLoading(false);
       setInitialized(true);
       return { success: false, error: 'No authenticated user' };
+    }
+
+    // If userData is loaded and user is NOT a student, bail out silently
+    const studentCheck = isUserStudent();
+    if (studentCheck === false) {
+      console.log('ℹ️ User is not a student, skipping student data fetch');
+      setLoading(false);
+      setInitialized(true);
+      return { success: true, message: 'Not a student account' };
+    }
+
+    // Wait for userData if it's currently null but auth exists
+    if (studentCheck === null && !userData) {
+      return { success: false, message: 'Waiting for user data' };
     }
 
     try {
@@ -427,35 +428,19 @@ export const StudentProvider = ({ children }) => {
     }
   };
 
-  // Initial fetch
-  useEffect(() => {
-    let mounted = true;
-
-    const initialize = async () => {
-      if (!mounted) return;
-
-      console.log('🚀 Initializing StudentContext...');
-      await fetchStudentData();
-    };
-
-    initialize();
-
-    return () => {
-      mounted = false;
-    };
-  }, [fetchStudentData]);
-
   // Listen for auth changes
   useEffect(() => {
-    if (currentUser && initialized) {
+    if (currentUser) {
       console.log('👤 Auth changed, refreshing student data...');
       fetchStudentData();
-    } else if (!currentUser && initialized) {
+    } else {
       console.log('👤 User logged out, clearing student data');
       setStudentData(null);
       setError(null);
+      setInitialized(true);
+      setLoading(false);
     }
-  }, [currentUser, fetchStudentData, initialized]);
+  }, [currentUser, userData, fetchStudentData]); // Added userData dependency
 
   // Value to provide
   const value = {

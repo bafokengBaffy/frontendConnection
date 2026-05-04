@@ -1,18 +1,18 @@
 // src/config/chartjs.config.js
 import {
-  Chart as ChartJS,
   ArcElement,
-  Tooltip,
-  Legend,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
   BarElement,
-  Title,
+  CategoryScale,
+  Chart as ChartJS,
   Filler,
+  Legend,
+  LinearScale,
+  LineElement,
+  PointElement,
   RadialLinearScale,
-} from 'chart.jsx';
+  Title,
+  Tooltip,
+} from 'chart.js';
 
 // Register ChartJS components globally
 ChartJS.register(

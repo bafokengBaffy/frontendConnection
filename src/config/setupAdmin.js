@@ -7,8 +7,8 @@
  * In production, admin users should be created through secure backend processes
  */
 
-import { createUserWithEmailAndAnimation } from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 import { auth, db } from './firebase';
 
@@ -84,7 +84,7 @@ const checkAdminExists = async (email) => {
 // Create admin user in Firebase Auth
 const createAuthAdmin = async (email, password) => {
   try {
-    const userCredential = await createUserWithEmailAndAnimation(auth, email, password);
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     console.log('✅ Admin user created in Firebase Auth');
     return userCredential.user;
   } catch (error) {

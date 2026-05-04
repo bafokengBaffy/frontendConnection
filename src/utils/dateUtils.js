@@ -1,216 +1,215 @@
+// frontend/src/utils/dateUtils.js
+
 /**
- * Date Utilities
+ * Format date to ISO string
+ * @param {Date|string} date - Date to format
+ * @returns {string} ISO date string
  */
+export const toISOString = (date) => {
+  const dateObj = date instanceof Date ? date : new Date(date);
+  return dateObj.toISOString();
+};
 
-import { DATE_FORMATS } from './constants';
+/**
+ * Check if date is today
+ * @param {Date|string} date - Date to check
+ * @returns {boolean} True if date is today
+ */
+export const isToday = (date) => {
+  const dateObj = date instanceof Date ? date : new Date(date);
+  const today = new Date();
 
-export const dateUtils = {
-  /**
-   * Format date
-   * @param {Date|string} date - Date to format
-   * @param {string} format - Format string
-   * @returns {string} - Formatted date
-   */
-  format(date, format = DATE_FORMATS.DEFAULT) {
-    if (!date) return '';
-    const d = new Date(date);
-    if (isNaN(d.getTime())) return '';
+  return (
+    dateObj.getDate() === today.getDate() &&
+    dateObj.getMonth() === today.getMonth() &&
+    dateObj.getFullYear() === today.getFullYear()
+  );
+};
 
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    const hours = String(d.getHours()).padStart(2, '0');
-    const minutes = String(d.getMinutes()).padStart(2, '0');
-    const seconds = String(d.getSeconds()).padStart(2, '0');
+/**
+ * Check if date is in the past
+ * @param {Date|string} date - Date to check
+ * @returns {boolean} True if date is in the past
+ */
+export const isPast = (date) => {
+  const dateObj = date instanceof Date ? date : new Date(date);
+  return dateObj < new Date();
+};
 
-    return format
-      .replace('YYYY', year)
-      .replace('MM', month)
-      .replace('DD', day)
-      .replace('HH', hours)
-      .replace('mm', minutes)
-      .replace('ss', seconds);
-  },
+/**
+ * Check if date is in the future
+ * @param {Date|string} date - Date to check
+ * @returns {boolean} True if date is in the future
+ */
+export const isFuture = (date) => {
+  const dateObj = date instanceof Date ? date : new Date(date);
+  return dateObj > new Date();
+};
 
-  /**
-   * Get start of day
-   * @param {Date} date - Date
-   * @returns {Date} - Start of day
-   */
-  startOfDay(date = new Date()) {
-    const d = new Date(date);
-    d.setHours(0, 0, 0, 0);
-    return d;
-  },
+/**
+ * Add days to date
+ * @param {Date} date - Starting date
+ * @param {number} days - Number of days to add
+ * @returns {Date} New date
+ */
+export const addDays = (date, days) => {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+};
 
-  /**
-   * Get end of day
-   * @param {Date} date - Date
-   * @returns {Date} - End of day
-   */
-  endOfDay(date = new Date()) {
-    const d = new Date(date);
-    d.setHours(23, 59, 59, 999);
-    return d;
-  },
+/**
+ * Subtract days from date
+ * @param {Date} date - Starting date
+ * @param {number} days - Number of days to subtract
+ * @returns {Date} New date
+ */
+export const subtractDays = (date, days) => {
+  return addDays(date, -days);
+};
 
-  /**
-   * Get start of week
-   * @param {Date} date - Date
-   * @returns {Date} - Start of week
-   */
-  startOfWeek(date = new Date()) {
-    const d = new Date(date);
-    const day = d.getDay();
-    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-    return new Date(d.setDate(diff));
-  },
+/**
+ * Get start of day
+ * @param {Date} date - Date
+ * @returns {Date} Date at start of day (00:00:00)
+ */
+export const startOfDay = (date) => {
+  const result = new Date(date);
+  result.setHours(0, 0, 0, 0);
+  return result;
+};
 
-  /**
-   * Get end of week
-   * @param {Date} date - Date
-   * @returns {Date} - End of week
-   */
-  endOfWeek(date = new Date()) {
-    const d = this.startOfWeek(date);
-    d.setDate(d.getDate() + 6);
-    d.setHours(23, 59, 59, 999);
-    return d;
-  },
+/**
+ * Get end of day
+ * @param {Date} date - Date
+ * @returns {Date} Date at end of day (23:59:59)
+ */
+export const endOfDay = (date) => {
+  const result = new Date(date);
+  result.setHours(23, 59, 59, 999);
+  return result;
+};
 
-  /**
-   * Get start of month
-   * @param {Date} date - Date
-   * @returns {Date} - Start of month
-   */
-  startOfMonth(date = new Date()) {
-    return new Date(date.getFullYear(), date.getMonth(), 1);
-  },
+/**
+ * Get start of week (Monday)
+ * @param {Date} date - Date
+ * @returns {Date} Date at start of week
+ */
+export const startOfWeek = (date) => {
+  const result = new Date(date);
+  const day = result.getDay();
+  const diff = day === 0 ? 6 : day - 1;
+  result.setDate(result.getDate() - diff);
+  result.setHours(0, 0, 0, 0);
+  return result;
+};
 
-  /**
-   * Get end of month
-   * @param {Date} date - Date
-   * @returns {Date} - End of month
-   */
-  endOfMonth(date = new Date()) {
-    return new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59, 999);
-  },
+/**
+ * Get end of week (Sunday)
+ * @param {Date} date - Date
+ * @returns {Date} Date at end of week
+ */
+export const endOfWeek = (date) => {
+  const result = startOfWeek(date);
+  result.setDate(result.getDate() + 6);
+  result.setHours(23, 59, 59, 999);
+  return result;
+};
 
-  /**
-   * Get start of year
-   * @param {Date} date - Date
-   * @returns {Date} - Start of year
-   */
-  startOfYear(date = new Date()) {
-    return new Date(date.getFullYear(), 0, 1);
-  },
+/**
+ * Get start of month
+ * @param {Date} date - Date
+ * @returns {Date} Date at start of month
+ */
+export const startOfMonth = (date) => {
+  const result = new Date(date);
+  result.setDate(1);
+  result.setHours(0, 0, 0, 0);
+  return result;
+};
 
-  /**
-   * Get end of year
-   * @param {Date} date - Date
-   * @returns {Date} - End of year
-   */
-  endOfYear(date = new Date()) {
-    return new Date(date.getFullYear(), 11, 31, 23, 59, 59, 999);
-  },
+/**
+ * Get end of month
+ * @param {Date} date - Date
+ * @returns {Date} Date at end of month
+ */
+export const endOfMonth = (date) => {
+  const result = new Date(date);
+  result.setMonth(result.getMonth() + 1);
+  result.setDate(0);
+  result.setHours(23, 59, 59, 999);
+  return result;
+};
 
-  /**
-   * Add days to date
-   * @param {Date} date - Date
-   * @param {number} days - Days to add
-   * @returns {Date} - New date
-   */
-  addDays(date, days) {
-    const d = new Date(date);
-    d.setDate(d.getDate() + days);
-    return d;
-  },
+/**
+ * Get start of year
+ * @param {Date} date - Date
+ * @returns {Date} Date at start of year
+ */
+export const startOfYear = (date) => {
+  const result = new Date(date);
+  result.setMonth(0, 1);
+  result.setHours(0, 0, 0, 0);
+  return result;
+};
 
-  /**
-   * Add months to date
-   * @param {Date} date - Date
-   * @param {number} months - Months to add
-   * @returns {Date} - New date
-   */
-  addMonths(date, months) {
-    const d = new Date(date);
-    d.setMonth(d.getMonth() + months);
-    return d;
-  },
+/**
+ * Get end of year
+ * @param {Date} date - Date
+ * @returns {Date} Date at end of year
+ */
+export const endOfYear = (date) => {
+  const result = new Date(date);
+  result.setMonth(11, 31);
+  result.setHours(23, 59, 59, 999);
+  return result;
+};
 
-  /**
-   * Add years to date
-   * @param {Date} date - Date
-   * @param {number} years - Years to add
-   * @returns {Date} - New date
-   */
-  addYears(date, years) {
-    const d = new Date(date);
-    d.setFullYear(d.getFullYear() + years);
-    return d;
-  },
+/**
+ * Get days between two dates
+ * @param {Date} date1 - First date
+ * @param {Date} date2 - Second date
+ * @returns {number} Number of days between
+ */
+export const daysBetween = (date1, date2) => {
+  const d1 = new Date(date1);
+  const d2 = new Date(date2);
+  const diffTime = Math.abs(d2 - d1);
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+};
 
-  /**
-   * Get difference in days
-   * @param {Date} date1 - First date
-   * @param {Date} date2 - Second date
-   * @returns {number} - Difference in days
-   */
-  diffInDays(date1, date2) {
-    const d1 = new Date(date1);
-    const d2 = new Date(date2);
-    const diffTime = Math.abs(d2 - d1);
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  },
+/**
+ * Format date range
+ * @param {Date} startDate - Start date
+ * @param {Date} endDate - End date
+ * @returns {string} Formatted date range
+ */
+export const formatDateRange = (startDate, endDate) => {
+  const start = startDate instanceof Date ? startDate : new Date(startDate);
+  const end = endDate instanceof Date ? endDate : new Date(endDate);
 
-  /**
-   * Check if date is today
-   * @param {Date} date - Date to check
-   * @returns {boolean} - True if today
-   */
-  isToday(date) {
-    const d = new Date(date);
-    const today = new Date();
-    return d.toDateString() === today.toDateString();
-  },
+  if (start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear()) {
+    return `${start.getDate()} - ${end.getDate()} ${start.toLocaleString('default', { month: 'long' })}, ${start.getFullYear()}`;
+  }
 
-  /**
-   * Check if date is in past
-   * @param {Date} date - Date to check
-   * @returns {boolean} - True if past
-   */
-  isPast(date) {
-    const d = new Date(date);
-    const now = new Date();
-    return d < now;
-  },
+  return `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`;
+};
 
-  /**
-   * Check if date is in future
-   * @param {Date} date - Date to check
-   * @returns {boolean} - True if future
-   */
-  isFuture(date) {
-    const d = new Date(date);
-    const now = new Date();
-    return d > now;
-  },
-
-  /**
-   * Get age from birth date
-   * @param {Date} birthDate - Birth date
-   * @returns {number} - Age
-   */
-  getAge(birthDate) {
-    const today = new Date();
-    const birth = new Date(birthDate);
-    let age = today.getFullYear() - birth.getFullYear();
-    const monthDiff = today.getMonth() - birth.getMonth();
-
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-      age--;
-    }
-
-    return age;
-  },
+export default {
+  toISOString,
+  isToday,
+  isPast,
+  isFuture,
+  addDays,
+  subtractDays,
+  startOfDay,
+  endOfDay,
+  startOfWeek,
+  endOfWeek,
+  startOfMonth,
+  endOfMonth,
+  startOfYear,
+  endOfYear,
+  daysBetween,
+  formatDateRange,
 };

@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { Spinner, Container, Alert, Button } from 'react-bootstrap';
 import { useAuth } from '../../context/AuthContext';
+import Layout from './Layout';
 
 /**
  * Protected Route Component
@@ -159,8 +160,8 @@ const ProtectedRoute = ({
     }
   }
 
-  // All checks passed - render children
-  return children;
+  // All checks passed - render children inside the shared app shell
+  return <Layout>{children}</Layout>;
 };
 
 // Export both as default and as CommonRouteGuard for backward compatibility

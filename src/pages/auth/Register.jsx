@@ -159,6 +159,33 @@ const USER_TYPES = [
     benefits: ['Investor connections', 'Market insights', 'Growth tools', 'Partner matching'],
     steps: ['Account Type', 'Company Info', 'Business Details', 'Verify'],
   },
+  {
+    value: 'parent',
+    label: 'Parent / Guardian',
+    description: 'Support student progress, wellbeing, and career planning',
+    icon: <FaUsers className="display-4" />,
+    gradient: 'linear-gradient(135deg, #0f766e 0%, #14b8a6 100%)',
+    color: '#0f766e',
+    requiresApproval: false,
+    benefits: [
+      'Track student progress',
+      'Receive alerts',
+      'Access support resources',
+      'Stay connected',
+    ],
+    steps: ['Account Type', 'Personal Info', 'Confirm Access', 'Verify'],
+  },
+  {
+    value: 'alumni',
+    label: 'Alumni',
+    description: 'Reconnect, mentor, and support the next generation',
+    icon: <FaGraduationCap className="display-4" />,
+    gradient: 'linear-gradient(135deg, #7c3aed 0%, #2563eb 100%)',
+    color: '#7c3aed',
+    requiresApproval: false,
+    benefits: ['Join alumni network', 'Share opportunities', 'Offer mentorship', 'Attend events'],
+    steps: ['Account Type', 'Personal Info', 'Career Snapshot', 'Verify'],
+  },
 ];
 
 // Industry options
@@ -330,6 +357,8 @@ const Register = () => {
       mentor: '/mentor/dashboard',
       youth: '/youth/dashboard',
       entrepreneur: '/entrepreneur/dashboard',
+      parent: '/parent/dashboard',
+      alumni: '/alumni/dashboard',
       admin: '/admin/dashboard',
     };
 

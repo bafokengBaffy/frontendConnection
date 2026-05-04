@@ -1,184 +1,316 @@
+// frontend/src/utils/formatters.js
+
 /**
- * Data Formatting Utilities
+ * Format currency amount
+ * @param {number} amount - The amount to format
+ * @param {string} currency - Currency code (default: 'USD')
+ * @returns {string} Formatted currency string
  */
+export const formatCurrency = (amount, currency = 'USD') => {
+  if (amount === null || amount === undefined || isNaN(amount)) return '$0';
 
-import { DATE_FORMATS } from './constants';
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  }).format(amount);
+};
 
-export const formatters = {
-  /**
-   * Format currency
-   * @param {number} amount - Amount to format
-   * @param {string} currency - Currency code
-   * @returns {string} - Formatted currency
-   */
-  currency(amount, currency = 'USD') {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency,
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(amount);
-  },
+/**
+ * Format number with commas
+ * @param {number} num - The number to format
+ * @returns {string} Formatted number string
+ */
+export const formatNumber = (num) => {
+  if (num === null || num === undefined || isNaN(num)) return '0';
 
-  /**
-   * Format percentage
-   * @param {number} value - Value to format
-   * @param {number} decimals - Decimal places
-   * @returns {string} - Formatted percentage
-   */
-  percentage(value, decimals = 1) {
-    return new Intl.NumberFormat('en-US', {
-      style: 'percent',
-      minimumFractionDigits: decimals,
-      maximumFractionDigits: decimals,
-    }).format(value / 100);
-  },
+  return new Intl.NumberFormat('en-US').format(num);
+};
 
-  /**
-   * Format number with commas
-   * @param {number} number - Number to format
-   * @returns {string} - Formatted number
-   */
-  number(number) {
-    return new Intl.NumberFormat('en-US').format(number);
-  },
+/**
+ * Format compact number (e.g., 1.5K, 2.3M)
+ * @param {number} num - The number to format
+ * @returns {string} Formatted compact number
+ */
+export const formatCompactNumber = (num) => {
+  if (num === null || num === undefined || isNaN(num)) return '0';
 
-  /**
-   * Format date
-   * @param {Date|string} date - Date to format
-   * @param {string} format - Date format
-   * @returns {string} - Formatted date
-   */
-  date(date, format = DATE_FORMATS.DISPLAY) {
-    if (!date) return '';
-    const d = new Date(date);
-    if (isNaN(d.getTime())) return '';
+  return new Intl.NumberFormat('en-US', {
+    notation: 'compact',
+    maximumFractionDigits: 1,
+  }).format(num);
+};
 
-    const options = {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    };
+/**
+ * Format date
+ * @param {Date|string|number} date - The date to format
+ * @param {string} format - Format style ('short', 'long', 'relative', 'time')
+ * @returns {string} Formatted date string
+ */
+export const formatDate = (date, format = 'short') => {
+  if (!date) return 'N/A';
 
-    if (format.includes('HH:mm')) {
-      options.hour = '2-digit';
-      options.minute = '2-digit';
-    }
+  const dateObj = date instanceof Date ? date : new Date(date);
 
-    return d.toLocaleDateString('en-US', options);
-  },
+  if (isNaN(dateObj.getTime())) return 'Invalid date';
 
-  /**
-   * Format phone number
-   * @param {string} phone - Phone number
-   * @returns {string} - Formatted phone number
-   */
-  phone(phone) {
-    if (!phone) return '';
-    const cleaned = phone.replace(/./g, '');
-    const match = cleaned.match(/^(.{3})(.{3})(.{4})$/);
-    if (match) {
-      return '(' + match[1] + ') ' + match[2] + '-' + match[3];
-    }
-    return phone;
-  },
+  switch (format) {
+    case 'short':
+      return new Intl.DateTimeFormat('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      }).format(dateObj);
 
-  /**
-   * Format file name
-   * @param {string} fileName - File name
-   * @param {number} maxLength - Max length
-   * @returns {string} - Formatted file name
-   */
-  fileName(fileName, maxLength = 30) {
-    if (!fileName) return '';
-    if (fileName.length <= maxLength) return fileName;
+    case 'long':
+      return new Intl.DateTimeFormat('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      }).format(dateObj);
 
-    const ext = fileName.split('.').pop();
-    const name = fileName.substring(0, fileName.lastIndexOf('.'));
-    const truncated = name.substring(0, maxLength - ext.length - 4);
-    return truncated + '...' + ext;
-  },
+    case 'time':
+      return new Intl.DateTimeFormat('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+      }).format(dateObj);
 
-  /**
-   * Format duration
-   * @param {number} seconds - Duration in seconds
-   * @returns {string} - Formatted duration
-   */
-  duration(seconds) {
-    if (!seconds) return '0:00';
+    case 'relative':
+      return getRelativeTime(dateObj);
 
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
+    default:
+      return new Intl.DateTimeFormat('en-US').format(dateObj);
+  }
+};
 
-    if (hours > 0) {
-      return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    }
-    return `${minutes}:${secs.toString().padStart(2, '0')}`;
-  },
+/**
+ * Get relative time string (e.g., "2 days ago")
+ * @param {Date} date - The date to compare
+ * @returns {string} Relative time string
+ */
+export const getRelativeTime = (date) => {
+  const now = new Date();
+  const diffInSeconds = Math.floor((now - date) / 1000);
 
-  /**
-   * Format address
-   * @param {Object} address - Address object
-   * @returns {string} - Formatted address
-   */
-  address(address) {
-    if (!address) return '';
-    const parts = [];
-    if (address.street) parts.push(address.street);
-    if (address.city) parts.push(address.city);
-    if (address.state) parts.push(address.state);
-    if (address.zipCode) parts.push(address.zipCode);
-    if (address.country) parts.push(address.country);
-    return parts.join(', ');
-  },
+  if (diffInSeconds < 60) return 'just now';
 
-  /**
-   * Format full name
-   * @param {Object} name - Name object
-   * @returns {string} - Formatted name
-   */
-  fullName(name) {
-    if (!name) return '';
-    if (typeof name === 'string') return name;
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  if (diffInMinutes < 60) return `${diffInMinutes} minute${diffInMinutes === 1 ? '' : 's'} ago`;
 
-    const parts = [];
-    if (name.firstName) parts.push(name.firstName);
-    if (name.middleName) parts.push(name.middleName);
-    if (name.lastName) parts.push(name.lastName);
-    return parts.join(' ');
-  },
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInHours < 24) return `${diffInHours} hour${diffInHours === 1 ? '' : 's'} ago`;
 
-  /**
-   * Format relative time
-   * @param {Date|string} date - Date to format
-   * @returns {string} - Relative time
-   */
-  timeAgo(date) {
-    if (!date) return '';
-    const d = new Date(date);
-    if (isNaN(d.getTime())) return '';
+  const diffInDays = Math.floor(diffInHours / 24);
+  if (diffInDays < 7) return `${diffInDays} day${diffInDays === 1 ? '' : 's'} ago`;
 
-    const now = new Date();
-    const seconds = Math.floor((now - d) / 1000);
+  const diffInWeeks = Math.floor(diffInDays / 7);
+  if (diffInWeeks < 4) return `${diffInWeeks} week${diffInWeeks === 1 ? '' : 's'} ago`;
 
-    const intervals = {
-      year: 31536000,
-      month: 2592000,
-      week: 604800,
-      day: 86400,
-      hour: 3600,
-      minute: 60,
-      second: 1,
-    };
+  const diffInMonths = Math.floor(diffInDays / 30);
+  if (diffInMonths < 12) return `${diffInMonths} month${diffInMonths === 1 ? '' : 's'} ago`;
 
-    for (const [unit, secondsInUnit] of Object.entries(intervals)) {
-      const interval = Math.floor(seconds / secondsInUnit);
-      if (interval >= 1) {
-        return interval === 1 ? `1 ${unit} ago` : `${interval} ${unit}s ago`;
-      }
-    }
+  const diffInYears = Math.floor(diffInDays / 365);
+  return `${diffInYears} year${diffInYears === 1 ? '' : 's'} ago`;
+};
 
-    return 'just now';
-  },
+/**
+ * Format percentage
+ * @param {number} value - The value to format as percentage
+ * @param {number} decimals - Number of decimal places
+ * @returns {string} Formatted percentage string
+ */
+export const formatPercentage = (value, decimals = 0) => {
+  if (value === null || value === undefined || isNaN(value)) return '0%';
+
+  return `${value.toFixed(decimals)}%`;
+};
+
+/**
+ * Format file size
+ * @param {number} bytes - Size in bytes
+ * @returns {string} Formatted file size
+ */
+export const formatFileSize = (bytes) => {
+  if (bytes === 0 || bytes === null || bytes === undefined) return '0 Bytes';
+
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+};
+
+/**
+ * Format phone number
+ * @param {string} phone - Phone number string
+ * @returns {string} Formatted phone number
+ */
+export const formatPhoneNumber = (phone) => {
+  if (!phone) return '';
+
+  // Remove all non-digit characters
+  const cleaned = phone.replace(/\D/g, '');
+
+  // Format based on length
+  if (cleaned.length === 10) {
+    return `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)}-${cleaned.slice(6)}`;
+  } else if (cleaned.length === 11) {
+    return `+${cleaned.slice(0, 1)} (${cleaned.slice(1, 4)}) ${cleaned.slice(4, 7)}-${cleaned.slice(7)}`;
+  }
+
+  return phone;
+};
+
+/**
+ * Truncate text
+ * @param {string} text - Text to truncate
+ * @param {number} length - Maximum length
+ * @param {string} suffix - Suffix to add (default: '...')
+ * @returns {string} Truncated text
+ */
+export const truncateText = (text, length = 100, suffix = '...') => {
+  if (!text || text.length <= length) return text || '';
+  return text.substring(0, length) + suffix;
+};
+
+/**
+ * Capitalize first letter of each word
+ * @param {string} str - String to capitalize
+ * @returns {string} Capitalized string
+ */
+export const capitalizeWords = (str) => {
+  if (!str) return '';
+  return str
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+};
+
+/**
+ * Capitalize first letter only
+ * @param {string} str - String to capitalize
+ * @returns {string} Capitalized string
+ */
+export const capitalizeFirst = (str) => {
+  if (!str) return '';
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+};
+
+/**
+ * Format initials from name
+ * @param {string} name - Full name
+ * @returns {string} Initials (max 2 characters)
+ */
+export const getInitials = (name) => {
+  if (!name) return '?';
+
+  const parts = name.trim().split(' ');
+  if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+
+  return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+};
+
+/**
+ * Format duration in minutes to human readable
+ * @param {number} minutes - Duration in minutes
+ * @returns {string} Formatted duration
+ */
+export const formatDuration = (minutes) => {
+  if (!minutes || minutes < 0) return '0 min';
+
+  if (minutes < 60) return `${minutes} min`;
+
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+
+  if (remainingMinutes === 0) return `${hours} hour${hours === 1 ? '' : 's'}`;
+  return `${hours}h ${remainingMinutes}m`;
+};
+
+/**
+ * Format distance
+ * @param {number} meters - Distance in meters
+ * @returns {string} Formatted distance
+ */
+export const formatDistance = (meters) => {
+  if (!meters || meters < 0) return '0 m';
+
+  if (meters < 1000) return `${Math.round(meters)} m`;
+  return `${(meters / 1000).toFixed(1)} km`;
+};
+
+/**
+ * Format rating stars
+ * @param {number} rating - Rating out of 5
+ * @returns {string} Star rating string
+ */
+export const formatRating = (rating) => {
+  if (!rating || rating < 0) return '☆☆☆☆☆';
+
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 >= 0.5;
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+  return '★'.repeat(fullStars) + (hasHalfStar ? '½' : '') + '☆'.repeat(emptyStars);
+};
+
+/**
+ * Format number with ordinal suffix (1st, 2nd, 3rd, etc.)
+ * @param {number} num - The number
+ * @returns {string} Number with ordinal suffix
+ */
+export const formatOrdinal = (num) => {
+  if (num === null || num === undefined) return '';
+
+  const j = num % 10;
+  const k = num % 100;
+
+  if (j === 1 && k !== 11) return `${num}st`;
+  if (j === 2 && k !== 12) return `${num}nd`;
+  if (j === 3 && k !== 13) return `${num}rd`;
+  return `${num}th`;
+};
+
+/**
+ * Format email for display (hide part of it)
+ * @param {string} email - Email address
+ * @returns {string} Masked email
+ */
+export const maskEmail = (email) => {
+  if (!email) return '';
+
+  const [localPart, domain] = email.split('@');
+  if (!domain) return email;
+
+  const maskedLocal =
+    localPart.length > 2
+      ? localPart[0] + '*'.repeat(localPart.length - 2) + localPart[localPart.length - 1]
+      : localPart[0] + '*';
+
+  return `${maskedLocal}@${domain}`;
+};
+
+// Default export
+export default {
+  formatCurrency,
+  formatNumber,
+  formatCompactNumber,
+  formatDate,
+  getRelativeTime,
+  formatPercentage,
+  formatFileSize,
+  formatPhoneNumber,
+  truncateText,
+  capitalizeWords,
+  capitalizeFirst,
+  getInitials,
+  formatDuration,
+  formatDistance,
+  formatRating,
+  formatOrdinal,
+  maskEmail,
 };

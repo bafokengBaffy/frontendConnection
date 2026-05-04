@@ -59,7 +59,7 @@ const audienceCards = [
     description: 'Oversee platform quality, approvals, reporting, and community trust.',
     icon: FaShieldAlt,
     accent: 'var(--home-navy)',
-    href: '/register?type=admin',
+    href: '/login',
   },
 ];
 

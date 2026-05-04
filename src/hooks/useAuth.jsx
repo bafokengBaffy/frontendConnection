@@ -1,28 +1,28 @@
+// frontend/src/hooks/useAuth.jsx
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
-import { useState, useEffect, useCallback, createContext, useContext } from 'react';
 import {
-  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  signOut as firebaseSignOut,
-  onAuthStateChanged,
-  sendPasswordResetEmail,
-  updateProfile,
-  sendEmailVerification,
-  GoogleAuthProvider,
-  signInWithPopup,
   FacebookAuthProvider,
-  TwitterAuthProvider,
+  signOut as firebaseSignOut,
   GithubAuthProvider,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  sendEmailVerification,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  TwitterAuthProvider,
+  updateProfile,
 } from 'firebase/auth';
+import { useCallback, useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { auth } from '../config/firebase';
 import { useToast } from '../components/ui/Toast';
+import { auth } from '../config/firebase';
+import { AuthContext } from '../context/AuthContext';
 
 import { useLocalStorage } from './useLocalStorage';
-
-// Create auth context
-export const AuthContext = createContext(null);
 
 // Auth provider component
 export const AuthProvider = ({ children }) => {
@@ -33,20 +33,20 @@ export const AuthProvider = ({ children }) => {
   const { error: showError, success: showSuccess } = useToast();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
         // User is signed in
         const userData = {
-          uid: user.uid,
-          email: user.email,
-          displayName: user.displayName,
-          photoURL: user.photoURL,
-          emailVerified: user.emailVerified,
-          phoneNumber: user.phoneNumber,
-          providerData: user.providerData,
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          displayName: firebaseUser.displayName,
+          photoURL: firebaseUser.photoURL,
+          emailVerified: firebaseUser.emailVerified,
+          phoneNumber: firebaseUser.phoneNumber,
+          providerData: firebaseUser.providerData,
           metadata: {
-            creationTime: user.metadata.creationTime,
-            lastSignInTime: user.metadata.lastSignInTime,
+            creationTime: firebaseUser.metadata.creationTime,
+            lastSignInTime: firebaseUser.metadata.lastSignInTime,
           },
         };
         setUser(userData);
@@ -290,18 +290,18 @@ export const AuthProvider = ({ children }) => {
 
     try {
       await auth.currentUser.reload();
-      const user = auth.currentUser;
+      const firebaseUser = auth.currentUser;
       setUser({
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName,
-        photoURL: user.photoURL,
-        emailVerified: user.emailVerified,
-        phoneNumber: user.phoneNumber,
-        providerData: user.providerData,
+        uid: firebaseUser.uid,
+        email: firebaseUser.email,
+        displayName: firebaseUser.displayName,
+        photoURL: firebaseUser.photoURL,
+        emailVerified: firebaseUser.emailVerified,
+        phoneNumber: firebaseUser.phoneNumber,
+        providerData: firebaseUser.providerData,
         metadata: {
-          creationTime: user.metadata.creationTime,
-          lastSignInTime: user.metadata.lastSignInTime,
+          creationTime: firebaseUser.metadata.creationTime,
+          lastSignInTime: firebaseUser.metadata.lastSignInTime,
         },
       });
     } catch (err) {

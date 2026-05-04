@@ -1,14 +1,33 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
+import { getAnalytics } from 'firebase/analytics';
 import { initializeApp } from 'firebase/app';
 import * as firebaseAuth from 'firebase/auth';
 import {
-  getFirestore,
+  addDoc,
+  arrayRemove,
+  arrayUnion,
   CACHE_SIZE_UNLIMITED,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+  increment,
+  limit,
+  orderBy,
   persistentLocalCache,
   persistentMultipleTabManager,
+  query,
+  setDoc,
+  startAfter,
+  Timestamp,
+  updateDoc,
+  where,
+  writeBatch,
 } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
-import { getAnalytics } from 'firebase/analytics';
+import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -160,6 +179,39 @@ console.log('Firebase initialized successfully', {
   hasAnalytics: !!analytics,
 });
 
-export { app, auth, db, storage, analytics, adminConfig, googleProvider };
+// Export all Firebase services and utilities
+export {
+  addDoc,
+  adminConfig,
+  analytics,
+  app,
+  arrayRemove,
+  arrayUnion,
+  auth,
+  collection,
+  db,
+  deleteDoc,
+  deleteObject,
+  doc,
+  getDoc,
+  getDocs,
+  getDownloadURL,
+  googleProvider,
+  increment,
+  limit,
+  orderBy,
+  query,
+  // Storage exports
+  ref,
+  setDoc,
+  startAfter,
+  storage,
+  // Firestore exports
+  Timestamp,
+  updateDoc,
+  uploadBytes,
+  where,
+  writeBatch
+};
 
 export default app;

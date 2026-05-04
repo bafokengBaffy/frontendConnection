@@ -7,7 +7,10 @@ export const APP_CONFIG = {
   version: import.meta.env.VITE_APP_VERSION || '1.0.0',
   environment: import.meta.env.VITE_APP_ENVIRONMENT || 'development',
   baseUrl: import.meta.env.VITE_APP_BASE_URL || 'http://localhost:3000',
-  apiUrl: import.meta.env.VITE_APP_API_URL || 'http://localhost:5001',
+  apiUrl:
+    import.meta.env.VITE_APP_API_URL ||
+    import.meta.env.VITE_API_BASE_URL ||
+    'http://localhost:5001',
   wsUrl: import.meta.env.VITE_APP_WEBSOCKET_URL || 'ws://localhost:5002',
 };
 
