@@ -13,8 +13,7 @@ import {
   Timestamp,
 } from 'firebase/firestore';
 import { auth, db } from '../config/firebase';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+import API_BASE_URL from './apiConfig';
 
 const buildHeaders = async (options = {}) => {
   try {
@@ -1029,11 +1028,6 @@ function getMonthlyBreakdown(donations) {
   });
 
   return Object.entries(months).map(([month, amount]) => ({ month, amount }));
-}
-
-function increment(value) {
-  // This is a placeholder - in Firestore you'd use firestore.FieldValue.increment
-  return value;
 }
 
 export default alumniService;

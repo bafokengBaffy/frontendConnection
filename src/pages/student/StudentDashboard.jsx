@@ -92,6 +92,7 @@ import {
   getStudentProfile,
 } from '../../services/studentServices';
 import { storageService } from '../../services/storageService';
+import SocialDashboardSection from '../../components/social/SocialDashboardSection';
 import './StudentDashboard.css';
 
 // Chart.js configuration
@@ -531,6 +532,19 @@ const StudentDashboard = () => {
       </div>
 
       {/* Stats Cards */}
+      <motion.div
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.35 }}
+        className="mb-4"
+      >
+        <SocialDashboardSection
+          audience="student"
+          title="Campus And Career Feed"
+          subtitle="Students can now post wins, upload portfolio media, ask for help, and follow the same kind of social rhythm people expect from modern platforms."
+        />
+      </motion.div>
+
       <motion.div
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}

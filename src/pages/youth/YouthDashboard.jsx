@@ -31,6 +31,7 @@ import {
 
 import { useYouth } from '../../context/YouthContext';
 import { useAuth } from '../../context/AuthContext';
+import SocialDashboardSection from '../../components/social/SocialDashboardSection';
 
 ChartJS.register(
   CategoryScale,
@@ -287,6 +288,14 @@ const YouthDashboard = () => {
             </div>
           </Col>
         </Row>
+      </div>
+
+      <div className="mb-4">
+        <SocialDashboardSection
+          audience="youth"
+          title="Founder Feed"
+          subtitle="Post venture updates, upload product shots, ask for intros, and build a startup-style network inside the platform."
+        />
       </div>
 
       {/* Key Metrics Cards */}

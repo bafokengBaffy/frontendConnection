@@ -2,6 +2,7 @@ import { Grid, Typography, List, ListItem, ListItemText, Alert } from '@mui/mate
 
 import PageContainer from '../../components/layout/PageContainer';
 import Card, { StatsCard } from '../../components/common/Card';
+import SocialDashboardSection from '../../components/social/SocialDashboardSection';
 import { useGovernment } from '../../hooks/useGovernment';
 
 const GovernmentDashboard = () => {
@@ -27,6 +28,14 @@ const GovernmentDashboard = () => {
       )}
 
       <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <SocialDashboardSection
+            audience="government"
+            title="Public Impact Feed"
+            subtitle="Surface policy milestones, youth outcomes, funding wins, and ecosystem conversations in a more human public-facing stream."
+          />
+        </Grid>
+
         {countEntries.length > 0 ? (
           countEntries.map(([key, value]) => (
             <Grid key={key} item xs={12} md={4}>

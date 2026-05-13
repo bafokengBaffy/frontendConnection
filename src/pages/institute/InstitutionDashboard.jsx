@@ -48,6 +48,7 @@ import {
 } from 'react-bootstrap-icons';
 
 import { useAuth } from '../../context/AuthContext';
+import SocialDashboardSection from '../../components/social/SocialDashboardSection';
 import { institutionService } from '../../services/institutionServices';
 import './InstitutionDashboard.css';
 
@@ -316,6 +317,16 @@ const InstitutionDashboard = () => {
           >
             <Gear className="me-2" size={18} /> Settings
           </Button>
+        </Col>
+      </Row>
+
+      <Row className="mb-4">
+        <Col xs={12}>
+          <SocialDashboardSection
+            audience="institute"
+            title="Campus Community Feed"
+            subtitle="Institutions can now post campus updates, showcase student work, share event media, and interact in the same social rhythm as the rest of the platform."
+          />
         </Col>
       </Row>
 

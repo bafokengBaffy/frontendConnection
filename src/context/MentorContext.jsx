@@ -70,8 +70,10 @@ const initialState = {
 
 // Context provider component
 export const MentorProvider = ({ children }) => {
-  const { user } = useAuth();
+  const { user, currentUser } = useAuth();
   const [state, setState] = useState(initialState);
+  const userRole = user?.role || user?.userType || null;
+  const mentorUserId = currentUser?.uid || user?.uid || user?.id || null;
 
   // Fetch mentors based on filters
   const fetchMentors = useCallback(
@@ -90,8 +92,8 @@ export const MentorProvider = ({ children }) => {
 
         setState((prev) => ({
           ...prev,
-          mentors: response.data,
-          pagination: response.pagination,
+          mentors: response.data || [],
+          pagination: response.pagination || prev.pagination,
           loading: false,
         }));
       } catch (error) {
@@ -137,20 +139,30 @@ export const MentorProvider = ({ children }) => {
   const fetchSessions = useCallback(async () => {
     if (!user) return;
 
+    if (!mentorUserId || (userRole !== 'mentor' && userRole !== 'admin')) {
+      setState((prev) => ({
+        ...prev,
+        sessions: [],
+        upcomingSessions: [],
+        pastSessions: [],
+      }));
+      return;
+    }
+
     setState((prev) => ({ ...prev, loading: true, error: null }));
 
     try {
       const [sessions, upcoming, past] = await Promise.all([
-        mentorService.getSessions(),
-        mentorService.getUpcomingSessions(),
-        mentorService.getPastSessions(),
+        mentorService.getSessions(mentorUserId),
+        mentorService.getUpcomingSessions(mentorUserId),
+        mentorService.getPastSessions(mentorUserId),
       ]);
 
       setState((prev) => ({
         ...prev,
-        sessions,
-        upcomingSessions: upcoming,
-        pastSessions: past,
+        sessions: sessions?.data || [],
+        upcomingSessions: upcoming?.data || [],
+        pastSessions: past?.data || [],
         loading: false,
       }));
     } catch (error) {
@@ -161,7 +173,7 @@ export const MentorProvider = ({ children }) => {
         error: error.message || 'Failed to fetch sessions',
       }));
     }
-  }, [user]);
+  }, [user, mentorUserId, userRole]);
 
   // Fetch mentorship requests
   const fetchMentorshipRequests = useCallback(async () => {
@@ -214,12 +226,12 @@ export const MentorProvider = ({ children }) => {
 
   // Fetch analytics
   const fetchAnalytics = useCallback(async () => {
-    if (!user || (user.role !== 'mentor' && user.role !== 'admin')) return;
+    if (!user || !mentorUserId || (userRole !== 'mentor' && userRole !== 'admin')) return;
 
     setState((prev) => ({ ...prev, loading: true, error: null }));
 
     try {
-      const analytics = await mentorService.getAnalytics();
+      const analytics = await mentorService.getAnalytics(mentorUserId);
       setState((prev) => ({
         ...prev,
         analytics,
@@ -233,7 +245,7 @@ export const MentorProvider = ({ children }) => {
         error: error.message || 'Failed to fetch analytics',
       }));
     }
-  }, [user]);
+  }, [user, mentorUserId, userRole]);
 
   // Request mentorship
   const requestMentorship = useCallback(
@@ -413,12 +425,12 @@ export const MentorProvider = ({ children }) => {
       fetchMentors();
       fetchSessions();
 
-      if (user.role === 'mentor') {
+      if (userRole === 'mentor' || userRole === 'admin') {
         fetchMentorshipRequests();
         fetchAnalytics();
       }
     }
-  }, [user, fetchMentors, fetchSessions, fetchMentorshipRequests, fetchAnalytics]);
+  }, [user, userRole, fetchMentors, fetchSessions, fetchMentorshipRequests, fetchAnalytics]);
 
   // Refetch when filters or pagination change
   useEffect(() => {

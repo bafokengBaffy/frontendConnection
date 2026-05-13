@@ -1,5 +1,4 @@
-// API Base URL from environment variables
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import API_BASE_URL from './apiConfig';
 
 // CSRF token cache
 let cachedCsrfToken = null;
@@ -120,6 +119,111 @@ export const authAPI = {
           'X-CSRF-Token': csrfToken,
         },
         body: JSON.stringify(credentials),
+      });
+      return await response.json();
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Network error: ' + error.message,
+      };
+    }
+  },
+
+  verifyEmailOtp: async (payload) => {
+    try {
+      const csrfToken = await getCsrfToken();
+      const response = await fetch(`${API_BASE_URL}/api/auth/verify-email-otp`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken,
+        },
+        body: JSON.stringify(payload),
+      });
+      return await response.json();
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Network error: ' + error.message,
+      };
+    }
+  },
+
+  resendEmailOtp: async (payload) => {
+    try {
+      const csrfToken = await getCsrfToken();
+      const response = await fetch(`${API_BASE_URL}/api/auth/resend-email-otp`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken,
+        },
+        body: JSON.stringify(payload),
+      });
+      return await response.json();
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Network error: ' + error.message,
+      };
+    }
+  },
+
+  requestPhoneOtp: async (payload) => {
+    try {
+      const csrfToken = await getCsrfToken();
+      const response = await fetch(`${API_BASE_URL}/api/auth/request-phone-otp`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken,
+        },
+        body: JSON.stringify(payload),
+      });
+      return await response.json();
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Network error: ' + error.message,
+      };
+    }
+  },
+
+  verifyPhoneOtp: async (payload) => {
+    try {
+      const csrfToken = await getCsrfToken();
+      const response = await fetch(`${API_BASE_URL}/api/auth/verify-phone-otp`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken,
+        },
+        body: JSON.stringify(payload),
+      });
+      return await response.json();
+    } catch (error) {
+      return {
+        success: false,
+        message: 'Network error: ' + error.message,
+      };
+    }
+  },
+
+  getVerificationStatus: async (payload) => {
+    try {
+      const csrfToken = await getCsrfToken();
+      const response = await fetch(`${API_BASE_URL}/api/auth/verification-status`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken,
+        },
+        body: JSON.stringify(payload),
       });
       return await response.json();
     } catch (error) {

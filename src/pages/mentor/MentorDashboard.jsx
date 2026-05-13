@@ -33,6 +33,7 @@ import {
 } from 'chart.js';
 
 import { mentorService } from '../../services/mentorService';
+import SocialDashboardSection from '../../components/social/SocialDashboardSection';
 import { useAuth } from '../../hooks/useAuth';
 import './MentorStyles.css';
 
@@ -216,6 +217,19 @@ const MentorDashboard = () => {
             <Settings size={20} />
           </button>
         </div>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        style={{ marginBottom: '1.5rem' }}
+      >
+        <SocialDashboardSection
+          audience="mentor"
+          title="Mentor Community Feed"
+          subtitle="Mentors can post advice, share sessions, upload resources, and keep the platform feeling like a real daily community."
+        />
       </motion.div>
 
       {/* Stats Cards */}

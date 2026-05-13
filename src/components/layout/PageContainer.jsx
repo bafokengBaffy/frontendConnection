@@ -34,13 +34,26 @@ const PageWrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   backgroundColor: theme.palette.background.default,
+  backgroundImage: `
+    radial-gradient(circle at top left, ${alpha(theme.palette.primary.main, 0.12)}, transparent 32%),
+    radial-gradient(circle at top right, ${alpha(theme.palette.secondary.main, 0.1)}, transparent 28%),
+    linear-gradient(180deg, ${alpha(theme.palette.background.paper, 0.9)} 0%, ${theme.palette.background.default} 100%)
+  `,
 }));
 
 const PageHeader = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3, 0),
-  borderBottom: `1px solid ${theme.palette.divider}`,
-  backgroundColor: theme.palette.background.paper,
+  borderBottom: `1px solid ${alpha(theme.palette.divider, 0.6)}`,
+  backgroundColor: alpha(theme.palette.background.paper, 0.82),
+  backdropFilter: 'blur(18px)',
   marginBottom: theme.spacing(3),
+  position: 'sticky',
+  top: 0,
+  zIndex: 10,
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(2, 0),
+    marginBottom: theme.spacing(2),
+  },
 }));
 
 const HeaderContent = styled(Box)(({ theme }) => ({
@@ -49,27 +62,48 @@ const HeaderContent = styled(Box)(({ theme }) => ({
   justifyContent: 'space-between',
   flexWrap: 'wrap',
   gap: theme.spacing(2),
+  [theme.breakpoints.down('sm')]: {
+    alignItems: 'flex-start',
+  },
 }));
 
 const TitleSection = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   gap: theme.spacing(2),
+  [theme.breakpoints.down('sm')]: {
+    width: '100%',
+    alignItems: 'flex-start',
+    gap: theme.spacing(1.5),
+  },
 }));
 
 const ActionSection = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   gap: theme.spacing(1),
+  flexWrap: 'wrap',
+  justifyContent: 'flex-end',
+  [theme.breakpoints.down('sm')]: {
+    width: '100%',
+    justifyContent: 'flex-start',
+  },
 }));
 
 const StyledPaper = styled(Paper)(({ theme, noPadding }) => ({
   padding: noPadding ? 0 : theme.spacing(3),
   borderRadius: theme.spacing(2),
-  boxShadow: theme.shadows[2],
+  boxShadow: '0 24px 60px rgba(15, 23, 42, 0.08)',
+  border: `1px solid ${alpha(theme.palette.common.white, 0.45)}`,
+  background: alpha(theme.palette.background.paper, 0.9),
+  backdropFilter: 'blur(10px)',
   transition: theme.transitions.create(['box-shadow']),
   '&:hover': {
-    boxShadow: theme.shadows[4],
+    boxShadow: '0 30px 70px rgba(15, 23, 42, 0.12)',
+  },
+  [theme.breakpoints.down('sm')]: {
+    padding: noPadding ? 0 : theme.spacing(2),
+    borderRadius: theme.spacing(1.5),
   },
 }));
 
@@ -178,6 +212,7 @@ const PageContainer = ({
                     component="h1"
                     fontWeight={600}
                     gutterBottom={!!subtitle}
+                    sx={{ letterSpacing: '-0.02em' }}
                   >
                     {title}
                   </Typography>
@@ -295,6 +330,7 @@ const PageContainer = ({
           py: 3,
           display: 'flex',
           flexDirection: 'column',
+          px: { xs: 1.5, sm: 2, md: 3 },
           ...(centered && {
             display: 'flex',
             alignItems: 'center',

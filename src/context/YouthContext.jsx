@@ -34,6 +34,7 @@ export const YouthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [initialized, setInitialized] = useState(false);
+  const fetchInFlightRef = useRef(false);
 
   // Cache for various data to prevent unnecessary re-fetches
   const cache = useRef({
@@ -90,7 +91,12 @@ export const YouthProvider = ({ children }) => {
         return { success: false, error: 'No authenticated user' };
       }
 
+      if (fetchInFlightRef.current && !forceRefresh) {
+        return { success: false, error: 'Fetch already in progress' };
+      }
+
       try {
+        fetchInFlightRef.current = true;
         setLoading(true);
         setError(null);
 
@@ -136,6 +142,7 @@ export const YouthProvider = ({ children }) => {
         setInitialized(true);
         return { success: false, error: err.message };
       } finally {
+        fetchInFlightRef.current = false;
         setLoading(false);
       }
     },

@@ -200,10 +200,29 @@ class MentorService {
         );
       }
 
-      return { success: true, data: mentors };
+      return {
+        success: true,
+        data: mentors,
+        pagination: {
+          page: Number(filters.page) || 1,
+          limit: Number(filters.limit) || mentors.length || 10,
+          total: mentors.length,
+          totalPages: 1,
+        },
+      };
     } catch (error) {
       console.error('Error getting mentors:', error);
-      return { success: false, data: [], error: error.message };
+      return {
+        success: false,
+        data: [],
+        error: error.message,
+        pagination: {
+          page: Number(filters.page) || 1,
+          limit: Number(filters.limit) || 10,
+          total: 0,
+          totalPages: 0,
+        },
+      };
     }
   }
 
@@ -373,6 +392,10 @@ class MentorService {
 
   async getUpcomingSessions(mentorId, limitCount = 10) {
     try {
+      if (!mentorId) {
+        return { success: true, data: [] };
+      }
+
       const now = Timestamp.now();
       const q = query(
         collection(db, this.sessionsCollection),
@@ -398,6 +421,10 @@ class MentorService {
 
   async getPastSessions(mentorId, limitCount = 10) {
     try {
+      if (!mentorId) {
+        return { success: true, data: [] };
+      }
+
       const now = Timestamp.now();
       const q = query(
         collection(db, this.sessionsCollection),

@@ -31,6 +31,7 @@ import {
 } from 'react';
 
 import { auth, db, googleProvider } from '../config/firebase';
+import { authAPI } from '../services/api';
 
 // ==================== CONSTANTS ====================
 export const USER_TYPES = {
@@ -1411,6 +1412,72 @@ export const AuthProvider = ({ children }) => {
     [clearError, validateEmail, sendVerificationEmail]
   );
 
+  const verifyRegistrationEmailOtp = useCallback(async (email, otp) => {
+    try {
+      const result = await authAPI.verifyEmailOtp({
+        email: email?.trim().toLowerCase(),
+        otp: String(otp || '').trim(),
+      });
+
+      if (!result.success) {
+        return { success: false, error: result.message || 'Failed to verify email OTP' };
+      }
+
+      return { success: true, message: result.message };
+    } catch (error) {
+      return { success: false, error: error.message || 'Failed to verify email OTP' };
+    }
+  }, []);
+
+  const resendRegistrationEmailOtp = useCallback(async (email) => {
+    try {
+      const result = await authAPI.resendEmailOtp({
+        email: email?.trim().toLowerCase(),
+      });
+
+      if (!result.success) {
+        return { success: false, error: result.message || 'Failed to resend email OTP' };
+      }
+
+      return { success: true, message: result.message, otp: result.otp };
+    } catch (error) {
+      return { success: false, error: error.message || 'Failed to resend email OTP' };
+    }
+  }, []);
+
+  const requestRegistrationPhoneOtp = useCallback(async (email) => {
+    try {
+      const result = await authAPI.requestPhoneOtp({
+        email: email?.trim().toLowerCase(),
+      });
+
+      if (!result.success) {
+        return { success: false, error: result.message || 'Failed to send phone OTP' };
+      }
+
+      return { success: true, message: result.message, otp: result.otp };
+    } catch (error) {
+      return { success: false, error: error.message || 'Failed to send phone OTP' };
+    }
+  }, []);
+
+  const verifyRegistrationPhoneOtp = useCallback(async (email, otp) => {
+    try {
+      const result = await authAPI.verifyPhoneOtp({
+        email: email?.trim().toLowerCase(),
+        otp: String(otp || '').trim(),
+      });
+
+      if (!result.success) {
+        return { success: false, error: result.message || 'Failed to verify phone OTP' };
+      }
+
+      return { success: true, message: result.message };
+    } catch (error) {
+      return { success: false, error: error.message || 'Failed to verify phone OTP' };
+    }
+  }, []);
+
   // ==================== AUTHENTICATION FUNCTIONS ====================
   const login = useCallback(
     async (credentials) => {
@@ -1445,6 +1512,23 @@ export const AuthProvider = ({ children }) => {
           await signOut(auth);
           throw new Error(
             'Please verify your email before logging in. A new verification email has been sent.'
+          );
+        }
+
+        const verificationStatus = await authAPI.getVerificationStatus({
+          email: credentials.email,
+        });
+
+        if (
+          verificationStatus?.success &&
+          verificationStatus.exists &&
+          (!verificationStatus.emailVerified || !verificationStatus.phoneVerified)
+        ) {
+          await signOut(auth);
+          throw new Error(
+            verificationStatus.phoneVerified
+              ? 'Please complete your email OTP verification before logging in.'
+              : 'Please complete your email and phone OTP verification before logging in.'
           );
         }
 
@@ -1876,6 +1960,20 @@ export const AuthProvider = ({ children }) => {
           throw new Error('Failed to create user profile');
         }
 
+        const backendRegisterResult = await authAPI.register({
+          email: userData.email,
+          password: userData.password,
+          fullName: userData.fullName,
+          phone: userData.phone,
+          role: userData.userType,
+          userType: userData.userType,
+          companyName: userData.companyName || userData.entrepreneurCompanyName,
+        });
+
+        if (!backendRegisterResult.success) {
+          throw new Error(backendRegisterResult.message || 'Failed to initialize verification flow');
+        }
+
         await signOut(auth);
 
         return {
@@ -1883,6 +1981,9 @@ export const AuthProvider = ({ children }) => {
           message: `Registration successful! Please check your email to verify your ${USER_TYPE_LABELS[userData.userType]} account.`,
           emailVerificationSent: true,
           userType: userData.userType,
+          backendVerification: backendRegisterResult.verificationRequired,
+          emailOtp: backendRegisterResult.emailOtp,
+          phoneOtp: backendRegisterResult.phoneOtp,
         };
       } catch (error) {
         console.error('❌ Registration failed:', error);
@@ -2166,6 +2267,10 @@ export const AuthProvider = ({ children }) => {
     resendVerificationEmail,
     verifyEmail,
     resendVerification,
+    verifyRegistrationEmailOtp,
+    resendRegistrationEmailOtp,
+    requestRegistrationPhoneOtp,
+    verifyRegistrationPhoneOtp,
     emailVerificationSent,
     sendVerificationEmail,
 

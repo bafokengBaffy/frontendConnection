@@ -5,7 +5,7 @@ import {
   CreditCard as CreditCardIcon,
   VolunteerActivism as DonationIcon,
   Download as DownloadIcon,
-  PayPal as PayPalIcon,
+  AccountBalanceWallet as PayPalIcon,
   Print as PrintIcon,
   Receipt as ReceiptIcon,
   School as SchoolIcon,

@@ -1,7 +1,6 @@
 // frontend/src/services/governmentService.js
 import { auth } from '../config/firebase';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import API_BASE_URL from './apiConfig';
 
 const buildHeaders = async (options = {}) => {
   const token = await auth.currentUser?.getIdToken?.();

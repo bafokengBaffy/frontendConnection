@@ -159,6 +159,7 @@ import {
 } from 'react-icons/fa';
 
 import { useAuth } from '../../context/AuthContext';
+import SocialDashboardSection from '../../components/social/SocialDashboardSection';
 import {
   dashboardService,
   companyService,
@@ -1015,6 +1016,16 @@ const CompanyDashboard = () => {
               </div>
             </Card.Body>
           </Card>
+        </Col>
+      </Row>
+
+      <Row className="mb-3 mx-2 mx-md-0">
+        <Col>
+          <SocialDashboardSection
+            audience="company"
+            title="Brand And Talent Feed"
+            subtitle="Share company culture, project wins, team updates, event media, and opportunities so the app feels closer to LinkedIn than a static jobs board."
+          />
         </Col>
       </Row>
 

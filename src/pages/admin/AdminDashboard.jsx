@@ -16,6 +16,7 @@ import {
 } from 'react-bootstrap';
 
 import { useAuth } from '../../context/AuthContext';
+import SocialDashboardSection from '../../components/social/SocialDashboardSection';
 import adminService from '../../services/adminService';
 import './AdminDashboard.css';
 
@@ -179,6 +180,14 @@ const AdminDashboard = () => {
           {error}
         </Alert>
       )}
+
+      <div className="mb-4">
+        <SocialDashboardSection
+          audience="admin"
+          title="Platform Conversation"
+          subtitle="See what users, companies, mentors, and institutions are sharing across the ecosystem in real time."
+        />
+      </div>
 
       {/* Quick Stats Cards */}
       <Row className="mb-4">

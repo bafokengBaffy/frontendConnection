@@ -332,6 +332,11 @@ const Register = () => {
   const [verificationCode, setVerificationCode] = useState(['', '', '', '', '', '']);
   const [verificationLoading, setVerificationLoading] = useState(false);
   const [verificationError, setVerificationError] = useState('');
+  const [verificationStep, setVerificationStep] = useState('email');
+  const [debugVerificationHints, setDebugVerificationHints] = useState({
+    emailOtp: '',
+    phoneOtp: '',
+  });
   const [countdown, setCountdown] = useState(60);
   const [resendEnabled, setResendEnabled] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
@@ -344,7 +349,14 @@ const Register = () => {
   const LOCKOUT_TIME = 15 * 60 * 1000; // 15 minutes
 
   // Hooks
-  const { register: authRegister, loginWithGoogle, verifyEmail, resendVerification } = useAuth();
+  const {
+    register: authRegister,
+    loginWithGoogle,
+    verifyRegistrationEmailOtp,
+    resendRegistrationEmailOtp,
+    requestRegistrationPhoneOtp,
+    verifyRegistrationPhoneOtp,
+  } = useAuth();
   const navigate = useNavigate();
   const recaptchaRef = useRef();
   const verificationInputs = useRef([]);
@@ -436,6 +448,11 @@ const Register = () => {
     return emailRegex.test(email);
   };
 
+  const validatePhone = (phone) => {
+    if (!phone) return true;
+    return /^\+[1-9]\d{7,14}$/.test(phone.trim());
+  };
+
   // Handle user type selection
   const handleUserTypeSelect = (type) => {
     setFormData((prev) => ({ ...prev, userType: type }));
@@ -490,6 +507,10 @@ const Register = () => {
         newErrors.email = 'Email address is required';
       } else if (!validateEmail(formData.email)) {
         newErrors.email = 'Please enter a valid email address';
+      }
+
+      if (formData.phone?.trim() && !validatePhone(formData.phone)) {
+        newErrors.phone = 'Phone must include a valid country code, for example +26663210786';
       }
 
       if (!formData.password) {
@@ -811,6 +832,12 @@ const Register = () => {
       // Reset attempts on success
       setAttemptCount(0);
       setRegistrationSuccess(true);
+      setVerificationStep('email');
+      setDebugVerificationHints({
+        emailOtp: registerResult.emailOtp || '',
+        phoneOtp: registerResult.phoneOtp || '',
+      });
+      setVerificationCode(['', '', '', '', '', '']);
 
       // Show verification modal
       setShowVerificationModal(true);
@@ -828,10 +855,10 @@ const Register = () => {
     }
   };
 
-  // Verify email code
+  // Verify registration OTPs
   const handleVerifyEmail = async () => {
-    if (!formData.email || !formData.password) {
-      setVerificationError('Missing account credentials. Please register again.');
+    if (!formData.email) {
+      setVerificationError('Missing account email. Please register again.');
       return;
     }
 
@@ -847,16 +874,40 @@ const Register = () => {
     setVerificationError('');
 
     try {
-      const result = await verifyEmail(formData.email, formData.password);
+      const code = verificationCode.join('');
+      const result =
+        verificationStep === 'phone'
+          ? await verifyRegistrationPhoneOtp(formData.email, code)
+          : await verifyRegistrationEmailOtp(formData.email, code);
 
       if (result.success) {
+        if (verificationStep === 'email' && formData.phone?.trim()) {
+          const phoneOtpResult = await requestRegistrationPhoneOtp(formData.email);
+
+          if (!phoneOtpResult.success) {
+            setVerificationError(phoneOtpResult.error || 'Failed to send phone OTP');
+            return;
+          }
+
+          setVerificationStep('phone');
+          setDebugVerificationHints((prev) => ({
+            ...prev,
+            phoneOtp: phoneOtpResult.otp || prev.phoneOtp,
+          }));
+          setVerificationCode(['', '', '', '', '', '']);
+          setCountdown(60);
+          setResendEnabled(false);
+          verificationInputs.current[0]?.focus();
+          return;
+        }
+
         setShowVerificationModal(false);
-
-        const dashboardPath = getDashboardPathByUserType(result.userType || formData.userType);
-
-        navigate(dashboardPath, {
+        navigate('/login', {
           state: {
-            message: 'Email verified successfully! Welcome to Career Connect.',
+            message:
+              verificationStep === 'phone'
+                ? 'Email and phone verified successfully. You can now sign in.'
+                : 'Email verified successfully. You can now sign in.',
             type: 'success',
           },
         });
@@ -878,12 +929,22 @@ const Register = () => {
     setVerificationError('');
 
     try {
-      const result = await resendVerification(formData.email, formData.password);
+      const result =
+        verificationStep === 'phone'
+          ? await requestRegistrationPhoneOtp(formData.email)
+          : await resendRegistrationEmailOtp(formData.email);
 
       if (result.success) {
         setCountdown(60);
         setResendEnabled(false);
         setVerificationCode(['', '', '', '', '', '']);
+        setDebugVerificationHints((prev) => ({
+          ...prev,
+          emailOtp:
+            verificationStep === 'email' ? result.otp || prev.emailOtp : prev.emailOtp,
+          phoneOtp:
+            verificationStep === 'phone' ? result.otp || prev.phoneOtp : prev.phoneOtp,
+        }));
         verificationInputs.current[0]?.focus();
       } else {
         setVerificationError(result.error || 'Failed to resend code');
@@ -897,7 +958,7 @@ const Register = () => {
 
   // Handle verification code input
   const handleVerificationChange = (index, value) => {
-    if (value && !/^.+$/.test(value)) return;
+    if (value && !/^\d$/.test(value)) return;
 
     const newCode = [...verificationCode];
     newCode[index] = value;
@@ -2305,12 +2366,26 @@ const Register = () => {
               </div>
             </div>
 
-            <h4 className="fw-bold mb-2">Verify Your Email</h4>
+            <h4 className="fw-bold mb-2">
+              {verificationStep === 'phone' ? 'Verify Your Phone' : 'Verify Your Email'}
+            </h4>
             <p className="text-muted mb-4">
-              We've sent a 6-digit verification code to
+              {verificationStep === 'phone'
+                ? "We've sent a 6-digit verification code to your phone number"
+                : "We've sent a 6-digit verification code to"}
               <br />
-              <strong className="text-dark">{formData.email}</strong>
+              <strong className="text-dark">
+                {verificationStep === 'phone' ? formData.phone : formData.email}
+              </strong>
             </p>
+
+            {debugVerificationHints[verificationStep === 'phone' ? 'phoneOtp' : 'emailOtp'] && (
+              <Alert variant="warning" className="mb-3 text-start">
+                Test OTP:
+                {' '}
+                {debugVerificationHints[verificationStep === 'phone' ? 'phoneOtp' : 'emailOtp']}
+              </Alert>
+            )}
 
             {/* Verification Code Input */}
             <div className="d-flex justify-content-center gap-2 mb-4">
@@ -2371,7 +2446,9 @@ const Register = () => {
                 </>
               ) : (
                 <>
-                  Verify Email <FaCheckCircle className="ms-2" />
+                  {verificationStep === 'phone' ? 'Verify Phone' : 'Verify Email'}
+                  {' '}
+                  <FaCheckCircle className="ms-2" />
                 </>
               )}
             </Button>

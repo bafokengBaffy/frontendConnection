@@ -2,6 +2,7 @@ import { Grid, Typography, List, ListItem, ListItemText, Alert } from '@mui/mate
 
 import PageContainer from '../../components/layout/PageContainer';
 import Card, { StatsCard } from '../../components/common/Card';
+import SocialDashboardSection from '../../components/social/SocialDashboardSection';
 import { useParent } from '../../hooks/useParent';
 
 const ParentDashboard = () => {
@@ -27,6 +28,14 @@ const ParentDashboard = () => {
       )}
 
       <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <SocialDashboardSection
+            audience="parent"
+            title="Family And Community Feed"
+            subtitle="Parents can now share updates, ask questions, celebrate progress, and stay present in the same community stream."
+          />
+        </Grid>
+
         {countEntries.length > 0 ? (
           countEntries.map(([key, value]) => (
             <Grid key={key} item xs={12} md={4}>
