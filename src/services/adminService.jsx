@@ -1082,6 +1082,111 @@ export const adminService = {
       }
     },
   },
+
+  // ==================== ADMIN MANAGEMENT ====================
+  admins: {
+    getAllAdmins: async () => {
+      try {
+        const usersRef = collection(db, 'users');
+        const snapshot = await safeGetDocs(usersRef);
+
+        const admins = snapshot.docs
+          .map((adminDoc) => ({
+            id: adminDoc.id,
+            ...adminDoc.data(),
+            createdAt: safeDate(adminDoc.data().createdAt),
+            updatedAt: safeDate(adminDoc.data().updatedAt),
+          }))
+          .filter(
+            (user) =>
+              user.userType === 'admin' ||
+              user.role === 'admin' ||
+              user.role === 'super_admin' ||
+              user.isAdmin === true
+          );
+
+        admins.sort((a, b) => {
+          const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return timeB - timeA;
+        });
+
+        return { success: true, data: admins };
+      } catch (error) {
+        return { success: false, error: error.message, data: [] };
+      }
+    },
+
+    createAdmin: async (payload, currentUser, userProfile) => {
+      try {
+        const normalizedEmail = String(payload?.email || '')
+          .trim()
+          .toLowerCase();
+        if (!normalizedEmail) {
+          return { success: false, error: 'Email is required' };
+        }
+
+        const newRef = await addDoc(collection(db, 'users'), {
+          email: normalizedEmail,
+          displayName: payload?.displayName || normalizedEmail.split('@')[0],
+          userType: 'admin',
+          role: payload?.adminLevel === 'super_admin' ? 'super_admin' : 'admin',
+          adminLevel: payload?.adminLevel === 'super_admin' ? 'super_admin' : 'admin',
+          status: payload?.status || 'active',
+          permissions: payload?.permissions || [],
+          isAdmin: true,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+          createdBy: getAdminId(currentUser),
+        });
+
+        await logAction(
+          'admin_created',
+          { adminId: newRef.id, email: normalizedEmail },
+          currentUser,
+          userProfile
+        );
+
+        return { success: true, data: { id: newRef.id }, message: 'Admin created successfully' };
+      } catch (error) {
+        return { success: false, error: error.message };
+      }
+    },
+
+    updateAdmin: async (adminId, updates, currentUser, userProfile) => {
+      try {
+        const adminRef = doc(db, 'users', adminId);
+        const merged = { ...updates, updatedAt: serverTimestamp() };
+
+        if (updates.adminLevel) {
+          merged.role = updates.adminLevel === 'super_admin' ? 'super_admin' : 'admin';
+          merged.adminLevel = updates.adminLevel === 'super_admin' ? 'super_admin' : 'admin';
+        }
+
+        await updateDoc(adminRef, merged);
+        await logAction('admin_updated', { adminId, updates: merged }, currentUser, userProfile);
+        return { success: true, message: 'Admin updated successfully' };
+      } catch (error) {
+        return { success: false, error: error.message };
+      }
+    },
+
+    deactivateAdmin: async (adminId, currentUser, userProfile) => {
+      try {
+        const adminRef = doc(db, 'users', adminId);
+        await updateDoc(adminRef, {
+          status: 'suspended',
+          isActive: false,
+          updatedAt: serverTimestamp(),
+          suspendedBy: getAdminId(currentUser),
+        });
+        await logAction('admin_deactivated', { adminId }, currentUser, userProfile);
+        return { success: true, message: 'Admin deactivated successfully' };
+      } catch (error) {
+        return { success: false, error: error.message };
+      }
+    },
+  },
 };
 
 export default adminService;

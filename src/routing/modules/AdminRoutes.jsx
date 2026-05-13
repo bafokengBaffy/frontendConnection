@@ -14,6 +14,7 @@ const SystemSettings = lazy(() => import('../../pages/admin/SystemSettings'));
 const AdminProfile = lazy(() => import('../../pages/admin/AdminProfile'));
 const AdminSettings = lazy(() => import('../../pages/admin/AdminSettings'));
 const AdminAudit = lazy(() => import('../../pages/admin/AdminAudit'));
+const AdminManagement = lazy(() => import('../../pages/admin/AdminManagement'));
 const AdmissionsManagement = lazy(() => import('../../pages/admin/AdmissionsManagement'));
 const SearchUsers = lazy(() => import('../../pages/admin/SearchUsers'));
 const SearchCompanies = lazy(() => import('../../pages/admin/SearchCompanies'));
@@ -124,6 +125,16 @@ export const getAdminRoutes = () => [
     element={
       <ProtectedRoute allowedUserTypes={['admin']}>
         <AdminAudit />
+      </ProtectedRoute>
+    }
+  />,
+
+  <Route
+    key="admin-management"
+    path="/admin/admins"
+    element={
+      <ProtectedRoute allowedUserTypes={['admin']}>
+        <AdminManagement />
       </ProtectedRoute>
     }
   />,

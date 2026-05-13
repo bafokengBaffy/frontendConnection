@@ -35,6 +35,7 @@ import {
   FaEye,
   FaCheckCircle,
   FaTimesCircle,
+  FaShieldAlt,
 } from 'react-icons/fa';
 
 const AdminDashboard = () => {
@@ -514,6 +515,15 @@ const AdminDashboard = () => {
                 <Button
                   variant="outline-success"
                   className="action-btn"
+                  onClick={() => navigate('/admin/admins')}
+                >
+                  <FaShieldAlt className="me-2" />
+                  Manage Admins
+                </Button>
+
+                <Button
+                  variant="outline-success"
+                  className="action-btn"
                   onClick={() => navigate('/admin/settings')}
                 >
                   <FaChartLine className="me-2" />
@@ -535,7 +545,7 @@ const AdminDashboard = () => {
               <div className="system-status">
                 <div className="status-item mb-2">
                   <span className="status-label">Database</span>
-                  <Badge bg="success">Online</Badge>
+                  <Badge bg={error ? 'danger' : 'success'}>{error ? 'Degraded' : 'Online'}</Badge>
                 </div>
                 <div className="status-item mb-2">
                   <span className="status-label">Last Updated</span>
@@ -544,8 +554,10 @@ const AdminDashboard = () => {
                   </span>
                 </div>
                 <div className="status-item">
-                  <span className="status-label">Uptime</span>
-                  <Badge bg="info">99.9%</Badge>
+                  <span className="status-label">Signals</span>
+                  <Badge bg="info">
+                    {stats?.recentActivities?.length || 0} recent activity events
+                  </Badge>
                 </div>
               </div>
             </Card.Body>
