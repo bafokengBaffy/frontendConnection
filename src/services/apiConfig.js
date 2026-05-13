@@ -4,6 +4,12 @@ const isLocalHost = () => {
   return host === 'localhost' || host === '127.0.0.1';
 };
 
+const isFirebaseHosted = () => {
+  if (typeof window === 'undefined') return false;
+  const host = window.location.hostname;
+  return host.endsWith('.web.app') || host.endsWith('.firebaseapp.com');
+};
+
 const resolveApiBaseUrl = () => {
   const envUrl =
     import.meta.env.VITE_API_BASE_URL ||
@@ -17,6 +23,11 @@ const resolveApiBaseUrl = () => {
     if (!envUrl || !/localhost|127\.0\.0\.1/i.test(envUrl)) {
       return 'http://localhost:5000';
     }
+  }
+
+  // On Firebase Hosting, prefer same-origin so /api rewrites can route traffic.
+  if (isFirebaseHosted() && import.meta.env.VITE_FORCE_REMOTE_API !== 'true') {
+    return window.location.origin;
   }
 
   return (envUrl || 'http://localhost:5000').replace(/\/+$/, '');
