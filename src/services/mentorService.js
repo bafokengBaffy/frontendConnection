@@ -235,6 +235,26 @@ class MentorService {
     return this.getMentorProfile(mentorId);
   }
 
+  async getMentorshipRequests(mentorId = null) {
+    try {
+      let q = query(collection(db, 'mentorship_requests'), orderBy('createdAt', 'desc'));
+      if (mentorId) {
+        q = query(q, where('alumniId', '==', mentorId), orderBy('createdAt', 'desc'));
+      }
+
+      const snapshot = await getDocs(q);
+      const requests = snapshot.docs.map((requestDoc) => ({
+        id: requestDoc.id,
+        ...requestDoc.data(),
+      }));
+
+      return requests;
+    } catch (error) {
+      console.error('Error getting mentorship requests:', error);
+      return [];
+    }
+  }
+
   // ==================== SESSION MANAGEMENT ====================
 
   async createSession(sessionData) {

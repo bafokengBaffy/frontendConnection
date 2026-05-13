@@ -55,8 +55,8 @@ const Home = () => {
       <div className="landing-noise" />
       <Container className="landing-shell">
         <section className="hero">
-          <Row className="align-items-center g-4">
-            <Col lg={7}>
+          <Row className="justify-content-center g-4">
+            <Col lg={10} className="text-center">
               <Badge className="hero-kicker">
                 <FaGlobeAfrica className="me-2" />
                 Career Connect Lesotho Ecosystem
@@ -91,9 +91,7 @@ const Home = () => {
                   </div>
                 ))}
               </div>
-            </Col>
-            <Col lg={5}>
-              <aside className="hero-panel">
+              <aside className="hero-panel mt-4 mx-auto text-start">
                 <div className="pulse" />
                 <h2>
                   <FaBolt className="me-2" />

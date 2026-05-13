@@ -390,8 +390,24 @@ export const adminService = {
   // ==================== USER MANAGEMENT ====================
 
   users: {
-    getAllUsers: async (filters = {}, page = 1, limit = 20) => {
+    getAllUsers: async (arg1 = {}, arg2 = 1, arg3 = 20) => {
       try {
+        // Backward-compatible signature handling:
+        // getAllUsers(filters, page, limit) OR getAllUsers(page, limit, filters)
+        let filters = {};
+        let page = 1;
+        let limit = 20;
+
+        if (typeof arg1 === 'number') {
+          page = arg1;
+          limit = typeof arg2 === 'number' ? arg2 : 20;
+          filters = typeof arg3 === 'object' && arg3 !== null ? arg3 : {};
+        } else {
+          filters = typeof arg1 === 'object' && arg1 !== null ? arg1 : {};
+          page = typeof arg2 === 'number' ? arg2 : 1;
+          limit = typeof arg3 === 'number' ? arg3 : 20;
+        }
+
         console.log('Fetching users with filters:', filters);
 
         let users = [];
@@ -442,28 +458,34 @@ export const adminService = {
         const endIndex = startIndex + limit;
         const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
 
+        const payload = {
+          users: paginatedUsers,
+          total: filteredUsers.length,
+          page,
+          totalPages: Math.ceil(filteredUsers.length / limit),
+          limit,
+        };
+
         return {
           success: true,
-          data: {
-            users: paginatedUsers,
-            total: filteredUsers.length,
-            page,
-            totalPages: Math.ceil(filteredUsers.length / limit),
-            limit,
-          },
+          data: payload,
+          ...payload,
         };
       } catch (error) {
         console.error('Error fetching users:', error);
+        const payload = {
+          users: [],
+          total: 0,
+          page: 1,
+          totalPages: 0,
+          limit: typeof arg3 === 'number' ? arg3 : 20,
+        };
+
         return {
           success: false,
           error: error.message,
-          data: {
-            users: [],
-            total: 0,
-            page: 1,
-            totalPages: 0,
-            limit,
-          },
+          data: payload,
+          ...payload,
         };
       }
     },
@@ -616,6 +638,48 @@ export const adminService = {
         return { success: true, message: 'User suspended successfully' };
       } catch (error) {
         console.error('Error suspending user:', error);
+        return { success: false, error: error.message };
+      }
+    },
+
+    activateUser: async (userId, currentUser, userProfile) => {
+      try {
+        const userRef = doc(db, 'users', userId);
+        await updateDoc(userRef, {
+          status: 'active',
+          isActive: true,
+          updatedAt: serverTimestamp(),
+          reactivatedBy: getAdminId(currentUser),
+        });
+        await logAction('user_activated', { userId }, currentUser, userProfile);
+        return { success: true, message: 'User activated successfully' };
+      } catch (error) {
+        return { success: false, error: error.message };
+      }
+    },
+
+    createUser: async (newUser, currentUser, userProfile) => {
+      try {
+        const email = String(newUser?.email || '')
+          .trim()
+          .toLowerCase();
+        if (!email) return { success: false, error: 'Email is required' };
+
+        const ref = await addDoc(collection(db, 'users'), {
+          email,
+          displayName: newUser.displayName || email.split('@')[0],
+          userType: newUser.userType || 'student',
+          status: newUser.status || 'active',
+          phoneNumber: newUser.phoneNumber || '',
+          isAdmin: newUser.userType === 'admin',
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+          createdBy: getAdminId(currentUser),
+        });
+
+        await logAction('user_created', { userId: ref.id, email }, currentUser, userProfile);
+        return { success: true, data: { id: ref.id } };
+      } catch (error) {
         return { success: false, error: error.message };
       }
     },

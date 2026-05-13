@@ -17,6 +17,7 @@ import {
   FaTimes,
   FaUser,
   FaUsers,
+  FaUserShield,
 } from 'react-icons/fa';
 
 import { useAuth } from '../../context/AuthContext';
@@ -27,7 +28,8 @@ const ROLE_NAVIGATION = {
     { label: 'Dashboard', path: '/admin/dashboard', icon: FaHome },
     { label: 'Pending Approvals', path: '/admin/pending-approvals', icon: FaUsers },
     { label: 'Users', path: '/admin/users', icon: FaUser },
-    { label: 'Settings', path: '/settings', icon: FaCog },
+    { label: 'Admin Management', path: '/admin/admins', icon: FaUserShield },
+    { label: 'Settings', path: '/admin/settings', icon: FaCog },
   ],
   student: [
     { label: 'Dashboard', path: '/student/dashboard', icon: FaHome },
