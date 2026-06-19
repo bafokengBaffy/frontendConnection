@@ -7,6 +7,7 @@ import {
   query,
   where,
   orderBy,
+  setDoc,
   updateDoc,
   serverTimestamp,
   addDoc,
@@ -62,6 +63,16 @@ const safeDate = (timestamp) => {
   return null;
 };
 
+const normalizeRecord = (snapshotDoc) => {
+  const data = snapshotDoc.data();
+  return {
+    id: snapshotDoc.id,
+    ...data,
+    createdAt: safeDate(data.createdAt),
+    updatedAt: safeDate(data.updatedAt),
+    timestamp: safeDate(data.timestamp),
+  };
+};
 export const adminService = {
   // ==================== DASHBOARD STATISTICS ====================
 
@@ -1130,7 +1141,7 @@ export const adminService = {
         if (settingsSnap.exists()) {
           await updateDoc(settingsRef, updateData);
         } else {
-          await getDoc(settingsRef, {
+          await setDoc(settingsRef, {
             ...updateData,
             createdAt: serverTimestamp(),
           });
@@ -1147,6 +1158,84 @@ export const adminService = {
     },
   },
 
+  // ==================== AUDIT LOGS ====================
+  audit: {
+    getAuditLogs: async (filters = {}, page = 1, limit = 50) => {
+      try {
+        const actionsRef = collection(db, 'admin_actions');
+        const snapshot = await safeGetDocs(query(actionsRef, orderBy('timestamp', 'desc'), queryLimit(500)));
+
+        let logs = snapshot.docs.map(normalizeRecord);
+
+        if (filters.action && filters.action !== 'all') {
+          logs = logs.filter((log) => log.action === filters.action);
+        }
+
+        if (filters.adminId) {
+          logs = logs.filter((log) => log.adminId === filters.adminId);
+        }
+
+        if (filters.search) {
+          const term = filters.search.toLowerCase();
+          logs = logs.filter((log) =>
+            [log.action, log.adminName, log.adminId, JSON.stringify(log)]
+              .filter(Boolean)
+              .some((value) => String(value).toLowerCase().includes(term))
+          );
+        }
+
+        const startIndex = (page - 1) * limit;
+        const paginatedLogs = logs.slice(startIndex, startIndex + limit);
+
+        return {
+          success: true,
+          data: {
+            logs: paginatedLogs,
+            total: logs.length,
+            page,
+            totalPages: Math.ceil(logs.length / limit),
+            limit,
+          },
+        };
+      } catch (error) {
+        return {
+          success: false,
+          error: error.message,
+          data: { logs: [], total: 0, page: 1, totalPages: 0, limit },
+        };
+      }
+    },
+  },
+
+  // ==================== MEDIA REGISTRY ====================
+  media: {
+    registerUpload: async (payload, currentUser, userProfile) => {
+      try {
+        const mediaRef = await addDoc(collection(db, 'media_assets'), {
+          ...payload,
+          uploadedAt: serverTimestamp(),
+          uploadedBy: getAdminId(currentUser),
+          uploadedByName: getAdminName(currentUser, userProfile),
+        });
+
+        await logAction(
+          'media_uploaded',
+          {
+            mediaId: mediaRef.id,
+            provider: payload.provider || 'cloudinary',
+            publicId: payload.publicId || payload.public_id || null,
+            folder: payload.folder || null,
+          },
+          currentUser,
+          userProfile
+        );
+
+        return { success: true, data: { id: mediaRef.id } };
+      } catch (error) {
+        return { success: false, error: error.message };
+      }
+    },
+  },
   // ==================== ADMIN MANAGEMENT ====================
   admins: {
     getAllAdmins: async () => {

@@ -43,6 +43,8 @@ import {
 import { toast } from 'react-toastify';
 
 import { useAuth } from '../../context/AuthContext';
+import adminService from '../../services/adminService';
+import cloudinaryService from '../../services/cloudinaryService';
 import './SystemSettings.css';
 
 const SystemSettings = () => {
@@ -168,8 +170,14 @@ const SystemSettings = () => {
   const loadSettings = async () => {
     try {
       setLoading(true);
-      // TODO: Load settings from your backend API
-      // For now, load from localStorage
+      const response = await adminService.settings.getSystemSettings();
+
+      if (response.success && response.data?.general) {
+        setSettings((prev) => ({ ...prev, ...response.data }));
+        localStorage.setItem('systemSettings', JSON.stringify(response.data));
+        return;
+      }
+
       const savedSettings = localStorage.getItem('systemSettings');
       if (savedSettings) {
         setSettings(JSON.parse(savedSettings));
@@ -186,25 +194,26 @@ const SystemSettings = () => {
     try {
       setSaving(true);
 
-      // Validate settings
       if (!validateSettings()) {
         return;
       }
 
-      // TODO: Save to backend API
-      // For now, save to localStorage
+      const response = await adminService.settings.updateSystemSettings(
+        settings,
+        currentUser,
+        userProfile
+      );
+
+      if (!response.success) {
+        throw new Error(response.error || 'Failed to save settings');
+      }
+
       localStorage.setItem('systemSettings', JSON.stringify(settings));
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      toast.success('Settings saved successfully!');
-
-      // Reload settings to ensure consistency
+      toast.success('Settings saved to Firebase successfully');
       await loadSettings();
     } catch (error) {
       console.error('Error saving settings:', error);
-      toast.error('Failed to save settings');
+      toast.error(error.message || 'Failed to save settings');
     } finally {
       setSaving(false);
     }
@@ -376,11 +385,12 @@ const SystemSettings = () => {
     toast.info('API key deleted');
   };
 
-  const handleBackup = () => {
+  const handleBackup = async () => {
     const backupData = {
       settings,
       timestamp: new Date().toISOString(),
       version: '1.0.0',
+      source: 'admin-system-settings',
     };
 
     const dataStr = JSON.stringify(backupData, null, 2);
@@ -393,8 +403,47 @@ const SystemSettings = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
 
-    toast.success('Backup downloaded successfully');
+    try {
+      const backupFileForCloud = new File([dataBlob], link.download, {
+        type: 'application/json',
+        lastModified: Date.now(),
+      });
+
+      const upload = await cloudinaryService.uploadToCloudinary(
+        backupFileForCloud,
+        'career-connect/admin/backups',
+        {
+          tags: ['admin', 'settings', 'backup'],
+          context: `uploaded_by=${currentUser?.uid || 'system'}|backup_type=system_settings`,
+        }
+      );
+
+      if (upload.success) {
+        await adminService.media.registerUpload(
+          {
+            provider: 'cloudinary',
+            folder: 'career-connect/admin/backups',
+            url: upload.url,
+            publicId: upload.public_id,
+            resourceType: upload.resource_type || 'raw',
+            bytes: upload.bytes,
+            format: upload.format,
+            purpose: 'system_settings_backup',
+          },
+          currentUser,
+          userProfile
+        );
+        toast.success('Backup downloaded and stored in Cloudinary');
+        return;
+      }
+
+      toast.warning('Backup downloaded locally, but Cloudinary upload failed');
+    } catch (error) {
+      console.warn('Cloudinary backup upload failed:', error);
+      toast.warning('Backup downloaded locally, but Cloudinary upload failed');
+    }
   };
 
   const handleRestore = async () => {
