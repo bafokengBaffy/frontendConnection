@@ -21,7 +21,7 @@ const resolveApiBaseUrl = () => {
   // unless explicitly forced.
   if (isLocalHost() && import.meta.env.VITE_FORCE_REMOTE_API !== 'true') {
     if (!envUrl || !/localhost|127\.0\.0\.1/i.test(envUrl)) {
-      return 'http://localhost:5000';
+      return 'http://localhost:5001';
     }
   }
 

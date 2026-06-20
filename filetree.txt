@@ -1,0 +1,2100 @@
+﻿easygo-platform-web/
+
+├── easygo-platform-web
+│   ├── .dockerignore
+│   ├── .editorconfig
+│   ├── .env.development
+│   ├── .env.local
+│   ├── .env.local.example
+│   ├── .env.production
+│   ├── .env.staging
+│   ├── .env.test
+│   ├── .firebase
+│   │   └── hosting.d2ViLWZyb250ZW5kXGRpc3Q.cache
+│   ├── .firebaserc
+│   ├── .gitattributes
+│   ├── .github
+│   │   ├── CODEOWNERS
+│   │   ├── dependabot.yml
+│   │   ├── ISSUE_TEMPLATE
+│   │   │   ├── bug_report.md
+│   │   │   ├── feature_request.md
+│   │   │   └── security_vulnerability.md
+│   │   ├── labeler.yml
+│   │   ├── mergify.yml
+│   │   ├── PULL_REQUEST_TEMPLATE.md
+│   │   └── workflows
+│   │       ├── cd.yml
+│   │       ├── ci.yml
+│   │       ├── codeql-analysis.yml
+│   │       ├── dependency-review.yml
+│   │       ├── deploy.yml
+│   │       ├── nightly-tests.yml
+│   │       └── security.yml
+│   ├── .gitignore
+│   ├── .husky
+│   │   ├── commit-msg
+│   │   ├── pre-commit
+│   │   └── pre-push
+│   ├── .nyc_output
+│   │   └── .gitkeep
+│   ├── .pre-commit-config.yaml
+│   ├── .yarnrc.yml
+│   ├── AdminAudit.css
+│   ├── AdminAudit.jsx
+│   ├── ai-ml-services
+│   │   ├── .bandit.yml
+│   │   ├── .coveragerc
+│   │   ├── .dockerignore
+│   │   ├── .env.example
+│   │   ├── .flake8
+│   │   ├── .gitattributes
+│   │   ├── .gitignore
+│   │   ├── .mypy.ini
+│   │   ├── .pre-commit-config.yaml
+│   │   ├── .pylintrc
+│   │   ├── .python-version
+│   │   ├── config
+│   │   │   ├── __init__.py
+│   │   │   ├── database.py
+│   │   │   ├── kafka.py
+│   │   │   ├── logging.py
+│   │   │   ├── mlflow.py
+│   │   │   ├── model_configs
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── churn_prediction.yaml
+│   │   │   │   ├── compliance_monitoring.yaml
+│   │   │   │   ├── demand_forecast.yaml
+│   │   │   │   ├── driver_matching.yaml
+│   │   │   │   ├── eta_prediction.yaml
+│   │   │   │   ├── fraud_detection.yaml
+│   │   │   │   ├── price_prediction.yaml
+│   │   │   │   ├── recommendation.yaml
+│   │   │   │   ├── risk_scoring.yaml
+│   │   │   │   ├── route_optimization.yaml
+│   │   │   │   ├── sentiment_analysis.yaml
+│   │   │   │   └── surge_pricing.yaml
+│   │   │   ├── prometheus.py
+│   │   │   ├── redis.py
+│   │   │   ├── sentry.py
+│   │   │   └── settings.py
+│   │   ├── conftest.py
+│   │   ├── data
+│   │   │   ├── external
+│   │   │   ├── interim
+│   │   │   ├── processed
+│   │   │   └── raw
+│   │   │       ├── driver_dataset.csv
+│   │   │       └── rider_dataset.csv
+│   │   ├── docker-compose.dev.yml
+│   │   ├── docker-compose.test.yml
+│   │   ├── docker-compose.yml
+│   │   ├── Dockerfile
+│   │   ├── Dockerfile.dev
+│   │   ├── Dockerfile.prod
+│   │   ├── huggingface-space
+│   │   │   ├── .gitignore
+│   │   │   ├── api
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── deps.py
+│   │   │   │   ├── routes.py
+│   │   │   │   └── schemas.py
+│   │   │   ├── app.py
+│   │   │   ├── core
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── config.py
+│   │   │   │   ├── contracts.py
+│   │   │   │   ├── errors.py
+│   │   │   │   ├── feature_adapter.py
+│   │   │   │   ├── inference_service.py
+│   │   │   │   ├── logging_utils.py
+│   │   │   │   └── model_store.py
+│   │   │   ├── Dockerfile
+│   │   │   ├── models_artifacts
+│   │   │   │   ├── driver_acceptance.joblib
+│   │   │   │   ├── driver_eta.joblib
+│   │   │   │   ├── rider_churn.joblib
+│   │   │   │   └── rider_ltv.joblib
+│   │   │   ├── README.md
+│   │   │   ├── requirements.txt
+│   │   │   ├── scripts
+│   │   │   │   └── preflight_check.py
+│   │   │   └── tests
+│   │   │       ├── test_contracts.py
+│   │   │       └── test_feature_adapter.py
+│   │   ├── Makefile
+│   │   ├── MANIFEST.in
+│   │   ├── mlruns
+│   │   │   └── 0
+│   │   │       └── meta.yaml
+│   │   ├── notebooks
+│   │   │   ├── .ipynb_checkpoints
+│   │   │   ├── 01_data_exploration.ipynb
+│   │   │   ├── 02_feature_engineering.ipynb
+│   │   │   ├── 03_model_development.ipynb
+│   │   │   ├── 04_model_evaluation.ipynb
+│   │   │   ├── 05_hyperparameter_tuning.ipynb
+│   │   │   ├── 06_model_deployment.ipynb
+│   │   │   ├── 07_model_monitoring.ipynb
+│   │   │   ├── 08_feature_analysis.ipynb
+│   │   │   ├── 09_ab_testing.ipynb
+│   │   │   ├── 10_model_interpretability.ipynb
+│   │   │   ├── 11_ci_cd_pipeline.ipynb
+│   │   │   ├── 12_fairness_analysis.ipynb
+│   │   │   ├── 13_model_governance.ipynb
+│   │   │   ├── demand_forecast_analysis.ipynb
+│   │   │   ├── driver_matching_optimization.ipynb
+│   │   │   ├── fraud_detection_analysis.ipynb
+│   │   │   └── risk_scoring_analysis.ipynb
+│   │   ├── py.typed
+│   │   ├── pyproject.toml
+│   │   ├── pytest.ini
+│   │   ├── README.md
+│   │   ├── reports
+│   │   │   ├── figures
+│   │   │   │   └── .gitkeep
+│   │   │   └── metrics.json
+│   │   ├── requirements.txt
+│   │   ├── requirements-dev.txt
+│   │   ├── requirements-docs.txt
+│   │   ├── requirements-test.txt
+│   │   ├── scripts
+│   │   │   ├── backfill_features.py
+│   │   │   ├── cleanup_models.py
+│   │   │   ├── deploy_models.py
+│   │   │   ├── evaluate_models.py
+│   │   │   ├── export_metrics.py
+│   │   │   ├── generate_datasets.py
+│   │   │   ├── generate_reports.py
+│   │   │   ├── monitor_performance.py
+│   │   │   ├── rollback_models.py
+│   │   │   ├── run_pipeline.py
+│   │   │   ├── schedule_retraining.py
+│   │   │   ├── train_all_models.py
+│   │   │   ├── train_models.py
+│   │   │   └── validate_models.py
+│   │   ├── setup.cfg
+│   │   ├── setup.py
+│   │   ├── src
+│   │   │   ├── __init__.py
+│   │   │   ├── api
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── app.py
+│   │   │   │   ├── dependencies.py
+│   │   │   │   ├── middleware.py
+│   │   │   │   └── v1
+│   │   │   │       ├── __init__.py
+│   │   │   │       ├── endpoints
+│   │   │   │       │   ├── __init__.py
+│   │   │   │       │   ├── batch_predict.py
+│   │   │   │       │   ├── churn_predict.py
+│   │   │   │       │   ├── compliance.py
+│   │   │   │       │   ├── demand_forecast.py
+│   │   │   │       │   ├── driver_match.py
+│   │   │   │       │   ├── driver_rating.py
+│   │   │   │       │   ├── eta_predict.py
+│   │   │   │       │   ├── feedback.py
+│   │   │   │       │   ├── fraud_detect.py
+│   │   │   │       │   ├── health.py
+│   │   │   │       │   ├── image_analysis.py
+│   │   │   │       │   ├── models_metadata.py
+│   │   │   │       │   ├── nlp.py
+│   │   │   │       │   ├── price_predict.py
+│   │   │   │       │   ├── recommendations.py
+│   │   │   │       │   ├── risk_score.py
+│   │   │   │       │   ├── route_optimize.py
+│   │   │   │       │   ├── sentiment.py
+│   │   │   │       │   ├── surge_pricing.py
+│   │   │   │       │   └── version.py
+│   │   │   │       └── schemas.py
+│   │   │   ├── data
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── external
+│   │   │   │   │   └── README.md
+│   │   │   │   ├── features
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── feature_encoder.py
+│   │   │   │   │   ├── feature_engineering.py
+│   │   │   │   │   ├── feature_extractor.py
+│   │   │   │   │   ├── feature_generator.py
+│   │   │   │   │   ├── feature_importance.py
+│   │   │   │   │   ├── feature_registry.py
+│   │   │   │   │   ├── feature_scaler.py
+│   │   │   │   │   ├── feature_selector.py
+│   │   │   │   │   └── feature_store.py
+│   │   │   │   ├── interim
+│   │   │   │   │   └── README.md
+│   │   │   │   ├── loaders
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── api_loader.py
+│   │   │   │   │   ├── bigquery_loader.py
+│   │   │   │   │   ├── cache_loader.py
+│   │   │   │   │   ├── csv_loader.py
+│   │   │   │   │   ├── kafka_loader.py
+│   │   │   │   │   ├── mongodb_loader.py
+│   │   │   │   │   ├── postgres_loader.py
+│   │   │   │   │   ├── redshift_loader.py
+│   │   │   │   │   ├── s3_loader.py
+│   │   │   │   │   └── snowflake_loader.py
+│   │   │   │   ├── processed
+│   │   │   │   │   └── README.md
+│   │   │   │   └── processors
+│   │   │   │       ├── __init__.py
+│   │   │   │       ├── cleaning.py
+│   │   │   │       ├── data_aggregator.py
+│   │   │   │       ├── data_cleaner.py
+│   │   │   │       ├── data_encoder.py
+│   │   │   │       ├── data_normalizer.py
+│   │   │   │       ├── data_sampler.py
+│   │   │   │       ├── data_splitter.py
+│   │   │   │       ├── data_transformer.py
+│   │   │   │       ├── data_validator.py
+│   │   │   │       └── outlier_detector.py
+│   │   │   ├── evaluation
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── ab_testing.py
+│   │   │   │   ├── bias_detection.py
+│   │   │   │   ├── cross_validation.py
+│   │   │   │   ├── fairness_metrics.py
+│   │   │   │   ├── hyperparameter_tuning.py
+│   │   │   │   ├── metrics.py
+│   │   │   │   ├── model_comparison.py
+│   │   │   │   ├── performance_tracking.py
+│   │   │   │   ├── robustness_testing.py
+│   │   │   │   └── validation.py
+│   │   │   ├── explainability
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── anchor_explainer.py
+│   │   │   │   ├── counterfactual.py
+│   │   │   │   ├── feature_importance.py
+│   │   │   │   ├── gradient_explainer.py
+│   │   │   │   ├── individual_conditional.py
+│   │   │   │   ├── lime_explainer.py
+│   │   │   │   ├── model_insights.py
+│   │   │   │   ├── partial_dependence.py
+│   │   │   │   └── shap_explainer.py
+│   │   │   ├── inference
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── a_b_testing.py
+│   │   │   │   ├── batch_inference.py
+│   │   │   │   ├── canary_deployment.py
+│   │   │   │   ├── model_cache.py
+│   │   │   │   ├── model_serving.py
+│   │   │   │   ├── model_versioning.py
+│   │   │   │   ├── prediction_optimizer.py
+│   │   │   │   ├── realtime_inference.py
+│   │   │   │   └── shadow_deployment.py
+│   │   │   ├── models
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── base_model.py
+│   │   │   │   ├── churn_prediction
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── evaluation.py
+│   │   │   │   │   ├── feature_engineering.py
+│   │   │   │   │   ├── model.py
+│   │   │   │   │   ├── predictor.py
+│   │   │   │   │   └── trainer.py
+│   │   │   │   ├── compliance_monitoring
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── evaluation.py
+│   │   │   │   │   ├── feature_engineering.py
+│   │   │   │   │   ├── model.py
+│   │   │   │   │   ├── predictor.py
+│   │   │   │   │   └── trainer.py
+│   │   │   │   ├── demand_forecast
+│   │   │   │   │   ├── .gitkeep
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── evaluation.py
+│   │   │   │   │   ├── feature_engineering.py
+│   │   │   │   │   ├── model.py
+│   │   │   │   │   ├── predictor.py
+│   │   │   │   │   └── trainer.py
+│   │   │   │   ├── driver_acceptance
+│   │   │   │   │   ├── model.py
+│   │   │   │   │   ├── predictor.py
+│   │   │   │   │   └── trainer.py
+│   │   │   │   ├── driver_eta
+│   │   │   │   │   ├── model.py
+│   │   │   │   │   ├── predictor.py
+│   │   │   │   │   └── trainer.py
+│   │   │   │   ├── driver_matching
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── evaluation.py
+│   │   │   │   │   ├── feature_engineering.py
+│   │   │   │   │   ├── model.py
+│   │   │   │   │   ├── predictor.py
+│   │   │   │   │   └── trainer.py
+│   │   │   │   ├── ensemble.py
+│   │   │   │   ├── eta_prediction
+│   │   │   │   │   ├── .gitkeep
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── evaluation.py
+│   │   │   │   │   ├── feature_engineering.py
+│   │   │   │   │   ├── model.py
+│   │   │   │   │   ├── predictor.py
+│   │   │   │   │   └── trainer.py
+│   │   │   │   ├── fraud_detection
+│   │   │   │   │   ├── .gitkeep
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── evaluation.py
+│   │   │   │   │   ├── feature_engineering.py
+│   │   │   │   │   ├── model.py
+│   │   │   │   │   ├── predictor.py
+│   │   │   │   │   └── trainer.py
+│   │   │   │   ├── model_registry.py
+│   │   │   │   ├── price_prediction
+│   │   │   │   │   ├── .gitkeep
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── evaluation.py
+│   │   │   │   │   ├── feature_engineering.py
+│   │   │   │   │   ├── model.py
+│   │   │   │   │   ├── predictor.py
+│   │   │   │   │   └── trainer.py
+│   │   │   │   ├── recommendation
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── evaluation.py
+│   │   │   │   │   ├── feature_engineering.py
+│   │   │   │   │   ├── model.py
+│   │   │   │   │   ├── predictor.py
+│   │   │   │   │   └── trainer.py
+│   │   │   │   ├── rider_churn_prediction
+│   │   │   │   │   ├── model.py
+│   │   │   │   │   ├── predictor.py
+│   │   │   │   │   └── trainer.py
+│   │   │   │   ├── rider_ltv
+│   │   │   │   │   ├── model.py
+│   │   │   │   │   ├── predictor.py
+│   │   │   │   │   └── trainer.py
+│   │   │   │   ├── risk_scoring
+│   │   │   │   │   ├── .gitkeep
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── evaluation.py
+│   │   │   │   │   ├── feature_engineering.py
+│   │   │   │   │   ├── model.py
+│   │   │   │   │   ├── predictor.py
+│   │   │   │   │   └── trainer.py
+│   │   │   │   ├── route_optimization
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── evaluation.py
+│   │   │   │   │   ├── feature_engineering.py
+│   │   │   │   │   ├── model.py
+│   │   │   │   │   ├── predictor.py
+│   │   │   │   │   └── trainer.py
+│   │   │   │   ├── sentiment_analysis
+│   │   │   │   │   ├── __init__.py
+│   │   │   │   │   ├── evaluation.py
+│   │   │   │   │   ├── feature_engineering.py
+│   │   │   │   │   ├── model.py
+│   │   │   │   │   ├── predictor.py
+│   │   │   │   │   └── trainer.py
+│   │   │   │   └── surge_pricing
+│   │   │   │       ├── __init__.py
+│   │   │   │       ├── evaluation.py
+│   │   │   │       ├── feature_engineering.py
+│   │   │   │       ├── model.py
+│   │   │   │       ├── predictor.py
+│   │   │   │       └── trainer.py
+│   │   │   ├── models_artifacts
+│   │   │   │   ├── driver_acceptance.joblib
+│   │   │   │   ├── driver_eta.joblib
+│   │   │   │   ├── rider_churn.joblib
+│   │   │   │   └── rider_ltv.joblib
+│   │   │   ├── monitoring
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── alerting.py
+│   │   │   │   ├── anomaly_detection.py
+│   │   │   │   ├── concept_drift.py
+│   │   │   │   ├── dashboard.py
+│   │   │   │   ├── data_drift.py
+│   │   │   │   ├── health_check.py
+│   │   │   │   ├── model_drift.py
+│   │   │   │   ├── performance_metrics.py
+│   │   │   │   ├── prediction_monitoring.py
+│   │   │   │   └── slo_tracking.py
+│   │   │   ├── pipelines
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── cd_pipeline.py
+│   │   │   │   ├── ci_pipeline.py
+│   │   │   │   ├── deployment_pipeline.py
+│   │   │   │   ├── evaluation_pipeline.py
+│   │   │   │   ├── feature_pipeline.py
+│   │   │   │   ├── inference_pipeline.py
+│   │   │   │   ├── monitoring_pipeline.py
+│   │   │   │   ├── retraining_pipeline.py
+│   │   │   │   ├── training_pipeline.py
+│   │   │   │   └── validation_pipeline.py
+│   │   │   ├── services
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── cache_service.py
+│   │   │   │   ├── circuit_breaker.py
+│   │   │   │   ├── deployment_service.py
+│   │   │   │   ├── evaluation_service.py
+│   │   │   │   ├── feature_store.py
+│   │   │   │   ├── kafka_service.py
+│   │   │   │   ├── mlflow_service.py
+│   │   │   │   ├── model_service.py
+│   │   │   │   ├── monitoring_service.py
+│   │   │   │   ├── prediction_service.py
+│   │   │   │   ├── rate_limiter.py
+│   │   │   │   ├── redis_service.py
+│   │   │   │   ├── scheduler_service.py
+│   │   │   │   ├── training_service.py
+│   │   │   │   └── versioning_service.py
+│   │   │   ├── training
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── auto_ml.py
+│   │   │   │   ├── callbacks.py
+│   │   │   │   ├── distributed_strategy.py
+│   │   │   │   ├── distributed_trainer.py
+│   │   │   │   ├── early_stopping.py
+│   │   │   │   ├── experiment_tracker.py
+│   │   │   │   ├── hyperparameter_optimizer.py
+│   │   │   │   ├── model_optimizer.py
+│   │   │   │   └── trainer.py
+│   │   │   ├── utils
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── constants.py
+│   │   │   │   ├── decorators.py
+│   │   │   │   ├── exceptions.py
+│   │   │   │   ├── helpers.py
+│   │   │   │   ├── logger.py
+│   │   │   │   ├── metrics.py
+│   │   │   │   ├── monitoring.py
+│   │   │   │   ├── performance.py
+│   │   │   │   ├── serializers.py
+│   │   │   │   ├── tracing.py
+│   │   │   │   └── validators.py
+│   │   │   └── workers
+│   │   │       ├── .gitkeep
+│   │   │       ├── __init__.py
+│   │   │       ├── batch_worker.py
+│   │   │       ├── data_worker.py
+│   │   │       ├── evaluation_worker.py
+│   │   │       ├── inference_worker.py
+│   │   │       ├── monitoring_worker.py
+│   │   │       ├── retraining_worker.py
+│   │   │       ├── stream_worker.py
+│   │   │       └── training_worker.py
+│   │   ├── tests
+│   │   │   ├── .gitkeep
+│   │   │   ├── integration
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── test_api.py
+│   │   │   │   ├── test_test_api_integration.py
+│   │   │   │   ├── test_test_data_integration.py
+│   │   │   │   ├── test_test_evaluation_integration.py
+│   │   │   │   ├── test_test_models_integration.py
+│   │   │   │   ├── test_test_monitoring_integration.py
+│   │   │   │   ├── test_test_pipelines_integration.py
+│   │   │   │   └── test_test_services_integration.py
+│   │   │   ├── performance
+│   │   │   │   └── test_model_performance.py
+│   │   │   └── unit
+│   │   │       ├── .gitkeep
+│   │   │       ├── test_api.py
+│   │   │       ├── test_data.py
+│   │   │       ├── test_evaluation.py
+│   │   │       ├── test_models.py
+│   │   │       ├── test_monitoring.py
+│   │   │       ├── test_pipelines.py
+│   │   │       └── test_services.py
+│   │   └── tox.ini
+│   ├── app.js
+│   ├── CHANGELOG.md
+│   ├── chaos-testing
+│   │   ├── chaos-mesh
+│   │   │   ├── network-delay.yaml
+│   │   │   └── pod-kill.yaml
+│   │   └── litmus
+│   │       └── experiments.yaml
+│   ├── commitlint.config.js
+│   ├── CONTRIBUTING.md
+│   ├── coverage
+│   │   └── .gitkeep
+│   ├── DAILY_REPORT_2026-06-17.txt
+│   ├── daily-report-cynthia-mofoka.txt
+│   ├── data
+│   │   └── .gitkeep
+│   ├── database
+│   │   ├── elasticsearch
+│   │   │   ├── backups
+│   │   │   │   └── .gitkeep
+│   │   │   ├── ingest-pipelines
+│   │   │   │   └── geo_pipeline.json
+│   │   │   ├── mappings
+│   │   │   │   └── .gitkeep
+│   │   │   └── templates
+│   │   │       └── ride_template.json
+│   │   ├── mongodb
+│   │   │   ├── aggregations
+│   │   │   │   ├── ride_analytics.js
+│   │   │   │   └── user_activity.js
+│   │   │   ├── collections
+│   │   │   │   ├── rides.json
+│   │   │   │   └── users.json
+│   │   │   ├── indexes.js
+│   │   │   ├── init.js
+│   │   │   └── migrations
+│   │   │       ├── 001_create_users.js
+│   │   │       └── 002_create_rides.js
+│   │   ├── postgres
+│   │   │   ├── backups
+│   │   │   │   └── .gitkeep
+│   │   │   ├── functions
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── calculate_distance.sql
+│   │   │   │   └── calculate_fare.sql
+│   │   │   ├── indexes
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── ride_location_index.sql
+│   │   │   │   └── user_email_index.sql
+│   │   │   ├── init.sql
+│   │   │   ├── migrations
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── V1__initial_schema.sql
+│   │   │   │   └── V2__add_indexes.sql
+│   │   │   ├── procedures
+│   │   │   │   ├── calculate_earnings.sql
+│   │   │   │   └── update_ride_status.sql
+│   │   │   ├── scripts
+│   │   │   │   ├── backup.sh
+│   │   │   │   └── restore.sh
+│   │   │   ├── seeds
+│   │   │   │   └── .gitkeep
+│   │   │   ├── triggers
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── audit_log_trigger.sql
+│   │   │   │   └── update_timestamp_trigger.sql
+│   │   │   └── views
+│   │   │       ├── .gitkeep
+│   │   │       ├── driver_performance_view.sql
+│   │   │       └── revenue_report_view.sql
+│   │   └── redis
+│   │       ├── cluster.conf
+│   │       ├── dumps
+│   │       │   └── .gitkeep
+│   │       ├── redis.conf
+│   │       └── sentinel.conf
+│   ├── database.js
+│   ├── dependabot.yml
+│   ├── deploy.sh
+│   ├── DEPLOYMENT_READY.md
+│   ├── dev-server.log
+│   ├── docker-compose.override.yml
+│   ├── docker-compose.test.yml
+│   ├── docker-compose.yml
+│   ├── Dockerfile
+│   ├── docs
+│   │   ├── api
+│   │   │   ├── ai-api
+│   │   │   │   ├── anomaly-detection.md
+│   │   │   │   ├── demand-forecasting.md
+│   │   │   │   ├── fraud-detection.md
+│   │   │   │   ├── predictions.md
+│   │   │   │   ├── recommendations.md
+│   │   │   │   └── route-optimization.md
+│   │   │   ├── changelog.md
+│   │   │   ├── mobile-api
+│   │   │   │   ├── authentication.md
+│   │   │   │   ├── drivers.md
+│   │   │   │   ├── ratings.md
+│   │   │   │   ├── riders.md
+│   │   │   │   ├── tracking.md
+│   │   │   │   └── trips.md
+│   │   │   ├── openapi.yaml
+│   │   │   ├── postman
+│   │   │   │   └── collection.json
+│   │   │   ├── README.md
+│   │   │   └── web-api
+│   │   │       ├── authentication.md
+│   │   │       ├── payments.md
+│   │   │       ├── promotions.md
+│   │   │       ├── rides.md
+│   │   │       ├── support.md
+│   │   │       └── users.md
+│   │   ├── architecture
+│   │   │   ├── caching-strategy.md
+│   │   │   ├── database-schema.md
+│   │   │   ├── data-flow.md
+│   │   │   ├── decisions
+│   │   │   │   └── adr-001.md
+│   │   │   ├── deployment-architecture.md
+│   │   │   ├── diagrams
+│   │   │   │   ├── architecture.png
+│   │   │   │   ├── data-flow.png
+│   │   │   │   └── deployment.png
+│   │   │   ├── disaster-recovery.md
+│   │   │   ├── message-queue-design.md
+│   │   │   ├── microservices-communication.md
+│   │   │   ├── monitoring-strategy.md
+│   │   │   ├── overview.md
+│   │   │   ├── scaling-strategy.md
+│   │   │   ├── security-architecture.md
+│   │   │   └── system-architecture.md
+│   │   ├── benchmarks
+│   │   │   ├── api-benchmarks.md
+│   │   │   └── load-benchmarks.md
+│   │   ├── compliance
+│   │   │   ├── ccpa.md
+│   │   │   ├── gdpr.md
+│   │   │   ├── hipaa.md
+│   │   │   ├── iso27001.md
+│   │   │   ├── local-regulations.md
+│   │   │   ├── pci-dss.md
+│   │   │   └── soc2.md
+│   │   ├── contributing
+│   │   │   ├── code-of-conduct.md
+│   │   │   ├── development.md
+│   │   │   └── testing.md
+│   │   ├── deployment
+│   │   │   ├── aws
+│   │   │   │   ├── ec2.md
+│   │   │   │   ├── eks.md
+│   │   │   │   ├── lambda.md
+│   │   │   │   ├── rds.md
+│   │   │   │   └── s3.md
+│   │   │   ├── azure
+│   │   │   │   ├── aks.md
+│   │   │   │   └── sql-database.md
+│   │   │   ├── docker.md
+│   │   │   ├── google-cloud
+│   │   │   │   ├── cloud-sql.md
+│   │   │   │   └── gke.md
+│   │   │   └── kubernetes.md
+│   │   ├── development
+│   │   │   ├── code-review.md
+│   │   │   ├── coding-standards.md
+│   │   │   ├── debugging-guide.md
+│   │   │   ├── git-workflow.md
+│   │   │   ├── performance-guide.md
+│   │   │   ├── release-process.md
+│   │   │   ├── setup.md
+│   │   │   └── testing-guide.md
+│   │   ├── examples
+│   │   │   ├── api-examples.md
+│   │   │   └── sdk-examples.md
+│   │   ├── faq.md
+│   │   ├── glossary.md
+│   │   ├── guides
+│   │   │   ├── getting-started.md
+│   │   │   ├── onboarding.md
+│   │   │   └── troubleshooting.md
+│   │   ├── index.md
+│   │   ├── mkdocs.yml
+│   │   ├── operations
+│   │   │   ├── alerts.md
+│   │   │   └── runbooks
+│   │   │       ├── database-backup.md
+│   │   │       ├── disaster-recovery.md
+│   │   │       └── incident-response.md
+│   │   ├── README.md
+│   │   ├── roadmap.md
+│   │   ├── security
+│   │   │   ├── authentication.md
+│   │   │   ├── authorization.md
+│   │   │   ├── data-privacy.md
+│   │   │   ├── encryption.md
+│   │   │   ├── incident-response.md
+│   │   │   ├── penetration-testing.md
+│   │   │   ├── policy.md
+│   │   │   ├── vulnerability-management.md
+│   │   │   └── vulnerability-reporting.md
+│   │   ├── support.md
+│   │   ├── tutorials
+│   │   │   ├── deployment.md
+│   │   │   └── getting-started.md
+│   │   └── user-guides
+│   │       ├── admin-guide.md
+│   │       ├── driver-guide.md
+│   │       ├── faq.md
+│   │       ├── rider-guide.md
+│   │       └── troubleshooting.md
+│   ├── easygoAI-space
+│   │   ├── .gitattributes
+│   │   ├── .gitignore
+│   │   ├── api
+│   │   │   ├── __init__.py
+│   │   │   ├── deps.py
+│   │   │   ├── routes.py
+│   │   │   └── schemas.py
+│   │   ├── app.py
+│   │   ├── core
+│   │   │   ├── __init__.py
+│   │   │   ├── config.py
+│   │   │   ├── contracts.py
+│   │   │   ├── errors.py
+│   │   │   ├── feature_adapter.py
+│   │   │   ├── inference_service.py
+│   │   │   ├── logging_utils.py
+│   │   │   └── model_store.py
+│   │   ├── Dockerfile
+│   │   ├── models_artifacts
+│   │   │   ├── driver_acceptance.joblib
+│   │   │   ├── driver_eta.joblib
+│   │   │   ├── rider_churn.joblib
+│   │   │   └── rider_ltv.joblib
+│   │   ├── README.md
+│   │   ├── requirements.txt
+│   │   ├── scripts
+│   │   │   └── preflight_check.py
+│   │   └── tests
+│   │       ├── test_contracts.py
+│   │       └── test_feature_adapter.py
+│   ├── easygo-webapp
+│   │   ├── .firebase
+│   │   │   └── hosting.cHVibGlj.cache
+│   │   ├── .gitignore
+│   │   ├── .hintrc
+│   │   ├── admin-admins.html
+│   │   ├── admin-audit.html
+│   │   ├── admin-drivers.html
+│   │   ├── admin-fleet.html
+│   │   ├── admin-incidents.html
+│   │   ├── admin-panel.html
+│   │   ├── admin-payments.html
+│   │   ├── admin-promotions.html
+│   │   ├── admin-reports.html
+│   │   ├── admin-reviews.html
+│   │   ├── admin-settings.html
+│   │   ├── admin-support.html
+│   │   ├── admin-trips.html
+│   │   ├── admin-users.html
+│   │   ├── admin-verification.html
+│   │   ├── admin-zones.html
+│   │   ├── assets
+│   │   │   ├── css
+│   │   │   │   ├── main.css
+│   │   │   │   ├── responsive.css
+│   │   │   │   └── sidebar.css
+│   │   │   ├── images
+│   │   │   │   ├── easy-Go-Upsaceld-noBG.png
+│   │   │   │   ├── WhatsApp Image 2026-02-16 at 15.01.44.jpeg
+│   │   │   │   └── WhatsApp Image 2026-02-16 at 15.02.18.jpeg
+│   │   │   └── js
+│   │   │       ├── auth.js
+│   │   │       ├── demo-data.js
+│   │   │       ├── main.js
+│   │   │       └── sidebar.js
+│   │   ├── data
+│   │   │   ├── mock-rides.json
+│   │   │   └── mock-users.json
+│   │   ├── driver-available-rides.html
+│   │   ├── driver-available-seats.html
+│   │   ├── driver-current-trip.html
+│   │   ├── driver-dashboard.html
+│   │   ├── driver-earnings.html
+│   │   ├── driver-profile.html
+│   │   ├── driver-settings.html
+│   │   ├── driver-support.html
+│   │   ├── driver-vehicle.html
+│   │   ├── filetree.txt
+│   │   ├── filetree_20260219_225336.txt
+│   │   ├── filetree_20260220_000916.txt
+│   │   ├── filetree_20260402_020903.txt
+│   │   ├── full_tree.txt
+│   │   ├── generate-admin-pages.bat
+│   │   ├── git commands
+│   │   ├── image.png
+│   │   ├── index.html
+│   │   ├── login.html
+│   │   ├── pages
+│   │   │   └── about
+│   │   │       └── about.html
+│   │   ├── project_tree.txt
+│   │   ├── public
+│   │   │   └── index.html
+│   │   ├── ride-booking.html
+│   │   ├── ride-history.html
+│   │   ├── rider-dashboard.html
+│   │   ├── rider-notifications.html
+│   │   ├── rider-payments.html
+│   │   ├── rider-profile.html
+│   │   ├── rider-settings.html
+│   │   ├── rider-support.html
+│   │   ├── sidebar-driver.html
+│   │   ├── signup.html
+│   │   └── tmp_check.py
+│   ├── easygo-webapp.zip
+│   ├── filetree.txt
+│   ├── filetree_20260402_041018.txt
+│   ├── filetree_20260514_230702.txt
+│   ├── firebase redeploy
+│   ├── firebase.json
+│   ├── firestore.rules
+│   ├── fresh_backend_deploy
+│   │   ├── k8s
+│   │   │   ├── configmap.yaml
+│   │   │   ├── deployment.yaml
+│   │   │   ├── hpa.yaml
+│   │   │   ├── ingress.yaml
+│   │   │   ├── secret.yaml
+│   │   │   └── service.yaml
+│   │   ├── logs
+│   │   │   └── app.log
+│   │   └── migrations
+│   │       ├── .gitkeep
+│   │       ├── 20240101000000-create-users.js
+│   │       ├── 20240101000001-create-drivers.js
+│   │       ├── 20240101000002-create-rides.js
+│   │       ├── 20240101000003-create-payments.js
+│   │       ├── 20240101000004-create-promotions.js
+│   │       ├── 20240101000005-create-zones.js
+│   │       ├── 20240101000006-create-vehicles.js
+│   │       ├── 20240101000007-create-incidents.js
+│   │       ├── 20240101000008-create-reviews.js
+│   │       ├── 20240101000009-create-support-tickets.js
+│   │       ├── 20240101000010-create-audit-logs.js
+│   │       ├── 20240101000011-create-notifications.js
+│   │       ├── 20240101000012-create-webhooks.js
+│   │       ├── 20240101000013-create-reports.js
+│   │       ├── 20240101000014-create-roles.js
+│   │       ├── 20240101000015-create-permissions.js
+│   │       ├── 20240101000016-create-sessions.js
+│   │       ├── 20240101000017-create-refresh-tokens.js
+│   │       ├── 20240101000018-create-invite-codes.js
+│   │       ├── 20240101000019-create-referrals.js
+│   │       ├── 20240101000020-create-wallets.js
+│   │       ├── 20240101000021-create-transactions.js
+│   │       ├── 20240101000022-create-location-histories.js
+│   │       ├── 20240101000023-create-device-infos.js
+│   │       ├── 20240101000024-create-settings.js
+│   │       ├── 20240101000025-add-indexes.js
+│   │       ├── 20240101000026-add-foreign-keys.js
+│   │       ├── 20240101000027-add-triggers.sql.js
+│   │       ├── 20240101000028-create-views.sql.js
+│   │       └── 20240101000029-create-materialized-views.sql.js
+│   ├── frontend-publish-tmp
+│   │   ├── .babelrc
+│   │   ├── .env.development
+│   │   ├── .env.example
+│   │   ├── .env.production
+│   │   ├── .env.staging
+│   │   ├── .env.test
+│   │   ├── .eslintcache
+│   │   ├── .eslintignore
+│   │   ├── .eslintrc.js
+│   │   ├── .gitattributes
+│   │   ├── .gitignore
+│   │   ├── .npmrc
+│   │   ├── .prettierignore
+│   │   ├── .prettierrc
+│   │   ├── .stylelintcache
+│   │   ├── .stylelintrc
+│   │   ├── cypress.config.js
+│   │   ├── docker-compose.yml
+│   │   ├── Dockerfile
+│   │   ├── index.html
+│   │   ├── jest.config.js
+│   │   ├── jest.setup.js
+│   │   ├── jest.teardown.js
+│   │   ├── manifest.json
+│   │   ├── nginx.conf
+│   │   ├── package.json
+│   │   ├── postcss.config.js
+│   │   ├── README.md
+│   │   ├── robots.txt
+│   │   ├── src
+│   │   │   ├── App.jsx
+│   │   │   ├── App.test.jsx
+│   │   │   ├── components
+│   │   │   │   ├── FileUpload.jsx
+│   │   │   │   ├── Footer.jsx
+│   │   │   │   └── Navigation.jsx
+│   │   │   ├── config
+│   │   │   │   └── firebase.js
+│   │   │   ├── index.css
+│   │   │   ├── main.jsx
+│   │   │   ├── pages
+│   │   │   │   ├── BookingsPage.jsx
+│   │   │   │   ├── DashboardPage.jsx
+│   │   │   │   ├── LandingPage.jsx
+│   │   │   │   ├── LoginPage.jsx
+│   │   │   │   ├── NotFoundPage.jsx
+│   │   │   │   ├── ProfilePage.jsx
+│   │   │   │   ├── ProfilePage.test.jsx
+│   │   │   │   └── RegisterPage.jsx
+│   │   │   ├── services
+│   │   │   │   ├── authService.js
+│   │   │   │   ├── backendApi.js
+│   │   │   │   └── userService.js
+│   │   │   └── setupTests.js
+│   │   ├── tailwind.config.js
+│   │   └── vite.config.js
+│   ├── geofenceService.js
+│   ├── husky
+│   │   └── .huskyrc
+│   ├── infrastructure
+│   │   ├── ansible
+│   │   │   ├── group_vars
+│   │   │   │   ├── all.yml
+│   │   │   │   └── production.yml
+│   │   │   ├── host_vars
+│   │   │   │   └── server1.yml
+│   │   │   ├── inventory
+│   │   │   │   ├── development
+│   │   │   │   ├── production
+│   │   │   │   └── staging
+│   │   │   ├── playbooks
+│   │   │   │   ├── deploy.yml
+│   │   │   │   └── site.yml
+│   │   │   ├── roles
+│   │   │   │   ├── common
+│   │   │   │   │   └── main.yml
+│   │   │   │   ├── docker
+│   │   │   │   │   └── main.yml
+│   │   │   │   └── kubernetes
+│   │   │   │       └── main.yml
+│   │   │   └── vault.yml
+│   │   ├── docker
+│   │   │   ├── docker-compose.dev.yml
+│   │   │   ├── docker-compose.monitoring.yml
+│   │   │   ├── docker-compose.prod.yml
+│   │   │   └── docker-compose.staging.yml
+│   │   ├── helm
+│   │   │   ├── charts
+│   │   │   │   ├── easygo
+│   │   │   │   │   ├── Chart.yaml
+│   │   │   │   │   ├── templates
+│   │   │   │   │   │   └── .gitkeep
+│   │   │   │   │   └── values.yaml
+│   │   │   │   └── monitoring
+│   │   │   │       ├── Chart.yaml
+│   │   │   │       └── values.yaml
+│   │   │   ├── secrets
+│   │   │   │   ├── production.yaml
+│   │   │   │   └── staging.yaml
+│   │   │   └── values
+│   │   │       ├── development.yaml
+│   │   │       ├── production.yaml
+│   │   │       └── staging.yaml
+│   │   ├── kubernetes
+│   │   │   ├── configmaps
+│   │   │   │   ├── ai-config.yaml
+│   │   │   │   └── app-config.yaml
+│   │   │   ├── cronjobs
+│   │   │   │   ├── backup.yaml
+│   │   │   │   └── cleanup.yaml
+│   │   │   ├── deployments
+│   │   │   │   ├── ai-demand-forecast.yaml
+│   │   │   │   ├── ai-price-prediction.yaml
+│   │   │   │   ├── web-backend.yaml
+│   │   │   │   └── web-frontend.yaml
+│   │   │   ├── hpa
+│   │   │   │   ├── ai-services-hpa.yaml
+│   │   │   │   └── web-backend-hpa.yaml
+│   │   │   ├── ingresses
+│   │   │   │   ├── api-ingress.yaml
+│   │   │   │   └── web-ingress.yaml
+│   │   │   ├── jobs
+│   │   │   │   └── migration.yaml
+│   │   │   ├── namespaces
+│   │   │   │   ├── ai-services.yaml
+│   │   │   │   └── web-app.yaml
+│   │   │   ├── network-policies
+│   │   │   │   ├── allow-all.yaml
+│   │   │   │   └── deny-all.yaml
+│   │   │   ├── pv
+│   │   │   │   ├── models-pv.yaml
+│   │   │   │   ├── postgres-pv.yaml
+│   │   │   │   └── redis-pv.yaml
+│   │   │   ├── rbac
+│   │   │   │   ├── cluster-role.yaml
+│   │   │   │   ├── role-binding.yaml
+│   │   │   │   └── service-account.yaml
+│   │   │   ├── secrets
+│   │   │   │   ├── api-secrets.yaml
+│   │   │   │   └── db-secrets.yaml
+│   │   │   └── services
+│   │   │       ├── ai-services-service.yaml
+│   │   │       ├── web-backend-service.yaml
+│   │   │       └── web-frontend-service.yaml
+│   │   ├── scripts
+│   │   │   ├── backup.sh
+│   │   │   ├── cleanup.sh
+│   │   │   ├── deploy.sh
+│   │   │   ├── init.sh
+│   │   │   ├── monitoring-setup.sh
+│   │   │   ├── restore.sh
+│   │   │   ├── rollback.sh
+│   │   │   └── validate.sh
+│   │   └── terraform
+│   │       ├── aws
+│   │       │   ├── api_gateway.tf
+│   │       │   ├── backups.tf
+│   │       │   ├── cloudfront.tf
+│   │       │   ├── ec2.tf
+│   │       │   ├── eks.tf
+│   │       │   ├── elasticache.tf
+│   │       │   ├── iam.tf
+│   │       │   ├── lambda.tf
+│   │       │   ├── main.tf
+│   │       │   ├── monitoring.tf
+│   │       │   ├── outputs.tf
+│   │       │   ├── rds.tf
+│   │       │   ├── route53.tf
+│   │       │   ├── s3.tf
+│   │       │   ├── security_groups.tf
+│   │       │   └── variables.tf
+│   │       ├── backend.tf
+│   │       ├── environments
+│   │       │   ├── development
+│   │       │   │   ├── main.tf
+│   │       │   │   ├── terraform.tfvars
+│   │       │   │   └── variables.tf
+│   │       │   ├── production
+│   │       │   │   ├── main.tf
+│   │       │   │   ├── terraform.tfvars
+│   │       │   │   └── variables.tf
+│   │       │   └── staging
+│   │       │       ├── main.tf
+│   │       │       ├── terraform.tfvars
+│   │       │       └── variables.tf
+│   │       ├── terraform.tfstate
+│   │       └── terraform.tfstate.backup
+│   ├── INTEGRATION_COMPLETE.md
+│   ├── lerna.json
+│   ├── LICENSE
+│   ├── lint-staged.config.js
+│   ├── load-testing
+│   │   ├── k6
+│   │   │   ├── results
+│   │   │   │   └── .gitkeep
+│   │   │   ├── scenarios
+│   │   │   │   ├── smoke.js
+│   │   │   │   ├── spike.js
+│   │   │   │   └── stress.js
+│   │   │   └── scripts
+│   │   │       ├── auth.js
+│   │   │       └── rides.js
+│   │   └── locust
+│   │       ├── locustfile.py
+│   │       └── requirements.txt
+│   ├── logs
+│   │   └── .gitkeep
+│   ├── Makefile
+│   ├── monitoring
+│   │   ├── alertmanager
+│   │   │   ├── config.yml
+│   │   │   └── templates
+│   │   │       ├── pagerduty.tmpl
+│   │   │       └── slack.tmpl
+│   │   ├── datadog
+│   │   │   ├── agent
+│   │   │   │   └── datadog.yaml
+│   │   │   └── datadog-config.yaml
+│   │   ├── elk
+│   │   │   ├── elasticsearch
+│   │   │   │   └── elasticsearch.yml
+│   │   │   ├── kibana
+│   │   │   │   └── kibana.yml
+│   │   │   └── logstash
+│   │   │       └── logstash.conf
+│   │   ├── grafana
+│   │   │   ├── dashboards
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── ai-services.json
+│   │   │   │   ├── infrastructure.json
+│   │   │   │   └── web-app.json
+│   │   │   ├── datasources
+│   │   │   │   ├── loki.yaml
+│   │   │   │   └── prometheus.yaml
+│   │   │   └── provisioning
+│   │   │       ├── dashboards
+│   │   │       │   └── dashboard.yaml
+│   │   │       └── datasources
+│   │   │           ├── loki.yaml
+│   │   │           └── prometheus.yaml
+│   │   ├── jaeger
+│   │   │   └── jaeger-config.yaml
+│   │   ├── loki
+│   │   │   ├── loki-config.yaml
+│   │   │   └── promtail-config.yaml
+│   │   ├── newrelic
+│   │   │   ├── agent
+│   │   │   │   └── newrelic.yml
+│   │   │   └── newrelic.yml
+│   │   ├── prometheus
+│   │   │   ├── alert.rules.yml
+│   │   │   ├── prometheus.yml
+│   │   │   ├── recording.rules.yml
+│   │   │   └── rules
+│   │   │       ├── alerts.yml
+│   │   │       └── recording.yml
+│   │   └── thanos
+│   │       ├── query.yaml
+│   │       └── sidecar.yaml
+│   ├── nx.json
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── postgresql.conf
+│   ├── prettier.config.js
+│   ├── README.md
+│   ├── redis-server.log
+│   ├── render.yaml
+│   ├── renovate.json
+│   ├── routeOptimization.service.js
+│   ├── scripts
+│   │   ├── backup-db.sh
+│   │   ├── run-tests.sh
+│   │   └── setup-dev.sh
+│   ├── security
+│   │   ├── crowdsec
+│   │   │   └── crowdsec.yaml
+│   │   ├── falco
+│   │   │   ├── falco_rules.local.yaml
+│   │   │   └── falco_rules.yaml
+│   │   ├── opa
+│   │   │   ├── data.json
+│   │   │   └── policies
+│   │   │       └── auth.rego
+│   │   ├── snyk
+│   │   │   └── .snyk
+│   │   ├── sonarqube
+│   │   │   └── sonar-project.properties
+│   │   ├── trivy
+│   │   │   └── .trivyignore
+│   │   ├── vault
+│   │   │   ├── policies
+│   │   │   │   ├── admin-policy.hcl
+│   │   │   │   ├── app-policy.hcl
+│   │   │   │   └── db-policy.hcl
+│   │   │   ├── scripts
+│   │   │   │   ├── init.sh
+│   │   │   │   └── unseal.sh
+│   │   │   ├── secrets
+│   │   │   │   └── .gitkeep
+│   │   │   └── vault-config.hcl
+│   │   └── wazuh
+│   │       └── ossec.conf
+│   ├── semantic-release.config.js
+│   ├── strutre.txt
+│   ├── tests
+│   │   ├── chaos
+│   │   │   ├── network-delay.js
+│   │   │   └── pod-failure.js
+│   │   ├── contract
+│   │   │   ├── api-contract.js
+│   │   │   └── schema-validation.js
+│   │   ├── load
+│   │   │   └── scenarios
+│   │   │       ├── smoke.js
+│   │   │       └── spike.js
+│   │   ├── performance
+│   │   │   ├── load-test.js
+│   │   │   └── stress-test.js
+│   │   ├── regression
+│   │   │   ├── critical-flows.js
+│   │   │   └── edge-cases.js
+│   │   ├── security
+│   │   │   ├── penetration-test.js
+│   │   │   └── vulnerability-scan.js
+│   │   └── smoke
+│   │       ├── basic-flow.js
+│   │       └── health-check.js
+│   ├── tmp
+│   │   └── .gitkeep
+│   ├── tmp_check.py
+│   ├── tools
+│   │   └── redis
+│   │       ├── data
+│   │       ├── redis.err.log
+│   │       ├── redis.out.log
+│   │       └── redis.zip
+│   ├── turbo.json
+│   ├── validation.js
+│   ├── web-backend
+│   │   ├── .dockerignore
+│   │   ├── .env.ci
+│   │   ├── .env.development
+│   │   ├── .env.example
+│   │   ├── .env.payment.example
+│   │   ├── .env.production
+│   │   ├── .env.production.example
+│   │   ├── .env.staging
+│   │   ├── .env.test
+│   │   ├── .eslintignore
+│   │   ├── .eslintrc.js
+│   │   ├── .gitattributes
+│   │   ├── .gitignore
+│   │   ├── .istanbul.yml
+│   │   ├── .mocharc.json
+│   │   ├── .npmrc
+│   │   ├── .nycrc.json
+│   │   ├── .prettierignore
+│   │   ├── .prettierrc
+│   │   ├── .sequelizerc
+│   │   ├── app.js
+│   │   ├── automate-redis-integration.sh
+│   │   ├── cluster.js
+│   │   ├── config
+│   │   │   ├── config.js
+│   │   │   ├── database.js
+│   │   │   └── migration-schema.js
+│   │   ├── daily-report-cynthia-mofoka.txt
+│   │   ├── deploy-gcr.ps1
+│   │   ├── docker-compose.yml
+│   │   ├── Dockerfile
+│   │   ├── Dockerfile.dev
+│   │   ├── Dockerfile.staging
+│   │   ├── ecosystem.config.js
+│   │   ├── ENHANCEMENTS.md
+│   │   ├── filetree.txt
+│   │   ├── git commands
+│   │   ├── INDEX.md
+│   │   ├── install-web-backend-service.ps1
+│   │   ├── jest.config.js
+│   │   ├── jest-results.txt
+│   │   ├── k8s
+│   │   │   ├── configmap.yaml
+│   │   │   ├── deployment.yaml
+│   │   │   ├── hpa.yaml
+│   │   │   ├── ingress.yaml
+│   │   │   ├── secret.yaml
+│   │   │   └── service.yaml
+│   │   ├── logs
+│   │   │   ├── .0722f532e455b972551eb001012b0fc0e43d0112-audit.json
+│   │   │   ├── .21510726891700c6920b55582c4541a105125d24-audit.json
+│   │   │   ├── .879ce8fcf8415a47f23198497f2ab44c4e475d90-audit.json
+│   │   │   ├── .b403424fbfdccfbf9eb1ba3de99d05641f738e95-audit.json
+│   │   │   ├── .ceaa6a861b4b6e46eba1eb90317d6c1e1c703700-audit.json
+│   │   │   ├── .dc934014341f65f420ea6294cc6e5210bdca0a0b-audit.json
+│   │   │   ├── .e290f66250fae962b9f1f9d7f7749873c57f82d9-audit.json
+│   │   │   ├── app.log
+│   │   │   ├── application-2026-06-15.log
+│   │   │   ├── application-2026-06-16.log
+│   │   │   ├── application-2026-06-17.log
+│   │   │   ├── combined.log
+│   │   │   ├── development.log
+│   │   │   ├── error.log
+│   │   │   ├── error-2026-06-15.log
+│   │   │   ├── error-2026-06-16.log
+│   │   │   ├── error-2026-06-17.log
+│   │   │   ├── exceptions.log
+│   │   │   ├── exceptions-2026-06-15.log
+│   │   │   ├── exceptions-2026-06-16.log
+│   │   │   ├── exceptions-2026-06-17.log
+│   │   │   ├── http-2026-06-15.log
+│   │   │   ├── http-2026-06-16.log
+│   │   │   ├── http-2026-06-17.log
+│   │   │   ├── performance-2026-06-15.log
+│   │   │   ├── performance-2026-06-16.log
+│   │   │   ├── performance-2026-06-17.log
+│   │   │   ├── rejections.log
+│   │   │   ├── server.err.log
+│   │   │   └── server.out.log
+│   │   ├── migrations
+│   │   │   ├── .gitkeep
+│   │   │   ├── 20240101000000-create-users.js
+│   │   │   ├── 20240101000001-create-drivers.js
+│   │   │   ├── 20240101000002-create-rides.js
+│   │   │   ├── 20240101000003-create-payments.js
+│   │   │   ├── 20240101000004-create-promotions.js
+│   │   │   ├── 20240101000005-create-zones.js
+│   │   │   ├── 20240101000006-create-vehicles.js
+│   │   │   ├── 20240101000007-create-incidents.js
+│   │   │   ├── 20240101000008-create-reviews.js
+│   │   │   ├── 20240101000009-create-support-tickets.js
+│   │   │   ├── 20240101000010-create-audit-logs.js
+│   │   │   ├── 20240101000011-create-notifications.js
+│   │   │   ├── 20240101000012-create-webhooks.js
+│   │   │   ├── 20240101000013-create-reports.js
+│   │   │   ├── 20240101000014-create-roles.js
+│   │   │   ├── 20240101000015-create-permissions.js
+│   │   │   ├── 20240101000016-create-sessions.js
+│   │   │   ├── 20240101000017-create-refresh-tokens.js
+│   │   │   ├── 20240101000018-create-invite-codes.js
+│   │   │   ├── 20240101000019-create-referrals.js
+│   │   │   ├── 20240101000020-create-wallets.js
+│   │   │   ├── 20240101000021-create-transactions.js
+│   │   │   ├── 20240101000022-create-location-histories.js
+│   │   │   ├── 20240101000023-create-device-infos.js
+│   │   │   ├── 20240101000024-create-settings.js
+│   │   │   ├── 20240101000025-add-indexes.js
+│   │   │   ├── 20240101000026-add-foreign-keys.js
+│   │   │   ├── 20240101000027-add-triggers.sql.js
+│   │   │   ├── 20240101000028-create-views.sql.js
+│   │   │   ├── 20240101000029-create-materialized-views.sql.js
+│   │   │   ├── 20240615000000-add-socket-id-to-users.js
+│   │   │   ├── 20240615000001-create-zones-table.js
+│   │   │   ├── 20240616120000-add-unique-constraint-to-zone-name.js
+│   │   │   ├── 20260609000000-initial-production-schema.js
+│   │   │   ├── 20260609000001-create-audit-log.js
+│   │   │   └── 20260615000000-add-current-location-to-drivers.js
+│   │   ├── models
+│   │   │   └── index.js
+│   │   ├── nodemon.json
+│   │   ├── package.json
+│   │   ├── package-lock.json
+│   │   ├── postgres-integration-report.md
+│   │   ├── PROJECT_SUMMARY.md
+│   │   ├── QUICK_REFERENCE.md
+│   │   ├── README.md
+│   │   ├── README-redis-integration.md
+│   │   ├── render.yaml
+│   │   ├── RENDER_DEPLOYMENT_CHECKLIST.md
+│   │   ├── RENDER_SETUP.md
+│   │   ├── reports
+│   │   │   └── redis-integration-report.md
+│   │   ├── scripts
+│   │   │   ├── healthcheck.js
+│   │   │   ├── migrate.js
+│   │   │   ├── print-db-config.js
+│   │   │   ├── run-redis-integration.sh
+│   │   │   ├── run-with-env.js
+│   │   │   ├── seed.js
+│   │   │   ├── seed-runner.js
+│   │   │   ├── test-firebase-adc.js
+│   │   │   └── validate-env.js
+│   │   ├── seeders
+│   │   │   ├── .gitkeep
+│   │   │   ├── 20240101000000-roles.js
+│   │   │   ├── 20240101000001-permissions.js
+│   │   │   ├── 20240101000002-admin-user.js
+│   │   │   ├── 20240101000003-demo-users.js
+│   │   │   ├── 20240101000004-demo-drivers.js
+│   │   │   ├── 20240101000005-demo-rides.js
+│   │   │   ├── 20240101000006-demo-zones.js
+│   │   │   ├── 20240101000007-demo-promotions.js
+│   │   │   ├── 20240101000008-demo-reviews.js
+│   │   │   ├── 20240101000009-demo-incidents.js
+│   │   │   └── index.js
+│   │   ├── server.js
+│   │   ├── setup-and-test.ps1
+│   │   ├── setup-and-test.sh
+│   │   ├── setup-remote-redis.sh
+│   │   ├── src
+│   │   │   ├── .gitkeep
+│   │   │   ├── adapters
+│   │   │   │   ├── email.adapter.js
+│   │   │   │   ├── index.js
+│   │   │   │   ├── payment.adapter.js
+│   │   │   │   ├── sms.adapter.js
+│   │   │   │   └── storage.adapter.js
+│   │   │   ├── app.js
+│   │   │   ├── commands
+│   │   │   │   ├── book-ride.command.js
+│   │   │   │   ├── create-user.command.js
+│   │   │   │   └── index.js
+│   │   │   ├── config
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── __tests__
+│   │   │   │   │   └── .gitkeep
+│   │   │   │   ├── cache-strategies.js
+│   │   │   │   ├── circuit-breaker.js
+│   │   │   │   ├── cors.js
+│   │   │   │   ├── database.js
+│   │   │   │   ├── ecocash.js
+│   │   │   │   ├── elasticsearch.js
+│   │   │   │   ├── firebase.js
+│   │   │   │   ├── helmet.js
+│   │   │   │   ├── index.js
+│   │   │   │   ├── kafka.js
+│   │   │   │   ├── logger.js
+│   │   │   │   ├── mpesa.js
+│   │   │   │   ├── passport.js
+│   │   │   │   ├── rabbitmq.js
+│   │   │   │   ├── rate-limiting.js
+│   │   │   │   ├── redis.js
+│   │   │   │   ├── retry-policies.js
+│   │   │   │   ├── s3.js
+│   │   │   │   ├── sendgrid.js
+│   │   │   │   ├── stripe.js
+│   │   │   │   ├── swagger.js
+│   │   │   │   └── twilio.js
+│   │   │   ├── constants
+│   │   │   │   ├── api.constants.js
+│   │   │   │   ├── error.constants.js
+│   │   │   │   ├── index.js
+│   │   │   │   ├── roles.js
+│   │   │   │   └── status.constants.js
+│   │   │   ├── controllers
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── __tests__
+│   │   │   │   │   └── .gitkeep
+│   │   │   │   ├── admin.controller.js
+│   │   │   │   ├── analyticsController.js
+│   │   │   │   ├── authController.js
+│   │   │   │   ├── baseController.js
+│   │   │   │   ├── driverController.js
+│   │   │   │   ├── exportController.js
+│   │   │   │   ├── fleetController.js
+│   │   │   │   ├── healthController.js
+│   │   │   │   ├── importController.js
+│   │   │   │   ├── incidentController.js
+│   │   │   │   ├── metricsController.js
+│   │   │   │   ├── mobileMoneyController.js
+│   │   │   │   ├── notificationController.js
+│   │   │   │   ├── paymentController.js
+│   │   │   │   ├── promotionController.js
+│   │   │   │   ├── reportController.js
+│   │   │   │   ├── reviewController.js
+│   │   │   │   ├── ride.controller.js
+│   │   │   │   ├── rideController.js
+│   │   │   │   ├── supportController.js
+│   │   │   │   ├── uploadController.js
+│   │   │   │   ├── userController.js
+│   │   │   │   ├── webhookController.js
+│   │   │   │   └── zoneController.js
+│   │   │   ├── data
+│   │   │   │   └── mockUsers.js
+│   │   │   ├── decorators
+│   │   │   │   ├── auth.decorator.js
+│   │   │   │   ├── index.js
+│   │   │   │   ├── rbac.decorator.js
+│   │   │   │   └── validate.decorator.js
+│   │   │   ├── events
+│   │   │   │   ├── index.js
+│   │   │   │   ├── ride.event.js
+│   │   │   │   └── user.event.js
+│   │   │   ├── exceptions
+│   │   │   │   ├── api.exception.js
+│   │   │   │   ├── auth.exception.js
+│   │   │   │   ├── base.exception.js
+│   │   │   │   ├── index.js
+│   │   │   │   └── validation.exception.js
+│   │   │   ├── factories
+│   │   │   │   ├── index.js
+│   │   │   │   ├── payment.factory.js
+│   │   │   │   ├── ride.factory.js
+│   │   │   │   └── user.factory.js
+│   │   │   ├── helpers
+│   │   │   │   ├── array.helper.js
+│   │   │   │   ├── index.js
+│   │   │   │   ├── object.helper.js
+│   │   │   │   └── string.helper.js
+│   │   │   ├── interfaces
+│   │   │   │   ├── index.ts
+│   │   │   │   ├── ride.interface.ts
+│   │   │   │   └── user.interface.ts
+│   │   │   ├── jobs
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── __tests__
+│   │   │   │   │   └── .gitkeep
+│   │   │   │   ├── analyticsJobs.js
+│   │   │   │   ├── auditJobs.js
+│   │   │   │   ├── backupJobs.js
+│   │   │   │   ├── cleanupJobs.js
+│   │   │   │   ├── index.js
+│   │   │   │   ├── notificationJobs.js
+│   │   │   │   ├── paymentJobs.js
+│   │   │   │   ├── reportJobs.js
+│   │   │   │   └── worker.js
+│   │   │   ├── listeners
+│   │   │   │   ├── index.js
+│   │   │   │   ├── payment.listener.js
+│   │   │   │   └── ride.listener.js
+│   │   │   ├── middleware
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── __tests__
+│   │   │   │   │   └── .gitkeep
+│   │   │   │   ├── admin.validation.js
+│   │   │   │   ├── analytics.validation.js
+│   │   │   │   ├── audit.middleware.js
+│   │   │   │   ├── auditLogger.js
+│   │   │   │   ├── auth.js
+│   │   │   │   ├── auth.validation.js
+│   │   │   │   ├── authorizeRoles.js
+│   │   │   │   ├── cache.js
+│   │   │   │   ├── circuitBreaker.js
+│   │   │   │   ├── compression.js
+│   │   │   │   ├── correlationId.js
+│   │   │   │   ├── cors.js
+│   │   │   │   ├── driver.validation.js
+│   │   │   │   ├── error.middleware.js
+│   │   │   │   ├── errorHandler.js
+│   │   │   │   ├── fleet.validation.js
+│   │   │   │   ├── helmet.js
+│   │   │   │   ├── incident.validation.js
+│   │   │   │   ├── notFound.js
+│   │   │   │   ├── pagination.js
+│   │   │   │   ├── payment.validation.js
+│   │   │   │   ├── paymentRateLimiter.js
+│   │   │   │   ├── promotion.validation.js
+│   │   │   │   ├── rateLimiter.js
+│   │   │   │   ├── rbac.js
+│   │   │   │   ├── requestId.js
+│   │   │   │   ├── requestLogger.js
+│   │   │   │   ├── ride.validation.js
+│   │   │   │   ├── sanitize.js
+│   │   │   │   ├── security.js
+│   │   │   │   ├── support.validation.js
+│   │   │   │   ├── timeout.js
+│   │   │   │   ├── user.validation.js
+│   │   │   │   ├── validate.js
+│   │   │   │   └── validation.js
+│   │   │   ├── models
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── __tests__
+│   │   │   │   │   └── .gitkeep
+│   │   │   │   ├── associations.js
+│   │   │   │   ├── AuditLog.js
+│   │   │   │   ├── auditLog.model.js
+│   │   │   │   ├── DeviceInfo.js
+│   │   │   │   ├── Driver.js
+│   │   │   │   ├── extraModels.js
+│   │   │   │   ├── Incident.js
+│   │   │   │   ├── index.js
+│   │   │   │   ├── InviteCode.js
+│   │   │   │   ├── LocationHistory.js
+│   │   │   │   ├── MobileMoneyTransaction.js
+│   │   │   │   ├── Notification.js
+│   │   │   │   ├── openapi.yaml
+│   │   │   │   ├── Payment.js
+│   │   │   │   ├── PaymentWebhookLog.js
+│   │   │   │   ├── Permission.js
+│   │   │   │   ├── Promotion.js
+│   │   │   │   ├── promotion.model.js
+│   │   │   │   ├── promotionUsage.model.js
+│   │   │   │   ├── Referral.js
+│   │   │   │   ├── RefreshToken.js
+│   │   │   │   ├── Report.js
+│   │   │   │   ├── Review.js
+│   │   │   │   ├── Ride.js
+│   │   │   │   ├── ride.model.js
+│   │   │   │   ├── Role.js
+│   │   │   │   ├── Session.js
+│   │   │   │   ├── Settings.js
+│   │   │   │   ├── SupportTicket.js
+│   │   │   │   ├── Transaction.js
+│   │   │   │   ├── User.js
+│   │   │   │   ├── user.model.js
+│   │   │   │   ├── Vehicle.js
+│   │   │   │   ├── Wallet.js
+│   │   │   │   ├── Webhook.js
+│   │   │   │   ├── Zone.js
+│   │   │   │   └── zone.model.js
+│   │   │   ├── queues
+│   │   │   │   ├── email.queue.js
+│   │   │   │   ├── index.js
+│   │   │   │   ├── notification.queue.js
+│   │   │   │   └── report.queue.js
+│   │   │   ├── repositories
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── __tests__
+│   │   │   │   │   └── .gitkeep
+│   │   │   │   ├── auditLog.repository.js
+│   │   │   │   ├── auditRepository.js
+│   │   │   │   ├── base.repository.js
+│   │   │   │   ├── baseRepository.js
+│   │   │   │   ├── driver.repository.js
+│   │   │   │   ├── driverRepository.js
+│   │   │   │   ├── fleet.repository.js
+│   │   │   │   ├── incident.repository.js
+│   │   │   │   ├── incidentRepository.js
+│   │   │   │   ├── index.js
+│   │   │   │   ├── notificationRepository.js
+│   │   │   │   ├── payment.repository.js
+│   │   │   │   ├── paymentRepository.js
+│   │   │   │   ├── promotion.repository.js
+│   │   │   │   ├── promotionRepository.js
+│   │   │   │   ├── report.repository.js
+│   │   │   │   ├── review.repository.js
+│   │   │   │   ├── reviewRepository.js
+│   │   │   │   ├── ride.repository.js
+│   │   │   │   ├── rideRepository.js
+│   │   │   │   ├── support.repository.js
+│   │   │   │   ├── supportRepository.js
+│   │   │   │   ├── user.repository.js
+│   │   │   │   ├── userRepository.js
+│   │   │   │   ├── vehicle.repository.js
+│   │   │   │   ├── zone.model.test.js
+│   │   │   │   └── zoneRepository.js
+│   │   │   ├── routes
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── __tests__
+│   │   │   │   │   └── .gitkeep
+│   │   │   │   ├── driver.routes.js
+│   │   │   │   ├── index.js
+│   │   │   │   ├── payment.routes.js
+│   │   │   │   ├── ride.routes.js
+│   │   │   │   └── v1
+│   │   │   │       ├── .gitkeep
+│   │   │   │       ├── __init__.js
+│   │   │   │       ├── __tests__
+│   │   │   │       │   └── .gitkeep
+│   │   │   │       ├── adminRoutes.js
+│   │   │   │       ├── analyticsRoutes.js
+│   │   │   │       ├── authRoutes.js
+│   │   │   │       ├── driverRoutes.js
+│   │   │   │       ├── fleetRoutes.js
+│   │   │   │       ├── geofenceRoutes.js
+│   │   │   │       ├── healthRoutes.js
+│   │   │   │       ├── incidentRoutes.js
+│   │   │   │       ├── notificationRoutes.js
+│   │   │   │       ├── paymentRoutes.js
+│   │   │   │       ├── promotionRoutes.js
+│   │   │   │       ├── reportRoutes.js
+│   │   │   │       ├── reviewRoutes.js
+│   │   │   │       ├── rideRoutes.js
+│   │   │   │       ├── supportRoutes.js
+│   │   │   │       ├── uploadRoutes.js
+│   │   │   │       ├── userRoutes.js
+│   │   │   │       ├── webhookRoutes.js
+│   │   │   │       └── zoneRoutes.js
+│   │   │   ├── sandbox
+│   │   │   │   ├── controllers
+│   │   │   │   │   └── sandboxController.js
+│   │   │   │   ├── routes
+│   │   │   │   │   ├── sandboxRoutes.js
+│   │   │   │   │   ├── testDataGenerator.js
+│   │   │   │   │   └── transactionSimulator.js
+│   │   │   │   ├── services
+│   │   │   │   └── simulators
+│   │   │   │       ├── ecocashSimulator.js
+│   │   │   │       └── mpesaSimulator.js
+│   │   │   ├── seeders
+│   │   │   │   ├── 01-users.seeder.js
+│   │   │   │   ├── 02-drivers-vehicles.seeder.js
+│   │   │   │   ├── 03-rides-payments.seeder.js
+│   │   │   │   └── index.js
+│   │   │   ├── services
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── __tests__
+│   │   │   │   │   └── .gitkeep
+│   │   │   │   ├── 20240609000001-production-seed.js
+│   │   │   │   ├── analyticsService.js
+│   │   │   │   ├── auditLogService.js
+│   │   │   │   ├── auditService.js
+│   │   │   │   ├── authService.js
+│   │   │   │   ├── base.service.js
+│   │   │   │   ├── cacheService.js
+│   │   │   │   ├── dispatchService.js
+│   │   │   │   ├── distanceMatrixService.js
+│   │   │   │   ├── driverService.js
+│   │   │   │   ├── ecocash.service.js
+│   │   │   │   ├── emailService.js
+│   │   │   │   ├── exportService.js
+│   │   │   │   ├── firestoreUserService.js
+│   │   │   │   ├── fleetService.js
+│   │   │   │   ├── fraudDetection.service.js
+│   │   │   │   ├── geocodingService.js
+│   │   │   │   ├── geofenceService.js
+│   │   │   │   ├── healthService.js
+│   │   │   │   ├── importService.js
+│   │   │   │   ├── incidentService.js
+│   │   │   │   ├── matching.service.js
+│   │   │   │   ├── mpesa.service.js
+│   │   │   │   ├── notificationService.js
+│   │   │   │   ├── openapi.yaml
+│   │   │   │   ├── paymentService.js
+│   │   │   │   ├── pricingService.js
+│   │   │   │   ├── promotionService.js
+│   │   │   │   ├── pushNotificationService.js
+│   │   │   │   ├── queueService.js
+│   │   │   │   ├── reportService.js
+│   │   │   │   ├── reviewService.js
+│   │   │   │   ├── reviewService.test.js
+│   │   │   │   ├── rideService.js
+│   │   │   │   ├── searchService.js
+│   │   │   │   ├── smsService.js
+│   │   │   │   ├── socketService.js
+│   │   │   │   ├── storageService.js
+│   │   │   │   ├── supportService.js
+│   │   │   │   ├── supportService.test.js
+│   │   │   │   ├── thirdPartyService.js
+│   │   │   │   ├── trackingService.js
+│   │   │   │   ├── userService.js
+│   │   │   │   ├── vehicleService.js
+│   │   │   │   ├── walletService.js
+│   │   │   │   ├── webhookService.js
+│   │   │   │   └── zoneService.js
+│   │   │   ├── strategies
+│   │   │   │   ├── auth.strategy.js
+│   │   │   │   ├── dispatch.strategy.js
+│   │   │   │   ├── index.js
+│   │   │   │   └── pricing.strategy.js
+│   │   │   ├── subscribers
+│   │   │   │   ├── index.js
+│   │   │   │   ├── ride.subscriber.js
+│   │   │   │   └── user.subscriber.js
+│   │   │   ├── transformers
+│   │   │   │   ├── index.js
+│   │   │   │   ├── payment.transformer.js
+│   │   │   │   ├── ride.transformer.js
+│   │   │   │   └── user.transformer.js
+│   │   │   ├── types
+│   │   │   │   ├── express.d.ts
+│   │   │   │   ├── index.d.ts
+│   │   │   │   └── models.d.ts
+│   │   │   ├── utils
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── __tests__
+│   │   │   │   │   └── .gitkeep
+│   │   │   │   ├── apiError.js
+│   │   │   │   ├── apiResponse.js
+│   │   │   │   ├── arrayHelpers.js
+│   │   │   │   ├── asyncHandler.js
+│   │   │   │   ├── cacheKeys.js
+│   │   │   │   ├── constants.js
+│   │   │   │   ├── csvParser.js
+│   │   │   │   ├── dateHelpers.js
+│   │   │   │   ├── distanceCalculator.js
+│   │   │   │   ├── encryption.js
+│   │   │   │   ├── etaCalculator.js
+│   │   │   │   ├── excelGenerator.js
+│   │   │   │   ├── featureFlags.js
+│   │   │   │   ├── fileUpload.js
+│   │   │   │   ├── geoHelpers.js
+│   │   │   │   ├── jwt.js
+│   │   │   │   ├── logger.js
+│   │   │   │   ├── metrics.js
+│   │   │   │   ├── mobileMoneyHelpers.js
+│   │   │   │   ├── notificationHelper.js
+│   │   │   │   ├── otp.js
+│   │   │   │   ├── password.js
+│   │   │   │   ├── pdfGenerator.js
+│   │   │   │   ├── priceCalculator.js
+│   │   │   │   ├── response.util.js
+│   │   │   │   ├── stringHelpers.js
+│   │   │   │   ├── transactionIdempotency.js
+│   │   │   │   ├── validationHelpers.js
+│   │   │   │   └── validators.js
+│   │   │   ├── validators
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── __tests__
+│   │   │   │   │   └── .gitkeep
+│   │   │   │   ├── auth.validator.js
+│   │   │   │   ├── authValidator.js
+│   │   │   │   ├── customValidators.js
+│   │   │   │   ├── driverValidator.js
+│   │   │   │   ├── incidentValidator.js
+│   │   │   │   ├── index.js
+│   │   │   │   ├── paymentValidator.js
+│   │   │   │   ├── promotionValidator.js
+│   │   │   │   ├── reportValidator.js
+│   │   │   │   ├── reviewValidator.js
+│   │   │   │   ├── rideValidator.js
+│   │   │   │   ├── supportValidator.js
+│   │   │   │   ├── userValidator.js
+│   │   │   │   └── zoneValidator.js
+│   │   │   ├── webhooks
+│   │   │   │   ├── ecocashWebhook.js
+│   │   │   │   └── mpesaWebhook.js
+│   │   │   └── workers
+│   │   │       ├── .gitkeep
+│   │   │       ├── __tests__
+│   │   │       │   └── .gitkeep
+│   │   │       ├── cleanupWorker.js
+│   │   │       ├── emailWorker.js
+│   │   │       ├── exportWorker.js
+│   │   │       ├── importWorker.js
+│   │   │       ├── pushWorker.js
+│   │   │       ├── reportWorker.js
+│   │   │       ├── smsWorker.js
+│   │   │       └── webhookWorker.js
+│   │   ├── start-web-backend.cmd
+│   │   ├── swagger.js
+│   │   ├── swagger.json
+│   │   ├── swagger.yaml
+│   │   ├── test-output-new.txt
+│   │   ├── test-results
+│   │   │   └── junit.xml
+│   │   ├── tests
+│   │   │   ├── .gitkeep
+│   │   │   ├── e2e
+│   │   │   │   └── workflows.test.js
+│   │   │   ├── fixtures
+│   │   │   │   └── data.js
+│   │   │   ├── integration
+│   │   │   │   ├── .gitkeep
+│   │   │   │   ├── api.test.js
+│   │   │   │   ├── database.test.js
+│   │   │   │   ├── incident.test.js
+│   │   │   │   ├── incidentService.test.js
+│   │   │   │   ├── mpesaWebhook.test.js
+│   │   │   │   ├── payment.test.js
+│   │   │   │   ├── support.test.js
+│   │   │   │   └── walletService.test.js
+│   │   │   ├── mocks
+│   │   │   │   └── services.js
+│   │   │   ├── mpesaService.test.js
+│   │   │   ├── setup.js
+│   │   │   └── unit
+│   │   │       ├── .gitkeep
+│   │   │       ├── auth.test.js
+│   │   │       ├── health.test.js
+│   │   │       ├── ride.test.js
+│   │   │       └── user.test.js
+│   │   └── uninstall-web-backend-service.ps1
+│   ├── web-frontend
+│   │   ├── .babelrc
+│   │   ├── .env.ci
+│   │   ├── .env.development
+│   │   ├── .env.example
+│   │   ├── .env.production
+│   │   ├── .env.staging
+│   │   ├── .env.test
+│   │   ├── .eslintcache
+│   │   ├── .eslintignore
+│   │   ├── .eslintrc.cjs
+│   │   ├── .eslintrc.js
+│   │   ├── .firebase
+│   │   │   └── hosting.ZGlzdA.cache
+│   │   ├── .firebaserc
+│   │   ├── .gitattributes
+│   │   ├── .gitignore
+│   │   ├── .npmrc
+│   │   ├── .prettierignore
+│   │   ├── .prettierrc
+│   │   ├── .stylelintcache
+│   │   ├── .stylelintrc
+│   │   ├── build-deploy.sh
+│   │   ├── cypress.config.js
+│   │   ├── dev-err.log
+│   │   ├── dev-out.log
+│   │   ├── docker-compose.yml
+│   │   ├── Dockerfile
+│   │   ├── firebase.json
+│   │   ├── firebase-debug.log
+│   │   ├── FRONTEND_INTEGRATION.md
+│   │   ├── index.html
+│   │   ├── jest.config.js
+│   │   ├── jest.setup.js
+│   │   ├── jest.teardown.js
+│   │   ├── manifest.json
+│   │   ├── nginx.conf
+│   │   ├── package.json
+│   │   ├── package-lock.json
+│   │   ├── postcss.config.js
+│   │   ├── PRODUCTION_SETUP.md
+│   │   ├── public
+│   │   │   ├── 404.html
+│   │   │   └── prototype
+│   │   │       ├── admin-admins.html
+│   │   │       ├── admin-audit.html
+│   │   │       ├── admin-drivers.html
+│   │   │       ├── admin-fleet.html
+│   │   │       ├── admin-incidents.html
+│   │   │       ├── admin-panel.html
+│   │   │       ├── admin-payments.html
+│   │   │       ├── admin-promotions.html
+│   │   │       ├── admin-reports.html
+│   │   │       ├── admin-reviews.html
+│   │   │       ├── admin-settings.html
+│   │   │       ├── admin-support.html
+│   │   │       ├── admin-trips.html
+│   │   │       ├── admin-users.html
+│   │   │       ├── admin-verification.html
+│   │   │       ├── admin-zones.html
+│   │   │       ├── assets
+│   │   │       │   ├── css
+│   │   │       │   │   ├── main.css
+│   │   │       │   │   ├── responsive.css
+│   │   │       │   │   └── sidebar.css
+│   │   │       │   ├── images
+│   │   │       │   │   ├── easy-Go-Upsaceld-noBG.png
+│   │   │       │   │   ├── WhatsApp Image 2026-02-16 at 15.01.44.jpeg
+│   │   │       │   │   └── WhatsApp Image 2026-02-16 at 15.02.18.jpeg
+│   │   │       │   └── js
+│   │   │       │       ├── auth.js
+│   │   │       │       ├── demo-data.js
+│   │   │       │       ├── main.js
+│   │   │       │       └── sidebar.js
+│   │   │       ├── driver-available-rides.html
+│   │   │       ├── driver-available-seats.html
+│   │   │       ├── driver-current-trip.html
+│   │   │       ├── driver-dashboard.html
+│   │   │       ├── driver-earnings.html
+│   │   │       ├── driver-profile.html
+│   │   │       ├── driver-settings.html
+│   │   │       ├── driver-support.html
+│   │   │       ├── driver-vehicle.html
+│   │   │       ├── index.html
+│   │   │       ├── login.html
+│   │   │       ├── ride-booking.html
+│   │   │       ├── ride-history.html
+│   │   │       ├── rider-dashboard.html
+│   │   │       ├── rider-notifications.html
+│   │   │       ├── rider-payments.html
+│   │   │       ├── rider-profile.html
+│   │   │       ├── rider-settings.html
+│   │   │       ├── rider-support.html
+│   │   │       ├── sidebar-driver.html
+│   │   │       └── signup.html
+│   │   ├── README.md
+│   │   ├── robots.txt
+│   │   ├── src
+│   │   │   ├── App.css
+│   │   │   ├── App.jsx
+│   │   │   ├── App.test.jsx
+│   │   │   ├── components
+│   │   │   │   ├── auth
+│   │   │   │   │   ├── ProtectedRoute.jsx
+│   │   │   │   │   └── PublicRoute.jsx
+│   │   │   │   ├── common
+│   │   │   │   │   ├── Alert.jsx
+│   │   │   │   │   ├── Avatar.jsx
+│   │   │   │   │   ├── Badge.jsx
+│   │   │   │   │   ├── Button.jsx
+│   │   │   │   │   ├── Card.jsx
+│   │   │   │   │   ├── Dropdown.jsx
+│   │   │   │   │   ├── ErrorBoundary.css
+│   │   │   │   │   ├── ErrorBoundary.jsx
+│   │   │   │   │   ├── Input.jsx
+│   │   │   │   │   ├── LoadingSpinner.css
+│   │   │   │   │   ├── LoadingSpinner.jsx
+│   │   │   │   │   ├── Modal.css
+│   │   │   │   │   ├── Modal.jsx
+│   │   │   │   │   ├── Table.jsx
+│   │   │   │   │   └── Tabs.jsx
+│   │   │   │   ├── Footer.jsx
+│   │   │   │   ├── forms
+│   │   │   │   │   └── RatingStars.jsx
+│   │   │   │   ├── layout
+│   │   │   │   │   ├── Footer.jsx
+│   │   │   │   │   ├── Navbar.css
+│   │   │   │   │   ├── Navbar.jsx
+│   │   │   │   │   ├── Sidebar.css
+│   │   │   │   │   └── Sidebar.jsx
+│   │   │   │   ├── Navigation.jsx
+│   │   │   │   └── ride
+│   │   │   │       └── RideTracking.jsx
+│   │   │   ├── config
+│   │   │   │   ├── api.config.js
+│   │   │   │   ├── constants.js
+│   │   │   │   ├── firebase.js
+│   │   │   │   └── routes.config.js
+│   │   │   ├── contexts
+│   │   │   │   ├── AuthContext.jsx
+│   │   │   │   ├── SocketContext.jsx
+│   │   │   │   └── ThemeContext.jsx
+│   │   │   ├── hooks
+│   │   │   │   ├── useApi.js
+│   │   │   │   ├── useAuth.js
+│   │   │   │   ├── useClickOutside.js
+│   │   │   │   ├── useDebounce.js
+│   │   │   │   ├── useGeolocation.js
+│   │   │   │   ├── useInfiniteScroll.js
+│   │   │   │   ├── useNotification.js
+│   │   │   │   ├── usePayment.js
+│   │   │   │   ├── useRide.js
+│   │   │   │   ├── useRideTracking.js
+│   │   │   │   └── useWebSocket.js
+│   │   │   ├── index.css
+│   │   │   ├── main.jsx
+│   │   │   ├── pages
+│   │   │   │   ├── admin
+│   │   │   │   │   ├── AdminDashboard.jsx
+│   │   │   │   │   ├── AdminOverview.jsx
+│   │   │   │   │   ├── Analytics.jsx
+│   │   │   │   │   ├── AuditLogs.jsx
+│   │   │   │   │   ├── Drivers.jsx
+│   │   │   │   │   ├── Fleet.jsx
+│   │   │   │   │   ├── Incidents.jsx
+│   │   │   │   │   ├── Payments.jsx
+│   │   │   │   │   ├── Promotions.jsx
+│   │   │   │   │   ├── Reports.jsx
+│   │   │   │   │   ├── Reviews.jsx
+│   │   │   │   │   ├── Rides.jsx
+│   │   │   │   │   ├── Settings.jsx
+│   │   │   │   │   ├── SupportTickets.jsx
+│   │   │   │   │   ├── Users.jsx
+│   │   │   │   │   ├── Vehicles.jsx
+│   │   │   │   │   ├── Verifications.jsx
+│   │   │   │   │   ├── ZoneCreator.css
+│   │   │   │   │   ├── ZoneCreator.jsx
+│   │   │   │   │   └── Zones.jsx
+│   │   │   │   ├── BookingsPage.jsx
+│   │   │   │   ├── common
+│   │   │   │   │   ├── Notifications.jsx
+│   │   │   │   │   ├── Referrals.jsx
+│   │   │   │   │   └── SupportTickets.jsx
+│   │   │   │   ├── DashboardPage.jsx
+│   │   │   │   ├── driver
+│   │   │   │   │   ├── AvailableRides.jsx
+│   │   │   │   │   ├── CurrentTrip.jsx
+│   │   │   │   │   ├── Documents.jsx
+│   │   │   │   │   ├── DriverDashboard.css
+│   │   │   │   │   ├── DriverDashboard.jsx
+│   │   │   │   │   ├── DriverProfile.jsx
+│   │   │   │   │   ├── DriverSettings.jsx
+│   │   │   │   │   ├── DriverSupport.jsx
+│   │   │   │   │   ├── Earnings.jsx
+│   │   │   │   │   ├── index.js
+│   │   │   │   │   ├── RideHistory.jsx
+│   │   │   │   │   └── Vehicle.jsx
+│   │   │   │   ├── LandingPage.css
+│   │   │   │   ├── LandingPage.jsx
+│   │   │   │   ├── LoginPage.jsx
+│   │   │   │   ├── NotFoundPage.jsx
+│   │   │   │   ├── ProfilePage.jsx
+│   │   │   │   ├── ProfilePage.test.jsx
+│   │   │   │   ├── public
+│   │   │   │   │   └── LandingPage.jsx
+│   │   │   │   ├── RegisterPage.jsx
+│   │   │   │   ├── rider
+│   │   │   │   │   ├── index.js
+│   │   │   │   │   ├── Notifications.jsx
+│   │   │   │   │   ├── Payments.jsx
+│   │   │   │   │   ├── Promotions.jsx
+│   │   │   │   │   ├── Referrals.jsx
+│   │   │   │   │   ├── RideBooking.jsx
+│   │   │   │   │   ├── RideHistory.jsx
+│   │   │   │   │   ├── RiderDashboard.css
+│   │   │   │   │   ├── RiderDashboard.jsx
+│   │   │   │   │   ├── RiderProfile.jsx
+│   │   │   │   │   ├── RiderSettings.jsx
+│   │   │   │   │   ├── RiderSupport.jsx
+│   │   │   │   │   └── SavedPlaces.jsx
+│   │   │   │   └── Sandbox
+│   │   │   │       ├── EcoCashSimulator.jsx
+│   │   │   │       ├── MpesaSimulator.jsx
+│   │   │   │       ├── SandboxDashboard.css
+│   │   │   │       ├── SandboxDashboard.jsx
+│   │   │   │       ├── TestScenarios.jsx
+│   │   │   │       └── TransactionMonitor.jsx
+│   │   │   ├── routes
+│   │   │   │   └── index.jsx
+│   │   │   ├── services
+│   │   │   │   ├── admin.service.js
+│   │   │   │   ├── analytics.service.js
+│   │   │   │   ├── api
+│   │   │   │   │   └── client.js
+│   │   │   │   ├── apple.controller.js
+│   │   │   │   ├── auth.service.js
+│   │   │   │   ├── authService.js
+│   │   │   │   ├── cloudinary.service.js
+│   │   │   │   ├── driver.service.js
+│   │   │   │   ├── notification.service.js
+│   │   │   │   ├── payment.service.js
+│   │   │   │   ├── ride.service.js
+│   │   │   │   ├── sandboxService.js
+│   │   │   │   ├── socket.service.js
+│   │   │   │   ├── storage.service.js
+│   │   │   │   ├── user.service.js
+│   │   │   │   └── userService.js
+│   │   │   ├── setupTests.js
+│   │   │   ├── store
+│   │   │   │   ├── index.js
+│   │   │   │   └── slices
+│   │   │   │       ├── authSlice.js
+│   │   │   │       ├── rideSlice.js
+│   │   │   │       └── uiSlice.js
+│   │   │   ├── types
+│   │   │   │   └── api.types.js
+│   │   │   └── utils
+│   │   │       ├── analytics.js
+│   │   │       ├── apiClient.js
+│   │   │       ├── deviceDetect.js
+│   │   │       ├── encryption.js
+│   │   │       ├── errorHandler.js
+│   │   │       ├── formatters.js
+│   │   │       ├── mapUtils.js
+│   │   │       ├── permissions.js
+│   │   │       ├── storage.js
+│   │   │       ├── validationSchemas.js
+│   │   │       └── validators.js
+│   │   ├── tailwind.config.js
+│   │   ├── vite.config.js
+│   │   ├── vite-dev.err.log
+│   │   └── vite-dev.out.log
+│   ├── web-frontend-dev.err.log
+│   └── web-frontend-dev.out.log

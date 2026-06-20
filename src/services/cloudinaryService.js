@@ -4,9 +4,7 @@
  */
 
 const CLOUDINARY_CONFIG = {
-  cloudName: (
-    import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET_APP_CLOUDINARY_CLOUD_NAME || 'dwz0osyou'
-  ).trim(),
+  cloudName: (import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'dwz0osyou').trim(),
   uploadPreset: (import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'career_connect_upload').trim(),
   apiKey: (import.meta.env.VITE_CLOUDINARY_API_KEY || '').trim(),
   apiSecret: (import.meta.env.VITE_CLOUDINARY_API_SECRET || '').trim(),
@@ -28,7 +26,7 @@ class CloudinaryService {
       cloudName: this.config.cloudName,
       uploadPreset: this.config.uploadPreset,
       envLoaded: !!import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
-      isProduction: import.meta.env.NODE_ENV === 'production',
+      isProduction: import.meta.env.MODE === 'production',
     });
   }
 
@@ -393,8 +391,53 @@ class CloudinaryService {
         throw new Error('Public ID is required');
       }
 
-      console.log('🗑️ Deleting from Cloudinary:', publicId);
+      console.log('🗑️ Deleting from Cloudinary (attempting server-side):', publicId);
 
+      // Prefer server-side deletion when API base is configured
+      const API_BASE = import.meta.env.VITE_API_BASE_URL || null;
+
+      if (API_BASE) {
+        try {
+          // Attempt to get Firebase auth token if available
+          let token = null;
+          try {
+            // eslint-disable-next-line no-undef
+            const { auth } = await import('../config/firebase');
+            if (auth && auth.currentUser && typeof auth.currentUser.getIdToken === 'function') {
+              token = await auth.currentUser.getIdToken();
+            }
+          } catch (e) {
+            // ignore
+          }
+
+          const response = await fetch(`${API_BASE}/api/media/cloudinary/delete`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+            body: JSON.stringify({ publicId }),
+            credentials: 'include',
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success) {
+              console.log('✅ Server-side Cloudinary delete successful');
+              return { success: true, server: true, results: data.results };
+            }
+            return { success: false, error: data.message || 'Server delete failed' };
+          }
+
+          const errorText = await response.text();
+          console.warn('Server-side Cloudinary delete returned non-OK:', errorText);
+        } catch (serverError) {
+          console.warn('Server-side Cloudinary delete failed, falling back to client-side:', serverError.message);
+        }
+      }
+
+      // Fallback to existing client-side delete approach
+      console.log('🗑️ Deleting from Cloudinary (client-side fallback):', publicId);
       const timestamp = Math.round(Date.now() / 1000);
       const signature = await this.generateSignature(publicId, timestamp);
 
@@ -404,7 +447,7 @@ class CloudinaryService {
       formData.append('api_key', this.config.apiKey);
       formData.append('timestamp', timestamp);
 
-      const response = await fetch(
+      const response2 = await fetch(
         `https://api.cloudinary.com/v1_1/${this.config.cloudName}/image/destroy`,
         {
           method: 'POST',
@@ -412,19 +455,19 @@ class CloudinaryService {
         }
       );
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Cloudinary delete failed: ${errorText}`);
+      if (!response2.ok) {
+        const errorText2 = await response2.text();
+        throw new Error(`Cloudinary delete failed: ${errorText2}`);
       }
 
-      const data = await response.json();
+      const data2 = await response2.json();
 
-      if (data.result === 'ok') {
-        console.log('✅ Cloudinary delete successful');
+      if (data2.result === 'ok') {
+        console.log('✅ Cloudinary delete successful (client-side)');
         return { success: true };
-      } else {
-        throw new Error(data.result || 'Delete failed');
       }
+
+      throw new Error(data2.result || 'Delete failed');
     } catch (error) {
       console.error('❌ Cloudinary delete error:', error);
       return {

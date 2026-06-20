@@ -631,12 +631,11 @@ const CompanyDashboard = () => {
     try {
       setUploadingLogo(true);
 
-      const formData = new FormData();
-      formData.append('file', logoFile);
-      formData.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET);
-
       const response = await cloudinaryService.uploadImage(logoFile);
-      const logoUrl = response.secure_url;
+      if (!response?.success || !response?.url) {
+        throw new Error(response?.error || 'Cloudinary upload failed');
+      }
+      const logoUrl = response.url;
 
       await companyService.updateCompanyProfile({
         logo: logoUrl,

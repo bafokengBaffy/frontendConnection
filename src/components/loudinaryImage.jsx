@@ -11,7 +11,7 @@ const CloudinaryImage = ({
   style = {},
   ...props
 }) => {
-  const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME;
+  const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 
   if (!publicId || !cloudName) {
     return <div>Image not available</div>;
